@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-width: 430px;
+  --content-width: 390px;
+  --content-padding: 20px;
+  --btn-height: 48px;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0F19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Base Typography & Background */
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #070A11;
+  color: #F8FAFC;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Strict button rule: 48px height, 16px bold text */
+.btn-lattice-primary {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: #0066FF;
+  color: #FFFFFF;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+.btn-lattice-primary:hover {
+  background: #0052CC;
+}
+
+.btn-lattice-primary:active {
+  transform: scale(0.99);
+}
+
+.btn-lattice-secondary {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: #111827;
+  color: #F1F5F9;
+  border: 1px solid #1F2E47;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-lattice-secondary:hover {
+  background: #172238;
+  border-color: #2D4368;
+}
+
+/* Professional Enterprise Cards (No bloated glows) */
+.card-dark {
+  background: #0D131F;
+  border: 1px solid #1A2436;
+  border-radius: 14px;
+  transition: border-color 0.15s ease;
+}
+
+.card-dark:hover {
+  border-color: #2A3B56;
+}
+
+.card-dark-subtle {
+  background: #090E17;
+  border: 1px solid #151D2C;
+  border-radius: 12px;
+}
+
+/* ─── Prevent browser autofill from making inputs white ──────────────────── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 9999px #0C121E inset !important;
+  box-shadow: 0 0 0 9999px #0C121E inset !important;
+  -webkit-text-fill-color: #F8FAFC !important;
+  caret-color: #F8FAFC;
+  background-color: #0C121E !important;
+  border-color: #182438 !important;
+  transition: background-color 99999s ease-in-out 0s;
+}
+
+input:-webkit-autofill::first-line {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: #F8FAFC;
+}
+
+/* Also fix Firefox autofill */
+input:autofill {
+  background-color: #0C121E !important;
+  color: #F8FAFC !important;
+}

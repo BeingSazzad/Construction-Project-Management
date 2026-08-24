@@ -1,0 +1,182 @@
+import React, { useState } from 'react';
+import { Project } from '../../types';
+import { Button } from '../common/Button';
+import { X, Building2, MapPin, DollarSign, Calendar, HardHat, FileUp } from 'lucide-react';
+
+interface CreateProjectModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreate: (newProject: Partial<Project>) => void;
+}
+
+export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
+  isOpen,
+  onClose,
+  onCreate
+}) => {
+  const [name, setName] = useState('');
+  const [code, setCode] = useState('NYC-2025-09');
+  const [location, setLocation] = useState('750 Madison Ave');
+  const [cityState, setCityState] = useState('New York, NY');
+  const [budget, setBudget] = useState('5200000');
+  const [pmName, setPmName] = useState('Sarah Johnson');
+  const [startDate, setStartDate] = useState('2025-06-01');
+  const [endDate, setEndDate] = useState('2026-12-15');
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    onCreate({
+      name,
+      code,
+      location,
+      cityState,
+      status: 'Planning',
+      progress: 0,
+      startDate,
+      targetEndDate: endDate,
+      budget: {
+        total: parseFloat(budget) || 5000000,
+        committed: 0,
+        actual: 0,
+        paid: 0,
+        remaining: parseFloat(budget) || 5000000,
+        variance: 0,
+        costToComplete: parseFloat(budget) || 5000000
+      },
+      projectManager: {
+        id: 'usr_pm',
+        name: pmName,
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+      },
+      metrics: {
+        totalTasks: 0,
+        completedTasks: 0,
+        overdueTasks: 0,
+        openPunchItems: 0,
+        totalMilestones: 4,
+        completedMilestones: 0
+      },
+      thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
+      description: `${name} general commercial contracting project.`
+    });
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="card-dark w-full max-w-[390px] bg-[#0E1524] border-cyan-500/40 p-5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-[#1C2A44] mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-extrabold text-white">Create New Project</h3>
+              <p className="text-[10px] text-slate-400">Initialize workspace & budget ledger</p>
+            </div>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-lg bg-[#162033] text-slate-400 hover:text-white flex items-center justify-center"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">
+          <div>
+            <label className="font-bold text-slate-300 mb-1 block">Project Title</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Midtown Medical Center"
+              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="font-bold text-slate-300 mb-1 block">Project Code</label>
+              <input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+            <div>
+              <label className="font-bold text-slate-300 mb-1 block">City, State</label>
+              <input
+                type="text"
+                value={cityState}
+                onChange={(e) => setCityState(e.target.value)}
+                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="font-bold text-slate-300 mb-1 block">Approved Capital Budget ($ USD)</label>
+            <input
+              type="number"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400 font-mono"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="font-bold text-slate-300 mb-1 block">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+            <div>
+              <label className="font-bold text-slate-300 mb-1 block">Target Completion</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="font-bold text-slate-300 mb-1 block">Assigned Project Manager</label>
+            <select
+              value={pmName}
+              onChange={(e) => setPmName(e.target.value)}
+              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+            >
+              <option value="Sarah Johnson">Sarah Johnson (Senior PM)</option>
+              <option value="David Vance">David Vance (Commercial PM)</option>
+              <option value="Elena Rossi">Elena Rossi (Infrastructure Lead)</option>
+            </select>
+          </div>
+
+          <div className="pt-3">
+            <Button
+              type="submit"
+              variant="primary"
+            >
+              Initialize Project Workspace
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
