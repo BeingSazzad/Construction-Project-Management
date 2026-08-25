@@ -1,15 +1,14 @@
 import React from 'react';
 import { UserRole } from '../../types';
 import { 
-  Home, LayoutGrid, CheckSquare, Menu, Plus, 
-  FolderKanban, Layers 
+  Home, FolderKanban, CheckSquare, MoreHorizontal, Plus
 } from 'lucide-react';
 
 interface BottomNavProps {
   currentRole: UserRole;
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onQuickAction: () => void;
+  onQuickAction?: () => void;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -17,71 +16,73 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onTabChange,
   onQuickAction
 }) => {
+  const navItems = [
+    { id: 'home', label: 'Home', icon: Home },
+    { id: 'projects', label: 'Projects', icon: FolderKanban },
+    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { id: 'more', label: 'More', icon: MoreHorizontal }
+  ];
+
   return (
-    <nav className="w-full flex-shrink-0 bg-[#070A12] border-t border-[#121A2A] py-2 px-3 z-40 sticky bottom-0">
-      <div className="flex items-center justify-between max-w-[400px] mx-auto relative">
-        {/* 1. Home */}
-        <button
-          onClick={() => onTabChange('home')}
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all cursor-pointer ${
-            activeTab === 'home' 
-              ? 'text-[#0066FF] font-bold' 
-              : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Home className={`w-5 h-5 transition-transform ${activeTab === 'home' ? 'scale-110' : ''}`} />
-          <span className="text-[10px] mt-1 font-semibold tracking-tight">Home</span>
-        </button>
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#070B14]/95 backdrop-blur-md border-t border-[#141C2E]">
+      <div className="max-w-[430px] mx-auto px-4 py-2 flex items-center justify-between relative">
+        
+        {/* Left 2 Items: Home & Projects */}
+        <div className="flex items-center gap-1 flex-1 justify-around">
+          {navItems.slice(0, 2).map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all cursor-pointer ${
+                  isActive
+                    ? 'text-[#3875F6] font-bold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.75]'}`} />
+                <span className="text-xs mt-1 tracking-tight">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
 
-        {/* 2. Projects */}
-        <button
-          onClick={() => onTabChange('projects')}
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all cursor-pointer ${
-            activeTab === 'projects' 
-              ? 'text-[#0066FF] font-bold' 
-              : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <LayoutGrid className={`w-5 h-5 transition-transform ${activeTab === 'projects' ? 'scale-110' : ''}`} />
-          <span className="text-[10px] mt-1 font-semibold tracking-tight">Projects</span>
-        </button>
+        {/* Center Floating Action Button (+) */}
+        <div className="flex items-center justify-center px-2">
+          <button
+            onClick={onQuickAction}
+            className="w-12 h-12 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center shadow-lg shadow-blue-900/40 hover:scale-105 active:scale-95 transition-all cursor-pointer flex-shrink-0"
+            title="Create New (Project, Task, Log, Punch)"
+          >
+            <Plus className="w-6 h-6 stroke-[2.5]" />
+          </button>
+        </div>
 
-        {/* 3. Center Floating Plus Button */}
-        <button
-          onClick={onQuickAction}
-          className="w-12 h-12 -mt-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white flex items-center justify-center shadow-[0_0_20px_rgba(0,102,255,0.5)] border-2 border-[#070A12] transition-transform hover:scale-110 cursor-pointer flex-shrink-0"
-          title="Quick Add"
-        >
-          <Plus className="w-6 h-6 stroke-[2.5]" />
-        </button>
+        {/* Right 2 Items: Tasks & More */}
+        <div className="flex items-center gap-1 flex-1 justify-around">
+          {navItems.slice(2, 4).map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all cursor-pointer ${
+                  isActive
+                    ? 'text-[#3875F6] font-bold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.75]'}`} />
+                <span className="text-xs mt-1 tracking-tight">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
 
-        {/* 4. Tasks */}
-        <button
-          onClick={() => onTabChange('tasks')}
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all cursor-pointer ${
-            activeTab === 'tasks' 
-              ? 'text-[#0066FF] font-bold' 
-              : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <CheckSquare className={`w-5 h-5 transition-transform ${activeTab === 'tasks' ? 'scale-110' : ''}`} />
-          <span className="text-[10px] mt-1 font-semibold tracking-tight">Tasks</span>
-        </button>
-
-        {/* 5. More */}
-        <button
-          onClick={() => onTabChange('more')}
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all cursor-pointer ${
-            activeTab === 'more' 
-              ? 'text-[#0066FF] font-bold' 
-              : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Menu className={`w-5 h-5 transition-transform ${activeTab === 'more' ? 'scale-110' : ''}`} />
-          <span className="text-[10px] mt-1 font-semibold tracking-tight">More</span>
-        </button>
       </div>
     </nav>
   );
 };
-

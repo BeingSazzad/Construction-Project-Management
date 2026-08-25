@@ -1,7 +1,6 @@
 import React from 'react';
 import { User, Project } from '../../types';
-import { LatticeLogo } from './LatticeLogo';
-import { Search, Bell, ChevronLeft } from 'lucide-react';
+import { Bell, ChevronLeft } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
 
 interface HeaderProps {
@@ -22,7 +21,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenNotifications,
   onOpenSettings
 }) => {
-  // Get initials from user name
   const initials = currentUser?.name
     ? currentUser.name
         .split(' ')
@@ -33,24 +31,24 @@ export const Header: React.FC<HeaderProps> = ({
     : 'AM';
 
   return (
-    <header className="w-full flex-shrink-0 z-40 bg-[#070A12] border-b border-[#121A2A]/80 sticky top-0">
-      <div className="px-5 py-3.5 flex items-center justify-between gap-3 max-w-[420px] mx-auto">
+    <header className="w-full flex-shrink-0 z-40 bg-[#070B14] border-b border-[#141C2E] sticky top-0">
+      <div className="px-5 py-3.5 flex items-center justify-between gap-3 max-w-[430px] mx-auto">
         {activeProject ? (
           // Inside Project Workspace Header
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <button
               onClick={onBackToHome}
-              className="w-8 h-8 rounded-xl bg-[#0E1524] border border-[#1A263B] flex items-center justify-center text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer"
+              className="w-9 h-9 rounded-xl bg-[#0D1424] border border-[#1E2C48] flex items-center justify-center text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer"
               title="Back to Home"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
 
             <div className="flex flex-col min-w-0">
-              <h1 className="text-sm font-bold text-white truncate tracking-tight">
+              <h1 className="text-sm sm:text-base font-bold text-white truncate tracking-tight">
                 {activeProject.name}
               </h1>
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+              <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
                 <span className="truncate">{activeProject.cityState}</span>
                 <span>•</span>
                 <StatusBadge status={activeProject.status} size="xs" />
@@ -58,32 +56,31 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
         ) : (
-          // Top Level Header (Matching Exact Screenshot)
+          // Top Level Dashboard Header
           <>
-            {/* Left Greeting & User Name */}
             <div className="flex flex-col">
-              <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
-                Good morning <span className="text-xs">👋</span>
+              <span className="text-xs font-medium text-slate-400 flex items-center gap-1.5">
+                <span>Good morning</span>
+                <span className="text-xs">👋</span>
               </span>
-              <h1 className="text-base sm:text-lg font-black text-white tracking-tight">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight mt-0.5">
                 {currentUser?.name || 'Alex Morgan'}
               </h1>
             </div>
 
-            {/* Right Notification Bell and Avatar Initials */}
             <div className="flex items-center gap-2.5 flex-shrink-0">
               <button
                 onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-full bg-[#0E1524] border border-[#1A263B] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer relative shadow-sm"
+                className="w-10 h-10 rounded-full bg-[#0D1424] border border-[#1E2C48] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer relative shadow-sm"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4 text-slate-300" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#8B5CF6] ring-2 ring-[#070A12]"></span>
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-[#070B14]"></span>
               </button>
 
               <button
                 onClick={onOpenSettings}
-                className="w-9 h-9 rounded-full bg-[#0066FF] hover:bg-blue-600 text-white font-black text-xs flex items-center justify-center transition-transform hover:scale-105 cursor-pointer shadow-md"
+                className="w-10 h-10 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center justify-center transition-transform hover:scale-105 cursor-pointer shadow-md"
                 title="Profile & Settings"
               >
                 {initials}
@@ -95,4 +92,3 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
-
