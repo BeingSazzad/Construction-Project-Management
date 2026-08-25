@@ -69,29 +69,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
 
         {/* Content Sheet */}
-        <div className="p-4 pt-2 -mt-4 relative z-10 bg-[#0D1424] rounded-t-3xl border-t border-[#1E2C48]">
-          {/* Quick Sub-Navigation Pills */}
-          <div className="flex items-center justify-between gap-1 pb-3.5 border-b border-[#162238] mb-3.5 overflow-x-auto">
-            {[
-              { id: 'overview', label: 'Overview' },
-              { id: 'tasks', label: 'Tasks' },
-              { id: 'daily-logs', label: 'Daily Logs' },
-              { id: 'plangrid', label: 'PlanGrid' },
-              { id: 'messages', label: 'Chat' },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                  tab.id === 'overview'
-                    ? 'bg-[#2563EB] text-white shadow-sm font-bold'
-                    : 'text-slate-400 hover:text-white bg-[#090E1A] border border-[#141F33]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        <div className="p-4 relative z-10 bg-[#0D1424] rounded-t-3xl border-t border-[#1E2C48]">
 
           {/* Progress & Budget Line */}
           <div className="flex items-center justify-between gap-4">
