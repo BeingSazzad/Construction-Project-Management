@@ -89,7 +89,7 @@ export const OpportunitiesView: React.FC = () => {
     { name: 'Discovery', color: 'bg-blue-400' },
     { name: 'Plans Received', color: 'bg-teal-400' },
     { name: 'Estimating', color: 'bg-teal-400' },
-    { name: 'Proposal Sent', color: 'bg-teal-400' },
+    { name: 'Proposal Sent', color: 'bg-blue-500' },
     { name: 'Under Contract', color: 'bg-purple-400' },
     { name: 'Won', color: 'bg-emerald-400' }
   ];
@@ -135,60 +135,57 @@ export const OpportunitiesView: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-24 font-sans text-slate-100">
+    <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-teal-400 ring-4 ring-teal-400/20" />
-            <h1 className="text-lg font-black text-white tracking-tight">Opportunities</h1>
-          </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <h1 className="text-base font-bold text-white tracking-tight">Deal Pipeline</h1>
+          <p className="text-[11px] text-slate-400 mt-0.5">
             Track leads from first contact to won project
           </p>
         </div>
 
         <button
           onClick={() => setIsNewOppModalOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#00D2B4] hover:bg-[#00baa0] text-slate-950 text-xs font-black transition-all shadow-md cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>New Opportunity</span>
+          <span>New Deal</span>
         </button>
       </div>
 
-      {/* 4 Top KPI Cards (Matching Screenshot 3) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        <div className="bg-[#0C121F] p-3 rounded-2xl border border-[#182438] shadow-sm">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Pipeline Value</span>
-          <div className="text-base sm:text-lg font-black text-white mt-1">
+      {/* 4 Top KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
+          <span className="text-[10px] uppercase font-bold text-slate-400 block">Pipeline Value</span>
+          <div className="text-sm font-bold text-white mt-1">
             ${totalPipeline.toLocaleString()}
           </div>
         </div>
 
-        <div className="bg-[#0C121F] p-3 rounded-2xl border border-[#182438] shadow-sm">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Won Value</span>
-          <div className="text-base sm:text-lg font-black text-[#00D2B4] mt-1">
+        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
+          <span className="text-[10px] uppercase font-bold text-slate-400 block">Won Value</span>
+          <div className="text-sm font-bold text-emerald-400 mt-1">
             ${wonValue.toLocaleString()}
           </div>
         </div>
 
-        <div className="bg-[#0C121F] p-3 rounded-2xl border border-[#182438] shadow-sm">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Active Opportunities</span>
-          <div className="text-base sm:text-lg font-black text-white mt-1">
+        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
+          <span className="text-[10px] uppercase font-bold text-slate-400 block">Active Deals</span>
+          <div className="text-sm font-bold text-white mt-1">
             {activeCount}
           </div>
         </div>
 
-        <div className="bg-[#0C121F] p-3 rounded-2xl border border-[#182438] shadow-sm">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Conversion Rate</span>
-          <div className="text-base sm:text-lg font-black text-white mt-1">
+        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
+          <span className="text-[10px] uppercase font-bold text-slate-400 block">Win Rate</span>
+          <div className="text-sm font-bold text-blue-400 mt-1">
             20%
           </div>
         </div>
       </div>
 
-      {/* Pipeline Stages Accordion List (Matching Screenshot 3) */}
+      {/* Pipeline Stages Accordion List */}
       <div className="flex flex-col gap-2">
         {STAGES.map((stage) => {
           const stageOpps = opportunities.filter(o => o.stage === stage.name);
@@ -198,65 +195,64 @@ export const OpportunitiesView: React.FC = () => {
           return (
             <div 
               key={stage.name}
-              className="bg-[#0A0E17] border border-[#162033] rounded-2xl overflow-hidden transition-all shadow-sm"
+              className="bg-[#0B101D] border border-[#141C2E] rounded-2xl overflow-hidden shadow-sm"
             >
               {/* Stage Header Row */}
               <button
                 onClick={() => toggleStage(stage.name)}
-                className="w-full px-4 py-3 flex items-center justify-between hover:bg-[#0F1726] transition-colors cursor-pointer text-left"
+                className="w-full px-3.5 py-2.5 flex items-center justify-between hover:bg-[#0E1526] transition-colors cursor-pointer text-left"
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full ${stage.color}`} />
-                  <span className="text-xs font-bold text-slate-200">{stage.name}</span>
-                  <span className="text-[11px] font-semibold text-slate-500">
+                  <span className="text-xs font-semibold text-slate-200">{stage.name}</span>
+                  <span className="text-[10px] font-medium text-slate-500">
                     ${stageTotal.toLocaleString()}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-slate-400 font-medium">
+                  <span className="text-[10px] text-slate-400 font-medium">
                     {stageOpps.length}
                   </span>
-                  <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                 </div>
               </button>
 
               {/* Stage Content */}
               {isExpanded && (
-                <div className="px-3 pb-3 pt-1 border-t border-[#141E2F] flex flex-col gap-2">
+                <div className="px-2.5 pb-2.5 pt-0.5 border-t border-[#121A2B] flex flex-col gap-2 bg-[#080D18]">
                   {stageOpps.length === 0 ? (
-                    <div className="py-4 text-center text-slate-600 text-xs italic">
+                    <div className="py-3 text-center text-slate-500 text-xs italic">
                       No opportunities
                     </div>
                   ) : (
                     stageOpps.map((opp) => (
                       <div 
                         key={opp.id}
-                        className="bg-[#0E1524] border border-[#1A2840] rounded-xl p-3.5 flex flex-col gap-2 hover:border-teal-500/40 transition-colors shadow-sm"
+                        className="bg-[#0B101D] border border-[#162035] rounded-xl p-3 flex flex-col gap-1.5 hover:border-blue-500/40 transition-colors shadow-sm"
                       >
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="text-xs font-bold text-white">{opp.title}</h3>
-                            <div className="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5">
-                              <span>👤 {opp.client}</span>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="text-xs font-bold text-white truncate">{opp.title}</h3>
+                            <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                              👤 {opp.client}
                             </div>
-                            <div className="flex items-center gap-1 text-[10px] text-slate-500 mt-0.5">
+                            <div className="flex items-center gap-1 text-[10px] text-slate-500 mt-0.5 truncate">
                               <MapPin className="w-3 h-3 text-slate-500 flex-shrink-0" />
                               <span className="truncate">{opp.address}</span>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1 bg-[#080D18] border border-[#1A2840] px-2 py-1 rounded-lg">
-                            <span className="text-[10px] text-slate-300 font-semibold">{opp.stage}</span>
-                            <ChevronDown className="w-3 h-3 text-slate-500" />
-                          </div>
+                          <span className="text-[9px] font-semibold bg-[#121B2D] text-slate-300 px-2 py-0.5 rounded border border-[#1A263D]">
+                            {opp.stage}
+                          </span>
                         </div>
 
-                        <div className="flex items-center justify-between pt-2 border-t border-[#141E2F] text-xs">
-                          <span className="font-extrabold text-white">
+                        <div className="flex items-center justify-between pt-1.5 border-t border-[#121A2B] text-xs">
+                          <span className="font-bold text-white">
                             ${opp.value.toLocaleString()}
                           </span>
-                          <span className="text-[11px] font-semibold text-slate-400">
+                          <span className="text-[10px] font-semibold text-slate-400">
                             {opp.probability}% prob
                           </span>
                         </div>
@@ -273,38 +269,35 @@ export const OpportunitiesView: React.FC = () => {
       {/* New Opportunity Modal */}
       {isNewOppModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <form onSubmit={handleCreateOpportunity} className="card-dark w-full max-w-md bg-[#0C121E] border border-teal-500/40 rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5">
-            <div className="flex items-center justify-between border-b border-[#182438] pb-2.5">
-              <div className="flex items-center gap-2">
-                <Plus className="w-4 h-4 text-teal-400" />
-                <h3 className="text-sm font-extrabold text-white">Create New Opportunity</h3>
-              </div>
+          <form onSubmit={handleCreateOpportunity} className="w-full max-w-sm bg-[#0C121E] border border-[#1A263B] rounded-3xl p-5 shadow-2xl flex flex-col gap-3">
+            <div className="flex items-center justify-between border-b border-[#162033] pb-2.5">
+              <h3 className="text-sm font-bold text-white">Create New Deal</h3>
               <button type="button" onClick={() => setIsNewOppModalOpen(false)} className="text-slate-400 hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project / Deal Title *</label>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Deal / Project Name *</label>
               <input
                 type="text"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
                 placeholder="e.g. Greenwood Estate New Build"
                 required
-                className="w-full bg-[#080D18] border border-[#1E293B] rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-teal-400"
+                className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Client Name</label>
                 <input
                   type="text"
                   value={newClient}
                   onChange={(e) => setNewClient(e.target.value)}
-                  placeholder="e.g. Anderson Trust"
-                  className="w-full bg-[#080D18] border border-[#1E293B] rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-teal-400"
+                  placeholder="Anderson Trust"
+                  className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
                 />
               </div>
               <div>
@@ -314,19 +307,19 @@ export const OpportunitiesView: React.FC = () => {
                   value={newValue}
                   onChange={(e) => setNewValue(e.target.value)}
                   placeholder="2400000"
-                  className="w-full bg-[#080D18] border border-[#1E293B] rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-teal-400"
+                  className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Property Location / Address</label>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Property Location</label>
               <input
                 type="text"
                 value={newAddress}
                 onChange={(e) => setNewAddress(e.target.value)}
-                placeholder="e.g. 5 Willow Lane, Greenwood Village, CO"
-                className="w-full bg-[#080D18] border border-[#1E293B] rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-teal-400"
+                placeholder="5 Willow Lane, Denver, CO"
+                className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
               />
             </div>
 
@@ -335,7 +328,7 @@ export const OpportunitiesView: React.FC = () => {
               <select
                 value={newStage}
                 onChange={(e) => setNewStage(e.target.value as any)}
-                className="w-full bg-[#080D18] border border-[#1E293B] rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-teal-400"
+                className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400 cursor-pointer"
               >
                 {STAGES.map(s => (
                   <option key={s.name} value={s.name}>{s.name}</option>
@@ -343,19 +336,19 @@ export const OpportunitiesView: React.FC = () => {
               </select>
             </div>
 
-            <div className="flex items-center gap-2 pt-2 border-t border-[#182438]">
+            <div className="flex items-center gap-2 pt-2 border-t border-[#162033]">
               <button
                 type="button"
                 onClick={() => setIsNewOppModalOpen(false)}
-                className="flex-1 py-2 rounded-xl bg-[#141E2F] text-slate-300 text-xs font-semibold hover:bg-slate-800"
+                className="flex-1 py-2 rounded-xl bg-[#121B2D] text-slate-300 text-xs font-semibold hover:bg-slate-800"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2 rounded-xl bg-[#00D2B4] hover:bg-[#00baa0] text-slate-950 text-xs font-black shadow"
+                className="flex-1 py-2 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white text-xs font-bold shadow-sm"
               >
-                Save Opportunity
+                Save Deal
               </button>
             </div>
           </form>
