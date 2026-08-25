@@ -465,6 +465,7 @@ export function App() {
                   <SettingsView
                     currentUser={currentUser}
                     onSignOut={() => handleOpenAuth('signin')}
+                    onNavigateTab={(tab) => setActiveTab(tab)}
                   />
                 )}
               </>
