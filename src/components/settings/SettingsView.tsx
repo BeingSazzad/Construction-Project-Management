@@ -9,7 +9,7 @@ import {
 import { TermsAndConditions } from '../legal/TermsAndConditions';
 import { PrivacyPolicy } from '../legal/PrivacyPolicy';
 import { HelpSupport } from './HelpSupport';
-import { EditProfileModal } from './EditProfileModal';
+import { EditProfileView } from './EditProfileView';
 
 export interface SettingsViewProps {
   currentUser: User;
@@ -23,8 +23,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onNavigateTab
 }) => {
   const [userData, setUserData] = useState<User>(currentUser);
-  const [subView, setSubView] = useState<'main' | 'terms' | 'privacy' | 'support'>('main');
-  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [subView, setSubView] = useState<'main' | 'terms' | 'privacy' | 'support' | 'profile'>('main');
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -34,6 +33,18 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // Clean Toggles
   const [pushEnabled, setPushEnabled] = useState(true);
   const [offlineCache, setOfflineCache] = useState(true);
+
+  if (subView === 'profile') {
+    return (
+      <EditProfileView
+        currentUser={userData}
+        onBack={() => setSubView('main')}
+        onSave={(updated) => {
+          setUserData(prev => ({ ...prev, ...updated }));
+        }}
+      />
+    );
+  }
 
   if (subView === 'terms') {
     return <TermsAndConditions onBack={() => setSubView('main')} />;
@@ -46,10 +57,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   if (subView === 'support') {
     return <HelpSupport onBack={() => setSubView('main')} />;
   }
-
-  const handleUpdateProfile = (updated: Partial<User>) => {
-    setUserData(prev => ({ ...prev, ...updated }));
-  };
 
   const handleSavePassword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,8 +72,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
-      {/* 1. Profile Card */}
-      <div className="p-4 bg-[#0D1424] border border-[#1A263E] rounded-3xl shadow-sm flex items-center justify-between gap-3">
+      {/* 1. Profile Card (Clickable to open in-page Profile View) */}
+      <div 
+        onClick={() => setSubView('profile')}
+        className="p-4 bg-[#0D1424] border border-[#1A263E] hover:border-blue-500/40 transition-all rounded-3xl shadow-sm flex items-center justify-between gap-3 cursor-pointer group"
+      >
         <div className="flex items-center gap-3.5 min-w-0">
           <div className="relative flex-shrink-0">
             <img
@@ -79,7 +89,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm sm:text-base font-bold text-white truncate">{userData.name}</h2>
+              <h2 className="text-sm sm:text-base font-bold text-white truncate group-hover:text-[#3875F6] transition-colors">{userData.name}</h2>
               <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
                 {userData.roleTitle.split(' ')[0]}
               </span>
@@ -90,7 +100,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
 
         <button
-          onClick={() => setIsEditProfileOpen(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSubView('profile');
+          }}
           className="h-10 px-3.5 rounded-xl bg-[#141F33] hover:bg-[#1C2C47] text-slate-200 hover:text-white border border-[#1E2C48] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer flex-shrink-0"
         >
           <Edit3 className="w-3.5 h-3.5" />
@@ -287,14 +300,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <LogOut className="w-4 h-4" />
         <span>Sign Out</span>
       </button>
-
-      {/* EDIT PROFILE MODAL */}
-      <EditProfileModal
-        isOpen={isEditProfileOpen}
-        currentUser={userData}
-        onClose={() => setIsEditProfileOpen(false)}
-        onSave={handleUpdateProfile}
-      />
 
       {/* CHANGE PASSWORD MODAL */}
       {showPasswordModal && (
