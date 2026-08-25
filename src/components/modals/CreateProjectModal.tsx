@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Project } from '../../types';
-import { Button } from '../common/Button';
-import { X, Building2, MapPin, DollarSign, Calendar, HardHat, FileUp } from 'lucide-react';
+import { X, Building2 } from 'lucide-react';
 
 interface CreateProjectModalProps {
   isOpen: boolean;
@@ -67,99 +66,99 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="card-dark w-full max-w-[390px] bg-[#0E1524] border-cyan-500/40 p-5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[420px] bg-[#0C121E] border border-[#1A263E] rounded-3xl p-5 max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-slate-100">
         {/* Modal Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#1C2A44] mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center">
+        <div className="flex items-center justify-between pb-3.5 border-b border-[#162033] mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
               <Building2 className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-extrabold text-white">Create New Project</h3>
-              <p className="text-[10px] text-slate-400">Initialize workspace & budget ledger</p>
+              <h3 className="text-base font-bold text-white tracking-tight">Create New Project</h3>
+              <p className="text-xs text-slate-400 font-medium">Initialize workspace & budget ledger</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-[#162033] text-slate-400 hover:text-white flex items-center justify-center"
+            className="w-8 h-8 rounded-full bg-[#141F33] hover:bg-[#1C2C47] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-slate-100">
           <div>
-            <label className="font-bold text-slate-300 mb-1 block">Project Title</label>
+            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Project Title *</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Midtown Medical Center"
-              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+              className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#2563EB] transition-colors"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Project Code</label>
+              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Project Code</label>
               <input
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-[#2563EB] transition-colors"
               />
             </div>
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">City, State</label>
+              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">City, State</label>
               <input
                 type="text"
                 value={cityState}
                 onChange={(e) => setCityState(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-[#2563EB] transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="font-bold text-slate-300 mb-1 block">Approved Capital Budget ($ USD)</label>
+            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Approved Capital Budget ($ USD)</label>
             <input
               type="number"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
-              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400 font-mono"
+              className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-[#2563EB] font-mono transition-colors"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Start Date</label>
+              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Start Date</label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-[#2563EB] transition-colors"
               />
             </div>
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Target Completion</label>
+              <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Target Completion</label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-[#2563EB] transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="font-bold text-slate-300 mb-1 block">Assigned Project Manager</label>
+            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Assigned Project Manager</label>
             <select
               value={pmName}
               onChange={(e) => setPmName(e.target.value)}
-              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+              className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-[#2563EB] transition-colors cursor-pointer"
             >
               <option value="Sarah Johnson">Sarah Johnson (Senior PM)</option>
               <option value="David Vance">David Vance (Commercial PM)</option>
@@ -167,13 +166,20 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </select>
           </div>
 
-          <div className="pt-3">
-            <Button
-              type="submit"
-              variant="primary"
+          <div className="pt-2 flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 h-12 rounded-xl bg-[#141F33] hover:bg-[#1A2842] text-slate-300 font-semibold text-sm cursor-pointer transition-colors"
             >
-              Initialize Project Workspace
-            </Button>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 h-12 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-sm cursor-pointer transition-all shadow-md"
+            >
+              Initialize Project
+            </button>
           </div>
         </form>
       </div>
