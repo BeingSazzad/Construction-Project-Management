@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { 
   UserRole, Project, Task, GanttItem, TradeCategory, 
-  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, NotificationItem, TaskStatus, PunchStatus 
+  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
+  NotificationItem, TaskStatus, PunchStatus, DailyLogItem, PlanGridPin, ProjectChatMessage 
 } from './types';
 import { 
   CURRENT_USERS, MOCK_PROJECTS, MOCK_TASKS, MOCK_GANTT, 
   MOCK_BUDGET_CATEGORIES, MOCK_PUNCH_ITEMS, MOCK_SUBCONTRACTORS, 
-  MOCK_PHOTOS, MOCK_DOCUMENTS, MOCK_REPORTS, MOCK_NOTIFICATIONS 
+  MOCK_PHOTOS, MOCK_DOCUMENTS, MOCK_REPORTS, MOCK_NOTIFICATIONS,
+  MOCK_DAILY_LOGS, MOCK_PLAN_PINS, MOCK_PROJECT_CHATS 
 } from './data/mockData';
 
 // Common Components
@@ -31,6 +33,10 @@ import { ProjectTasksTab } from './components/project/ProjectTasksTab';
 import { ProjectScheduleTab } from './components/project/ProjectScheduleTab';
 import { ProjectBudgetTab } from './components/project/ProjectBudgetTab';
 import { ProjectReportsTab } from './components/project/ProjectReportsTab';
+
+// Opportunities & Budgets Hub (Matching User Screenshots)
+import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
+import { BudgetsHubView } from './components/budgets/BudgetsHubView';
 
 // AI
 import { LattiAssistant } from './components/ai/LattiAssistant';
@@ -67,6 +73,9 @@ export function App() {
   const [documents, setDocuments] = useState<DocumentItem[]>(MOCK_DOCUMENTS);
   const [reports, setReports] = useState<ReportItem[]>(MOCK_REPORTS);
   const [notifications, setNotifications] = useState<NotificationItem[]>(MOCK_NOTIFICATIONS);
+  const [dailyLogs, setDailyLogs] = useState<DailyLogItem[]>(MOCK_DAILY_LOGS);
+  const [planPins, setPlanPins] = useState<PlanGridPin[]>(MOCK_PLAN_PINS);
+  const [chatMessages, setChatMessages] = useState<ProjectChatMessage[]>(MOCK_PROJECT_CHATS);
 
   // Modals state
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
@@ -246,6 +255,22 @@ export function App() {
     setPunchItems(prev => prev.map(p => p.id === punchId ? { ...p, status } : p));
   };
 
+  const handleAddDailyLog = (newLog: DailyLogItem) => {
+    setDailyLogs(prev => [newLog, ...prev]);
+  };
+
+  const handleAddPlanPin = (newPin: PlanGridPin) => {
+    setPlanPins(prev => [newPin, ...prev]);
+  };
+
+  const handleUpdatePinStatus = (pinId: string, status: 'open' | 'in-progress' | 'resolved') => {
+    setPlanPins(prev => prev.map(p => p.id === pinId ? { ...p, status } : p));
+  };
+
+  const handleSendMessage = (newMsg: ProjectChatMessage) => {
+    setChatMessages(prev => [...prev, newMsg]);
+  };
+
   const handleOpenQuickAction = () => {
     if (currentRole === 'admin') {
       setIsCreateProjectOpen(true);
@@ -307,6 +332,7 @@ export function App() {
               <ProjectWorkspace
                 project={activeProject}
                 currentRole={currentRole}
+                currentUser={currentUser}
                 tasks={tasks}
                 ganttItems={ganttItems}
                 categories={categories}
@@ -315,6 +341,9 @@ export function App() {
                 photos={photos}
                 documents={documents}
                 reports={reports}
+                dailyLogs={dailyLogs}
+                planPins={planPins}
+                chatMessages={chatMessages}
                 onOpenTask={(t) => setSelectedTask(t)}
                 onCreateTask={() => setIsCreateTaskOpen(true)}
                 onOpenPunch={(p) => setSelectedTask(null)}
@@ -326,6 +355,10 @@ export function App() {
                 onUploadDocument={() => alert("Document upload modal")}
                 onPreviewDocument={(d) => setSelectedDocument(d)}
                 onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
+                onAddDailyLog={handleAddDailyLog}
+                onAddPlanPin={handleAddPlanPin}
+                onUpdatePinStatus={handleUpdatePinStatus}
+                onSendMessage={handleSendMessage}
               />
             ) : (
               /* Top Level Dashboard Tabs */
@@ -373,13 +406,19 @@ export function App() {
                         onOpenTask={(t) => setSelectedTask(t)}
                         onUpdateTaskStatus={handleUpdateTaskStatus}
                         onTriggerPhotoUpload={() => setIsPhotoUploadOpen(true)}
-                        onViewDrawings={() => setActiveTab('documents')}
+                        onViewDrawings={() => setActiveProject(projects[0])}
+                        onOpenDailyLogs={() => setActiveProject(projects[0])}
                       />
                     )}
                   </>
                 )}
 
-                {/* 2. PROJECTS LIST TAB */}
+                {/* 2. OPPORTUNITIES / DEALS TAB (Matching Screenshot 3) */}
+                {activeTab === 'opportunities' && (
+                  <OpportunitiesView />
+                )}
+
+                {/* 3. PROJECTS LIST TAB */}
                 {activeTab === 'projects' && (
                   <ProjectsList
                     projects={projects}
@@ -388,7 +427,12 @@ export function App() {
                   />
                 )}
 
-                {/* 3. TASKS TAB */}
+                {/* 4. BUDGETS HUB TAB (Matching Screenshot 5, 4, 1, 2, 3) */}
+                {activeTab === 'budgets' && (
+                  <BudgetsHubView />
+                )}
+
+                {/* 5. TASKS TAB */}
                 {activeTab === 'tasks' && (
                   <div className="px-5 pt-3 pb-24">
                     <ProjectTasksTab

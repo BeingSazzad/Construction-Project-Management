@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   Project, UserRole, Task, GanttItem, TradeCategory, 
-  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, PunchStatus, TaskStatus 
+  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
+  PunchStatus, TaskStatus, DailyLogItem, PlanGridPin, ProjectChatMessage, User 
 } from '../../types';
 import { ProjectOverviewTab } from './ProjectOverviewTab';
 import { ProjectBudgetTab } from './ProjectBudgetTab';
@@ -13,15 +14,20 @@ import { ProjectDocumentsTab } from './ProjectDocumentsTab';
 import { ProjectSubcontractorsTab } from './ProjectSubcontractorsTab';
 import { ProjectTeamTab } from './ProjectTeamTab';
 import { ProjectReportsTab } from './ProjectReportsTab';
+import { ProjectDailyLogsTab } from './ProjectDailyLogsTab';
+import { ProjectPlanGridTab } from './ProjectPlanGridTab';
+import { ProjectMessagesTab } from './ProjectMessagesTab';
 import { LattiAssistant } from '../ai/LattiAssistant';
 import { 
   Layers, DollarSign, CheckSquare, CalendarDays, 
-  AlertCircle, Camera, FileText, Users, Users2, BarChart3, Sparkles 
+  AlertCircle, Camera, FileText, Users, Users2, 
+  BarChart3, Sparkles, MapPin, Calendar, MessageSquare 
 } from 'lucide-react';
 
 interface ProjectWorkspaceProps {
   project: Project;
   currentRole: UserRole;
+  currentUser: User;
   tasks: Task[];
   ganttItems: GanttItem[];
   categories: TradeCategory[];
@@ -30,6 +36,9 @@ interface ProjectWorkspaceProps {
   photos: SitePhoto[];
   documents: DocumentItem[];
   reports: ReportItem[];
+  dailyLogs: DailyLogItem[];
+  planPins: PlanGridPin[];
+  chatMessages: ProjectChatMessage[];
   onOpenTask: (task: Task) => void;
   onCreateTask: () => void;
   onOpenPunch: (item: PunchItem) => void;
@@ -41,11 +50,16 @@ interface ProjectWorkspaceProps {
   onUploadDocument: () => void;
   onPreviewDocument: (doc: DocumentItem) => void;
   onExportReport: (report: ReportItem) => void;
+  onAddDailyLog?: (log: DailyLogItem) => void;
+  onAddPlanPin?: (pin: PlanGridPin) => void;
+  onUpdatePinStatus?: (pinId: string, status: 'open' | 'in-progress' | 'resolved') => void;
+  onSendMessage?: (msg: ProjectChatMessage) => void;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   project,
   currentRole,
+  currentUser,
   tasks,
   ganttItems,
   categories,
@@ -54,6 +68,9 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   photos,
   documents,
   reports,
+  dailyLogs,
+  planPins,
+  chatMessages,
   onOpenTask,
   onCreateTask,
   onOpenPunch,
@@ -64,7 +81,11 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onPreviewPhoto,
   onUploadDocument,
   onPreviewDocument,
-  onExportReport
+  onExportReport,
+  onAddDailyLog,
+  onAddPlanPin,
+  onUpdatePinStatus,
+  onSendMessage
 }) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
@@ -72,8 +93,11 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
     { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { id: 'daily-logs', label: 'Daily Logs', icon: Calendar },
+    { id: 'plangrid', label: 'PlanGrid Blueprints', icon: MapPin },
     { id: 'schedule', label: 'Schedule', icon: CalendarDays },
     { id: 'punch', label: 'Punch List', icon: AlertCircle },
+    { id: 'messages', label: 'Messages', icon: MessageSquare },
     { id: 'team', label: 'Team & Notes', icon: Users2 },
     { id: 'subcontractors', label: 'Subcontractors', icon: Users, hideFor: ['field'] },
     { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
@@ -111,7 +135,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
         </div>
       </div>
 
-      {/* Main Tab Content - 20px padding left/right */}
+      {/* Main Tab Content */}
       <div className="px-5 pt-3 flex-1">
         {activeTab === 'overview' && (
           <ProjectOverviewTab
@@ -124,6 +148,32 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onOpenTask={onOpenTask}
             onOpenPunch={onOpenPunch}
             onOpenLatti={() => setActiveTab('latti')}
+          />
+        )}
+
+        {activeTab === 'daily-logs' && (
+          <ProjectDailyLogsTab
+            project={project}
+            dailyLogs={dailyLogs}
+            onAddDailyLog={onAddDailyLog}
+          />
+        )}
+
+        {activeTab === 'plangrid' && (
+          <ProjectPlanGridTab
+            project={project}
+            pins={planPins}
+            onAddPin={onAddPlanPin}
+            onUpdatePinStatus={onUpdatePinStatus}
+          />
+        )}
+
+        {activeTab === 'messages' && (
+          <ProjectMessagesTab
+            project={project}
+            messages={chatMessages}
+            currentUser={currentUser}
+            onSendMessage={onSendMessage}
           />
         )}
 

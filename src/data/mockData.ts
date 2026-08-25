@@ -1,6 +1,7 @@
 import { 
   User, Project, Task, GanttItem, TradeCategory, 
-  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, NotificationItem 
+  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, NotificationItem,
+  DailyLogItem, PlanGridPin, FinancingDraw, LienWaiver, OpportunityDeal, ProjectChatMessage 
 } from '../types';
 
 export const CURRENT_USERS: Record<string, User> = {
@@ -899,3 +900,346 @@ export const MOCK_NOTIFICATIONS: NotificationItem[] = [
     targetView: 'punch'
   }
 ];
+
+export const MOCK_DAILY_LOGS: DailyLogItem[] = [
+  {
+    id: 'log-1',
+    projectId: 'proj-1',
+    projectName: 'Riverside Office Complex',
+    date: '2025-05-20',
+    weather: {
+      condition: 'Sunny',
+      temperature: '74°F / 23°C',
+      windSpeed: '6 mph WSW',
+      precipitation: '0%',
+      siteCondition: 'Dry'
+    },
+    totalHeadcount: 24,
+    crews: [
+      {
+        trade: 'Concrete & Masonry',
+        subcontractor: 'Apex Concrete & Foundations',
+        workersCount: 8,
+        hoursWorked: 8,
+        notes: 'Prepped and poured shear wall section SW-4. Rebar layout verified.'
+      },
+      {
+        trade: 'Electrical',
+        subcontractor: 'Prime Electrical Solutions',
+        workersCount: 6,
+        hoursWorked: 7.5,
+        notes: 'Rough-in conduits on Level 8 east wing corridor.'
+      },
+      {
+        trade: 'Mechanical / HVAC',
+        subcontractor: 'Vortex Mechanical HVAC',
+        workersCount: 6,
+        hoursWorked: 8,
+        notes: 'Chilled water riser piping installation in primary service shaft.'
+      },
+      {
+        trade: 'Site Supervision & Safety',
+        subcontractor: 'Avery & Marsh Field Team',
+        workersCount: 4,
+        hoursWorked: 8.5,
+        notes: 'Morning toolbox safety talk conducted. PPE audits 100% compliant.'
+      }
+    ],
+    workSummary: 'Productive day on site. Concrete shear wall pour completed on schedule. Electrical rough-in advancing through Level 8 ahead of drywall staging.',
+    materialsReceived: [
+      '3 truckloads ready-mix 5000 PSI concrete (Apex)',
+      '1,200 ft 3/4" EMT conduit + junction fittings (Prime Electrical)',
+      '8 sections 6" schedule 40 chilled water pipe'
+    ],
+    safetyIncidents: 'Zero incidents or near-misses. Morning safety meeting focused on fall arrest systems.',
+    safetyPassed: true,
+    author: 'John Smith (Lead Superintendent)',
+    photos: [
+      'https://images.unsplash.com/photo-1541888946425-d0fbb18f15f0?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80'
+    ]
+  },
+  {
+    id: 'log-2',
+    projectId: 'proj-1',
+    projectName: 'Riverside Office Complex',
+    date: '2025-05-19',
+    weather: {
+      condition: 'Partly Cloudy',
+      temperature: '68°F / 20°C',
+      windSpeed: '11 mph NW',
+      precipitation: '10%',
+      siteCondition: 'Normal'
+    },
+    totalHeadcount: 22,
+    crews: [
+      {
+        trade: 'Structural Framing',
+        subcontractor: 'Titan Steel Erectors',
+        workersCount: 7,
+        hoursWorked: 8,
+        notes: 'Torqued high-strength bolts on Level 12 deck perimeter framing.'
+      },
+      {
+        trade: 'Plumbing',
+        subcontractor: 'AquaFlow Commercial Plumbing',
+        workersCount: 5,
+        hoursWorked: 8,
+        notes: 'Cast iron drain waste vent rough-in on Level 7 restrooms.'
+      },
+      {
+        trade: 'Electrical',
+        subcontractor: 'Prime Electrical Solutions',
+        workersCount: 6,
+        hoursWorked: 8,
+        notes: 'Pulled home-run feeder cables from basement sub-station.'
+      },
+      {
+        trade: 'Site Supervision',
+        subcontractor: 'Avery & Marsh Field Team',
+        workersCount: 4,
+        hoursWorked: 8,
+        notes: 'Delivery coordination and crane pick perimeter barricading.'
+      }
+    ],
+    workSummary: 'Steel bolting inspection completed by third-party engineering firm. City plumbing inspector performed rough inspection on Level 6 (passed with zero citations).',
+    materialsReceived: [
+      '2 reels 500kcmil copper feeder cable',
+      '50 bundles 3" cast iron no-hub pipe'
+    ],
+    safetyIncidents: 'No safety incidents recorded.',
+    safetyPassed: true,
+    author: 'John Smith (Lead Superintendent)'
+  }
+];
+
+export const MOCK_PLAN_PINS: PlanGridPin[] = [
+  {
+    id: 'pin-1',
+    projectId: 'proj-1',
+    title: 'Drywall crack near doorframe',
+    xPercent: 34,
+    yPercent: 42,
+    type: 'punch',
+    status: 'open',
+    assigneeName: 'Marcus Miller (Titan Drywall)',
+    roomOrArea: 'Level 8 - Suite 802 Main Entry',
+    description: '1/8" hairline crack in taped joint above header beam. Needs tape re-bedding and skim coat.',
+    createdDate: '2025-05-19'
+  },
+  {
+    id: 'pin-2',
+    projectId: 'proj-1',
+    title: 'Rough-in Conduit Inspection Point',
+    xPercent: 62,
+    yPercent: 28,
+    type: 'inspection',
+    status: 'in-progress',
+    assigneeName: 'Prime Electrical Solutions',
+    roomOrArea: 'Level 8 - Server / Telecom Room',
+    description: 'Fire barrier penetration sleeve seal and grounding bus bar verification.',
+    createdDate: '2025-05-18'
+  },
+  {
+    id: 'pin-3',
+    projectId: 'proj-1',
+    title: 'HVAC Damper Actuator Mounted',
+    xPercent: 78,
+    yPercent: 65,
+    type: 'photo',
+    status: 'resolved',
+    assigneeName: 'Vortex Mechanical HVAC',
+    roomOrArea: 'Level 8 - East Mechanical Chase',
+    description: 'Installed Honeywell modulating volume damper actuator. Photo verification logged.',
+    photoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
+    createdDate: '2025-05-17'
+  },
+  {
+    id: 'pin-4',
+    projectId: 'proj-1',
+    title: 'Sprinkler Head Clearance Alert',
+    xPercent: 21,
+    yPercent: 75,
+    type: 'punch',
+    status: 'open',
+    assigneeName: 'AquaFlow Commercial Plumbing',
+    roomOrArea: 'Level 8 - North Restroom Core',
+    description: 'Pendant sprinkler head is 2 inches too close to supply air diffuser blade.',
+    createdDate: '2025-05-20'
+  }
+];
+
+export const MOCK_FINANCING_DRAWS: FinancingDraw[] = [
+  {
+    id: 'draw-1',
+    projectId: 'proj-1',
+    drawNumber: 4,
+    milestoneTitle: 'Level 8-10 Rough-in & Curtain Wall Phase 1',
+    requestedAmount: 580000,
+    approvedAmount: 580000,
+    fundedAmount: 580000,
+    status: 'Approved & Funded',
+    requestDate: '2025-04-28',
+    fundingDate: '2025-05-04',
+    lenderName: 'JPMorgan Chase Commercial Real Estate',
+    inspectorName: 'David Vance, PE (Bank Independent Inspector)',
+    inspectionPassed: true
+  },
+  {
+    id: 'draw-2',
+    projectId: 'proj-1',
+    drawNumber: 5,
+    milestoneTitle: 'Level 11-12 Structural Deck & Mechanical Risers',
+    requestedAmount: 640000,
+    approvedAmount: 640000,
+    fundedAmount: 0,
+    status: 'In Lender Review',
+    requestDate: '2025-05-18',
+    lenderName: 'JPMorgan Chase Commercial Real Estate',
+    inspectorName: 'David Vance, PE',
+    inspectionPassed: true
+  },
+  {
+    id: 'draw-3',
+    projectId: 'proj-1',
+    drawNumber: 6,
+    milestoneTitle: 'Interior Drywall Framing & Elevator Core Staging',
+    requestedAmount: 490000,
+    approvedAmount: 0,
+    fundedAmount: 0,
+    status: 'Inspection Scheduled',
+    requestDate: '2025-05-25',
+    lenderName: 'JPMorgan Chase Commercial Real Estate'
+  }
+];
+
+export const MOCK_LIEN_WAIVERS: LienWaiver[] = [
+  {
+    id: 'lien-1',
+    projectId: 'proj-1',
+    subcontractorName: 'Apex Concrete & Foundations',
+    trade: 'Concrete & Foundation',
+    amount: 145000,
+    type: 'Progress Unconditional',
+    status: 'Signed & Active',
+    invoiceRef: 'INV-ACF-2025-08',
+    dateSubmitted: '2025-05-10'
+  },
+  {
+    id: 'lien-2',
+    projectId: 'proj-1',
+    subcontractorName: 'Titan Steel Erectors',
+    trade: 'Structural Steel Framing',
+    amount: 210000,
+    type: 'Progress Conditional',
+    status: 'Signed & Active',
+    invoiceRef: 'INV-TSE-094',
+    dateSubmitted: '2025-05-14'
+  },
+  {
+    id: 'lien-3',
+    projectId: 'proj-1',
+    subcontractorName: 'Prime Electrical Solutions',
+    trade: 'Electrical & Telecom',
+    amount: 88500,
+    type: 'Progress Conditional',
+    status: 'Pending Signature',
+    invoiceRef: 'INV-PES-4412',
+    dateSubmitted: '2025-05-18'
+  },
+  {
+    id: 'lien-4',
+    projectId: 'proj-1',
+    subcontractorName: 'Vortex Mechanical HVAC',
+    trade: 'HVAC & Mechanical',
+    amount: 112000,
+    type: 'Progress Conditional',
+    status: 'Action Required',
+    invoiceRef: 'INV-VM-1082',
+    dateSubmitted: '2025-05-19'
+  }
+];
+
+export const MOCK_OPPORTUNITY_DEALS: OpportunityDeal[] = [
+  {
+    id: 'opp-1',
+    clientName: 'Harborview Holdings LLC',
+    projectTitle: 'Beacon Point Luxury Residences (Phase II)',
+    projectType: 'Multi-Family',
+    estimatedValue: 8400000,
+    stage: 'Contract Negotiation',
+    winProbability: 90,
+    expectedStartDate: '2025-08-15',
+    location: 'Boston Waterfront, MA'
+  },
+  {
+    id: 'opp-2',
+    clientName: 'Nextera Bioscience Campus',
+    projectTitle: 'Cleanroom R&D Expansion Lab',
+    projectType: 'Commercial',
+    estimatedValue: 6200000,
+    stage: 'Bid Submitted',
+    winProbability: 75,
+    expectedStartDate: '2025-09-01',
+    location: 'Cambridge, MA'
+  },
+  {
+    id: 'opp-3',
+    clientName: 'Skyline Medical Group',
+    projectTitle: 'Outpatient Surgical Center Fit-out',
+    projectType: 'Commercial',
+    estimatedValue: 3900000,
+    stage: 'Estimating',
+    winProbability: 60,
+    expectedStartDate: '2025-10-15',
+    location: 'Providence, RI'
+  },
+  {
+    id: 'opp-4',
+    clientName: 'Sterling Estate Developers',
+    projectTitle: 'The Grove Custom Modern Villa',
+    projectType: 'Custom Residential',
+    estimatedValue: 2400000,
+    stage: 'Lead',
+    winProbability: 40,
+    expectedStartDate: '2025-11-01',
+    location: 'Greenwich, CT'
+  }
+];
+
+export const MOCK_PROJECT_CHATS: ProjectChatMessage[] = [
+  {
+    id: 'msg-1',
+    projectId: 'proj-1',
+    channelId: 'general',
+    senderId: 'usr_field',
+    senderName: 'John Smith',
+    senderRole: 'Field Superintendent',
+    senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    text: 'Good morning team. Ready-mix trucks for Level 12 deck are staging at Gate 2. Traffic control in place.',
+    timestamp: '7:45 AM'
+  },
+  {
+    id: 'msg-2',
+    projectId: 'proj-1',
+    channelId: 'general',
+    senderId: 'usr_pm',
+    senderName: 'Sarah Johnson',
+    senderRole: 'Project Manager',
+    senderAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    text: 'Thanks John! City inspector Dave confirmed he will arrive by 11:30 AM for the mid-pour cylinder test pull.',
+    timestamp: '8:12 AM'
+  },
+  {
+    id: 'msg-3',
+    projectId: 'proj-1',
+    channelId: 'general',
+    senderId: 'sub_prime',
+    senderName: 'Carlos Rivera (Prime Electrical)',
+    senderRole: 'Electrical Subcontractor',
+    senderAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    text: 'Underground telecom conduit pull completed. We are moving our 4-man crew up to Level 8 as planned.',
+    timestamp: '9:30 AM'
+  }
+];
+

@@ -236,3 +236,100 @@ export interface LattiMessage {
     targetModule?: string;
   };
 }
+
+export interface DailyLogItem {
+  id: string;
+  projectId: string;
+  projectName: string;
+  date: string;
+  weather: {
+    condition: 'Sunny' | 'Partly Cloudy' | 'Rainy' | 'Windy' | 'Clear';
+    temperature: string;
+    windSpeed: string;
+    precipitation: string;
+    siteCondition: 'Dry' | 'Muddy' | 'Normal';
+  };
+  totalHeadcount: number;
+  crews: {
+    trade: string;
+    subcontractor: string;
+    workersCount: number;
+    hoursWorked: number;
+    notes?: string;
+  }[];
+  workSummary: string;
+  materialsReceived: string[];
+  safetyIncidents: string;
+  safetyPassed: boolean;
+  author: string;
+  photos?: string[];
+}
+
+export interface PlanGridPin {
+  id: string;
+  projectId: string;
+  title: string;
+  xPercent: number; // 0-100% position on blueprint
+  yPercent: number; // 0-100% position on blueprint
+  type: 'punch' | 'task' | 'photo' | 'inspection';
+  status: 'open' | 'in-progress' | 'resolved';
+  assigneeName?: string;
+  roomOrArea: string;
+  description: string;
+  photoUrl?: string;
+  createdDate: string;
+}
+
+export interface FinancingDraw {
+  id: string;
+  projectId: string;
+  drawNumber: number;
+  milestoneTitle: string;
+  requestedAmount: number;
+  approvedAmount: number;
+  fundedAmount: number;
+  status: 'Approved & Funded' | 'In Lender Review' | 'Inspection Scheduled' | 'Draft';
+  requestDate: string;
+  fundingDate?: string;
+  lenderName: string;
+  inspectorName?: string;
+  inspectionPassed?: boolean;
+}
+
+export interface LienWaiver {
+  id: string;
+  projectId: string;
+  subcontractorName: string;
+  trade: string;
+  amount: number;
+  type: 'Progress Conditional' | 'Progress Unconditional' | 'Final Conditional' | 'Final Unconditional';
+  status: 'Signed & Active' | 'Pending Signature' | 'Action Required';
+  invoiceRef: string;
+  dateSubmitted: string;
+}
+
+export interface OpportunityDeal {
+  id: string;
+  clientName: string;
+  projectTitle: string;
+  projectType: 'Commercial' | 'Custom Residential' | 'Multi-Family' | 'Remodel';
+  estimatedValue: number;
+  stage: 'Lead' | 'Estimating' | 'Bid Submitted' | 'Contract Negotiation' | 'Won';
+  winProbability: number; // 0-100%
+  expectedStartDate: string;
+  location: string;
+}
+
+export interface ProjectChatMessage {
+  id: string;
+  projectId: string;
+  channelId: string; // 'general' | 'framing' | 'inspections' | 'urgent'
+  senderId: string;
+  senderName: string;
+  senderRole: string;
+  senderAvatar: string;
+  text: string;
+  timestamp: string;
+  attachmentUrl?: string;
+}
+

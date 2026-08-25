@@ -4,7 +4,8 @@ import {
   User as UserIcon, Mail, Phone, Building, ShieldCheck, 
   Bell, Moon, Globe, FileText, Lock, HelpCircle, LogOut, 
   ChevronRight, Award, MapPin, CheckCircle2, ChevronLeft, 
-  Edit3, Shield, KeyRound, Smartphone, Check
+  Edit3, Shield, KeyRound, Smartphone, Check, Sparkles, 
+  CreditCard, Download, Trash2, RotateCw 
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { TermsAndConditions } from '../legal/TermsAndConditions';
@@ -26,6 +27,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [showSecurityModal, setShowSecurityModal] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<'base' | 'pro' | 'intelligence' | 'business'>('pro');
 
   // Field Preferences
   const [pushEnabled, setPushEnabled] = useState(true);
@@ -51,7 +54,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-24 font-sans text-slate-200">
-      {/* 1. User Profile Header Card with Edit Button */}
+      {/* 1. User Profile Header Card */}
       <div className="card-dark p-4 bg-[#0D1422] border-[#1A263B] rounded-2xl shadow-md flex items-center justify-between gap-3">
         <div className="flex items-center gap-3.5 min-w-0">
           <div className="relative flex-shrink-0">
@@ -79,7 +82,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </div>
         </div>
 
-        {/* Edit Profile Button */}
         <button
           onClick={() => setIsEditProfileOpen(true)}
           className="p-2.5 rounded-xl bg-[#151F33] hover:bg-blue-600 text-blue-400 hover:text-white border border-[#223352] transition-colors cursor-pointer flex-shrink-0 flex items-center gap-1.5"
@@ -90,99 +92,67 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </button>
       </div>
 
-      {/* 2. Professional Credentials & Certifications */}
-      <div className="card-dark p-3.5 bg-[#0D1422] border-[#1A263B] rounded-2xl">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
-            <Award className="w-4 h-4 text-blue-400" />
-            <span>Professional Certifications</span>
+      {/* 2. Subscription & Pricing Tier (RFP Section 12) */}
+      <div className="card-dark p-4 bg-[#0D1422] border border-blue-500/30 rounded-2xl shadow-md flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+              Subscription & Entitlements
+            </span>
           </div>
-          <button
-            onClick={() => setIsEditProfileOpen(true)}
-            className="text-[11px] font-bold text-blue-400 hover:text-blue-300 cursor-pointer"
-          >
-            Manage
-          </button>
+          <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+            Lattice Pro ($199/mo)
+          </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-            ✓ OSHA 30-Hour Safety
-          </span>
-          <span className="text-[11px] font-semibold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">
-            ✓ PMP® Certified
-          </span>
-          <span className="text-[11px] font-semibold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20">
-            ✓ LEED AP BD+C
-          </span>
+        <p className="text-xs text-slate-300">
+          Your company is enrolled in <strong>Lattice Pro</strong> with unlimited projects, full Gantt scheduling, multi-role dashboards, and 50GB plan storage.
+        </p>
+
+        <div className="flex items-center gap-2 pt-1">
+          <button
+            onClick={() => setShowSubscriptionModal(true)}
+            className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all text-center cursor-pointer shadow"
+          >
+            Upgrade Plan / View Tiers
+          </button>
+          <button
+            onClick={() => alert("Restoring Apple in-app purchases and syncing active web entitlements...")}
+            className="px-3 py-2 rounded-xl bg-[#141F33] hover:bg-[#1C2C47] text-slate-300 text-xs font-semibold border border-[#223352] transition-colors cursor-pointer flex items-center gap-1.5"
+          >
+            <RotateCw className="w-3.5 h-3.5" />
+            <span>Restore Purchases</span>
+          </button>
         </div>
       </div>
 
-      {/* 3. Account Contact Info */}
-      <div className="card-dark p-3.5 bg-[#0D1422] border-[#1A263B] rounded-2xl space-y-2 text-xs">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-            Contact Details
-          </span>
-          <button
-            onClick={() => setIsEditProfileOpen(true)}
-            className="text-[11px] font-bold text-blue-400 hover:text-blue-300 cursor-pointer"
-          >
-            Edit Info
-          </button>
-        </div>
-
-        <div className="flex items-center justify-between py-1 border-b border-[#162033]">
-          <span className="text-slate-400 flex items-center gap-2">
-            <Mail className="w-3.5 h-3.5 text-blue-400" />
-            Email:
-          </span>
-          <span className="font-semibold text-white">{userData.email}</span>
-        </div>
-
-        <div className="flex items-center justify-between py-1 border-b border-[#162033]">
-          <span className="text-slate-400 flex items-center gap-2">
-            <Phone className="w-3.5 h-3.5 text-blue-400" />
-            Phone:
-          </span>
-          <span className="font-semibold text-white">{userData.phone || '+1 (555) 345-6789'}</span>
-        </div>
-
-        <div className="flex items-center justify-between py-1">
-          <span className="text-slate-400 flex items-center gap-2">
-            <MapPin className="w-3.5 h-3.5 text-blue-400" />
-            HQ Location:
-          </span>
-          <span className="font-semibold text-white">New York, NY</span>
-        </div>
-      </div>
-
-      {/* 4. Security & Password Settings */}
+      {/* 3. Security & Authentication */}
       <div className="card-dark p-3.5 bg-[#0D1422] border-[#1A263B] rounded-2xl space-y-2 text-xs">
         <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">
-          Security & Authentication
+          Security & Tenant Isolation
         </span>
 
         <button
           onClick={() => setShowSecurityModal(true)}
-          className="w-full flex items-center justify-between p-2 rounded-xl bg-[#080D17] border border-[#162033] hover:border-blue-500/40 text-left transition-colors cursor-pointer"
+          className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#080D17] border border-[#162033] hover:border-blue-500/40 text-left transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-2.5">
             <KeyRound className="w-4 h-4 text-blue-400" />
             <div>
-              <div className="font-bold text-white">Change Password</div>
-              <div className="text-[10px] text-slate-400">Last changed 45 days ago</div>
+              <div className="font-bold text-white">Change Password & Passkey</div>
+              <div className="text-[10px] text-slate-400">Enterprise auth with bcrypt / SHA-256</div>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-500" />
         </button>
 
-        <div className="flex items-center justify-between p-2 rounded-xl bg-[#080D17] border border-[#162033]">
+        <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#080D17] border border-[#162033]">
           <div className="flex items-center gap-2.5">
             <Shield className="w-4 h-4 text-emerald-400" />
             <div>
-              <div className="font-bold text-white">Two-Factor Authentication</div>
-              <div className="text-[10px] text-emerald-400 font-semibold">Enabled via SMS & Authenticator</div>
+              <div className="font-bold text-white">Two-Factor Authentication (2FA)</div>
+              <div className="text-[10px] text-emerald-400 font-semibold">Active (Biometric Face ID / SMS)</div>
             </div>
           </div>
           <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">
@@ -191,7 +161,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
-      {/* 5. Field & Application Preferences */}
+      {/* 4. Jobsite & Offline Preferences */}
       <div className="card-dark p-3.5 bg-[#0D1422] border-[#1A263B] rounded-2xl space-y-3 text-xs">
         <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">
           Jobsite & Offline Preferences
@@ -243,30 +213,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
-      {/* 6. Legal & Support Navigation Links */}
+      {/* 5. Apple Privacy & Data Portability (RFP Section 06 & 10) */}
       <div className="card-dark p-3.5 bg-[#0D1422] border-[#1A263B] rounded-2xl space-y-1 text-xs">
         <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">
-          Support & Compliance
+          Data Governance & Apple Privacy
         </span>
 
         <button
-          onClick={() => setSubView('support')}
+          onClick={() => alert("Your request to export company project data (JSON/CSV bundle) has been queued. You will receive a secure download link via email.")}
           className="w-full flex items-center justify-between py-2 px-2 hover:bg-[#131D2E] rounded-xl transition-colors text-left cursor-pointer"
         >
           <div className="flex items-center gap-2.5">
-            <HelpCircle className="w-4 h-4 text-blue-400" />
-            <span className="font-semibold text-white">Help & Jobsite Support (24/7)</span>
-          </div>
-          <ChevronRight className="w-4 h-4 text-slate-500" />
-        </button>
-
-        <button
-          onClick={() => setSubView('terms')}
-          className="w-full flex items-center justify-between py-2 px-2 hover:bg-[#131D2E] rounded-xl transition-colors text-left cursor-pointer"
-        >
-          <div className="flex items-center gap-2.5">
-            <FileText className="w-4 h-4 text-slate-400" />
-            <span className="font-semibold text-white">Terms of Service</span>
+            <Download className="w-4 h-4 text-blue-400" />
+            <div>
+              <span className="font-semibold text-white block">Request Data Export (CSV / JSON)</span>
+              <span className="text-[10px] text-slate-400">Download complete company project & budget archive</span>
+            </div>
           </div>
           <ChevronRight className="w-4 h-4 text-slate-500" />
         </button>
@@ -281,9 +243,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </div>
           <ChevronRight className="w-4 h-4 text-slate-500" />
         </button>
+
+        <button
+          onClick={() => setSubView('support')}
+          className="w-full flex items-center justify-between py-2 px-2 hover:bg-[#131D2E] rounded-xl transition-colors text-left cursor-pointer"
+        >
+          <div className="flex items-center gap-2.5">
+            <HelpCircle className="w-4 h-4 text-blue-400" />
+            <span className="font-semibold text-white">Help & Jobsite Support (24/7)</span>
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-500" />
+        </button>
       </div>
 
-      {/* 7. Sign Out Action Button */}
+      {/* 6. Sign Out Action Button */}
       <div className="pt-2">
         <button
           onClick={() => setShowLogoutConfirm(true)}
@@ -301,6 +274,69 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         onClose={() => setIsEditProfileOpen(false)}
         onSave={handleUpdateProfile}
       />
+
+      {/* SUBSCRIPTION & PRICING MODAL (RFP Section 12) */}
+      {showSubscriptionModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="card-dark w-full max-w-md bg-[#0C121E] border border-blue-500/40 rounded-3xl p-5 shadow-2xl flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#182438] pb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-blue-400" />
+                <h3 className="text-sm font-extrabold text-white">Lattice Subscription Plans</h3>
+              </div>
+              <button
+                onClick={() => setShowSubscriptionModal(false)}
+                className="text-slate-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-2.5">
+              {[
+                { id: 'base', name: 'Lattice Base', price: '$49.99', period: '/month', desc: 'Essential task, punch list & site photo management for small remodeling teams.' },
+                { id: 'pro', name: 'Lattice Pro', price: '$199', period: '/month', desc: 'Full Gantt schedule, cost variance, 4 role dashboards, and subcontractor portal.' },
+                { id: 'intelligence', name: 'Lattice Intelligence', price: '$349', period: '/month', desc: 'AI plan takeoff, Latti cost learning, live weather risk prediction & unlimited seats.' },
+                { id: 'business', name: 'Lattice Business', price: 'Custom', period: '', desc: 'Dedicated enterprise instance, ERP/QuickBooks sync & custom SLA support.' },
+              ].map((tier) => (
+                <div
+                  key={tier.id}
+                  onClick={() => setCurrentPlan(tier.id as any)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col gap-1.5 ${
+                    currentPlan === tier.id
+                      ? 'bg-blue-600/20 border-blue-500 shadow-md ring-1 ring-blue-500'
+                      : 'bg-[#080D18] border-[#182438] hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-white">{tier.name}</span>
+                      {currentPlan === tier.id && (
+                        <span className="text-[10px] bg-blue-500 text-white font-extrabold px-2 py-0.5 rounded-full">
+                          Active Plan
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs font-black text-blue-400">
+                      {tier.price}<span className="text-[10px] text-slate-400 font-normal">{tier.period}</span>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-slate-400">{tier.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2 pt-2 border-t border-[#182438]">
+              <button
+                onClick={() => setShowSubscriptionModal(false)}
+                className="flex-1 h-11 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow"
+              >
+                Confirm Plan Selection
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* SECURITY / CHANGE PASSWORD MODAL */}
       {showSecurityModal && (

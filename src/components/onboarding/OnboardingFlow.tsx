@@ -431,123 +431,193 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
         </div>
       )}
 
-      {/* ── STEP 5: Company Info ── */}
+      {/* ── STEP 5: Tell us about your company (Matching Screenshot 1) ── */}
       {step === 5 && (
-        <div className="flex flex-col flex-1">
-          <div className="mb-5">
-            <h2 className="text-xl font-extrabold text-white tracking-tight">Your Company</h2>
-            <p className="text-xs text-slate-400 mt-1 font-medium">
-              Set up your construction firm profile.
-            </p>
+        <div className="flex flex-col flex-1 max-w-lg mx-auto w-full justify-between">
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-extrabold text-white tracking-tight">Tell us about your company</h2>
+              <p className="text-xs text-slate-400 mt-1 font-medium leading-relaxed">
+                This personalizes Latti's estimates and reports for your region and trade.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Company name</span>
+                </label>
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  className="w-full h-12 bg-[#0C121E] border border-[#182438] rounded-xl px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-teal-400 transition-colors"
+                  placeholder="Acme Custom Homes"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <span>🔨</span>
+                  <span>What do you build?</span>
+                </label>
+                <select
+                  value={companySize}
+                  onChange={(e) => setCompanySize(e.target.value)}
+                  className="w-full h-12 bg-[#0C121E] border border-[#00D2B4] rounded-xl px-4 text-sm text-white focus:outline-none ring-1 ring-[#00D2B4]/40 cursor-pointer"
+                >
+                  <option value="Custom Home Builder">Custom Home Builder</option>
+                  <option value="Remodeler & Renovation">Remodeler & Renovation</option>
+                  <option value="Commercial General Contractor">Commercial General Contractor</option>
+                  <option value="Design-Build Firm">Design-Build Firm</option>
+                  <option value="Residential Developer">Residential Developer</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+                  <span>📍</span>
+                  <span>State / Region</span>
+                </label>
+                <input
+                  type="text"
+                  defaultValue="Texas"
+                  className="w-full h-12 bg-[#0C121E] border border-[#182438] rounded-xl px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-teal-400 transition-colors"
+                  placeholder="e.g. Texas, Colorado, California"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-4 flex-1">
-            <div>
-              <label className="text-[11px] font-bold text-slate-300 mb-1.5 block uppercase tracking-wider">Company Name</label>
-              <input
-                type="text"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                className="w-full h-11 bg-[#0C121E] border border-[#182438] rounded-xl px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
-                placeholder="e.g. Avery & Marsh Construction"
-              />
-            </div>
-
-            <div>
-              <label className="text-[11px] font-bold text-slate-300 mb-1.5 block uppercase tracking-wider">Company Size</label>
-              <select
-                value={companySize}
-                onChange={(e) => setCompanySize(e.target.value)}
-                className="w-full h-11 bg-[#0C121E] border border-[#182438] rounded-xl px-4 text-sm text-white focus:outline-none focus:border-blue-500 cursor-pointer transition-colors"
-              >
-                <option value="1 - 10">1 – 10 employees</option>
-                <option value="11 - 50">11 – 50 employees</option>
-                <option value="51 - 200">51 – 200 employees</option>
-                <option value="200+">200+ employees</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[11px] font-bold text-slate-300 mb-1.5 block uppercase tracking-wider">Industry</label>
-              <select className="w-full h-11 bg-[#0C121E] border border-[#182438] rounded-xl px-4 text-sm text-white focus:outline-none focus:border-blue-500 cursor-pointer">
-                <option>General Contracting</option>
-                <option>Commercial Construction</option>
-                <option>Heavy Civil Engineering</option>
-                <option>Residential Development</option>
-                <option>Specialty Trade Contracting</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="pt-4 mt-auto">
-            <Button variant="primary" onClick={() => setStep(6)} rightIcon={<ArrowRight className="w-4 h-4" />}>
-              Next
-            </Button>
+          <div className="pt-6 flex items-center justify-between">
+            <button
+              onClick={() => setStep(4)}
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+            <button
+              onClick={() => setStep(6)}
+              className="px-6 py-2.5 rounded-xl bg-[#00D2B4] hover:bg-[#00baa0] text-slate-950 text-xs font-black flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
+            >
+              <span>Continue</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       )}
 
-      {/* ── STEP 6: All Set ── */}
+      {/* ── STEP 6: Choose your plan (Matching Screenshot 2) ── */}
       {step === 6 && (
-        <div className="flex flex-col items-center justify-between flex-1 text-center">
-          <div className="flex-1 flex flex-col items-center justify-center gap-5">
-            {/* Big checkmark */}
-            <div className="w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-400 flex items-center justify-center shadow-[0_0_40px_rgba(16,185,129,0.2)]">
-              <Check className="w-10 h-10 text-emerald-400 stroke-[2.5]" />
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-black text-white tracking-tight mb-1">
-                Your workspace is ready.
-              </h2>
-              <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">
-                Build Better. Together.
+        <div className="flex flex-col flex-1 max-w-lg mx-auto w-full justify-between">
+          <div>
+            <div className="mb-6 text-center">
+              <h2 className="text-2xl font-black text-white tracking-tight">Choose your plan</h2>
+              <p className="text-xs text-slate-400 mt-1 font-medium">
+                Start a 14-day free trial — cancel anytime. Or explore the full platform on Beta access.
               </p>
             </div>
 
-            {/* Role summary card */}
-            <div className="w-full max-w-[300px] p-4 bg-[#0C121E] rounded-2xl border border-[#182438] text-left space-y-2">
-              <div>
-                <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Role</div>
-                <div className="text-sm font-bold text-white flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500" />
-                  {ROLE_OPTIONS.find(r => r.id === selectedRole)?.title}
+            <div className="flex flex-col gap-3">
+              {/* Plan 1: Base */}
+              <div className="p-4 rounded-2xl bg-[#0C121E] border border-[#182438] flex items-center justify-between gap-3 shadow-sm hover:border-slate-600 transition-all">
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-black text-white">Base</div>
+                  <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                    For solo contractors and small construction teams getting organized.
+                  </p>
                 </div>
-              </div>
-              <div className="h-px bg-[#182438]" />
-              <div>
-                <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Company</div>
-                <div className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                  <Building2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                  <span className="truncate">{companyName || 'Your Company'}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature bullets */}
-            <div className="w-full max-w-[300px] space-y-2">
-              {[
-                { icon: CheckSquare, text: 'Real-time project & task tracking' },
-                { icon: DollarSign, text: 'Cost control & budget forecasting' },
-                { icon: Sparkles, text: 'Latti AI insights enabled' },
-              ].map(f => (
-                <div key={f.text} className="flex items-center gap-2.5">
-                  <div className="w-6 h-6 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
-                    <f.icon className="w-3 h-3 text-blue-400" />
+                <div className="text-right flex items-center gap-3 flex-shrink-0">
+                  <div>
+                    <div className="text-sm font-black text-white">$49.99</div>
+                    <div className="text-[9px] text-slate-500">/mo · 14-day trial</div>
                   </div>
-                  <span className="text-xs text-slate-300 font-medium">{f.text}</span>
+                  <button
+                    onClick={() => onComplete(selectedRole)}
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-teal-400 hover:opacity-90 text-slate-950 text-xs font-black shadow cursor-pointer"
+                  >
+                    Start trial
+                  </button>
                 </div>
-              ))}
+              </div>
+
+              {/* Plan 2: Pro (MOST POPULAR) */}
+              <div className="p-4 rounded-2xl bg-[#0C121E] border border-teal-500/50 flex items-center justify-between gap-3 shadow-md ring-1 ring-teal-500/20">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-black text-white">Pro</span>
+                    <span className="text-[9px] font-black uppercase text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                      MOST POPULAR
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                    For active builders managing projects, budgets, trades and clients.
+                  </p>
+                </div>
+                <div className="text-right flex items-center gap-3 flex-shrink-0">
+                  <div>
+                    <div className="text-sm font-black text-white">$199.00</div>
+                    <div className="text-[9px] text-slate-500">/mo · 14-day trial</div>
+                  </div>
+                  <button
+                    onClick={() => onComplete(selectedRole)}
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-teal-400 hover:opacity-90 text-slate-950 text-xs font-black shadow cursor-pointer"
+                  >
+                    Start trial
+                  </button>
+                </div>
+              </div>
+
+              {/* Plan 3: Intelligence (COMPLETE AI PLATFORM) */}
+              <div className="p-4 rounded-2xl bg-[#0C121E] border border-[#182438] flex items-center justify-between gap-3 shadow-sm hover:border-slate-600 transition-all">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-black text-white">Intelligence</span>
+                    <span className="text-[9px] font-black uppercase text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                      COMPLETE AI PLATFORM
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                    For builders who want BuildScope AI, Deal Analyzer and company-wide Latti intelligence.
+                  </p>
+                </div>
+                <div className="text-right flex items-center gap-3 flex-shrink-0">
+                  <div>
+                    <div className="text-sm font-black text-white">$349.00</div>
+                    <div className="text-[9px] text-slate-500">/mo · 14-day trial</div>
+                  </div>
+                  <button
+                    onClick={() => onComplete(selectedRole)}
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-teal-400 hover:opacity-90 text-slate-950 text-xs font-black shadow cursor-pointer"
+                  >
+                    Start trial
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="w-full pt-4">
-            <Button variant="primary" onClick={() => onComplete(selectedRole)} rightIcon={<ArrowRight className="w-4 h-4" />}>
-              Go to Dashboard
-            </Button>
+          <div className="pt-6 flex items-center justify-between">
+            <button
+              onClick={() => setStep(5)}
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+            <button
+              onClick={() => onComplete(selectedRole)}
+              className="px-4 py-2.5 rounded-xl bg-[#0C121E] hover:bg-[#141F33] text-teal-400 border border-teal-500/40 text-xs font-bold flex items-center gap-2 transition-all shadow cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Explore with Beta access</span>
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 };
+

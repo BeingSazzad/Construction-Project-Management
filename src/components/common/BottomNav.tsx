@@ -18,8 +18,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 }) => {
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
+    { id: 'opportunities', label: 'Deals', icon: Compass },
     { id: 'projects', label: 'Projects', icon: FolderKanban },
-    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { id: 'budgets', label: 'Budgets', icon: Layers },
     { id: 'more', label: 'More', icon: MoreHorizontal },
   ];
 
