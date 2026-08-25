@@ -22,9 +22,19 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenNotifications,
   onOpenSettings
 }) => {
+  // Get initials from user name
+  const initials = currentUser?.name
+    ? currentUser.name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase()
+    : 'AM';
+
   return (
-    <header className="w-full flex-shrink-0 z-40 bg-[#070A12] border-b border-[#121A2A] sticky top-0">
-      <div className="px-5 py-3 flex items-center justify-between gap-3">
+    <header className="w-full flex-shrink-0 z-40 bg-[#070A12] border-b border-[#121A2A]/80 sticky top-0">
+      <div className="px-5 py-3.5 flex items-center justify-between gap-3 max-w-[420px] mx-auto">
         {activeProject ? (
           // Inside Project Workspace Header
           <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -48,38 +58,35 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
         ) : (
-          // Top Level Header (Matching Exact Reference Layout)
+          // Top Level Header (Matching Exact Screenshot)
           <>
-            {/* Left User Profile Avatar */}
-            <div 
-              className="cursor-pointer flex-shrink-0 relative" 
-              onClick={onOpenSettings} 
-              title="View Profile & Settings"
-            >
-              <img
-                src={currentUser.avatar}
-                alt={currentUser.name}
-                className="w-8 h-8 rounded-full object-cover border border-[#1E2B42]"
-              />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#070A12]"></span>
+            {/* Left Greeting & User Name */}
+            <div className="flex flex-col">
+              <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
+                Good morning <span className="text-xs">👋</span>
+              </span>
+              <h1 className="text-base sm:text-lg font-black text-white tracking-tight">
+                {currentUser?.name || 'Alex Morgan'}
+              </h1>
             </div>
 
-            {/* Center LATTICE Brand Logo */}
-            <div className="flex items-center justify-center flex-1">
-              <LatticeLogo size="sm" layout="horizontal" showTagline={false} />
-            </div>
-
-            {/* Right Search and Notification Buttons */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Right Notification Bell and Avatar Initials */}
+            <div className="flex items-center gap-2.5 flex-shrink-0">
               <button
                 onClick={onOpenNotifications}
-                className="w-8 h-8 rounded-xl bg-[#0E1524] border border-[#1A263B] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer relative"
-                title="Search & Notifications"
+                className="w-9 h-9 rounded-full bg-[#0E1524] border border-[#1A263B] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer relative shadow-sm"
+                title="Notifications"
               >
-                <Search className="w-4 h-4" />
-                {unreadNotifsCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                )}
+                <Bell className="w-4 h-4 text-slate-300" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#8B5CF6] ring-2 ring-[#070A12]"></span>
+              </button>
+
+              <button
+                onClick={onOpenSettings}
+                className="w-9 h-9 rounded-full bg-[#0066FF] hover:bg-blue-600 text-white font-black text-xs flex items-center justify-center transition-transform hover:scale-105 cursor-pointer shadow-md"
+                title="Profile & Settings"
+              >
+                {initials}
               </button>
             </div>
           </>
@@ -88,3 +95,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+

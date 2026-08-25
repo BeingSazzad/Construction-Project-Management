@@ -21,6 +21,7 @@ import { AuthScreens } from './components/auth/AuthScreens';
 import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
 
 // Dashboards
+import { SimpleHomeView } from './components/dashboards/SimpleHomeView';
 import { AdminDashboard } from './components/dashboards/AdminDashboard';
 import { PMDashboard } from './components/dashboards/PMDashboard';
 import { FinanceDashboard } from './components/dashboards/FinanceDashboard';
@@ -363,54 +364,16 @@ export function App() {
             ) : (
               /* Top Level Dashboard Tabs */
               <>
-                {/* 1. HOME DASHBOARD TAB */}
+                {/* 1. HOME DASHBOARD TAB (Matching Exact User Screenshot) */}
                 {activeTab === 'home' && (
-                  <>
-                    {currentRole === 'admin' && (
-                      <AdminDashboard
-                        projects={projects}
-                        onSelectProject={(p) => setActiveProject(p)}
-                        onCreateProject={() => setIsCreateProjectOpen(true)}
-                        onOpenLatti={() => setActiveTab('latti')}
-                        onOpenReports={() => setActiveTab('reports')}
-                      />
-                    )}
-
-                    {currentRole === 'pm' && (
-                      <PMDashboard
-                        projects={projects}
-                        tasks={tasks}
-                        onSelectProject={(p) => setActiveProject(p)}
-                        onOpenTask={(t) => setSelectedTask(t)}
-                        onCreateTask={() => setIsCreateTaskOpen(true)}
-                        onOpenSchedule={() => setActiveTab('schedule')}
-                        onOpenLatti={() => setActiveTab('latti')}
-                      />
-                    )}
-
-                    {currentRole === 'finance' && (
-                      <FinanceDashboard
-                        projects={projects}
-                        categories={categories}
-                        onSelectProject={(p) => setActiveProject(p)}
-                        onOpenBudgetDetails={() => setActiveTab('budget')}
-                        onOpenReports={() => setActiveTab('reports')}
-                        onOpenLatti={() => setActiveTab('latti')}
-                      />
-                    )}
-
-                    {currentRole === 'field' && (
-                      <FieldDashboard
-                        tasks={tasks}
-                        photos={photos}
-                        onOpenTask={(t) => setSelectedTask(t)}
-                        onUpdateTaskStatus={handleUpdateTaskStatus}
-                        onTriggerPhotoUpload={() => setIsPhotoUploadOpen(true)}
-                        onViewDrawings={() => setActiveProject(projects[0])}
-                        onOpenDailyLogs={() => setActiveProject(projects[0])}
-                      />
-                    )}
-                  </>
+                  <SimpleHomeView
+                    projects={projects}
+                    onSelectProject={(p) => setActiveProject(p)}
+                    onOpenLatti={() => setActiveTab('latti')}
+                    onOpenTasks={() => setActiveTab('tasks')}
+                    onOpenProjects={() => setActiveTab('projects')}
+                    onOpenBudgets={() => setActiveTab('budgets')}
+                  />
                 )}
 
                 {/* 2. OPPORTUNITIES / DEALS TAB (Matching Screenshot 3) */}
