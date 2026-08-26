@@ -38,6 +38,7 @@ import { ProjectScheduleTab } from './components/project/ProjectScheduleTab';
 import { ProjectBudgetTab } from './components/project/ProjectBudgetTab';
 import { ProjectReportsTab } from './components/project/ProjectReportsTab';
 import { ProjectTeamTab } from './components/project/ProjectTeamTab';
+import { TeamHubView } from './components/team/TeamHubView';
 
 // Opportunities & Budgets Hub
 import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
@@ -501,13 +502,9 @@ export function App() {
                   />
                 )}
 
-                {/* 6. TEAM DIRECTORY TAB */}
+                {/* 6. TEAM DIRECTORY HUB */}
                 {activeTab === 'team' && (
-                  <div className="px-5 pt-3 pb-24">
-                    <ProjectTeamTab
-                      project={projects[0]}
-                    />
-                  </div>
+                  <TeamHubView currentUser={currentUser} />
                 )}
 
                 {/* 6. REPORTS TAB */}
