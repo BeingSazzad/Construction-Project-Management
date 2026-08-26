@@ -1,5 +1,6 @@
 import React from 'react';
-import { ChevronLeft, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
+import { LegalPageTemplate } from './LegalPageTemplate';
 
 interface PrivacyPolicyProps {
   onBack: () => void;
@@ -7,37 +8,32 @@ interface PrivacyPolicyProps {
 
 export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
   return (
-    <div className="w-full min-h-screen bg-[#070A12] text-slate-200 p-5 font-sans pb-24 max-w-[430px] mx-auto animate-fade-in">
-      <div className="flex items-center gap-3 mb-5 pb-3 border-b border-[#162033]">
-        <button
-          onClick={onBack}
-          className="w-8 h-8 rounded-xl bg-[#0D1422] border border-[#1A263B] text-slate-300 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-        <div>
-          <h1 className="text-base font-extrabold text-white">Privacy Policy</h1>
-          <p className="text-[11px] text-slate-400">Last updated: August 2026</p>
-        </div>
-      </div>
-
-      <div className="bg-[#0D1422] border border-[#1A263B] rounded-2xl p-4 space-y-4 text-xs leading-relaxed text-slate-300">
-        <p>
-          Lattice collects the information you provide when you create an account, set up your company, and use our tools — including company name, region, project data, plans, budgets, and field reports.
-        </p>
-        <p>
-          We use this data to provide and improve the platform, generate estimates and reports, and personalize your experience. Your project data belongs to your company and is isolated from other organizations on the platform.
-        </p>
-        <p>
-          We do not sell your personal information. We may share data with service providers who help us operate the platform under appropriate confidentiality obligations.
-        </p>
-        <p>
-          You may request access to, correction of, or deletion of your data by contacting Lattice support. We retain data for as long as your account is active and for a reasonable period thereafter as required by law.
-        </p>
-        <p className="text-slate-400 border-t border-[#1A263B] pt-3">
-          Last updated: August 2026. Questions? <span className="text-blue-400 font-semibold">Contact Lattice support.</span>
-        </p>
-      </div>
-    </div>
+    <LegalPageTemplate
+      onBack={onBack}
+      icon={<ShieldCheck className="w-7 h-7" />}
+      iconBg="from-emerald-500/20 to-emerald-600/5"
+      iconBorder="border-emerald-500/25"
+      iconColor="text-emerald-400"
+      title="Privacy Policy"
+      updatedDate="Last updated: August 2026"
+      sections={[
+        {
+          heading: 'What We Collect',
+          body: 'Lattice collects the information you provide when you create an account, set up your company, and use our tools — including company name, region, project data, plans, budgets, and field reports.',
+        },
+        {
+          heading: 'How We Use Your Data',
+          body: 'We use this data to provide and improve the platform, generate estimates and reports, and personalize your experience. Your project data belongs to your company and is isolated from other organizations on the platform.',
+        },
+        {
+          heading: 'Data Sharing',
+          body: 'We do not sell your personal information. We may share data with service providers who help us operate the platform under appropriate confidentiality obligations.',
+        },
+        {
+          heading: 'Your Rights',
+          body: 'You may request access to, correction of, or deletion of your data by contacting Lattice support. We retain data for as long as your account is active and for a reasonable period thereafter as required by law.',
+        },
+      ]}
+    />
   );
 };
