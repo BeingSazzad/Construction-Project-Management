@@ -95,6 +95,7 @@ export function App() {
   const handleRoleChange = (newRole: UserRole) => {
     setCurrentRole(newRole);
     setActiveTab('home');
+    setActiveProject(null);
     setAppView('workspace');
   };
 
@@ -111,6 +112,7 @@ export function App() {
     setCurrentRole(role);
     setAppView('workspace');
     setActiveTab('home');
+    setActiveProject(null);
   };
 
   const handleCompleteOnboarding = (role: UserRole) => {
