@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Plus, DollarSign, Building2, MapPin, Sparkles, 
-  TrendingUp, CheckCircle2, Clock, X, ChevronRight, Filter
+  Plus, DollarSign, MapPin, TrendingUp, CheckCircle2, ChevronRight
 } from 'lucide-react';
+import { CreateDealView } from './CreateDealView';
 
 interface Opportunity {
   id: string;
@@ -62,16 +62,19 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
   }
 ];
 
+const STAGE_COLORS: Record<string, string> = {
+  'Estimating':      'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  'Proposal Sent':   'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  'Under Contract':  'bg-purple-500/10 text-purple-400 border-purple-500/20',
+  'Won':             'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+};
+
+type FilterType = 'All' | 'Estimating' | 'Proposal Sent' | 'Won';
+
 export const OpportunitiesView: React.FC = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>(INITIAL_OPPORTUNITIES);
-  const [selectedFilter, setSelectedFilter] = useState<'All' | 'Estimating' | 'Proposal Sent' | 'Won'>('All');
-  
-  const [isNewOppModalOpen, setIsNewOppModalOpen] = useState(false);
-  const [newTitle, setNewTitle] = useState('');
-  const [newClient, setNewClient] = useState('');
-  const [newAddress, setNewAddress] = useState('');
-  const [newValue, setNewValue] = useState('');
-  const [newStage, setNewStage] = useState<Opportunity['stage']>('Estimating');
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('All');
+  const [showCreate, setShowCreate] = useState(false);
 
   const totalPipeline = opportunities
     .filter(o => o.stage !== 'Won')
@@ -82,33 +85,31 @@ export const OpportunitiesView: React.FC = () => {
     .reduce((sum, o) => sum + o.value, 0);
 
   const activeCount = opportunities.filter(o => o.stage !== 'Won').length;
+  const winRate = Math.round((opportunities.filter(o => o.stage === 'Won').length / opportunities.length) * 100);
 
   const filteredDeals = opportunities.filter(o => {
     if (selectedFilter === 'All') return true;
     return o.stage === selectedFilter;
   });
 
-  const handleCreateOpportunity = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle.trim()) return;
-
+  const handleCreate = (data: { title: string; client: string; address: string; value: number; stage: string; type: string; notes: string }) => {
     const newOpp: Opportunity = {
       id: `opp-${Date.now()}`,
-      title: newTitle,
-      client: newClient || 'Private Client',
-      address: newAddress || 'Denver, CO',
-      value: Number(newValue) || 500000,
-      stage: newStage,
-      probability: newStage === 'Won' ? 100 : newStage === 'Proposal Sent' ? 60 : 30
+      title: data.title,
+      client: data.client || 'Private Client',
+      address: data.address || 'Denver, CO',
+      value: data.value,
+      stage: (data.stage as Opportunity['stage']) || 'Estimating',
+      probability: data.stage === 'Won' ? 100 : data.stage === 'Proposal Sent' ? 60 : 30,
     };
-
     setOpportunities(prev => [newOpp, ...prev]);
-    setIsNewOppModalOpen(false);
-    setNewTitle('');
-    setNewClient('');
-    setNewAddress('');
-    setNewValue('');
+    setShowCreate(false);
   };
+
+  // Full-page create view
+  if (showCreate) {
+    return <CreateDealView onBack={() => setShowCreate(false)} onCreate={handleCreate} />;
+  }
 
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
@@ -125,7 +126,7 @@ export const OpportunitiesView: React.FC = () => {
         </div>
 
         <button
-          onClick={() => setIsNewOppModalOpen(true)}
+          onClick={() => setShowCreate(true)}
           className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-all shadow-md cursor-pointer active:scale-95 flex-shrink-0"
         >
           <Plus className="w-4 h-4" />
@@ -147,18 +148,18 @@ export const OpportunitiesView: React.FC = () => {
 
         <div className="p-2.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex flex-col items-center justify-center">
           <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Active</span>
-          <span className="text-xs sm:text-sm font-bold text-white mt-0.5">{activeCount} Deals</span>
+          <span className="text-xs sm:text-sm font-bold text-white mt-0.5">{activeCount}</span>
         </div>
 
         <div className="p-2.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex flex-col items-center justify-center">
-          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Win Rate</span>
-          <span className="text-xs sm:text-sm font-bold text-blue-400 mt-0.5">20%</span>
+          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Win %</span>
+          <span className="text-xs sm:text-sm font-bold text-blue-400 mt-0.5">{winRate}%</span>
         </div>
       </div>
 
-      {/* 3. Modern Frameless Stage Filter Pills (No heavy container box) */}
+      {/* 3. Stage Filter Pills */}
       <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
-        {(['All', 'Estimating', 'Proposal Sent', 'Won'] as const).map((f) => {
+        {(['All', 'Estimating', 'Proposal Sent', 'Won'] as FilterType[]).map((f) => {
           const isActive = selectedFilter === f;
           return (
             <button
@@ -176,134 +177,60 @@ export const OpportunitiesView: React.FC = () => {
         })}
       </div>
 
-      {/* 4. Clutter-Free Single-Layer Deal Cards (Zero Nested Accordion Box Inception) */}
+      {/* 4. Deal Cards */}
       <div className="flex flex-col gap-2.5">
-        {filteredDeals.map((deal) => {
-          const dealValM = (deal.value / 1000000).toFixed(2);
-          const dealValK = (deal.value / 1000).toFixed(0);
-          const isWon = deal.stage === 'Won';
-
-          return (
-            <div
-              key={deal.id}
-              className="p-3.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2 shadow-sm group active:scale-[0.99]"
-            >
-              {/* Row 1: Title + Value */}
-              <div className="flex items-center justify-between gap-2 min-w-0">
-                <h3 className="text-sm font-bold text-white truncate group-hover:text-[#3875F6] transition-colors leading-tight min-w-0">
-                  {deal.title}
-                </h3>
-                <span className={`text-sm font-extrabold flex-shrink-0 ${isWon ? 'text-emerald-400' : 'text-blue-400'}`}>
-                  {deal.value >= 1000000 ? `$${dealValM}M` : `$${dealValK}K`}
-                </span>
-              </div>
-
-              {/* Row 2: Client & Location */}
-              <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
-                <span className="truncate">{deal.client} • {deal.address}</span>
-                <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${
-                  isWon 
-                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-                    : 'text-amber-400 bg-amber-500/10 border-amber-500/20'
-                }`}>
-                  {deal.stage} ({deal.probability}%)
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* 5. Create Deal Modal */}
-      {isNewOppModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <form 
-            onSubmit={handleCreateOpportunity}
-            className="w-full max-w-sm bg-[#0D1424] border border-[#1A263E] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 animate-fade-in"
+        {filteredDeals.length === 0 ? (
+          <div className="py-12 flex flex-col items-center gap-2 text-slate-500">
+            <TrendingUp className="w-8 h-8 opacity-30" />
+            <p className="text-sm font-semibold">No deals in this stage</p>
+            <p className="text-xs">Tap "New Deal" to add one</p>
+          </div>
+        ) : filteredDeals.map((deal) => (
+          <div
+            key={deal.id}
+            className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-[#1E2C48] transition-all cursor-pointer group active:scale-[0.99]"
           >
-            <div className="flex items-center justify-between border-b border-[#162033] pb-3">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-blue-400" />
-                Add New Deal
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsNewOppModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1 block">Project Title</label>
-                <input
-                  type="text"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g. Oakridge Luxury Custom Build"
-                  required
-                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500"
-                />
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${STAGE_COLORS[deal.stage]}`}>
+                    {deal.stage}
+                  </span>
+                </div>
+                <h3 className="text-xs font-bold text-white leading-snug mb-0.5 truncate">{deal.title}</h3>
+                <p className="text-[11px] text-slate-400 font-medium">{deal.client}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <MapPin className="w-3 h-3 text-slate-500 flex-shrink-0" />
+                  <span className="text-[11px] text-slate-500 truncate">{deal.address}</span>
+                </div>
               </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1 block">Client Name</label>
-                <input
-                  type="text"
-                  value={newClient}
-                  onChange={(e) => setNewClient(e.target.value)}
-                  placeholder="e.g. Anderson Family Trust"
-                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1 block">Estimated Value ($)</label>
-                <input
-                  type="number"
-                  value={newValue}
-                  onChange={(e) => setNewValue(e.target.value)}
-                  placeholder="e.g. 1500000"
-                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1 block">Stage</label>
-                <select
-                  value={newStage}
-                  onChange={(e) => setNewStage(e.target.value as Opportunity['stage'])}
-                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white outline-none focus:border-blue-500"
-                >
-                  <option value="Estimating">Estimating</option>
-                  <option value="Proposal Sent">Proposal Sent</option>
-                  <option value="Under Contract">Under Contract</option>
-                  <option value="Won">Won</option>
-                </select>
+              <div className="text-right flex-shrink-0">
+                <p className="text-sm font-extrabold text-white">${(deal.value / 1000000) >= 1 ? `${(deal.value / 1000000).toFixed(2)}M` : `${(deal.value / 1000).toFixed(0)}K`}</p>
+                <div className="flex items-center gap-1 justify-end mt-1.5">
+                  {deal.stage === 'Won' ? (
+                    <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  ) : (
+                    <TrendingUp className="w-3 h-3 text-blue-400" />
+                  )}
+                  <span className="text-[10px] font-semibold text-slate-400">{deal.probability}%</span>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-400 transition-colors ml-auto mt-1" />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-[#162033]">
-              <button
-                type="button"
-                onClick={() => setIsNewOppModalOpen(false)}
-                className="h-11 px-4 rounded-2xl border border-[#1E2C48] text-slate-300 text-xs font-semibold hover:bg-[#141F33]"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="h-11 px-5 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md active:scale-95"
-              >
-                Create Deal
-              </button>
+            {/* Probability bar */}
+            <div className="mt-3 h-1 bg-[#0D1524] rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${
+                  deal.stage === 'Won' ? 'bg-emerald-400' :
+                  deal.probability >= 50 ? 'bg-blue-400' : 'bg-amber-400'
+                }`}
+                style={{ width: `${deal.probability}%` }}
+              />
             </div>
-          </form>
-        </div>
-      )}
-
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
