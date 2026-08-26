@@ -11,9 +11,6 @@ export const SubscriptionTerms: React.FC<SubscriptionTermsProps> = ({ onBack }) 
     <LegalPageTemplate
       onBack={onBack}
       icon={<CreditCard className="w-7 h-7" />}
-      iconBg="from-amber-500/20 to-amber-600/5"
-      iconBorder="border-amber-500/25"
-      iconColor="text-amber-400"
       title="Subscription Terms"
       updatedDate="Last updated: August 2026"
       sections={[

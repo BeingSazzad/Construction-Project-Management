@@ -375,8 +375,10 @@ export function App() {
             activeProject={activeProject}
             activeTab={activeTab}
             unreadNotifsCount={unreadNotifsCount}
+            unreadMessagesCount={2}
             onBackToHome={() => { setActiveProject(null); setActiveTab('home'); }}
             onOpenNotifications={() => { setActiveProject(null); setActiveTab('notifications'); }}
+            onOpenMessages={() => { setActiveProject(null); setActiveTab('messages'); }}
             onOpenLatti={() => {
               if (!activeProject) {
                 setActiveTab('latti');
@@ -461,6 +463,7 @@ export function App() {
                     projects={projects}
                     onSelectProject={(p) => setActiveProject(p)}
                     onOpenLatti={() => setActiveTab('latti')}
+                    onOpenMessages={() => setActiveTab('messages')}
                     onOpenTasks={() => {
                       setActiveProject(projects[0]);
                     }}

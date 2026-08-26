@@ -1,6 +1,6 @@
 import React from 'react';
 import { User, Project } from '../../types';
-import { Bell, ChevronLeft, Sparkles, Menu } from 'lucide-react';
+import { Bell, ChevronLeft, Sparkles, Menu, MessageSquare } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
 
 interface HeaderProps {
@@ -8,8 +8,10 @@ interface HeaderProps {
   activeProject?: Project | null;
   activeTab?: string;
   unreadNotifsCount: number;
+  unreadMessagesCount?: number;
   onBackToHome?: () => void;
   onOpenNotifications: () => void;
+  onOpenMessages?: () => void;
   onOpenLatti: () => void;
   onOpenSettings: () => void;
   onOpenDrawer?: () => void;
@@ -21,8 +23,10 @@ export const Header: React.FC<HeaderProps> = ({
   activeProject,
   activeTab = 'home',
   unreadNotifsCount,
+  unreadMessagesCount = 2,
   onBackToHome,
   onOpenNotifications,
+  onOpenMessages,
   onOpenLatti,
   onOpenSettings,
   onOpenDrawer
@@ -62,25 +66,38 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Workspace Action Icons */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {onOpenMessages && (
+                <button
+                  onClick={onOpenMessages}
+                  className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                  title="Team Chat"
+                >
+                  <MessageSquare className="w-4 h-4 text-slate-300" />
+                  {unreadMessagesCount > 0 && (
+                    <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#3875F6] ring-2 ring-[#0D1424]" />
+                  )}
+                </button>
+              )}
+
               <button
                 onClick={onOpenNotifications}
-                className="w-10 h-10 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4 text-slate-300" />
                 {unreadNotifsCount > 0 && (
-                  <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-[#0D1424]" />
+                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-[#0D1424]" />
                 )}
               </button>
 
               <button
                 onClick={onOpenLatti}
-                className="w-10 h-10 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 relative"
+                className="w-9 h-9 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 relative"
                 title="Latti AI Assistant"
               >
                 <Sparkles className="w-4 h-4 text-white" />
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#2563EB]" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#2563EB]" />
               </button>
             </div>
           </div>
@@ -117,25 +134,38 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {onOpenMessages && (
+                <button
+                  onClick={onOpenMessages}
+                  className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                  title="Messages"
+                >
+                  <MessageSquare className="w-4 h-4 text-slate-300" />
+                  {unreadMessagesCount > 0 && (
+                    <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#3875F6] ring-2 ring-[#0D1424]" />
+                  )}
+                </button>
+              )}
+
               <button
                 onClick={onOpenNotifications}
-                className="w-10 h-10 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4 text-slate-300" />
                 {unreadNotifsCount > 0 && (
-                  <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-[#0D1424]" />
+                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-[#0D1424]" />
                 )}
               </button>
 
               <button
                 onClick={onOpenLatti}
-                className="w-10 h-10 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 relative"
+                className="w-9 h-9 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 relative"
                 title="Latti AI Assistant"
               >
                 <Sparkles className="w-4 h-4 text-white" />
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#2563EB]" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#2563EB]" />
               </button>
             </div>
           </>

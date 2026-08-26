@@ -11,9 +11,6 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
     <LegalPageTemplate
       onBack={onBack}
       icon={<ShieldCheck className="w-7 h-7" />}
-      iconBg="from-emerald-500/20 to-emerald-600/5"
-      iconBorder="border-emerald-500/25"
-      iconColor="text-emerald-400"
       title="Privacy Policy"
       updatedDate="Last updated: August 2026"
       sections={[

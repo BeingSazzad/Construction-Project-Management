@@ -11,9 +11,6 @@ export const AiDisclaimer: React.FC<AiDisclaimerProps> = ({ onBack }) => {
     <LegalPageTemplate
       onBack={onBack}
       icon={<Sparkles className="w-7 h-7" />}
-      iconBg="from-purple-500/20 to-purple-600/5"
-      iconBorder="border-purple-500/25"
-      iconColor="text-purple-400"
       title="AI Disclaimer"
       updatedDate="Last updated: August 2026"
       sections={[

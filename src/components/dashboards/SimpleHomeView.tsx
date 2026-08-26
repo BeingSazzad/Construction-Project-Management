@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Project, User } from '../../types';
 import { 
   FolderKanban, CheckCircle2, ShieldAlert, DollarSign,
   Sparkles, ChevronRight, FolderPlus, FileSpreadsheet,
-  Users, FileText, TrendingUp, ArrowUpRight, Clock,
-  MapPin, Zap, Bell, Calendar
+  Users, FileText, ArrowUpRight, MessageSquare
 } from 'lucide-react';
 import { StatusBadge } from '../common/StatusBadge';
 
@@ -14,6 +13,7 @@ interface SimpleHomeViewProps {
   onSelectProject: (project: Project) => void;
   onOpenLatti: () => void;
   onOpenNotifications?: () => void;
+  onOpenMessages?: () => void;
   onOpenTasks: () => void;
   onOpenProjects: () => void;
   onOpenBudgets: () => void;
@@ -23,12 +23,10 @@ interface SimpleHomeViewProps {
 }
 
 export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
-  currentUser,
   projects,
   onSelectProject,
   onOpenLatti,
-  onOpenNotifications,
-  onOpenTasks,
+  onOpenMessages,
   onOpenProjects,
   onOpenBudgets,
   onOpenNewProject,
@@ -39,31 +37,10 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   const atRiskCount = projects.filter(p => p.status === 'At Risk' || p.status === 'Delayed').length;
   const activeCount = projects.filter(p => p.status === 'On Schedule' || p.status === 'At Risk').length;
 
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  const firstName = currentUser?.name?.split(' ')[0] || 'Alex';
-
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
 
-      {/* ── 1. Personalized Greeting Banner ── */}
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs text-slate-400 font-medium">{greeting},</p>
-          <h1 className="text-xl font-bold text-white tracking-tight leading-tight mt-0.5">
-            {firstName} 👋
-          </h1>
-        </div>
-        <button
-          onClick={onOpenNotifications}
-          className="relative w-9 h-9 rounded-xl bg-[#0E1A33] border border-[#1E325A] flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
-        >
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-2 border-[#060913]" />
-        </button>
-      </div>
-
-      {/* ── 2. Company Portfolio KPI Strip ── */}
+      {/* ── 1. Company Portfolio KPI Strip ── */}
       <div className="p-4 rounded-3xl bg-gradient-to-br from-[#0E1A33] via-[#070D1A] to-[#050811] border border-[#1E325A] shadow-lg relative overflow-hidden">
         {/* Ambient Glow */}
         <div className="absolute -top-8 -right-8 w-32 h-32 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
@@ -104,7 +81,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         </div>
       </div>
 
-      {/* ── 3. Quick Actions ── */}
+      {/* ── 2. Quick Actions ── */}
       <div className="flex flex-col gap-2">
         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-0.5">Quick Actions</p>
         <div className="grid grid-cols-4 gap-2">
@@ -119,7 +96,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
               action: () => onOpenTeam ? onOpenTeam() : onOpenProjects()
             },
             {
-              label: 'Reports', icon: FileText, color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20',
+              label: 'Reports', icon: FileText, color: 'text-slate-400', bg: 'bg-slate-500/10 border-slate-500/20',
               action: () => onOpenReports ? onOpenReports() : onOpenProjects()
             },
           ].map(({ label, icon: Icon, color, bg, action }) => (
@@ -137,7 +114,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         </div>
       </div>
 
-      {/* ── 4. Latti AI Intelligence Strip ── */}
+      {/* ── 3. Latti AI Intelligence Strip ── */}
       <button
         onClick={onOpenLatti}
         className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[#1a1060] via-[#0f0a38] to-[#050811] border border-purple-500/30 hover:border-purple-400/60 flex items-center justify-between gap-3 cursor-pointer transition-all active:scale-[0.99] group shadow-md shadow-purple-500/10"
@@ -157,7 +134,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         </div>
       </button>
 
-      {/* ── 5. Active Projects Feed ── */}
+      {/* ── 4. Active Projects Feed ── */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between px-0.5">
           <h2 className="text-sm font-bold text-white tracking-tight">Active Projects</h2>
@@ -172,7 +149,6 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
 
         <div className="flex flex-col gap-2.5">
           {projects.slice(0, 3).map((project) => {
-            const budgetPct = project.progress;
             const isRisk = project.status === 'At Risk' || project.status === 'Delayed';
 
             return (
@@ -200,22 +176,16 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
                     <h3 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">{project.name}</h3>
                     <StatusBadge status={project.status} size="xs" />
                   </div>
-                  <p className="text-[10px] text-slate-400 flex items-center gap-1 mt-1 truncate">
-                    <MapPin className="w-3 h-3 flex-shrink-0" />
-                    <span>{project.cityState}</span>
-                  </p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="flex-1 h-1 bg-[#050811] rounded-full overflow-hidden border border-[#142036]">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${isRisk ? 'bg-amber-400' : 'bg-blue-500'}`}
-                        style={{ width: `${budgetPct}%` }}
-                      />
+                  <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">{project.cityState}</p>
+                  
+                  <div className="flex items-center justify-between gap-2 mt-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-slate-500 font-medium">Budget:</span>
+                      <span className="text-[11px] font-bold text-white">${((project.budget?.total || 0) / 1000000).toFixed(1)}M</span>
                     </div>
-                    <span className="text-[10px] font-bold text-white flex-shrink-0">{budgetPct}%</span>
+                    <span className="text-[10px] font-semibold text-blue-400">{project.progress}% Done</span>
                   </div>
                 </div>
-
-                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors flex-shrink-0" />
               </div>
             );
           })}

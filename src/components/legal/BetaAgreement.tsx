@@ -11,9 +11,6 @@ export const BetaAgreement: React.FC<BetaAgreementProps> = ({ onBack }) => {
     <LegalPageTemplate
       onBack={onBack}
       icon={<FlaskConical className="w-7 h-7" />}
-      iconBg="from-cyan-500/20 to-cyan-600/5"
-      iconBorder="border-cyan-500/25"
-      iconColor="text-cyan-400"
       title="Beta Agreement"
       updatedDate="Last updated: August 2026"
       sections={[

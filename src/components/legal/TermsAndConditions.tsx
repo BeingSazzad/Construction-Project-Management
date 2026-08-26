@@ -11,9 +11,6 @@ export const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onBack }
     <LegalPageTemplate
       onBack={onBack}
       icon={<FileText className="w-7 h-7" />}
-      iconBg="from-blue-500/20 to-blue-600/5"
-      iconBorder="border-blue-500/25"
-      iconColor="text-blue-400"
       title="Terms of Service"
       updatedDate="Last updated: August 2026"
       sections={[

@@ -9,26 +9,26 @@ interface LegalSection {
 interface LegalPageTemplateProps {
   onBack: () => void;
   icon: React.ReactNode;
-  iconBg: string;      // e.g. 'from-blue-500/20 to-blue-600/5'
-  iconBorder: string;  // e.g. 'border-blue-500/30'
-  iconColor: string;   // e.g. 'text-blue-400'
   title: string;
   updatedDate: string;
   sections: LegalSection[];
+  iconBg?: string;
+  iconBorder?: string;
+  iconColor?: string;
 }
 
 export const LegalPageTemplate: React.FC<LegalPageTemplateProps> = ({
   onBack,
   icon,
-  iconBg,
-  iconBorder,
-  iconColor,
   title,
   updatedDate,
   sections,
+  iconBg = 'from-[#1D2E54] to-[#0C1529]',
+  iconBorder = 'border-[#263E75]',
+  iconColor = 'text-[#60A5FA]',
 }) => {
   return (
-    <div className="w-full min-h-screen bg-[#070A12] font-sans pb-24 max-w-[430px] mx-auto">
+    <div className="w-full min-h-screen bg-[#070A12] font-sans pb-24 max-w-[430px] mx-auto animate-fade-in">
       
       {/* Sticky top bar */}
       <div className="sticky top-0 z-10 bg-[#070A12]/95 backdrop-blur-md px-5 py-3 flex items-center gap-3 border-b border-[#142036]">
@@ -43,21 +43,21 @@ export const LegalPageTemplate: React.FC<LegalPageTemplateProps> = ({
 
       <div className="px-5 pt-6 flex flex-col gap-5">
 
-        {/* Hero block */}
-        <div className="flex flex-col items-center gap-3 py-4">
-          <div className={`w-16 h-16 rounded-3xl bg-gradient-to-b ${iconBg} border ${iconBorder} flex items-center justify-center shadow-lg`}>
-            <div className={`${iconColor} w-7 h-7`}>{icon}</div>
+        {/* Unified Hero Icon Block with Deep Slate Blue Palette */}
+        <div className="flex flex-col items-center gap-3 py-3">
+          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-b ${iconBg} border ${iconBorder} flex items-center justify-center shadow-lg shadow-blue-950/40`}>
+            <div className={`${iconColor} w-7 h-7 flex items-center justify-center`}>{icon}</div>
           </div>
           <div className="text-center">
             <h1 className="text-xl font-extrabold text-white tracking-tight">{title}</h1>
-            <p className="text-[11px] text-slate-500 font-medium mt-1">{updatedDate}</p>
+            <p className="text-[11px] text-slate-400 font-medium mt-1">{updatedDate}</p>
           </div>
         </div>
 
-        {/* Divider */}
+        {/* Subtle Divider */}
         <div className="h-px bg-gradient-to-r from-transparent via-[#1A263B] to-transparent" />
 
-        {/* Content sections */}
+        {/* Numbered Content Sections */}
         <div className="flex flex-col gap-0 rounded-2xl overflow-hidden border border-[#142036] bg-[#0A1020]">
           {sections.map((section, idx) => (
             <div
@@ -68,7 +68,7 @@ export const LegalPageTemplate: React.FC<LegalPageTemplateProps> = ({
             >
               {section.heading && (
                 <div className="flex items-start gap-2.5 mb-2">
-                  <span className="w-5 h-5 rounded-lg bg-[#142036] flex items-center justify-center text-[10px] font-bold text-slate-400 flex-shrink-0 mt-0.5">
+                  <span className="w-5 h-5 rounded-lg bg-[#142036] border border-[#1E2E4A] flex items-center justify-center text-[10px] font-bold text-blue-400 flex-shrink-0 mt-0.5">
                     {idx + 1}
                   </span>
                   <h3 className="text-xs font-bold text-white leading-tight">{section.heading}</h3>
@@ -81,10 +81,10 @@ export const LegalPageTemplate: React.FC<LegalPageTemplateProps> = ({
           ))}
         </div>
 
-        {/* Footer contact */}
+        {/* Footer Contact */}
         <div className="flex items-center justify-center gap-1.5 py-2 text-[11px] text-slate-500">
           <span>Questions?</span>
-          <span className="text-blue-400 font-semibold">Contact Lattice support</span>
+          <span className="text-[#3875F6] font-semibold">Contact Lattice support</span>
         </div>
 
       </div>

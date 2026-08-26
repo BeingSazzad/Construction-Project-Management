@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserRole } from '../../types';
 import { 
-  Home, FolderKanban, DollarSign, Settings, Plus, Sparkles
+  Home, FolderKanban, DollarSign, TrendingUp, Plus
 } from 'lucide-react';
 
 interface BottomNavProps {
@@ -11,77 +11,66 @@ interface BottomNavProps {
   onQuickAction?: () => void;
 }
 
+const LEFT_ITEMS = [
+  { id: 'home',     label: 'Home',     icon: Home },
+  { id: 'projects', label: 'Projects', icon: FolderKanban },
+];
+
+const RIGHT_ITEMS = [
+  { id: 'opportunities', label: 'Pipeline', icon: TrendingUp },
+  { id: 'budgets',       label: 'Finance',  icon: DollarSign },
+];
+
 export const BottomNav: React.FC<BottomNavProps> = ({
-  currentRole,
   activeTab,
   onTabChange,
-  onQuickAction
+  onQuickAction,
 }) => {
-  // Owner Role: Home, Projects, Budgets, More
-  const navItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'projects', label: 'Projects', icon: FolderKanban },
-    { id: 'budgets', label: 'Budgets', icon: DollarSign },
-    { id: 'more', label: 'More', icon: Settings }
-  ];
+
+  const NavBtn = ({ id, label, icon: Icon }: { id: string; label: string; icon: React.ElementType }) => {
+    const isActive = activeTab === id;
+    return (
+      <button
+        onClick={() => onTabChange(id)}
+        className={`flex flex-col items-center justify-center py-1 px-3 gap-0.5 rounded-xl transition-all cursor-pointer relative ${
+          isActive ? 'text-[#3875F6]' : 'text-slate-500 hover:text-slate-200'
+        }`}
+      >
+        <Icon className={`w-[22px] h-[22px] transition-all ${isActive ? 'stroke-[2.5]' : 'stroke-[1.75]'}`} />
+        <span className={`text-[10px] font-semibold tracking-tight transition-all ${isActive ? 'text-[#3875F6]' : ''}`}>
+          {label}
+        </span>
+        {/* Active indicator dot */}
+        {isActive && (
+          <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#3875F6]" />
+        )}
+      </button>
+    );
+  };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#060913]/95 backdrop-blur-md border-t border-[#142036]">
-      <div className="max-w-[430px] mx-auto px-5 py-2 flex items-center justify-between relative">
-        
-        {/* Left 2 Items: Home & Projects */}
-        <div className="flex items-center gap-1 flex-1 justify-around">
-          {navItems.slice(0, 2).map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all cursor-pointer ${
-                  isActive
-                    ? 'text-[#3875F6] font-bold'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.75]'}`} />
-                <span className="text-[11px] mt-1 tracking-tight">{item.label}</span>
-              </button>
-            );
-          })}
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#060913]/97 backdrop-blur-xl border-t border-[#142036]/80">
+      <div className="max-w-[430px] mx-auto px-4 flex items-center justify-between" style={{ paddingBottom: 'env(safe-area-inset-bottom, 8px)', paddingTop: '8px' }}>
+
+        {/* Left: Home + Projects */}
+        <div className="flex items-center gap-0 flex-1 justify-around">
+          {LEFT_ITEMS.map(item => <NavBtn key={item.id} {...item} />)}
         </div>
 
-        {/* Center Floating Action Button (+) */}
-        <div className="flex items-center justify-center px-2">
+        {/* Center: FAB — primary create action */}
+        <div className="flex items-center justify-center px-3">
           <button
             onClick={onQuickAction}
-            className="w-12 h-12 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center shadow-lg shadow-blue-900/40 hover:scale-105 active:scale-95 transition-all cursor-pointer flex-shrink-0"
-            title="Create New (Project, Budget, Deal, Task)"
+            className="w-[52px] h-[52px] rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center shadow-xl shadow-blue-900/50 hover:scale-105 active:scale-95 transition-all cursor-pointer flex-shrink-0 -mt-3"
+            title="Create: Project · Budget · Deal · Task"
           >
             <Plus className="w-6 h-6 stroke-[2.5]" />
           </button>
         </div>
 
-        {/* Right 2 Items: Budgets & More */}
-        <div className="flex items-center gap-1 flex-1 justify-around">
-          {navItems.slice(2, 4).map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all cursor-pointer ${
-                  isActive
-                    ? 'text-[#3875F6] font-bold'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.75]'}`} />
-                <span className="text-[11px] mt-1 tracking-tight">{item.label}</span>
-              </button>
-            );
-          })}
+        {/* Right: Pipeline + Finance */}
+        <div className="flex items-center gap-0 flex-1 justify-around">
+          {RIGHT_ITEMS.map(item => <NavBtn key={item.id} {...item} />)}
         </div>
 
       </div>
