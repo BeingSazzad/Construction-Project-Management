@@ -232,7 +232,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
           <label className="text-[11px] font-semibold text-slate-300">Select Budget Creation Method</label>
           {[
             { id: 'template', title: 'CSI MasterFormat 16-Division Template', desc: 'Pre-populated commercial division codes' },
-            { id: 'ai', title: 'BuildScope AI™ Blueprint Takeoff', desc: 'Auto-extract bill of quantities from PDF' },
+            { id: 'ai', title: 'BuildScope Blueprint Takeoff', desc: 'Auto-extract bill of quantities from architectural plans' },
             { id: 'csv', title: 'Upload Excel / CSV Worksheet', desc: 'Direct mapping from Procore/Excel export' }
           ].map((m) => (
             <div

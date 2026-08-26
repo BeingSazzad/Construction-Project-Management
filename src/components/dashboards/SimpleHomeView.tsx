@@ -114,22 +114,22 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         </div>
       </div>
 
-      {/* ── 3. Latti AI Intelligence Strip ── */}
+      {/* ── 3. Latti Assistant Intelligence Strip ── */}
       <button
         onClick={onOpenLatti}
-        className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[#1a1060] via-[#0f0a38] to-[#050811] border border-purple-500/30 hover:border-purple-400/60 flex items-center justify-between gap-3 cursor-pointer transition-all active:scale-[0.99] group shadow-md shadow-purple-500/10"
+        className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[#141F3B] via-[#0E172E] to-[#070D1A] border border-blue-500/30 hover:border-blue-400/60 flex items-center justify-between gap-3 cursor-pointer transition-all active:scale-[0.99] group shadow-md shadow-blue-500/10"
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300 flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0">
             <Sparkles className="w-4.5 h-4.5" />
           </div>
           <div className="text-left min-w-0">
-            <p className="text-xs font-bold text-white">Latti AI Radar</p>
-            <p className="text-[11px] text-purple-300 font-medium mt-0.5 truncate">2 schedule risks · 1 budget alert</p>
+            <p className="text-xs font-bold text-white">Latti Assistant</p>
+            <p className="text-[11px] text-slate-300 font-medium mt-0.5 truncate">2 schedule risks · 1 budget variance</p>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-purple-300 group-hover:text-white transition-colors flex-shrink-0">
-          <span className="text-[11px] font-bold">Ask AI</span>
+        <div className="flex items-center gap-1 text-blue-400 group-hover:text-white transition-colors flex-shrink-0">
+          <span className="text-[11px] font-bold">Ask Latti</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </div>
       </button>

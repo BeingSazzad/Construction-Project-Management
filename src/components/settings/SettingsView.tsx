@@ -146,9 +146,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <div className="flex items-center gap-3 min-w-0">
             <Lock className="w-4 h-4 text-blue-400 flex-shrink-0" />
             <div className="min-w-0">
-              <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Security & Authentication</span>
+              <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Password</span>
               <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
-                Password, Biometric PIN & 2FA
+                Change your account password
               </span>
             </div>
           </div>
@@ -233,7 +233,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <ShieldCheck className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs font-semibold text-white block">Privacy Policy</span>
                 <span className="text-[11px] text-slate-400 block mt-0.5">How we handle your data</span>
@@ -261,7 +261,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <Sparkles className="w-4 h-4 text-purple-400 flex-shrink-0" />
+              <Sparkles className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs font-semibold text-white block">AI Disclaimer</span>
                 <span className="text-[11px] text-slate-400 block mt-0.5">AI output limitations & responsibility</span>
@@ -275,7 +275,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <CreditCard className="w-4 h-4 text-amber-400 flex-shrink-0" />
+              <CreditCard className="w-4 h-4 text-slate-300 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs font-semibold text-white block">Subscription Terms</span>
                 <span className="text-[11px] text-slate-400 block mt-0.5">Billing, trials & credits</span>
@@ -289,7 +289,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <Info className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+              <Info className="w-4 h-4 text-slate-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs font-semibold text-white block">Beta Agreement</span>
                 <span className="text-[11px] text-slate-400 block mt-0.5">Closed beta participation terms</span>

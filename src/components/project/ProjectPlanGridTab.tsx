@@ -130,10 +130,9 @@ export const ProjectPlanGridTab: React.FC<ProjectPlanGridTabProps> = ({
       <div className="flex items-center justify-between gap-2 border-b border-[#162033] pb-2.5">
         <div>
           <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
-            <span>Blueprints & Pins</span>
-            <span className="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20 flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
-              AI Ready
+            <span>Blueprints & Drawings</span>
+            <span className="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
+              Rev 04 Active Set
             </span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5 font-medium">
@@ -437,14 +436,14 @@ export const ProjectPlanGridTab: React.FC<ProjectPlanGridTabProps> = ({
           )}
         </>
       ) : (
-        /* AI Quantity Takeoff Table Sheet */
+        /* CSI Quantity Takeoff Table Sheet */
         <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wide text-slate-300">
-              Latti AI Quantity Takeoffs
+              Quantity Takeoffs & Scope
             </span>
             <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
-              Auto Extracted
+              Verified Scope
             </span>
           </div>
 
