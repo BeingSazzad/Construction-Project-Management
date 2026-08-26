@@ -14,16 +14,18 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
   onExportReport
 }) => {
   return (
-    <div className="flex flex-col gap-4 pb-24">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-extrabold uppercase tracking-wider text-white">
-          Executive & Field Reports ({reports.length})
-        </h3>
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      <div className="flex items-center justify-between border-b border-[#162033] pb-3">
+        <div>
+          <h2 className="text-base font-bold text-white tracking-tight">Executive & Field Reports</h2>
+          <p className="text-xs text-slate-400 mt-0.5 font-medium">{reports.length} Generated Documents</p>
+        </div>
+
         <button 
           onClick={() => alert("Report generation engine initialized.")}
-          className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
+          className="h-10 px-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-4 h-4" />
           <span>New Report</span>
         </button>
       </div>
@@ -32,34 +34,34 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
         {reports.map((rep) => (
           <div
             key={rep.id}
-            className="card-dark p-4 border-[#1F2E47] bg-[#111827] hover:border-cyan-500/40 transition-all"
+            className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm hover:border-blue-500/40 transition-all flex flex-col gap-3"
           >
-            <div className="flex items-start justify-between gap-2 mb-1.5">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-blue-600/20 text-cyan-400 border border-cyan-500/30">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-white">{rep.title}</h4>
-                  <p className="text-[11px] text-cyan-400 font-semibold">{rep.period} • {rep.author}</p>
+                  <h3 className="text-xs sm:text-sm font-bold text-white leading-tight">{rep.title}</h3>
+                  <p className="text-xs text-blue-400 font-semibold mt-0.5">{rep.period} • {rep.author}</p>
                 </div>
               </div>
 
-              <span className="text-xs font-bold bg-[#1C2A44] text-slate-300 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-semibold bg-[#141F33] text-slate-300 px-2.5 py-0.5 rounded-full border border-[#1E2C48] flex-shrink-0">
                 {rep.type}
               </span>
             </div>
 
-            <p className="text-xs text-slate-300 my-2 bg-[#0B101D] p-2.5 rounded-xl border border-[#172238] leading-relaxed">
+            <p className="text-xs text-slate-300 bg-[#080D18] p-3 rounded-2xl border border-[#141F33] leading-relaxed font-medium">
               {rep.summary}
             </p>
 
-            <div className="flex items-center justify-between pt-2 border-t border-[#1C2A44] text-[11px]">
-              <span className="text-slate-500">{rep.date} • {rep.fileSize}</span>
+            <div className="flex items-center justify-between pt-2 border-t border-[#141F33] text-xs">
+              <span className="text-slate-400 font-medium">{rep.date} • {rep.fileSize}</span>
 
               <button
                 onClick={() => onExportReport(rep)}
-                className="px-3 py-1.5 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-bold hover:bg-cyan-500/25 flex items-center gap-1 cursor-pointer transition-colors"
+                className="px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export PDF</span>

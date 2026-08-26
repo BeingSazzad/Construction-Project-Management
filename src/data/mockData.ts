@@ -10,7 +10,7 @@ export const CURRENT_USERS: Record<string, User> = {
     name: 'Alex Chen',
     email: 'alex.chen@averymarsh.com',
     role: 'admin',
-    roleTitle: 'Company Owner & Executive',
+    roleTitle: 'Company Owner & Principal',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     company: 'Avery & Marsh Construction Group',
     phone: '+1 (555) 234-5678',

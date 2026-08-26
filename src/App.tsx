@@ -15,6 +15,7 @@ import {
 import { DeviceFrame } from './components/common/DeviceFrame';
 import { Header } from './components/common/Header';
 import { BottomNav } from './components/common/BottomNav';
+import { SideDrawer } from './components/common/SideDrawer';
 
 // Auth & Onboarding
 import { AuthScreens } from './components/auth/AuthScreens';
@@ -30,14 +31,18 @@ import { FieldDashboard } from './components/dashboards/FieldDashboard';
 // Projects & Workspace
 import { ProjectsList } from './components/project/ProjectsList';
 import { ProjectWorkspace } from './components/project/ProjectWorkspace';
+import { CreateProjectView } from './components/project/CreateProjectView';
+import { CreateTaskView } from './components/project/CreateTaskView';
 import { ProjectTasksTab } from './components/project/ProjectTasksTab';
 import { ProjectScheduleTab } from './components/project/ProjectScheduleTab';
 import { ProjectBudgetTab } from './components/project/ProjectBudgetTab';
 import { ProjectReportsTab } from './components/project/ProjectReportsTab';
+import { ProjectTeamTab } from './components/project/ProjectTeamTab';
 
-// Opportunities & Budgets Hub (Matching User Screenshots)
+// Opportunities & Budgets Hub
 import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
 import { BudgetsHubView } from './components/budgets/BudgetsHubView';
+import { MessagesHubView } from './components/messages/MessagesHubView';
 
 // AI
 import { LattiAssistant } from './components/ai/LattiAssistant';
@@ -47,19 +52,22 @@ import { SettingsView } from './components/settings/SettingsView';
 
 // Modals
 import { CreateProjectModal } from './components/modals/CreateProjectModal';
+import { CreateProjectBudgetModal } from './components/modals/CreateProjectBudgetModal';
+import { DealAnalyzerModal } from './components/modals/DealAnalyzerModal';
 import { CreateTaskModal } from './components/modals/CreateTaskModal';
 import { CreatePunchModal } from './components/modals/CreatePunchModal';
 import { PhotoUploadModal } from './components/modals/PhotoUploadModal';
 import { TaskDetailsModal } from './components/modals/TaskDetailsModal';
 import { PhotoPreviewModal } from './components/modals/PhotoPreviewModal';
 import { DocumentPreviewModal } from './components/modals/DocumentPreviewModal';
-import { NotificationDrawer } from './components/modals/NotificationDrawer';
+import { NotificationsView } from './components/notifications/NotificationsView';
+import { FolderKanban, DollarSign, Sparkles, CheckSquare, X } from 'lucide-react';
 
 export function App() {
   // Navigation & View State
   const [appView, setAppView] = useState<'auth' | 'onboarding' | 'workspace'>('workspace');
   const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
-  const [currentRole, setCurrentRole] = useState<UserRole>('pm'); // Default to Project Manager
+  const [currentRole, setCurrentRole] = useState<UserRole>('admin'); // Default to Company Owner (Phase 1 Focus)
   const [activeTab, setActiveTab] = useState<string>('home');
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
@@ -79,16 +87,19 @@ export function App() {
   const [chatMessages, setChatMessages] = useState<ProjectChatMessage[]>(MOCK_PROJECT_CHATS);
 
   // Modals state
+  const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
+  const [isQuickActionSheetOpen, setIsQuickActionSheetOpen] = useState(false);
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
+  const [isCreateBudgetOpen, setIsCreateBudgetOpen] = useState(false);
+  const [isDealAnalyzerOpen, setIsDealAnalyzerOpen] = useState(false);
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
   const [isCreatePunchOpen, setIsCreatePunchOpen] = useState(false);
   const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<SitePhoto | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<DocumentItem | null>(null);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
-  const currentUser = CURRENT_USERS[currentRole] || CURRENT_USERS.pm;
+  const currentUser = CURRENT_USERS[currentRole] || CURRENT_USERS.admin;
   const unreadNotifsCount = notifications.filter(n => !n.read).length;
 
   // Handlers
@@ -134,10 +145,10 @@ export function App() {
   const handleCreateProject = (newProj: Partial<Project>) => {
     const fullProj: Project = {
       id: `proj-${Date.now()}`,
-      name: newProj.name || 'New Construction Project',
+      name: newProj.name || 'New Commercial Build',
       code: `PRJ-${Math.floor(1000 + Math.random() * 9000)}`,
       location: newProj.location || 'Site Location',
-      cityState: newProj.cityState || 'New York, NY',
+      cityState: newProj.cityState || 'Austin, TX',
       status: newProj.status || 'Planning',
       progress: newProj.progress || 0,
       startDate: newProj.startDate || '2025-06-01',
@@ -170,13 +181,14 @@ export function App() {
 
     setProjects(prev => [fullProj, ...prev]);
     setIsCreateProjectOpen(false);
+    setActiveProject(fullProj); // Auto-navigate into project workspace
   };
 
   const handleCreateTask = (newTask: Partial<Task>) => {
     const fullTask: Task = {
       id: `tsk-${Date.now()}`,
-      projectId: activeProject ? activeProject.id : 'proj-1',
-      projectName: activeProject ? activeProject.name : 'Riverside Office Complex',
+      projectId: activeProject ? activeProject.id : projects[0].id,
+      projectName: activeProject ? activeProject.name : projects[0].name,
       title: newTask.title || 'New Construction Task',
       description: newTask.description || '',
       assignee: {
@@ -204,6 +216,34 @@ export function App() {
     setIsCreateTaskOpen(false);
   };
 
+  const handleAddTasksFromTemplate = (templateTasks: Partial<Task>[]) => {
+    const newTasksList = templateTasks.map((t, idx) => ({
+      id: t.id || `tsk-tpl-${Date.now()}-${idx}`,
+      projectId: activeProject ? activeProject.id : projects[0].id,
+      projectName: activeProject ? activeProject.name : projects[0].name,
+      title: t.title || 'Template Task',
+      description: t.description || '',
+      assignee: t.assignee || {
+        id: currentUser.id,
+        name: currentUser.name,
+        avatar: currentUser.avatar,
+        role: currentUser.roleTitle
+      },
+      startDate: t.startDate || '2025-05-20',
+      dueDate: t.dueDate || '2025-06-15',
+      priority: t.priority || 'Medium',
+      status: t.status || 'Not Started',
+      milestone: t.milestone || 'Pre-Construction',
+      costCode: '01-1000',
+      subtasks: t.subtasks || [],
+      attachmentsCount: 1,
+      notesCount: 0,
+      photos: []
+    }));
+
+    setTasks(prev => [...newTasksList, ...prev]);
+  };
+
   const handleCreatePunch = (newPunch: Partial<PunchItem>) => {
     const fullPunch: PunchItem = {
       id: `pch-${Date.now()}`,
@@ -217,53 +257,78 @@ export function App() {
         id: 'sub-1',
         name: 'Marco Rossi',
         avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        trade: 'Concrete Solutions Inc.'
+        trade: 'Concrete Works'
       },
-      dueDate: newPunch.dueDate || '2025-05-25',
+      dueDate: '2025-05-30',
       createdDate: '2025-05-20',
-      photos: newPunch.photos || ['https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80']
+      photos: []
     };
 
     setPunchItems(prev => [fullPunch, ...prev]);
     setIsCreatePunchOpen(false);
   };
 
-  const handleUpdateTaskStatus = (taskId: string, status: TaskStatus) => {
-    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status } : t));
-    if (selectedTask && selectedTask.id === taskId) {
-      setSelectedTask(prev => prev ? { ...prev, status } : null);
-    }
+  const handleUpdateTaskStatus = (taskId: string, newStatus: TaskStatus) => {
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
   };
 
   const handleToggleSubtask = (taskId: string, subtaskId: string) => {
     setTasks(prev => prev.map(t => {
       if (t.id === taskId) {
-        const updatedSubs = t.subtasks.map(st => st.id === subtaskId ? { ...st, completed: !st.completed } : st);
-        return { ...t, subtasks: updatedSubs };
+        const updatedSubtasks = (t.subtasks || []).map(st => 
+          st.id === subtaskId ? { ...st, completed: !st.completed } : st
+        );
+        return { ...t, subtasks: updatedSubtasks };
       }
       return t;
     }));
-    if (selectedTask && selectedTask.id === taskId) {
-      setSelectedTask(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          subtasks: prev.subtasks.map(st => st.id === subtaskId ? { ...st, completed: !st.completed } : st)
-        };
-      });
-    }
   };
 
-  const handleUpdatePunchStatus = (punchId: string, status: PunchStatus) => {
-    setPunchItems(prev => prev.map(p => p.id === punchId ? { ...p, status } : p));
+  const handleUpdatePunchStatus = (punchId: string, newStatus: PunchStatus) => {
+    setPunchItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
   };
 
-  const handleAddDailyLog = (newLog: DailyLogItem) => {
-    setDailyLogs(prev => [newLog, ...prev]);
+  const handleAddDailyLog = (newLog: Partial<DailyLogItem>) => {
+    const fullLog: DailyLogItem = {
+      id: `log-${Date.now()}`,
+      projectId: activeProject ? activeProject.id : 'proj-1',
+      projectName: activeProject ? activeProject.name : 'Riverside Office Complex',
+      date: newLog.date || '2025-05-20',
+      weather: {
+        condition: 'Sunny',
+        temperature: '76°F',
+        windSpeed: '8 mph',
+        precipitation: '0%',
+        siteCondition: 'Dry'
+      },
+      totalHeadcount: 18,
+      crews: [
+        { trade: 'Concrete', subcontractor: 'Apex Concrete', workersCount: 12, hoursWorked: 8 },
+        { trade: 'MEP', subcontractor: 'Vanguard MEP', workersCount: 6, hoursWorked: 8 }
+      ],
+      workSummary: newLog.workSummary || 'Daily site progress log',
+      materialsReceived: ['Ready-mix concrete trucks'],
+      safetyIncidents: 'None reported',
+      safetyPassed: true,
+      author: currentUser.name
+    };
+    setDailyLogs(prev => [fullLog, ...prev]);
   };
 
-  const handleAddPlanPin = (newPin: PlanGridPin) => {
-    setPlanPins(prev => [newPin, ...prev]);
+  const handleAddPin = (pin: Partial<PlanGridPin>) => {
+    const fullPin: PlanGridPin = {
+      id: `pin-${Date.now()}`,
+      projectId: activeProject ? activeProject.id : 'proj-1',
+      title: pin.title || 'Inspection Note',
+      xPercent: pin.xPercent || 50,
+      yPercent: pin.yPercent || 50,
+      type: pin.type || 'task',
+      status: pin.status || 'open',
+      roomOrArea: pin.roomOrArea || 'Level 12 Deck',
+      description: pin.description || '',
+      createdDate: '2025-05-20'
+    };
+    setPlanPins(prev => [...prev, fullPin]);
   };
 
   const handleUpdatePinStatus = (pinId: string, status: 'open' | 'in-progress' | 'resolved') => {
@@ -275,15 +340,7 @@ export function App() {
   };
 
   const handleOpenQuickAction = () => {
-    if (currentRole === 'admin') {
-      setIsCreateProjectOpen(true);
-    } else if (currentRole === 'pm') {
-      setIsCreateTaskOpen(true);
-    } else if (currentRole === 'finance') {
-      setActiveTab('latti');
-    } else if (currentRole === 'field') {
-      setIsPhotoUploadOpen(true);
-    }
+    setIsQuickActionSheetOpen(true);
   };
 
   return (
@@ -295,7 +352,7 @@ export function App() {
       onRestartOnboarding={handleStartOnboarding}
       onResetData={handleResetData}
     >
-      {/* 1. AUTHENTICATION VIEW (Sign In / Sign Up / Forgot Password) */}
+      {/* 1. AUTHENTICATION VIEW */}
       {appView === 'auth' ? (
         <AuthScreens
           initialMode={authMode}
@@ -303,7 +360,7 @@ export function App() {
           onStartOnboarding={handleStartOnboarding}
         />
       ) : appView === 'onboarding' ? (
-        /* 2. 5-STEP GUIDED ONBOARDING FLOW */
+        /* 2. ONBOARDING FLOW */
         <OnboardingFlow
           onComplete={handleCompleteOnboarding}
           onBackToAuth={() => setAppView('auth')}
@@ -315,23 +372,52 @@ export function App() {
           <Header
             currentUser={currentUser}
             activeProject={activeProject}
+            activeTab={activeTab}
             unreadNotifsCount={unreadNotifsCount}
             onBackToHome={() => { setActiveProject(null); setActiveTab('home'); }}
-            onOpenNotifications={() => setIsNotificationOpen(true)}
+            onOpenNotifications={() => { setActiveProject(null); setActiveTab('notifications'); }}
             onOpenLatti={() => {
-              if (activeProject) {
-                // Keep inside project
-              } else {
+              if (!activeProject) {
                 setActiveTab('latti');
               }
             }}
-            onOpenSettings={() => setActiveTab('more')}
+            onOpenSettings={() => { setActiveProject(null); setActiveTab('more'); }}
+            onOpenDrawer={() => setIsSideDrawerOpen(true)}
+            onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
           />
 
           {/* Body Content Area */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden">
-            {/* If a project is currently open in depth */}
-            {activeProject ? (
+            {/* FULL-SCREEN DEDICATED CREATION & ANALYZER PAGES */}
+            {isCreateProjectOpen ? (
+              <CreateProjectView
+                onBack={() => setIsCreateProjectOpen(false)}
+                onCreate={handleCreateProject}
+              />
+            ) : isCreateTaskOpen ? (
+              <CreateTaskView
+                project={activeProject || projects[0]}
+                onBack={() => setIsCreateTaskOpen(false)}
+                onCreate={handleCreateTask}
+              />
+            ) : isCreateBudgetOpen ? (
+              <CreateProjectBudgetModal
+                isFullScreenPage={true}
+                onClose={() => setIsCreateBudgetOpen(false)}
+                projects={projects}
+                onCreateBudget={(budgetData) => {
+                  alert(`Master budget "${budgetData.budgetName}" created successfully!`);
+                  setIsCreateBudgetOpen(false);
+                  setActiveTab('budgets');
+                }}
+              />
+            ) : isDealAnalyzerOpen ? (
+              <DealAnalyzerModal
+                isFullScreenPage={true}
+                onClose={() => setIsDealAnalyzerOpen(false)}
+              />
+            ) : activeProject ? (
+              /* If a project is currently open in depth */
               <ProjectWorkspace
                 project={activeProject}
                 currentRole={currentRole}
@@ -355,78 +441,42 @@ export function App() {
                 onUpdateTaskStatus={handleUpdateTaskStatus}
                 onUploadPhoto={() => setIsPhotoUploadOpen(true)}
                 onPreviewPhoto={(p) => setSelectedPhoto(p)}
-                onUploadDocument={() => alert("Document upload modal")}
+                onUploadDocument={() => alert('Upload Document...')}
                 onPreviewDocument={(d) => setSelectedDocument(d)}
                 onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
                 onAddDailyLog={handleAddDailyLog}
-                onAddPlanPin={handleAddPlanPin}
+                onAddPlanPin={handleAddPin}
                 onUpdatePinStatus={handleUpdatePinStatus}
                 onSendMessage={handleSendMessage}
+                onAddTasksFromTemplate={handleAddTasksFromTemplate}
               />
             ) : (
-              /* Top Level Dashboard Tabs */
+              /* Global Hub Views */
               <>
-                {/* 1. ROLE-ADAPTIVE HOME DASHBOARD TAB */}
+                {/* 1. EXECUTIVE HOME DASHBOARD */}
                 {activeTab === 'home' && (
-                  <>
-                    {currentRole === 'admin' && (
-                      <SimpleHomeView
-                        projects={projects}
-                        onSelectProject={(p) => setActiveProject(p)}
-                        onOpenLatti={() => setActiveTab('latti')}
-                        onOpenTasks={() => setActiveTab('tasks')}
-                        onOpenProjects={() => setActiveTab('projects')}
-                        onOpenBudgets={() => setActiveTab('budgets')}
-                      />
-                    )}
-
-                    {currentRole === 'pm' && (
-                      <PMDashboard
-                        projects={projects}
-                        tasks={tasks}
-                        onSelectProject={(p) => setActiveProject(p)}
-                        onOpenTask={(t) => setSelectedTask(t)}
-                        onCreateTask={() => setIsCreateTaskOpen(true)}
-                        onOpenSchedule={() => setActiveTab('schedule')}
-                        onOpenLatti={() => setActiveTab('latti')}
-                      />
-                    )}
-
-                    {currentRole === 'field' && (
-                      <FieldDashboard
-                        tasks={tasks}
-                        photos={photos}
-                        onOpenTask={(t) => setSelectedTask(t)}
-                        onUpdateTaskStatus={handleUpdateTaskStatus}
-                        onTriggerPhotoUpload={() => setIsPhotoUploadOpen(true)}
-                        onViewDrawings={() => {
-                          setActiveProject(projects[0]);
-                        }}
-                        onOpenDailyLogs={() => {
-                          setActiveProject(projects[0]);
-                        }}
-                      />
-                    )}
-
-                    {currentRole === 'finance' && (
-                      <FinanceDashboard
-                        projects={projects}
-                        categories={categories}
-                        onSelectProject={(p) => setActiveProject(p)}
-                        onOpenBudgetDetails={() => setActiveTab('budgets')}
-                        onOpenReports={() => setActiveTab('reports')}
-                        onOpenLatti={() => setActiveTab('latti')}
-                      />
-                    )}
-                  </>
+                  <SimpleHomeView
+                    currentUser={currentUser}
+                    projects={projects}
+                    onSelectProject={(p) => setActiveProject(p)}
+                    onOpenLatti={() => setActiveTab('latti')}
+                    onOpenTasks={() => {
+                      setActiveProject(projects[0]);
+                    }}
+                    onOpenProjects={() => setActiveTab('projects')}
+                    onOpenBudgets={() => setActiveTab('budgets')}
+                    onOpenNewProject={() => setIsCreateProjectOpen(true)}
+                    onOpenTeam={() => setActiveTab('team')}
+                    onOpenReports={() => setActiveTab('reports')}
+                  />
                 )}
 
-                {/* 2. OPPORTUNITIES / DEALS TAB (Matching Screenshot 3) */}
+                {/* 2. OPPORTUNITIES / DEALS TAB */}
                 {activeTab === 'opportunities' && (
                   <OpportunitiesView />
                 )}
 
-                {/* 3. PROJECTS LIST TAB */}
+                {/* 3. PROJECTS MASTER LIST */}
                 {activeTab === 'projects' && (
                   <ProjectsList
                     projects={projects}
@@ -435,42 +485,27 @@ export function App() {
                   />
                 )}
 
-                {/* 4. BUDGETS HUB TAB (Matching Screenshot 5, 4, 1, 2, 3) */}
+                {/* 4. BUDGETS HUB TAB */}
                 {activeTab === 'budgets' && (
                   <BudgetsHubView />
                 )}
 
-                {/* 5. TASKS TAB */}
-                {activeTab === 'tasks' && (
-                  <div className="px-5 pt-3 pb-24">
-                    <ProjectTasksTab
-                      project={projects[0]}
-                      tasks={tasks}
-                      onOpenTask={(t) => setSelectedTask(t)}
-                      onCreateTask={() => setIsCreateTaskOpen(true)}
-                      onUpdateStatus={handleUpdateTaskStatus}
-                    />
-                  </div>
+                {/* 5. MESSAGES & DISCUSSIONS HUB */}
+                {activeTab === 'messages' && (
+                  <MessagesHubView
+                    currentUser={currentUser}
+                    projects={projects}
+                    chatMessages={chatMessages}
+                    onSendMessage={handleSendMessage}
+                    onSelectProject={(p) => setActiveProject(p)}
+                  />
                 )}
 
-                {/* 4. SCHEDULE TAB */}
-                {activeTab === 'schedule' && (
+                {/* 6. TEAM DIRECTORY TAB */}
+                {activeTab === 'team' && (
                   <div className="px-5 pt-3 pb-24">
-                    <ProjectScheduleTab
+                    <ProjectTeamTab
                       project={projects[0]}
-                      ganttItems={ganttItems}
-                      onCreateTask={() => setIsCreateTaskOpen(true)}
-                    />
-                  </div>
-                )}
-
-                {/* 5. BUDGET TAB */}
-                {activeTab === 'budget' && (
-                  <div className="px-5 pt-3 pb-24">
-                    <ProjectBudgetTab
-                      project={projects[0]}
-                      categories={categories}
-                      onAddCostItem={() => alert("Add Cost Code Item")}
                     />
                   </div>
                 )}
@@ -486,7 +521,7 @@ export function App() {
                   </div>
                 )}
 
-                {/* 7. LATTI AI ASSISTANT TAB */}
+                {/* 7. LATTI AI ASSISTANT */}
                 {activeTab === 'latti' && (
                   <div className="px-5 pt-3 pb-24">
                     <LattiAssistant
@@ -505,54 +540,168 @@ export function App() {
                   </div>
                 )}
 
-                {/* 8. SETTINGS & PROFILE TAB */}
+                {/* 8. MORE / SETTINGS VIEW */}
                 {activeTab === 'more' && (
                   <SettingsView
                     currentUser={currentUser}
-                    onSignOut={() => handleOpenAuth('signin')}
-                    onNavigateTab={(tab) => setActiveTab(tab)}
+                    onSignOut={() => setAppView('auth')}
+                    onNavigateTab={(t) => setActiveTab(t)}
+                  />
+                )}
+
+                {/* 9. NOTIFICATIONS DRAWER */}
+                {activeTab === 'notifications' && (
+                  <NotificationsView
+                    notifications={notifications}
+                    onBack={() => setActiveTab('home')}
+                    onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
+                    onSelectNotification={(n) => {
+                      if (n.projectId) {
+                        const proj = projects.find(p => p.id === n.projectId) || projects[0];
+                        setActiveProject(proj);
+                      }
+                    }}
                   />
                 )}
               </>
             )}
           </div>
 
-          {/* Bottom Navigation Bar */}
-          {!activeProject && (
-            <BottomNav
-              currentRole={currentRole}
-              activeTab={activeTab}
-              onTabChange={(tab) => setActiveTab(tab)}
-              onQuickAction={handleOpenQuickAction}
-            />
-          )}
+          {/* Bottom Navigation */}
+          <BottomNav
+            currentRole={currentRole}
+            activeTab={activeTab}
+            onTabChange={(tab) => {
+              setActiveProject(null);
+              setActiveTab(tab);
+            }}
+            onQuickAction={handleOpenQuickAction}
+          />
+
+          {/* SIDE DRAWER NAVIGATION */}
+          <SideDrawer
+            isOpen={isSideDrawerOpen}
+            onClose={() => setIsSideDrawerOpen(false)}
+            currentUser={currentUser}
+            onNavigateTab={(tab) => {
+              setActiveProject(null);
+              setActiveTab(tab);
+            }}
+            onOpenCreateProject={() => setIsCreateProjectOpen(true)}
+            onOpenCreateBudget={() => setIsCreateBudgetOpen(true)}
+            onOpenDealAnalyzer={() => setIsDealAnalyzerOpen(true)}
+            onSignOut={() => setAppView('auth')}
+          />
         </div>
       )}
 
-      {/* Global Modals */}
-      <CreateProjectModal
-        isOpen={isCreateProjectOpen}
-        onClose={() => setIsCreateProjectOpen(false)}
-        onCreate={handleCreateProject}
-      />
+      {/* FLOATING QUICK ACTION BOTTOM SHEET (+) */}
+      {isQuickActionSheetOpen && (
+        <div 
+          onClick={() => setIsQuickActionSheetOpen(false)}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-sm animate-fade-in font-sans"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[430px] bg-[#070D1A] border-t border-x border-[#142036] rounded-t-[28px] rounded-b-none p-5 pb-9 shadow-2xl flex flex-col gap-3 text-slate-100 animate-slide-up"
+          >
+            {/* Top Pull Indicator Bar */}
+            <div className="w-10 h-1.5 rounded-full bg-slate-600/60 mx-auto -mt-1 mb-1" />
 
-      <CreateTaskModal
-        isOpen={isCreateTaskOpen}
-        project={activeProject || projects[0]}
-        onClose={() => setIsCreateTaskOpen(false)}
-        onCreate={handleCreateTask}
-      />
+            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">Create New Action</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Select an enterprise construction action</p>
+              </div>
+              <button
+                onClick={() => setIsQuickActionSheetOpen(false)}
+                className="w-8 h-8 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
+            <div className="flex flex-col gap-2 pt-1">
+              <button
+                onClick={() => {
+                  setIsQuickActionSheetOpen(false);
+                  setIsCreateProjectOpen(true);
+                }}
+                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                  <FolderKanban className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">New Construction Project</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Initialize commercial or custom home site</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsQuickActionSheetOpen(false);
+                  setIsCreateBudgetOpen(true);
+                }}
+                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+              >
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
+                  <DollarSign className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">4-Step Project Budget</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Master CSI ledger with vendor cost allocations</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsQuickActionSheetOpen(false);
+                  setIsDealAnalyzerOpen(true);
+                }}
+                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">Latti Deal Analyzer™</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Evaluate acquisition ARV, debt & Deal Score</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsQuickActionSheetOpen(false);
+                  setIsCreateTaskOpen(true);
+                }}
+                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+              >
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
+                  <CheckSquare className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">New Construction Task</h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Assign milestones, due dates and subtasks</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+      {/* CREATE PUNCH ITEM MODAL */}
       <CreatePunchModal
         isOpen={isCreatePunchOpen}
-        project={activeProject || projects[0]}
         onClose={() => setIsCreatePunchOpen(false)}
         onCreate={handleCreatePunch}
       />
 
+      {/* PHOTO UPLOAD MODAL */}
       <PhotoUploadModal
         isOpen={isPhotoUploadOpen}
-        project={activeProject || projects[0]}
         onClose={() => setIsPhotoUploadOpen(false)}
         onUpload={(p) => {
           setPhotos(prev => [
@@ -597,20 +746,6 @@ export function App() {
         />
       )}
 
-      <NotificationDrawer
-        isOpen={isNotificationOpen}
-        notifications={notifications}
-        onClose={() => setIsNotificationOpen(false)}
-        onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
-        onSelectNotification={(n) => {
-          setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, read: true } : item));
-          setIsNotificationOpen(false);
-          if (n.projectId) {
-            const p = projects.find(item => item.id === n.projectId);
-            if (p) setActiveProject(p);
-          }
-        }}
-      />
     </DeviceFrame>
   );
 }

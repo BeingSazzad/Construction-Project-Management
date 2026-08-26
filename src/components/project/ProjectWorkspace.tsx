@@ -54,6 +54,7 @@ interface ProjectWorkspaceProps {
   onAddPlanPin?: (pin: PlanGridPin) => void;
   onUpdatePinStatus?: (pinId: string, status: 'open' | 'in-progress' | 'resolved') => void;
   onSendMessage?: (msg: ProjectChatMessage) => void;
+  onAddTasksFromTemplate?: (tasks: Partial<Task>[]) => void;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
@@ -85,7 +86,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onAddDailyLog,
   onAddPlanPin,
   onUpdatePinStatus,
-  onSendMessage
+  onSendMessage,
+  onAddTasksFromTemplate
 }) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
@@ -112,8 +114,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   return (
     <div className="w-full flex flex-col flex-1">
       {/* Project Sub-navigation Scrollable Pills */}
-      <div className="w-full bg-[#080C14] border-b border-[#162033] sticky top-[53px] z-30 px-5 py-2">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+      <div className="w-full bg-[#060913] border-b border-[#142036] sticky top-[56px] z-30 px-5 py-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
           {visibleTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -121,10 +123,10 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                className={`py-1.5 px-3.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'bg-[#0066FF] text-white font-bold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#111827]'
+                    ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20'
+                    : 'bg-[#070D1A] text-slate-400 hover:text-white border border-[#142036]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -136,7 +138,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
       </div>
 
       {/* Main Tab Content */}
-      <div className="px-5 pt-3 flex-1">
+      <div className="px-5 pt-1 flex-1">
         {activeTab === 'overview' && (
           <ProjectOverviewTab
             project={project}
@@ -148,6 +150,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onOpenTask={onOpenTask}
             onOpenPunch={onOpenPunch}
             onOpenLatti={() => setActiveTab('latti')}
+            onAddTasksFromTemplate={onAddTasksFromTemplate}
           />
         )}
 

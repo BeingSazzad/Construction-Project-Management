@@ -115,13 +115,13 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
       {/* Main Canvas Viewport (Clean 430px or Fluid) */}
       <main className="w-full flex justify-center items-stretch flex-1">
         {frameMode === 'mobile' ? (
-          <div className="w-full max-w-[430px] min-h-[880px] bg-[#070A12] border-x md:border border-[#172238] md:rounded-2xl flex flex-col overflow-hidden shadow-2xl">
-            <div className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden bg-[#070A12]">
+          <div className="w-full max-w-[430px] min-h-[880px] bg-[#060913] border-x md:border border-[#141F33] md:rounded-2xl flex flex-col overflow-hidden shadow-2xl relative">
+            <div className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden bg-[#060913] relative">
               {children}
             </div>
           </div>
         ) : (
-          <div className="w-full max-w-3xl min-h-[880px] bg-[#070A12] border border-[#172238] md:rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+          <div className="w-full max-w-3xl min-h-[880px] bg-[#060913] border border-[#141F33] md:rounded-2xl flex flex-col overflow-hidden shadow-2xl">
             {children}
           </div>
         )}

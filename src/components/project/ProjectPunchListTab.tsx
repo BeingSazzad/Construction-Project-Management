@@ -28,20 +28,20 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   });
 
   return (
-    <div className="flex flex-col gap-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       {/* Top Filter & Create Action */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1 p-1 bg-[#0D1424] rounded-xl border border-[#1A263E] overflow-x-auto flex-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 flex-1">
           {(['All', 'Open', 'In Progress', 'Resolved', 'Verified'] as const).map((filter) => {
             const isActive = activeFilter === filter;
             return (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter as any)}
-                className={`py-1 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   isActive 
-                    ? 'bg-[#2563EB] text-white shadow-sm font-bold' 
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20' 
+                    : 'bg-[#070D1A] text-slate-400 hover:text-white border border-[#142036]'
                 }`}
               >
                 {filter} {filter === 'All' ? `(${projectPunch.length})` : ''}

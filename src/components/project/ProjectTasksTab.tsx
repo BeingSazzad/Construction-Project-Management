@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Project, Task, TaskStatus } from '../../types';
 import { StatusBadge } from '../common/StatusBadge';
 import { 
-  Plus, Search, Check, Clock, 
-  Paperclip, MessageSquare, MapPin, CheckSquare, Calendar, ChevronRight
+  Plus, Search, Check, Paperclip, MessageSquare
 } from 'lucide-react';
 
 interface ProjectTasksTabProps {
@@ -43,32 +42,49 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     return true;
   });
 
+  // Format date helper: "2025-05-20" -> "May 20"
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    try {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const month = monthNames[parseInt(parts[1], 10) - 1] || parts[1];
+        return `${month} ${parseInt(parts[2], 10)}`;
+      }
+    } catch {
+      // fallback
+    }
+    return dateStr;
+  };
+
   return (
-    <div className="flex flex-col gap-3 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-      {/* Top Search & Create Bar */}
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      
+      {/* 1. Search Bar & Add Task Action */}
       <div className="flex items-center gap-2">
         <div className="flex-1 relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="w-full h-9 bg-[#0B1120] border border-[#162238] rounded-xl pl-8 pr-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#0066FF] transition-colors"
+            className="w-full h-11 bg-[#070D1A] border border-[#142036] rounded-xl pl-9 pr-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
           />
         </div>
 
         <button
           onClick={onCreateTask}
-          className="h-9 px-3 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-transform hover:scale-105 flex-shrink-0"
+          className="h-11 px-4 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all flex-shrink-0"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>Add Task</span>
         </button>
       </div>
 
-      {/* Segmented Filter Pills */}
-      <div className="flex items-center gap-1 p-1 bg-[#0B1120] rounded-xl border border-[#162238]">
+      {/* 2. Standardized Design System Filter Pills */}
+      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
         {[
           { id: 'all', label: `All (${projectTasks.length})` },
           { id: 'my', label: 'My Tasks' },
@@ -80,10 +96,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
             <button
               key={f.id}
               onClick={() => setFilterTab(f.id as any)}
-              className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? 'bg-[#0066FF] text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20'
+                  : 'bg-[#070D1A] text-slate-400 hover:text-white border border-[#142036]'
               }`}
             >
               {f.label}
@@ -92,26 +108,28 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         })}
       </div>
 
-      {/* Tasks List */}
+      {/* 3. Sleek & Uncluttered Tasks List Cards */}
       <div className="flex flex-col gap-2.5">
         {filteredTasks.length === 0 ? (
-          <div className="p-8 rounded-2xl bg-[#0B1120] border border-[#162238] text-center text-slate-500 text-xs">
+          <div className="p-8 rounded-2xl bg-[#070D1A] border border-[#142036] text-center text-slate-400 text-xs font-medium">
             No tasks found in this view.
           </div>
         ) : (
           filteredTasks.map((t) => {
             const isCompleted = t.status === 'Completed';
+            const formattedDueDate = formatDate(t.dueDate);
+
             return (
               <div
                 key={t.id}
-                className={`p-3 rounded-2xl border transition-all flex flex-col gap-2 shadow-sm ${
+                className={`p-3.5 rounded-2xl border transition-all flex flex-col gap-2 shadow-sm group ${
                   isCompleted 
-                    ? 'border-[#141E30] bg-[#080D18] opacity-75' 
-                    : 'border-[#162238] bg-[#0B1120] hover:border-blue-500/40'
+                    ? 'border-[#142036] bg-[#050811] opacity-75' 
+                    : 'border-[#142036] bg-[#070D1A] hover:border-blue-500/40'
                 }`}
               >
+                {/* Top Row: Checkbox + Title + Status Badge */}
                 <div className="flex items-start justify-between gap-2.5">
-                  {/* Checkbox and Task title */}
                   <div className="flex items-start gap-2.5 flex-1 min-w-0">
                     <button
                       onClick={() => onUpdateStatus(t.id, isCompleted ? 'In Progress' : 'Completed')}
@@ -127,7 +145,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                     <div className="min-w-0 flex-1">
                       <h3 
                         onClick={() => onOpenTask(t)}
-                        className={`text-xs font-bold cursor-pointer hover:text-blue-400 transition-colors leading-snug ${
+                        className={`text-xs sm:text-sm font-bold cursor-pointer hover:text-blue-400 transition-colors leading-snug ${
                           isCompleted ? 'line-through text-slate-500' : 'text-white'
                         }`}
                       >
@@ -135,9 +153,9 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                       </h3>
                       
                       {t.milestone && (
-                        <span className="text-xs text-blue-400 font-semibold block mt-0.5">
+                        <p className="text-[11px] text-blue-400 font-medium mt-0.5">
                           {t.milestone}
-                        </span>
+                        </p>
                       )}
                     </div>
                   </div>
@@ -145,32 +163,45 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                   <StatusBadge status={t.status} size="xs" />
                 </div>
 
-                {/* Footer Metadata */}
+                {/* Footer Metadata Row */}
                 <div className="flex items-center justify-between text-xs text-slate-400 pt-1.5 border-t border-[#121B2D]">
-                  <div className="flex items-center gap-1.5">
+                  {/* Assignee Avatar & Name */}
+                  <div className="flex items-center gap-1.5 min-w-0">
                     <img
                       src={t.assignee.avatar}
                       alt={t.assignee.name}
-                      className="w-4 h-4 rounded-full object-cover border border-[#182438]"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
+                      }}
+                      className="w-4 h-4 rounded-full object-cover border border-[#182438] flex-shrink-0"
                     />
                     <span className="text-slate-300 font-medium truncate max-w-[120px]">{t.assignee.name}</span>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  {/* Clean Due Date & Minimal Attachment / Comment Icons */}
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     <span className={`font-semibold ${t.priority === 'Critical' ? 'text-rose-400' : 'text-amber-400'}`}>
-                      Due {t.dueDate.slice(5)}
+                      Due {formattedDueDate}
                     </span>
                     
-                    <div className="flex items-center gap-2 text-slate-500">
+                    <div className="flex items-center gap-2 text-slate-400">
                       {t.attachmentsCount > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <Paperclip className="w-3 h-3" />
+                        <span 
+                          onClick={() => onOpenTask(t)}
+                          className="flex items-center gap-0.5 text-xs hover:text-white cursor-pointer transition-colors"
+                          title={`${t.attachmentsCount} Attached Files/Photos`}
+                        >
+                          <Paperclip className="w-3 h-3 text-slate-400" />
                           <span>{t.attachmentsCount}</span>
                         </span>
                       )}
                       {t.notesCount > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <MessageSquare className="w-3 h-3" />
+                        <span 
+                          onClick={() => onOpenTask(t)}
+                          className="flex items-center gap-0.5 text-xs hover:text-white cursor-pointer transition-colors"
+                          title={`${t.notesCount} Task Comments`}
+                        >
+                          <MessageSquare className="w-3 h-3 text-slate-400" />
                           <span>{t.notesCount}</span>
                         </span>
                       )}

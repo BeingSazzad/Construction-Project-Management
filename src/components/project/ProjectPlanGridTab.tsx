@@ -125,84 +125,82 @@ export const ProjectPlanGridTab: React.FC<ProjectPlanGridTabProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 pb-24 font-sans">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       {/* Top Header & Mode Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <div className="flex items-center justify-between gap-2 border-b border-[#162033] pb-2.5">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-extrabold uppercase tracking-wider text-slate-300">
-              Plan Intelligence & Blueprints
-            </h2>
-            <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-blue-400" />
-              Latti Vision AI Ready
+          <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+            <span>Blueprints & Pins</span>
+            <span className="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20 flex items-center gap-1">
+              <Sparkles className="w-3 h-3" />
+              AI Ready
             </span>
-          </div>
-          <p className="text-xs text-slate-400">
-            High-res architectural sheets, geolocated pins & automated AI quantity takeoff
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5 font-medium">
+            Architectural CAD sheets & geolocated pins
           </p>
         </div>
 
         {/* View Switcher Pills */}
-        <div className="flex items-center gap-1.5 bg-[#080D18] p-1 rounded-xl border border-[#162033]">
+        <div className="flex items-center gap-1 bg-[#0D1424] p-1 rounded-xl border border-[#1A263E] flex-shrink-0">
           <button
             onClick={() => setActiveSubView('blueprint')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeSubView === 'blueprint'
-                ? 'bg-[#0066FF] text-white shadow'
+                ? 'bg-[#2563EB] text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            Floor Plan & Pins
+            Plan
           </button>
           <button
             onClick={() => setActiveSubView('takeoff')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
               activeSubView === 'takeoff'
-                ? 'bg-[#0066FF] text-white shadow'
+                ? 'bg-[#2563EB] text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <Sparkles className="w-3 h-3" />
-            <span>AI Takeoff ({aiTakeoffs.length})</span>
+            <span>Takeoff ({aiTakeoffs.length})</span>
           </button>
         </div>
       </div>
 
       {activeSubView === 'blueprint' ? (
         <>
-          {/* Plan Sheet Selector & Filters Bar */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-[#0D1422] p-2.5 rounded-xl border border-[#1A263B]">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Floor Sheet Selector Dropdown */}
+          <div className="p-3 rounded-2xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-2.5">
+            <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <select
                 value={selectedFloor}
                 onChange={(e) => setSelectedFloor(e.target.value)}
-                className="bg-[#080D18] border border-[#1E293B] rounded-lg px-2.5 py-1 text-xs text-slate-200 font-semibold outline-none focus:border-blue-500"
+                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3 text-xs text-white font-semibold outline-none focus:border-[#2563EB] cursor-pointer"
               >
-                <option value="Level 8 - Typical Office Plan">Level 8 - Typical Office Plan (A-208 Rev 04)</option>
-                <option value="Level 7 - MEP Services & Riser">Level 7 - MEP Services & Riser (M-107 Rev 03)</option>
-                <option value="Ground Floor - Lobby & Core">Ground Floor - Lobby & Core (A-101 Rev 04)</option>
-                <option value="Basement - Foundation & Parking">Basement - Foundation & Parking (S-001 Rev 02)</option>
+                <option value="Level 8 - Typical Office Plan">Level 8 - Office Plan (A-208 Rev 04)</option>
+                <option value="Level 7 - MEP Services & Riser">Level 7 - MEP Riser (M-107 Rev 03)</option>
+                <option value="Ground Floor - Lobby & Core">Ground Floor - Lobby (A-101 Rev 04)</option>
+                <option value="Basement - Foundation & Parking">Basement - Foundation (S-001 Rev 02)</option>
               </select>
             </div>
 
-            {/* Filter Badges & Drop Pin Button */}
-            <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-              <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
+            {/* Filter Pills Row */}
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
                 {[
                   { id: 'all', label: `All (${pins.length})` },
-                  { id: 'punch', label: 'Punch', color: 'text-red-400' },
-                  { id: 'inspection', label: 'Inspections', color: 'text-blue-400' },
-                  { id: 'photo', label: 'Photos', color: 'text-emerald-400' },
+                  { id: 'punch', label: 'Punch' },
+                  { id: 'inspection', label: 'Inspections' },
+                  { id: 'photo', label: 'Photos' },
                 ].map(f => (
                   <button
                     key={f.id}
                     onClick={() => setFilterType(f.id)}
-                    className={`px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                       filterType === f.id
-                        ? 'bg-[#18263D] text-white border border-blue-500/40 font-bold'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-[#2563EB] text-white font-bold shadow-sm'
+                        : 'bg-[#080D18] text-slate-400 hover:text-slate-200 border border-[#141F33]'
                     }`}
                   >
                     {f.label}
@@ -215,264 +213,223 @@ export const ProjectPlanGridTab: React.FC<ProjectPlanGridTabProps> = ({
                   setIsDropPinMode(!isDropPinMode);
                   setTempCoords(null);
                 }}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shadow cursor-pointer flex-shrink-0 ${
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow cursor-pointer flex-shrink-0 active:scale-95 ${
                   isDropPinMode 
                     ? 'bg-amber-500 text-slate-950 font-extrabold animate-pulse' 
-                    : 'bg-blue-600 hover:bg-blue-500 text-white'
+                    : 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white'
                 }`}
               >
-                <MapPin className="w-3 h-3" />
+                <MapPin className="w-3.5 h-3.5" />
                 <span>{isDropPinMode ? 'Click Map' : 'Drop Pin'}</span>
               </button>
             </div>
           </div>
 
-          {/* Interactive Blueprint Viewer Stage */}
-          <div className="relative w-full rounded-2xl overflow-hidden border border-[#1A263B] bg-[#070B14] shadow-2xl">
-            {/* Zoom Controls Overlay */}
-            <div className="absolute top-3 right-3 z-20 flex flex-col gap-1.5 bg-[#0D1422]/90 backdrop-blur border border-[#1A263B] p-1 rounded-xl shadow-lg">
+          {/* Interactive Blueprint Viewer Canvas */}
+          <div className="relative w-full rounded-3xl overflow-hidden border border-[#1A263E] bg-[#070B14] shadow-md">
+            {/* Zoom Overlay */}
+            <div className="absolute top-3 right-3 z-20 flex flex-col gap-1.5 bg-[#0D1424]/90 backdrop-blur border border-[#1A263E] p-1 rounded-xl shadow-md">
               <button 
                 onClick={() => setZoomLevel(prev => Math.min(prev + 0.25, 2.0))}
-                className="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-white hover:bg-[#141F33] rounded-lg transition-colors cursor-pointer"
                 title="Zoom In"
               >
-                <ZoomIn className="w-3.5 h-3.5" />
+                <ZoomIn className="w-4 h-4" />
               </button>
               <button 
                 onClick={() => setZoomLevel(prev => Math.max(prev - 0.25, 0.75))}
-                className="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-white hover:bg-[#141F33] rounded-lg transition-colors cursor-pointer"
                 title="Zoom Out"
               >
-                <ZoomOut className="w-3.5 h-3.5" />
+                <ZoomOut className="w-4 h-4" />
               </button>
               <button 
                 onClick={() => setZoomLevel(1)}
-                className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors text-[10px] font-bold"
+                className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#141F33] rounded-lg transition-colors cursor-pointer"
                 title="Reset Zoom"
               >
-                <RotateCcw className="w-3 h-3" />
+                <RotateCcw className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* Pin Drop Mode Banner */}
+            {/* Drop Pin Mode Active Banner */}
             {isDropPinMode && (
-              <div className="absolute top-3 left-3 z-20 bg-amber-500/90 backdrop-blur text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black shadow-lg flex items-center gap-1.5">
+              <div className="absolute top-3 left-3 z-20 bg-amber-500 text-slate-950 px-3 py-1.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 animate-bounce" />
-                <span>Click any location on the blueprint to place a marker</span>
+                <span>Click location on blueprint to place pin</span>
               </div>
             )}
 
-            {/* Blueprint SVG Canvas Container */}
+            {/* Clean SVG Floor Plan */}
             <div 
               onClick={handleBlueprintClick}
               style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'center center', transition: 'transform 0.2s ease-out' }}
-              className={`relative w-full aspect-[16/10] min-h-[320px] max-h-[460px] bg-[#0A101D] overflow-hidden ${isDropPinMode ? 'cursor-crosshair' : 'cursor-default'}`}
+              className={`relative w-full aspect-[16/10] min-h-[300px] bg-[#080D18] overflow-hidden ${isDropPinMode ? 'cursor-crosshair' : 'cursor-default'}`}
             >
-              <svg className="w-full h-full opacity-60 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-full h-full text-slate-600/40" viewBox="0 0 1000 600" fill="none" stroke="currentColor">
                 <defs>
-                  <pattern id="blueprint-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#142138" strokeWidth="1" />
-                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#0E1726" strokeWidth="0.5" />
+                  <pattern id="cadGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#10192A" strokeWidth="1" />
                   </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#blueprint-grid)" />
+                <rect width="1000" height="600" fill="url(#cadGrid)" />
 
-                {/* Perimeter Wall Outline */}
-                <rect x="5%" y="8%" width="90%" height="84%" fill="none" stroke="#2563EB" strokeWidth="2.5" />
-                <rect x="6%" y="9%" width="88%" height="82%" fill="none" stroke="#1E3A8A" strokeWidth="1" strokeDasharray="4 2" />
+                {/* Outer Wall Boundary */}
+                <rect x="50" y="40" width="900" height="520" stroke="#2563EB" strokeWidth="3" fill="#0A101E" strokeDasharray="none" />
 
-                {/* Central Elevator / Utility Core */}
-                <rect x="42%" y="32%" width="16%" height="36%" fill="#0D1627" stroke="#3B82F6" strokeWidth="1.5" />
-                <line x1="42%" y1="50%" x2="58%" y2="50%" stroke="#1D4ED8" strokeWidth="1" />
-                <text x="50%" y="45%" fill="#60A5FA" fontSize="10" fontWeight="bold" textAnchor="middle">CORE ELEVATORS</text>
-                <text x="50%" y="58%" fill="#60A5FA" fontSize="9" textAnchor="middle">MEP RISER</text>
+                {/* Internal Room Partition Walls */}
+                <line x1="250" y1="40" x2="250" y2="220" stroke="#1E2C48" strokeWidth="2" />
+                <line x1="500" y1="40" x2="500" y2="220" stroke="#1E2C48" strokeWidth="2" />
+                <line x1="750" y1="40" x2="750" y2="220" stroke="#1E2C48" strokeWidth="2" />
+                <line x1="50" y1="220" x2="950" y2="220" stroke="#1E2C48" strokeWidth="2" />
 
-                {/* Office Rooms Partitions */}
-                <line x1="5%" y1="28%" x2="42%" y2="28%" stroke="#1E40AF" strokeWidth="1.5" />
-                <line x1="23%" y1="8%" x2="23%" y2="28%" stroke="#1E40AF" strokeWidth="1.5" />
-                <text x="14%" y="19%" fill="#93C5FD" fontSize="9" textAnchor="middle">SUITE 801 (EXEC)</text>
-                <text x="32%" y="19%" fill="#93C5FD" fontSize="9" textAnchor="middle">SUITE 802 (ENTRY)</text>
+                {/* Central Core & Elevator Shaft */}
+                <rect x="380" y="270" width="240" height="150" stroke="#3875F6" strokeWidth="2" fill="#0D1627" />
+                <rect x="400" y="290" width="200" height="60" stroke="#1E2C48" strokeWidth="1.5" fill="#070B14" />
 
-                <line x1="58%" y1="28%" x2="95%" y2="28%" stroke="#1E40AF" strokeWidth="1.5" />
-                <line x1="76%" y1="8%" x2="76%" y2="28%" stroke="#1E40AF" strokeWidth="1.5" />
-                <text x="67%" y="19%" fill="#93C5FD" fontSize="9" textAnchor="middle">CONFERENCE A</text>
-                <text x="85%" y="19%" fill="#93C5FD" fontSize="9" textAnchor="middle">SERVER / TELECOM</text>
+                {/* Lower Corridor Partitions */}
+                <line x1="300" y1="480" x2="300" y2="560" stroke="#1E2C48" strokeWidth="2" />
+                <line x1="700" y1="480" x2="700" y2="560" stroke="#1E2C48" strokeWidth="2" />
+                <line x1="50" y1="480" x2="950" y2="480" stroke="#1E2C48" strokeWidth="2" />
 
-                <line x1="5%" y1="72%" x2="95%" y2="72%" stroke="#1E40AF" strokeWidth="1.5" />
-                <line x1="30%" y1="72%" x2="30%" y2="92%" stroke="#1E40AF" strokeWidth="1.5" />
-                <line x1="70%" y1="72%" x2="70%" y2="92%" stroke="#1E40AF" strokeWidth="1.5" />
-                <text x="17%" y="83%" fill="#93C5FD" fontSize="9" textAnchor="middle">NORTH RESTROOMS</text>
-                <text x="50%" y="83%" fill="#93C5FD" fontSize="9" textAnchor="middle">OPEN WORKSPACE HUB</text>
-                <text x="83%" y="83%" fill="#93C5FD" fontSize="9" textAnchor="middle">EAST MECH CHASE</text>
+                {/* Clean CAD Room Text Labels (Zero Overlap) */}
+                <text x="150" y="110" fill="#475569" fontSize="12" fontWeight="700" textAnchor="middle">SUITE 801 (EXEC)</text>
+                <text x="375" y="110" fill="#475569" fontSize="12" fontWeight="700" textAnchor="middle">SUITE 802 (ENTRY)</text>
+                <text x="625" y="110" fill="#475569" fontSize="12" fontWeight="700" textAnchor="middle">CONFERENCE ROOM</text>
+                <text x="850" y="110" fill="#475569" fontSize="12" fontWeight="700" textAnchor="middle">SERVER / TECH</text>
 
-                <text x="50%" y="5%" fill="#475569" fontSize="8" textAnchor="middle">← 140'-0" OVERALL WIDTH →</text>
+                <text x="500" y="325" fill="#3875F6" fontSize="13" fontWeight="800" textAnchor="middle">CORE ELEVATORS</text>
+                <text x="500" y="395" fill="#475569" fontSize="11" fontWeight="700" textAnchor="middle">MEP RISER</text>
+
+                <text x="175" y="525" fill="#475569" fontSize="12" fontWeight="700" textAnchor="middle">NORTH RESTROOMS</text>
+                <text x="500" y="525" fill="#475569" fontSize="12" fontWeight="700" textAnchor="middle">OPEN WORKSPACE HUB</text>
+                <text x="825" y="525" fill="#475569" fontSize="12" fontWeight="700" textAnchor="middle">EAST MECH CHASE</text>
               </svg>
 
-              {/* Render Pins */}
+              {/* Pin Markers Rendered on Floor Plan */}
               {filteredPins.map((pin) => {
                 const isSelected = selectedPin?.id === pin.id;
-                const pinColor = 
-                  pin.type === 'punch' ? 'bg-red-500 border-red-300 text-white' :
-                  pin.type === 'inspection' ? 'bg-blue-500 border-blue-300 text-white' :
-                  pin.type === 'photo' ? 'bg-emerald-500 border-emerald-300 text-white' :
-                  'bg-amber-500 border-amber-300 text-slate-950';
-
                 return (
-                  <div
+                  <button
                     key={pin.id}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedPin(pin);
                     }}
                     style={{ left: `${pin.xPercent}%`, top: `${pin.yPercent}%` }}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group"
+                    className={`absolute -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform cursor-pointer hover:scale-110 active:scale-95 z-10 ${
+                      pin.type === 'punch'
+                        ? 'bg-rose-500 text-white'
+                        : pin.type === 'inspection'
+                        ? 'bg-blue-600 text-white'
+                        : pin.type === 'photo'
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-amber-500 text-slate-950'
+                    } ${isSelected ? 'ring-4 ring-white scale-110 z-20' : ''}`}
+                    title={pin.title}
                   >
-                    <span className={`absolute -inset-1 rounded-full animate-ping opacity-60 ${
-                      pin.type === 'punch' ? 'bg-red-400' : 'bg-blue-400'
-                    }`} />
-                    
-                    <div className={`relative w-6 h-6 rounded-full border-2 shadow-lg flex items-center justify-center transition-transform ${
-                      isSelected ? 'scale-125 ring-2 ring-white' : 'hover:scale-110'
-                    } ${pinColor}`}>
-                      {pin.type === 'punch' ? (
-                        <AlertCircle className="w-3.5 h-3.5" />
-                      ) : pin.type === 'inspection' ? (
-                        <ClipboardCheck className="w-3.5 h-3.5" />
-                      ) : (
-                        <Camera className="w-3.5 h-3.5" />
-                      )}
-                    </div>
-                  </div>
+                    {pin.type === 'punch' ? (
+                      <AlertCircle className="w-4 h-4" />
+                    ) : pin.type === 'inspection' ? (
+                      <ClipboardCheck className="w-4 h-4" />
+                    ) : pin.type === 'photo' ? (
+                      <Camera className="w-4 h-4" />
+                    ) : (
+                      <CheckCircle2 className="w-4 h-4" />
+                    )}
+                  </button>
                 );
               })}
 
+              {/* Draft Temporary Pin Indicator */}
               {tempCoords && (
-                <div 
+                <div
                   style={{ left: `${tempCoords.x}%`, top: `${tempCoords.y}%` }}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 z-30 w-7 h-7 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center shadow-2xl animate-bounce"
+                  className="absolute -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center shadow-xl animate-bounce z-30"
                 >
-                  <MapPin className="w-4 h-4 text-slate-950" />
+                  <MapPin className="w-5 h-5 text-slate-950" />
                 </div>
               )}
             </div>
           </div>
 
-          {/* New Pin Modal */}
+          {/* New Pin Form Modal */}
           {tempCoords && (
-            <form onSubmit={handleSaveNewPin} className="p-4 rounded-xl bg-[#0D1422] border border-amber-500/50 shadow-xl flex flex-col gap-3 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-[#1A263B] pb-2">
+            <form onSubmit={handleSaveNewPin} className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-lg flex flex-col gap-3 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-[#162033] pb-2.5">
                 <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5" />
-                  Place New Markup Pin at ({tempCoords.x}%, {tempCoords.y}%)
+                  <MapPin className="w-4 h-4" />
+                  New Pin at ({tempCoords.x}%, {tempCoords.y}%)
                 </span>
                 <button type="button" onClick={() => setTempCoords(null)} className="text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Pin Category</label>
-                  <select
-                    value={newPinType}
-                    onChange={(e) => setNewPinType(e.target.value as any)}
-                    className="w-full bg-[#080D18] border border-[#1E293B] rounded-lg px-2.5 py-1.5 text-xs text-slate-200 outline-none focus:border-blue-500"
-                  >
-                    <option value="punch">⚠️ Punch List Defect</option>
-                    <option value="inspection">📋 Quality & Code Inspection</option>
-                    <option value="photo">📸 Progress Photo Tag</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Pin Title *</label>
-                  <input
-                    type="text"
-                    value={newPinTitle}
-                    onChange={(e) => setNewPinTitle(e.target.value)}
-                    placeholder="E.g. Incomplete HVAC flex duct"
-                    required
-                    className="w-full bg-[#080D18] border border-[#1E293B] rounded-lg px-2.5 py-1.5 text-xs text-slate-200 outline-none focus:border-blue-500"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Issue Description</label>
-                <textarea
-                  value={newPinDesc}
-                  onChange={(e) => setNewPinDesc(e.target.value)}
-                  placeholder="Describe what needs correction or inspection at this coordinate..."
-                  rows={2}
-                  className="w-full bg-[#080D18] border border-[#1E293B] rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-blue-500 resize-none"
+                <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Title *</label>
+                <input
+                  type="text"
+                  value={newPinTitle}
+                  onChange={(e) => setNewPinTitle(e.target.value)}
+                  placeholder="E.g. Rebar clearance issue or Punch #104"
+                  required
+                  className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3 text-xs text-white outline-none focus:border-[#2563EB]"
                 />
               </div>
 
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setTempCoords(null)}
-                  className="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-300 text-xs font-semibold hover:bg-slate-800"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black shadow"
-                >
-                  Save Pin to Sheet
-                </button>
+              <div className="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Pin Type</label>
+                  <select
+                    value={newPinType}
+                    onChange={(e) => setNewPinType(e.target.value as any)}
+                    className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3 text-xs text-white outline-none focus:border-[#2563EB]"
+                  >
+                    <option value="punch">⚠ Punch List</option>
+                    <option value="inspection">📋 Inspection</option>
+                    <option value="photo">📷 Photo Marker</option>
+                    <option value="task">☑ Task</option>
+                  </select>
+                </div>
+
+                <div className="flex items-end">
+                  <button
+                    type="submit"
+                    className="w-full h-11 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md active:scale-95"
+                  >
+                    Save Pin
+                  </button>
+                </div>
               </div>
             </form>
           )}
 
-          {/* Selected Pin Detail */}
-          {selectedPin && (
-            <div className="p-4 rounded-xl bg-[#0D1422] border border-[#1A263B] shadow-md flex flex-col gap-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                    selectedPin.type === 'punch' ? 'bg-red-500/10 text-red-400 border border-red-500/30' :
-                    selectedPin.type === 'inspection' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30' :
-                    'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                  }`}>
-                    {selectedPin.type === 'punch' ? (
-                      <AlertCircle className="w-4 h-4" />
-                    ) : (
-                      <ClipboardCheck className="w-4 h-4" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white">{selectedPin.title}</div>
-                    <div className="text-[10px] text-slate-400">{selectedPin.roomOrArea} • Placed on {selectedPin.createdDate}</div>
-                  </div>
+          {/* Selected Pin Details Sheet */}
+          {selectedPin && !tempCoords && (
+            <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full ${
+                    selectedPin.type === 'punch' ? 'bg-rose-500' : selectedPin.type === 'inspection' ? 'bg-blue-500' : 'bg-emerald-500'
+                  }`} />
+                  <h3 className="text-sm font-bold text-white">{selectedPin.title}</h3>
                 </div>
-
-                <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${
-                  selectedPin.status === 'resolved' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
-                  selectedPin.status === 'in-progress' ? 'bg-blue-500/10 border-blue-500/30 text-blue-400' :
-                  'bg-red-500/10 border-red-500/30 text-red-400'
-                }`}>
-                  {selectedPin.status}
-                </span>
+                <span className="text-xs text-slate-400 font-medium">{selectedPin.roomOrArea}</span>
               </div>
 
-              <p className="text-xs text-slate-300 bg-[#080D18] p-2.5 rounded-lg border border-[#151F30]">
+              <p className="text-xs text-slate-300 bg-[#080D18] p-3 rounded-2xl border border-[#162033] leading-relaxed">
                 {selectedPin.description}
               </p>
 
-              <div className="flex items-center justify-between pt-2 border-t border-[#182338]">
-                <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                  <User className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Assigned: <strong className="text-slate-200">{selectedPin.assigneeName || 'Avery & Marsh Field Team'}</strong></span>
-                </div>
-
+              <div className="flex items-center justify-between text-xs pt-1 border-t border-[#162033]">
+                <span className="text-slate-400 font-medium">Status: <strong className="text-white uppercase">{selectedPin.status}</strong></span>
                 {onUpdatePinStatus && selectedPin.status !== 'resolved' && (
                   <button
                     onClick={() => onUpdatePinStatus(selectedPin.id, 'resolved')}
-                    className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold cursor-pointer active:scale-95"
                   >
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>Mark Resolved</span>
+                    Mark Resolved
                   </button>
                 )}
               </div>
@@ -480,76 +437,30 @@ export const ProjectPlanGridTab: React.FC<ProjectPlanGridTabProps> = ({
           )}
         </>
       ) : (
-        /* AI Quantity Takeoff & Scope Analysis (RFP Section 05 & 08) */
-        <div className="flex flex-col gap-3">
-          <div className="p-4 rounded-2xl bg-[#0D1422] border border-blue-500/30 shadow-md flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-xs font-black text-white">Latti AI Plan-Set Takeoff Analysis</h3>
-                <p className="text-[11px] text-slate-400">
-                  Automated material scope & quantity extraction from 4 uploaded architectural sheets
-                </p>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => alert("Upload new PDF Plan Set to trigger AI Takeoff...")}
-              className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Upload Plan-Set</span>
-            </button>
+        /* AI Quantity Takeoff Table Sheet */
+        <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wide text-slate-300">
+              Latti AI Quantity Takeoffs
+            </span>
+            <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
+              Auto Extracted
+            </span>
           </div>
 
-          {/* Extracted Takeoff Line Items */}
           <div className="flex flex-col gap-2.5">
-            {aiTakeoffs.map((item) => {
-              const isApproved = approvedItems[item.id];
-              return (
-                <div key={item.id} className="p-3.5 rounded-xl bg-[#0D1422] border border-[#1A263B] flex flex-col gap-2.5 shadow-sm">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white">{item.item}</span>
-                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                          {item.confidence}% AI Confidence
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-slate-400 mt-0.5 block">
-                        Cost Code: {item.costCode} • Sheet: {item.sheetRef}
-                      </span>
-                    </div>
-
-                    <div className="text-right">
-                      <div className="text-sm font-black text-white">{item.totalEst}</div>
-                      <div className="text-[10px] text-slate-400">{item.aiQuantity} @ {item.unitCost}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-2 border-t border-[#182338]">
-                    <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3 text-blue-400" />
-                      Cross-referenced against historical Avery & Marsh cost library
-                    </span>
-
-                    <button
-                      onClick={() => setApprovedItems(prev => ({ ...prev, [item.id]: !prev[item.id] }))}
-                      className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                        isApproved
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                          : 'bg-blue-600 text-white hover:bg-blue-500'
-                      }`}
-                    >
-                      <Check className="w-3.5 h-3.5" />
-                      <span>{isApproved ? 'Approved & Synced' : 'Approve Line'}</span>
-                    </button>
-                  </div>
+            {aiTakeoffs.map((item) => (
+              <div key={item.id} className="p-3.5 rounded-2xl bg-[#090E1A] border border-[#141F33] flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white">{item.item}</span>
+                  <span className="text-xs font-bold text-blue-400">{item.totalEst}</span>
                 </div>
-              );
-            })}
+                <div className="flex items-center justify-between text-xs text-slate-400 font-medium pt-1 border-t border-[#162033]">
+                  <span>{item.costCode}</span>
+                  <span>{item.aiQuantity}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

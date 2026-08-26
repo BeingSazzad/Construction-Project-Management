@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  ChevronLeft, Phone, Mail, HelpCircle, FileText, 
-  MessageSquare, ExternalLink, CheckCircle2, Search, Send 
+  ChevronLeft, Phone, Mail, HelpCircle, ChevronDown,
+  CheckCircle2, Send 
 } from 'lucide-react';
 import { Button } from '../common/Button';
 
@@ -10,7 +10,7 @@ interface HelpSupportProps {
 }
 
 export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
-  const [search, setSearch] = useState('');
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [ticketSubject, setTicketSubject] = useState('');
   const [ticketMsg, setTicketMsg] = useState('');
   const [ticketSent, setTicketSent] = useState(false);
@@ -22,11 +22,11 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
     },
     {
       q: 'Can field superintendents log site photos without cellular signal?',
-      a: 'Yes! The Lattice mobile web app automatically caches uploaded site photos and punch list entries locally, syncing them to the cloud as soon as network connectivity is restored.'
+      a: 'Yes! The mobile app automatically caches uploaded site photos and punch list entries locally, syncing them to the cloud as soon as network connectivity is restored.'
     },
     {
       q: 'How do I export weekly executive project reports to PDF?',
-      a: 'Go to the Reports tab in any project workspace, select "Project Progress Report (May 2025)", and click the "Export PDF" button to download a formatted handoff report.'
+      a: 'Go to the Reports tab in any project workspace, select "Project Progress Report", and click the "Export PDF" button to download a formatted handoff report.'
     },
     {
       q: 'How does Latti AI detect schedule critical path risks?',
@@ -45,19 +45,23 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
     }, 4000);
   };
 
+  const toggleFaq = (idx: number) => {
+    setExpandedFaq(prev => prev === idx ? null : idx);
+  };
+
   return (
-    <div className="w-full min-h-screen bg-[#070A12] text-slate-200 p-5 font-sans pb-24">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       {/* Top Header */}
-      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[#162033]">
+      <div className="flex items-center gap-3 pb-3 border-b border-[#162033]">
         <button
           onClick={onBack}
-          className="w-8 h-8 rounded-xl bg-[#0D1422] border border-[#1A263B] text-slate-300 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+          className="w-9 h-9 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center cursor-pointer transition-all active:scale-95"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
         <div>
-          <h1 className="text-base font-extrabold text-white">Help & Support</h1>
-          <p className="text-[11px] text-slate-400">24/7 Enterprise Jobsite Assistance</p>
+          <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">Help & Support</h1>
+          <p className="text-xs text-slate-400 font-medium">24/7 Enterprise Jobsite Assistance</p>
         </div>
       </div>
 
@@ -66,80 +70,106 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
         <div className="grid grid-cols-2 gap-2.5">
           <a
             href="tel:+18005558900"
-            className="card-dark p-3 bg-[#0D1422] border-[#1A263B] hover:border-blue-500 flex flex-col items-center text-center cursor-pointer transition-colors"
+            className="p-3.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] hover:border-blue-500/40 flex flex-col items-center text-center cursor-pointer transition-all active:scale-95 shadow-sm"
           >
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-1.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-1.5">
               <Phone className="w-4 h-4" />
             </div>
             <span className="text-xs font-bold text-white">Call Hotline</span>
-            <span className="text-[10px] text-slate-400">1-800-555-8900</span>
+            <span className="text-xs text-slate-400 mt-0.5 font-medium">1-800-555-8900</span>
           </a>
 
           <a
-            href="mailto:support@latticebuild.com"
-            className="card-dark p-3 bg-[#0D1422] border-[#1A263B] hover:border-blue-500 flex flex-col items-center text-center cursor-pointer transition-colors"
+            href="mailto:support@averymarsh.com"
+            className="p-3.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] hover:border-blue-500/40 flex flex-col items-center text-center cursor-pointer transition-all active:scale-95 shadow-sm"
           >
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-1.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-1.5">
               <Mail className="w-4 h-4" />
             </div>
             <span className="text-xs font-bold text-white">Email Support</span>
-            <span className="text-[10px] text-slate-400">support@latticebuild.com</span>
+            <span className="text-xs text-slate-400 mt-0.5 font-medium">support@averymarsh.com</span>
           </a>
         </div>
 
-        {/* FAQs */}
-        <div>
-          <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 mb-2">
+        {/* Clean Hairline Accordion FAQs (Refined typography, zero bold overload) */}
+        <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-0.5">
             Frequently Asked Questions
           </h2>
 
-          <div className="space-y-2">
-            {faqs.map((faq, idx) => (
-              <div key={idx} className="card-dark p-3 bg-[#0D1422] border-[#1A263B] text-xs">
-                <h3 className="font-bold text-white mb-1 flex items-start gap-1.5">
-                  <HelpCircle className="w-3.5 h-3.5 text-blue-400 flex-shrink-0 mt-0.5" />
-                  <span>{faq.q}</span>
-                </h3>
-                <p className="text-slate-300 pl-5 leading-relaxed text-[11px]">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
+          <div className="flex flex-col border-t border-[#141F33]">
+            {faqs.map((faq, idx) => {
+              const isExpanded = expandedFaq === idx;
+              return (
+                <div 
+                  key={idx} 
+                  className="border-b border-[#141F33] last:border-b-0 py-2.5 transition-all"
+                >
+                  <button
+                    onClick={() => toggleFaq(idx)}
+                    className="w-full px-2 py-1.5 text-left flex items-start justify-between gap-3 hover:bg-[#090E1A] rounded-xl transition-colors cursor-pointer group"
+                  >
+                    <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                      <HelpCircle className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs sm:text-sm font-medium text-slate-200 group-hover:text-white leading-snug">
+                        {faq.q}
+                      </span>
+                    </div>
+
+                    <ChevronDown className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 mt-0.5 ${
+                      isExpanded ? 'rotate-180 text-blue-400' : ''
+                    }`} />
+                  </button>
+
+                  {isExpanded && (
+                    <div className="px-8 pt-1.5 pb-2 text-xs text-slate-400 leading-relaxed font-normal animate-fade-in">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Submit Ticket Form */}
-        <div className="card-dark p-4 bg-[#0D1422] border-[#1A263B]">
-          <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 mb-2">
+        <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-0.5">
             Submit Support Ticket
           </h2>
 
           {ticketSent ? (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-bold flex items-center gap-2">
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 text-xs font-semibold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-              <span>Ticket #8492 received. An engineer will respond within 15 minutes.</span>
+              <span>Ticket #8492 received. Support will respond within 15 mins.</span>
             </div>
           ) : (
-            <form onSubmit={handleSubmitTicket} className="space-y-2.5">
+            <form onSubmit={handleSubmitTicket} className="flex flex-col gap-3">
               <input
                 type="text"
                 required
                 value={ticketSubject}
                 onChange={(e) => setTicketSubject(e.target.value)}
-                placeholder="Issue Subject (e.g. Gantt timeline export issue)"
-                className="w-full h-10 bg-[#080D18] border border-[#182438] rounded-xl px-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                placeholder="Issue subject (e.g. Budget export error)"
+                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-xs text-white placeholder-slate-500 outline-none focus:border-[#2563EB]"
               />
+
               <textarea
                 required
                 rows={3}
                 value={ticketMsg}
                 onChange={(e) => setTicketMsg(e.target.value)}
-                placeholder="Describe your question or technical issue..."
-                className="w-full bg-[#080D18] border border-[#182438] rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
+                placeholder="Describe your issue or jobsite question..."
+                className="w-full bg-[#080D18] border border-[#1A263E] rounded-xl p-3 text-xs text-white placeholder-slate-500 outline-none focus:border-[#2563EB] resize-none"
               />
-              <Button variant="primary" type="submit" leftIcon={<Send className="w-3.5 h-3.5" />}>
-                Submit Priority Ticket
-              </Button>
+
+              <button
+                type="submit"
+                className="h-11 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all"
+              >
+                <Send className="w-4 h-4" />
+                <span>Submit Ticket</span>
+              </button>
             </form>
           )}
         </div>

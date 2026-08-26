@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  Plus, Search, ChevronDown, ChevronRight, DollarSign, 
-  Building2, MapPin, Sparkles, TrendingUp, Filter, CheckCircle2, 
-  Clock, X 
+  Plus, DollarSign, Building2, MapPin, Sparkles, 
+  TrendingUp, CheckCircle2, Clock, X, ChevronRight, Filter
 } from 'lucide-react';
 
 interface Opportunity {
@@ -11,7 +10,7 @@ interface Opportunity {
   client: string;
   address: string;
   value: number;
-  stage: 'New Lead' | 'Contacted' | 'Discovery' | 'Plans Received' | 'Estimating' | 'Proposal Sent' | 'Under Contract' | 'Won';
+  stage: 'Estimating' | 'Proposal Sent' | 'Under Contract' | 'Won';
   probability: number;
 }
 
@@ -20,7 +19,7 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
     id: 'opp-1',
     title: 'Greenwood Estate New Build',
     client: 'Anderson Family Trust',
-    address: '5 Willow Lane, Greenwood Village, CO',
+    address: 'Greenwood Village, CO',
     value: 2400000,
     stage: 'Estimating',
     probability: 25
@@ -29,7 +28,7 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
     id: 'opp-2',
     title: 'Maple Ridge Custom Home',
     client: 'Sarah Johnson',
-    address: '142 Oakwood Drive, Boulder, CO',
+    address: 'Boulder, CO',
     value: 850000,
     stage: 'Estimating',
     probability: 40
@@ -38,7 +37,7 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
     id: 'opp-3',
     title: 'Downtown Kitchen Remodel',
     client: 'Tom & Lisa Chen',
-    address: '88 Pine Street, Denver, CO',
+    address: 'Denver, CO',
     value: 125000,
     stage: 'Proposal Sent',
     probability: 60
@@ -47,7 +46,7 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
     id: 'opp-4',
     title: 'Aspen Ridge Modern Cabin',
     client: 'Vance Capital Partners',
-    address: '120 Mountain Pass, Aspen, CO',
+    address: 'Aspen, CO',
     value: 340000,
     stage: 'Estimating',
     probability: 50
@@ -56,7 +55,7 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
     id: 'opp-5',
     title: 'Cherry Creek Master Bath Remodel',
     client: 'Marcus Davis',
-    address: '744 Adams St, Denver, CO',
+    address: 'Denver, CO',
     value: 95000,
     stage: 'Won',
     probability: 100
@@ -65,34 +64,14 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
 
 export const OpportunitiesView: React.FC = () => {
   const [opportunities, setOpportunities] = useState<Opportunity[]>(INITIAL_OPPORTUNITIES);
-  const [expandedStages, setExpandedStages] = useState<Record<string, boolean>>({
-    'New Lead': false,
-    'Contacted': false,
-    'Discovery': false,
-    'Plans Received': false,
-    'Estimating': true,
-    'Proposal Sent': true,
-    'Under Contract': false,
-    'Won': true
-  });
-
+  const [selectedFilter, setSelectedFilter] = useState<'All' | 'Estimating' | 'Proposal Sent' | 'Won'>('All');
+  
   const [isNewOppModalOpen, setIsNewOppModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newClient, setNewClient] = useState('');
   const [newAddress, setNewAddress] = useState('');
   const [newValue, setNewValue] = useState('');
   const [newStage, setNewStage] = useState<Opportunity['stage']>('Estimating');
-
-  const STAGES: { name: Opportunity['stage']; color: string }[] = [
-    { name: 'New Lead', color: 'bg-slate-500' },
-    { name: 'Contacted', color: 'bg-blue-400' },
-    { name: 'Discovery', color: 'bg-blue-400' },
-    { name: 'Plans Received', color: 'bg-teal-400' },
-    { name: 'Estimating', color: 'bg-teal-400' },
-    { name: 'Proposal Sent', color: 'bg-blue-500' },
-    { name: 'Under Contract', color: 'bg-purple-400' },
-    { name: 'Won', color: 'bg-emerald-400' }
-  ];
 
   const totalPipeline = opportunities
     .filter(o => o.stage !== 'Won')
@@ -104,12 +83,10 @@ export const OpportunitiesView: React.FC = () => {
 
   const activeCount = opportunities.filter(o => o.stage !== 'Won').length;
 
-  const toggleStage = (stageName: string) => {
-    setExpandedStages(prev => ({
-      ...prev,
-      [stageName]: !prev[stageName]
-    }));
-  };
+  const filteredDeals = opportunities.filter(o => {
+    if (selectedFilter === 'All') return true;
+    return o.stage === selectedFilter;
+  });
 
   const handleCreateOpportunity = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +103,6 @@ export const OpportunitiesView: React.FC = () => {
     };
 
     setOpportunities(prev => [newOpp, ...prev]);
-    setExpandedStages(prev => ({ ...prev, [newStage]: true }));
     setIsNewOppModalOpen(false);
     setNewTitle('');
     setNewClient('');
@@ -135,225 +111,199 @@ export const OpportunitiesView: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-      {/* Top Header */}
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      
+      {/* 1. Header & Primary Action */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-base font-bold text-white tracking-tight">Deal Pipeline</h1>
-          <p className="text-[11px] text-slate-400 mt-0.5">
-            Track leads from first contact to won project
+          <h1 className="text-lg font-bold text-white tracking-tight">
+            Deal Pipeline
+          </h1>
+          <p className="text-xs text-slate-400 mt-0.5 font-medium">
+            Active leads & contract negotiations
           </p>
         </div>
 
         <button
           onClick={() => setIsNewOppModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-all shadow-md cursor-pointer active:scale-95 flex-shrink-0"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-4 h-4" />
           <span>New Deal</span>
         </button>
       </div>
 
-      {/* 4 Top KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-xs uppercase font-bold text-slate-400 block">Pipeline Value</span>
-          <div className="text-sm font-bold text-white mt-1">
-            ${totalPipeline.toLocaleString()}
-          </div>
+      {/* 2. Top 4 KPI Metrics */}
+      <div className="grid grid-cols-4 gap-2 text-center">
+        <div className="p-2.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex flex-col items-center justify-center">
+          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Pipeline</span>
+          <span className="text-xs sm:text-sm font-bold text-white mt-0.5">${(totalPipeline / 1000000).toFixed(2)}M</span>
         </div>
 
-        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-xs uppercase font-bold text-slate-400 block">Won Value</span>
-          <div className="text-sm font-bold text-emerald-400 mt-1">
-            ${wonValue.toLocaleString()}
-          </div>
+        <div className="p-2.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex flex-col items-center justify-center">
+          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Won</span>
+          <span className="text-xs sm:text-sm font-bold text-emerald-400 mt-0.5">${(wonValue / 1000).toFixed(0)}K</span>
         </div>
 
-        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-xs uppercase font-bold text-slate-400 block">Active Deals</span>
-          <div className="text-sm font-bold text-white mt-1">
-            {activeCount}
-          </div>
+        <div className="p-2.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex flex-col items-center justify-center">
+          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Active</span>
+          <span className="text-xs sm:text-sm font-bold text-white mt-0.5">{activeCount} Deals</span>
         </div>
 
-        <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-xs uppercase font-bold text-slate-400 block">Win Rate</span>
-          <div className="text-sm font-bold text-blue-400 mt-1">
-            20%
-          </div>
+        <div className="p-2.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex flex-col items-center justify-center">
+          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Win Rate</span>
+          <span className="text-xs sm:text-sm font-bold text-blue-400 mt-0.5">20%</span>
         </div>
       </div>
 
-      {/* Pipeline Stages Accordion List */}
-      <div className="flex flex-col gap-2">
-        {STAGES.map((stage) => {
-          const stageOpps = opportunities.filter(o => o.stage === stage.name);
-          const stageTotal = stageOpps.reduce((sum, o) => sum + o.value, 0);
-          const isExpanded = expandedStages[stage.name];
+      {/* 3. Modern Frameless Stage Filter Pills (No heavy container box) */}
+      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
+        {(['All', 'Estimating', 'Proposal Sent', 'Won'] as const).map((f) => {
+          const isActive = selectedFilter === f;
+          return (
+            <button
+              key={f}
+              onClick={() => setSelectedFilter(f)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                isActive
+                  ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/25'
+                  : 'bg-[#0B111E] text-slate-400 hover:text-white hover:bg-[#121B2E] border border-[#142036]'
+              }`}
+            >
+              {f === 'Proposal Sent' ? 'Proposal' : f}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 4. Clutter-Free Single-Layer Deal Cards (Zero Nested Accordion Box Inception) */}
+      <div className="flex flex-col gap-2.5">
+        {filteredDeals.map((deal) => {
+          const dealValM = (deal.value / 1000000).toFixed(2);
+          const dealValK = (deal.value / 1000).toFixed(0);
+          const isWon = deal.stage === 'Won';
 
           return (
-            <div 
-              key={stage.name}
-              className="bg-[#0B101D] border border-[#141C2E] rounded-2xl overflow-hidden shadow-sm"
+            <div
+              key={deal.id}
+              className="p-3.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2 shadow-sm group active:scale-[0.99]"
             >
-              {/* Stage Header Row */}
-              <button
-                onClick={() => toggleStage(stage.name)}
-                className="w-full px-3.5 py-2.5 flex items-center justify-between hover:bg-[#0E1526] transition-colors cursor-pointer text-left"
-              >
-                <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${stage.color}`} />
-                  <span className="text-xs font-semibold text-slate-200">{stage.name}</span>
-                  <span className="text-xs font-medium text-slate-400">
-                    ${stageTotal.toLocaleString()}
-                  </span>
-                </div>
+              {/* Row 1: Title + Value */}
+              <div className="flex items-center justify-between gap-2 min-w-0">
+                <h3 className="text-sm font-bold text-white truncate group-hover:text-[#3875F6] transition-colors leading-tight min-w-0">
+                  {deal.title}
+                </h3>
+                <span className={`text-sm font-extrabold flex-shrink-0 ${isWon ? 'text-emerald-400' : 'text-blue-400'}`}>
+                  {deal.value >= 1000000 ? `$${dealValM}M` : `$${dealValK}K`}
+                </span>
+              </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400 font-medium">
-                    {stageOpps.length}
-                  </span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                </div>
-              </button>
-
-              {/* Stage Content */}
-              {isExpanded && (
-                <div className="px-2.5 pb-2.5 pt-0.5 border-t border-[#121A2B] flex flex-col gap-2 bg-[#080D18]">
-                  {stageOpps.length === 0 ? (
-                    <div className="py-3 text-center text-slate-500 text-xs italic">
-                      No opportunities
-                    </div>
-                  ) : (
-                    stageOpps.map((opp) => (
-                      <div 
-                        key={opp.id}
-                        className="bg-[#0B101D] border border-[#162035] rounded-xl p-3 flex flex-col gap-1.5 hover:border-blue-500/40 transition-colors shadow-sm"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0 flex-1">
-                            <h3 className="text-xs font-bold text-white truncate">{opp.title}</h3>
-                            <div className="text-xs text-slate-400 mt-0.5 truncate">
-                              👤 {opp.client}
-                            </div>
-                            <div className="flex items-center gap-1 text-xs text-slate-400 mt-0.5 truncate">
-                              <MapPin className="w-3 h-3 text-slate-500 flex-shrink-0" />
-                              <span className="truncate">{opp.address}</span>
-                            </div>
-                          </div>
-
-                          <span className="text-xs font-semibold bg-[#121B2D] text-slate-300 px-2 py-0.5 rounded border border-[#1A263D]">
-                            {opp.stage}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-1.5 border-t border-[#121A2B] text-xs">
-                          <span className="font-bold text-white">
-                            ${opp.value.toLocaleString()}
-                          </span>
-                          <span className="text-[10px] font-semibold text-slate-400">
-                            {opp.probability}% prob
-                          </span>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+              {/* Row 2: Client & Location */}
+              <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                <span className="truncate">{deal.client} • {deal.address}</span>
+                <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${
+                  isWon 
+                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                    : 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                }`}>
+                  {deal.stage} ({deal.probability}%)
+                </span>
+              </div>
             </div>
           );
         })}
       </div>
 
-      {/* New Opportunity Modal */}
+      {/* 5. Create Deal Modal */}
       {isNewOppModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <form onSubmit={handleCreateOpportunity} className="w-full max-w-sm bg-[#0C121E] border border-[#1A263B] rounded-3xl p-5 shadow-2xl flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-[#162033] pb-2.5">
-              <h3 className="text-sm font-bold text-white">Create New Deal</h3>
-              <button type="button" onClick={() => setIsNewOppModalOpen(false)} className="text-slate-400 hover:text-white">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <form 
+            onSubmit={handleCreateOpportunity}
+            className="w-full max-w-sm bg-[#0D1424] border border-[#1A263E] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 animate-fade-in"
+          >
+            <div className="flex items-center justify-between border-b border-[#162033] pb-3">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-blue-400" />
+                Add New Deal
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsNewOppModalOpen(false)}
+                className="text-slate-400 hover:text-white p-1"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Deal / Project Name *</label>
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="e.g. Greenwood Estate New Build"
-                required
-                className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-col gap-3">
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Client Name</label>
+                <label className="text-xs font-semibold text-slate-300 mb-1 block">Project Title</label>
+                <input
+                  type="text"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="e.g. Oakridge Luxury Custom Build"
+                  required
+                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-300 mb-1 block">Client Name</label>
                 <input
                   type="text"
                   value={newClient}
                   onChange={(e) => setNewClient(e.target.value)}
-                  placeholder="Anderson Trust"
-                  className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
+                  placeholder="e.g. Anderson Family Trust"
+                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500"
                 />
               </div>
+
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Estimated Value ($)</label>
+                <label className="text-xs font-semibold text-slate-300 mb-1 block">Estimated Value ($)</label>
                 <input
                   type="number"
                   value={newValue}
                   onChange={(e) => setNewValue(e.target.value)}
-                  placeholder="2400000"
-                  className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
+                  placeholder="e.g. 1500000"
+                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500"
                 />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-300 mb-1 block">Stage</label>
+                <select
+                  value={newStage}
+                  onChange={(e) => setNewStage(e.target.value as Opportunity['stage'])}
+                  className="w-full h-11 bg-[#090E1A] border border-[#141F33] rounded-2xl px-3.5 text-xs text-white outline-none focus:border-blue-500"
+                >
+                  <option value="Estimating">Estimating</option>
+                  <option value="Proposal Sent">Proposal Sent</option>
+                  <option value="Under Contract">Under Contract</option>
+                  <option value="Won">Won</option>
+                </select>
               </div>
             </div>
 
-            <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Property Location</label>
-              <input
-                type="text"
-                value={newAddress}
-                onChange={(e) => setNewAddress(e.target.value)}
-                placeholder="5 Willow Lane, Denver, CO"
-                className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
-              />
-            </div>
-
-            <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Pipeline Stage</label>
-              <select
-                value={newStage}
-                onChange={(e) => setNewStage(e.target.value as any)}
-                className="w-full bg-[#080D18] border border-[#1A263D] rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-blue-400 cursor-pointer"
-              >
-                {STAGES.map(s => (
-                  <option key={s.name} value={s.name}>{s.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2 pt-2 border-t border-[#162033]">
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#162033]">
               <button
                 type="button"
                 onClick={() => setIsNewOppModalOpen(false)}
-                className="flex-1 py-2 rounded-xl bg-[#121B2D] text-slate-300 text-xs font-semibold hover:bg-slate-800"
+                className="h-11 px-4 rounded-2xl border border-[#1E2C48] text-slate-300 text-xs font-semibold hover:bg-[#141F33]"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white text-xs font-bold shadow-sm"
+                className="h-11 px-5 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md active:scale-95"
               >
-                Save Deal
+                Create Deal
               </button>
             </div>
           </form>
         </div>
       )}
+
     </div>
   );
 };

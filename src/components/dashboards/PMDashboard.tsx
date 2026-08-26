@@ -53,17 +53,6 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-      {/* 1. Greeting */}
-      <div className="flex flex-col">
-        <h1 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
-          <span>Good morning, Sarah!</span>
-          <span className="text-base">👋</span>
-        </h1>
-        <p className="text-xs text-slate-400 mt-0.5">
-          You have {totalDueToday} open tasks across {myProjects.length} active projects.
-        </p>
-      </div>
-
       {/* 2. 4-Column KPI Card */}
       <div className="p-3.5 bg-[#0D1424] border border-[#1A263E] rounded-2xl shadow-sm">
         <div className="grid grid-cols-4 divide-x divide-[#162033] text-center">
