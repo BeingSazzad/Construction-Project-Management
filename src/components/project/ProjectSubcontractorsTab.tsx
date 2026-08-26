@@ -42,14 +42,14 @@ export const ProjectSubcontractorsTab: React.FC<ProjectSubcontractorsTabProps> =
               <StatusBadge status={sub.status} size="xs" />
             </div>
 
-            <div className="grid grid-cols-2 gap-2 my-2.5 p-2 bg-[#0B101D] rounded-xl border border-[#172238] text-xs">
+            <div className="grid grid-cols-2 gap-2 my-2.5 p-2.5 bg-[#0B101D] rounded-xl border border-[#172238] text-xs">
               <div>
-                <span className="text-[10px] text-slate-400">Lead Contact:</span>
-                <p className="font-semibold text-slate-200">{sub.contactName}</p>
+                <span className="text-xs text-slate-400 font-medium">Lead Contact:</span>
+                <p className="font-semibold text-slate-200 mt-0.5">{sub.contactName}</p>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400">Workers on Site:</span>
-                <p className="font-bold text-emerald-400">{sub.workersOnSite} Crew Members</p>
+                <span className="text-xs text-slate-400 font-medium">Workers on Site:</span>
+                <p className="font-bold text-emerald-400 mt-0.5">{sub.workersOnSite} Crew Members</p>
               </div>
             </div>
 

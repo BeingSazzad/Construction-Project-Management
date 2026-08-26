@@ -65,7 +65,7 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
                 alt={photo.caption}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md text-[9px] font-bold text-cyan-300 border border-white/10">
+              <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md text-xs font-bold text-cyan-300 border border-white/10">
                 {photo.category}
               </div>
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -75,11 +75,11 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
 
             <div className="p-2.5 flex flex-col flex-1 bg-[#111827]">
               <h4 className="text-xs font-bold text-white line-clamp-1 mb-1">{photo.caption}</h4>
-              <p className="text-[10px] text-slate-400 flex items-center gap-1 mb-1.5">
-                <MapPin className="w-3 h-3 text-cyan-400 flex-shrink-0" />
+              <p className="text-xs text-slate-400 flex items-center gap-1 mb-1.5 font-medium">
+                <MapPin className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
                 <span className="truncate">{photo.location}</span>
               </p>
-              <div className="mt-auto text-[9px] text-slate-500 flex items-center justify-between border-t border-[#1C2A44] pt-1.5">
+              <div className="mt-auto text-xs text-slate-400 flex items-center justify-between border-t border-[#1C2A44] pt-1.5 font-medium">
                 <span>{photo.uploadedBy}</span>
                 <span>{photo.timestamp.split(',')[0]}</span>
               </div>

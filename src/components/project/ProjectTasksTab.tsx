@@ -135,7 +135,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                       </h3>
                       
                       {t.milestone && (
-                        <span className="text-[10px] text-blue-400 font-semibold block mt-0.5">
+                        <span className="text-xs text-blue-400 font-semibold block mt-0.5">
                           {t.milestone}
                         </span>
                       )}
@@ -146,7 +146,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                 </div>
 
                 {/* Footer Metadata */}
-                <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-[#121B2D]">
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-1.5 border-t border-[#121B2D]">
                   <div className="flex items-center gap-1.5">
                     <img
                       src={t.assignee.avatar}

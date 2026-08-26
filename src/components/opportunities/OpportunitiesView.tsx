@@ -157,28 +157,28 @@ export const OpportunitiesView: React.FC = () => {
       {/* 4 Top KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-[10px] uppercase font-bold text-slate-400 block">Pipeline Value</span>
+          <span className="text-xs uppercase font-bold text-slate-400 block">Pipeline Value</span>
           <div className="text-sm font-bold text-white mt-1">
             ${totalPipeline.toLocaleString()}
           </div>
         </div>
 
         <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-[10px] uppercase font-bold text-slate-400 block">Won Value</span>
+          <span className="text-xs uppercase font-bold text-slate-400 block">Won Value</span>
           <div className="text-sm font-bold text-emerald-400 mt-1">
             ${wonValue.toLocaleString()}
           </div>
         </div>
 
         <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-[10px] uppercase font-bold text-slate-400 block">Active Deals</span>
+          <span className="text-xs uppercase font-bold text-slate-400 block">Active Deals</span>
           <div className="text-sm font-bold text-white mt-1">
             {activeCount}
           </div>
         </div>
 
         <div className="bg-[#0B101D] p-3 rounded-2xl border border-[#141C2E] shadow-sm">
-          <span className="text-[10px] uppercase font-bold text-slate-400 block">Win Rate</span>
+          <span className="text-xs uppercase font-bold text-slate-400 block">Win Rate</span>
           <div className="text-sm font-bold text-blue-400 mt-1">
             20%
           </div>
@@ -205,13 +205,13 @@ export const OpportunitiesView: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full ${stage.color}`} />
                   <span className="text-xs font-semibold text-slate-200">{stage.name}</span>
-                  <span className="text-[10px] font-medium text-slate-500">
+                  <span className="text-xs font-medium text-slate-400">
                     ${stageTotal.toLocaleString()}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-400 font-medium">
+                  <span className="text-xs text-slate-400 font-medium">
                     {stageOpps.length}
                   </span>
                   <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
@@ -234,16 +234,16 @@ export const OpportunitiesView: React.FC = () => {
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0 flex-1">
                             <h3 className="text-xs font-bold text-white truncate">{opp.title}</h3>
-                            <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                            <div className="text-xs text-slate-400 mt-0.5 truncate">
                               👤 {opp.client}
                             </div>
-                            <div className="flex items-center gap-1 text-[10px] text-slate-500 mt-0.5 truncate">
+                            <div className="flex items-center gap-1 text-xs text-slate-400 mt-0.5 truncate">
                               <MapPin className="w-3 h-3 text-slate-500 flex-shrink-0" />
                               <span className="truncate">{opp.address}</span>
                             </div>
                           </div>
 
-                          <span className="text-[9px] font-semibold bg-[#121B2D] text-slate-300 px-2 py-0.5 rounded border border-[#1A263D]">
+                          <span className="text-xs font-semibold bg-[#121B2D] text-slate-300 px-2 py-0.5 rounded border border-[#1A263D]">
                             {opp.stage}
                           </span>
                         </div>

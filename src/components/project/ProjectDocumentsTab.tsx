@@ -86,7 +86,7 @@ export const ProjectDocumentsTab: React.FC<ProjectDocumentsTabProps> = ({
                   <h4 className="text-xs font-bold text-white truncate group-hover:text-cyan-300 transition-colors">
                     {doc.title}
                   </h4>
-                  <span className="text-[9px] font-bold uppercase tracking-wider bg-[#1C2A44] text-cyan-300 px-1.5 py-0.5 rounded">
+                  <span className="text-xs font-bold uppercase tracking-wider bg-[#1C2A44] text-cyan-300 px-1.5 py-0.5 rounded">
                     {doc.version}
                   </span>
                 </div>

@@ -69,11 +69,11 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
         <div className="flex items-center justify-between bg-[#080D17] p-3 rounded-xl border border-[#141E2F] mb-3">
           <div className="space-y-2">
             <div>
-              <span className="text-[10px] text-slate-400">Total Budget</span>
+              <span className="text-xs text-slate-400 font-medium">Total Budget</span>
               <div className="text-lg font-bold text-white">${(project.budget.total / 1000000).toFixed(2)}M</div>
             </div>
             <div>
-              <span className="text-[10px] text-slate-400">Total Cost (Actual)</span>
+              <span className="text-xs text-slate-400 font-medium">Total Cost (Actual)</span>
               <div className="text-lg font-bold text-blue-400">${(project.budget.actual / 1000000).toFixed(2)}M</div>
             </div>
           </div>
@@ -219,12 +219,12 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                       <div key={cc.code} className="bg-[#0D131F] rounded-lg p-2.5 border border-[#182338] text-xs">
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-mono text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1 py-0.5 rounded">
+                            <span className="font-mono text-xs font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">
                               {cc.code}
                             </span>
                             <span className="font-bold text-white">{cc.name}</span>
                           </div>
-                          <span className={`text-[10px] font-bold ${cc.variance <= 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                          <span className={`text-xs font-bold ${cc.variance <= 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
                             {cc.variance <= 0 ? `-$${Math.abs(cc.variance).toLocaleString()}` : `+$${cc.variance.toLocaleString()}`}
                           </span>
                         </div>
@@ -232,10 +232,10 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                         {/* Cost Line Items */}
                         <div className="space-y-1.5 mt-2">
                           {cc.items.map((item) => (
-                            <div key={item.id} className="p-2 bg-[#090E18] rounded border border-[#141E2F] flex items-center justify-between text-[11px]">
+                            <div key={item.id} className="p-2 bg-[#090E18] rounded border border-[#141E2F] flex items-center justify-between text-xs">
                               <div>
                                 <span className="font-medium text-slate-200">{item.name}</span>
-                                <span className="text-[9px] uppercase text-slate-500 ml-1.5 font-bold">({item.type})</span>
+                                <span className="text-xs uppercase text-slate-500 ml-1.5 font-bold">({item.type})</span>
                               </div>
                               <span className="font-bold text-slate-300">${item.actualCost.toLocaleString()}</span>
                             </div>

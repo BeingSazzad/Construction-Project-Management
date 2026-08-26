@@ -1,312 +1,230 @@
 import React, { useState } from 'react';
-import { Project, OpportunityDeal, Subcontractor } from '../../types';
+import { Project, OpportunityDeal } from '../../types';
 import { StatusBadge } from '../common/StatusBadge';
-import { Button } from '../common/Button';
 import { MOCK_OPPORTUNITY_DEALS, MOCK_SUBCONTRACTORS } from '../../data/mockData';
 import { 
-  Plus, ChevronRight, Sparkles, MapPin, TrendingUp, DollarSign, 
-  FolderKanban, Briefcase, Award, ShieldCheck, CheckCircle2, 
-  ArrowUpRight, Users, Building2 
+  Building2, ShieldCheck, Sparkles, TrendingUp, 
+  ChevronRight, ArrowUpRight, DollarSign, Users, Briefcase, Plus
 } from 'lucide-react';
 
 interface AdminDashboardProps {
   projects: Project[];
   onSelectProject: (project: Project) => void;
-  onCreateProject: () => void;
   onOpenLatti: () => void;
-  onOpenReports: () => void;
+  onOpenTasks: () => void;
+  onOpenProjects: () => void;
+  onOpenBudgets: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   projects,
   onSelectProject,
-  onCreateProject,
-  onOpenLatti
+  onOpenLatti,
+  onOpenProjects
 }) => {
-  const [activeSection, setActiveSection] = useState<'overview' | 'deals' | 'network'>('overview');
-  const opportunities = MOCK_OPPORTUNITY_DEALS;
+  const [activeSection, setActiveSection] = useState<'overview' | 'pipeline' | 'subs'>('overview');
+
+  const deals: OpportunityDeal[] = MOCK_OPPORTUNITY_DEALS;
   const subcontractors = MOCK_SUBCONTRACTORS;
 
-  const totalPipelineVal = opportunities.reduce((acc, curr) => acc + curr.estimatedValue, 0);
+  const totalPipelineVal = deals.reduce((sum, d) => sum + d.estimatedValue, 0);
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-24 font-sans">
-      {/* Role Navigation Pills */}
-      <div className="flex items-center gap-1.5 bg-[#080D18] p-1 rounded-xl border border-[#162033]">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      {/* Greeting Header */}
+      <div className="flex flex-col">
+        <h1 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
+          <span>Executive Overview</span>
+          <span className="text-base">👔</span>
+        </h1>
+        <p className="text-xs text-slate-400 mt-0.5 font-medium">
+          Avery & Marsh Construction Group Portfolio
+        </p>
+      </div>
+
+      {/* Navigation Pills */}
+      <div className="flex items-center gap-1 bg-[#0D1424] p-1 rounded-xl border border-[#1A263E]">
         <button
           onClick={() => setActiveSection('overview')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+          className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             activeSection === 'overview'
-              ? 'bg-[#0066FF] text-white shadow'
+              ? 'bg-[#2563EB] text-white shadow-sm font-bold'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          Company Overview
+          Portfolio
         </button>
         <button
-          onClick={() => setActiveSection('deals')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-            activeSection === 'deals'
-              ? 'bg-[#0066FF] text-white shadow'
+          onClick={() => setActiveSection('pipeline')}
+          className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            activeSection === 'pipeline'
+              ? 'bg-[#2563EB] text-white shadow-sm font-bold'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          Opportunities ({opportunities.length})
+          Deals (${(totalPipelineVal / 1000000).toFixed(1)}M)
         </button>
         <button
-          onClick={() => setActiveSection('network')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-            activeSection === 'network'
-              ? 'bg-[#0066FF] text-white shadow'
+          onClick={() => setActiveSection('subs')}
+          className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            activeSection === 'subs'
+              ? 'bg-[#2563EB] text-white shadow-sm font-bold'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          Trade Network
+          Subcontractors
         </button>
       </div>
 
       {activeSection === 'overview' && (
         <>
-          {/* 1. Company Overview Card */}
-          <div className="card-dark p-4 bg-[#0D1422] border-[#1A263B] shadow-md">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-300">Executive Portfolio</span>
-              <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                Portfolio Health 94%
+          {/* Executive Portfolio */}
+          <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wide text-slate-300">
+                Portfolio Metrics
+              </span>
+              <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                94% Health
               </span>
             </div>
 
             {/* 4 KPIs */}
-            <div className="grid grid-cols-4 gap-2 mb-3">
-              <div className="bg-[#080D18] p-2.5 rounded-xl border border-[#151F30] text-center">
-                <div className="text-lg font-black text-white">{projects.length}</div>
-                <div className="text-[10px] text-slate-400 font-semibold mt-0.5">Projects</div>
+            <div className="grid grid-cols-4 gap-2 text-center">
+              <div className="bg-[#090E1A] p-2.5 rounded-2xl border border-[#141F33]">
+                <div className="text-base font-bold text-white">{projects.length}</div>
+                <div className="text-xs text-slate-400 font-medium mt-0.5">Projects</div>
               </div>
-              <div className="bg-[#080D18] p-2.5 rounded-xl border border-[#151F30] text-center">
-                <div className="text-lg font-black text-blue-400">12</div>
-                <div className="text-[10px] text-slate-400 font-semibold mt-0.5">Active</div>
+              <div className="bg-[#090E1A] p-2.5 rounded-2xl border border-[#141F33]">
+                <div className="text-base font-bold text-blue-400">12</div>
+                <div className="text-xs text-slate-400 font-medium mt-0.5">Active</div>
               </div>
-              <div className="bg-[#080D18] p-2.5 rounded-xl border border-amber-500/30 text-center">
-                <div className="text-lg font-black text-amber-400">2</div>
-                <div className="text-[10px] text-slate-400 font-semibold mt-0.5">At Risk</div>
+              <div className="bg-[#090E1A] p-2.5 rounded-2xl border border-amber-500/20">
+                <div className="text-base font-bold text-amber-400">2</div>
+                <div className="text-xs text-slate-400 font-medium mt-0.5">At Risk</div>
               </div>
-              <div className="bg-[#080D18] p-2.5 rounded-xl border border-emerald-500/30 text-center">
-                <div className="text-lg font-black text-emerald-400">2</div>
-                <div className="text-[10px] text-slate-400 font-semibold mt-0.5">Completed</div>
+              <div className="bg-[#090E1A] p-2.5 rounded-2xl border border-emerald-500/20">
+                <div className="text-base font-bold text-emerald-400">2</div>
+                <div className="text-xs text-slate-400 font-medium mt-0.5">Done</div>
               </div>
             </div>
 
-            {/* Financial Line */}
-            <div className="pt-2.5 border-t border-[#182338] grid grid-cols-3 gap-2 text-center text-xs">
+            {/* Financial Summary Line */}
+            <div className="pt-3 border-t border-[#162033] grid grid-cols-3 gap-2 text-center text-xs">
               <div>
-                <span className="text-[10px] text-slate-400 font-medium">Total Volume</span>
-                <div className="font-extrabold text-white mt-0.5">$24.65M</div>
+                <span className="text-xs text-slate-400 font-medium">Total Volume</span>
+                <div className="font-bold text-white text-sm mt-0.5">$24.65M</div>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 font-medium">Cost to Date</span>
-                <div className="font-extrabold text-slate-200 mt-0.5">$18.45M</div>
+                <span className="text-xs text-slate-400 font-medium">Cost to Date</span>
+                <div className="font-bold text-slate-200 text-sm mt-0.5">$18.45M</div>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 font-medium">Net Margin</span>
-                <div className="font-extrabold text-emerald-400 mt-0.5">+$2.35M <span className="text-[9px] font-normal text-emerald-500">(+9.5%)</span></div>
+                <span className="text-xs text-slate-400 font-medium">Net Margin</span>
+                <div className="font-bold text-emerald-400 text-sm mt-0.5">+$2.35M</div>
               </div>
             </div>
           </div>
 
-          {/* 2. Latti AI Risk Alert */}
+          {/* Latti AI Risk Alert */}
           <div 
             onClick={onOpenLatti}
-            className="p-3 rounded-xl bg-[#0D1422] border border-blue-500/30 hover:border-blue-500/60 transition-all cursor-pointer flex items-center justify-between group shadow-sm"
+            className="p-3.5 rounded-2xl bg-[#0D1424] border border-blue-500/30 hover:border-blue-500/60 transition-all cursor-pointer flex items-center justify-between group shadow-sm"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-blue-400">Latti AI Risk Radar</div>
-                <p className="text-xs text-slate-200 truncate font-medium">
-                  2 tasks in Riverside Complex are at risk of missing milestone
+                <div className="text-xs font-bold text-blue-400">Latti AI Risk Radar</div>
+                <p className="text-xs text-slate-300 truncate font-medium mt-0.5">
+                  2 tasks in Riverside Complex are at risk
                 </p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-400 flex-shrink-0 ml-1" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-white flex-shrink-0" />
           </div>
 
-          {/* 3. Pipeline Highlights Widget */}
-          <div className="p-3.5 rounded-xl bg-[#0D1422] border border-[#1A263B] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Bidding Pipeline</div>
-                <div className="text-xs font-bold text-white">${(totalPipelineVal / 1000000).toFixed(1)}M in active negotiations</div>
-              </div>
-            </div>
-            <button
-              onClick={() => setActiveSection('deals')}
-              className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
-            >
-              <span>View Bids</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* 4. Recent Active Projects */}
-          <div>
-            <div className="flex items-center justify-between mb-2.5">
-              <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
-                Active Projects Portfolio
-              </h2>
-              <button 
-                onClick={onCreateProject}
-                className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>New Project</span>
+          {/* Active Construction Projects */}
+          <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-white tracking-tight">Active Projects</h2>
+              <button onClick={onOpenProjects} className="text-xs font-bold text-[#3875F6] hover:underline cursor-pointer">
+                View All
               </button>
             </div>
 
             <div className="flex flex-col gap-2.5">
-              {projects.map((project) => (
-                <div
-                  key={project.id}
-                  onClick={() => onSelectProject(project)}
-                  className="card-dark p-3 hover:border-blue-500/50 transition-all cursor-pointer flex items-center gap-3 bg-[#0D1422] border-[#1A263B] group shadow-sm"
-                >
-                  <img
-                    src={project.thumbnail}
-                    alt={project.name}
-                    className="w-12 h-12 rounded-xl object-cover border border-[#1E293B] flex-shrink-0 group-hover:scale-105 transition-transform"
-                  />
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-0.5">
-                      <h3 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
-                        {project.name}
-                      </h3>
-                      <StatusBadge status={project.status} size="xs" />
+              {projects.slice(0, 4).map((p) => {
+                const isAtRisk = p.status === 'At Risk' || p.status === 'Delayed';
+                return (
+                  <div
+                    key={p.id}
+                    onClick={() => onSelectProject(p)}
+                    className={`p-3.5 rounded-2xl bg-[#090E1A] border hover:border-blue-500/40 transition-all cursor-pointer flex items-center gap-3 shadow-sm group ${
+                      isAtRisk ? 'border-rose-500/30' : 'border-[#141F33]'
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-[#121B2D]">
+                      <img src={p.thumbnail} alt={p.name} className="w-full h-full object-cover" />
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 font-medium">
-                      <span>{project.cityState}</span>
-                      <span className="font-bold text-slate-200">${(project.budget.total / 1000000).toFixed(2)}M</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <h3 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-[#3875F6] transition-colors">
+                          {p.name}
+                        </h3>
+                        <StatusBadge status={p.status} size="xs" />
+                      </div>
+                      <p className="text-xs text-slate-400 truncate mt-0.5 font-medium">
+                        {p.location} · {p.progress}% Completed
+                      </p>
                     </div>
 
-                    <div className="w-full h-1.5 bg-[#172238] rounded-full overflow-hidden flex">
-                      <div 
-                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                        style={{ width: `${project.progress}%` }}
-                      />
-                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white flex-shrink-0" />
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </>
       )}
 
-      {/* Opportunities & Bidding Pipeline View */}
-      {activeSection === 'deals' && (
+      {activeSection === 'pipeline' && (
         <div className="flex flex-col gap-3">
-          <div className="p-3.5 rounded-xl bg-[#0D1422] border border-[#1A263B] flex items-center justify-between">
-            <div>
-              <div className="text-[10px] text-slate-400 font-semibold uppercase">Total Pipeline Opportunity</div>
-              <div className="text-base font-black text-emerald-400">${(totalPipelineVal / 1000000).toFixed(2)}M</div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10px] text-slate-400 font-semibold uppercase">Win Probability Rate</div>
-              <div className="text-xs font-bold text-blue-400">72% Weighted Average</div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2.5">
-            {opportunities.map((deal) => (
-              <div key={deal.id} className="p-3.5 rounded-xl bg-[#0D1422] border border-[#1A263B] flex flex-col gap-2">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="text-xs font-bold text-white">{deal.projectTitle}</h4>
-                    <span className="text-[10px] text-slate-400">{deal.clientName} • {deal.location}</span>
-                  </div>
-                  <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${
-                    deal.stage === 'Won' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
-                    deal.stage === 'Contract Negotiation' ? 'bg-blue-500/10 border-blue-500/30 text-blue-400' :
-                    'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                  }`}>
-                    {deal.stage}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-[#182338] text-xs">
-                  <div className="flex items-center gap-1 text-slate-300">
-                    <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="font-bold text-white">${(deal.estimatedValue / 1000000).toFixed(2)}M</span>
-                  </div>
-                  <div className="text-[11px] text-slate-400">
-                    Win Likelihood: <strong className="text-emerald-400 font-bold">{deal.winProbability}%</strong>
-                  </div>
-                </div>
+          {deals.map((deal) => (
+            <div key={deal.id} className="p-4 rounded-2xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white">{deal.projectTitle}</span>
+                <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                  {deal.stage}
+                </span>
               </div>
-            ))}
-          </div>
+              <p className="text-xs text-slate-400 font-medium">{deal.clientName} · {deal.location}</p>
+              <div className="flex items-center justify-between text-xs pt-2 border-t border-[#162033]">
+                <span className="text-slate-400 font-medium">Est. Value</span>
+                <span className="text-sm font-bold text-emerald-400">${(deal.estimatedValue / 1000000).toFixed(2)}M</span>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Trade Network View */}
-      {activeSection === 'network' && (
+      {activeSection === 'subs' && (
         <div className="flex flex-col gap-3">
-          <div className="p-3.5 rounded-xl bg-[#0D1422] border border-[#1A263B] flex items-center justify-between">
-            <div>
-              <div className="text-[10px] text-slate-400 font-semibold uppercase">Vetted Trade Network</div>
-              <div className="text-xs font-bold text-white">{subcontractors.length} Verified Master Contractors</div>
-            </div>
-            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30 flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3" />
-              COI 100% Active
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-2.5">
-            {subcontractors.map((sub) => (
-              <div key={sub.id} className="p-3.5 rounded-xl bg-[#0D1422] border border-[#1A263B] flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={sub.avatar}
-                    alt={sub.companyName}
-                    className="w-10 h-10 rounded-xl object-cover border border-[#1E293B]"
-                  />
-                  <div>
-                    <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <span>{sub.companyName}</span>
-                      <span title="COI Insurance Verified">
-                        <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-slate-400">{sub.trade} • {sub.contactName}</span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-xs font-bold text-emerald-400">{sub.complianceRating}% Rating</div>
-                  <div className="text-[10px] text-slate-400">{sub.workersOnSite} on site</div>
-                </div>
+          {subcontractors.map((sub) => (
+            <div key={sub.id} className="p-4 rounded-2xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-white block">{sub.companyName}</span>
+                <span className="text-xs text-slate-400 font-medium block mt-0.5">{sub.trade} · Contact: {sub.contactName}</span>
               </div>
-            ))}
-          </div>
+              <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                {sub.status}
+              </span>
+            </div>
+          ))}
         </div>
       )}
-
-      {/* Action Button */}
-      <div className="pt-1">
-        <Button
-          variant="primary"
-          onClick={onCreateProject}
-          leftIcon={<Plus className="w-4 h-4" />}
-        >
-          Create New Project
-        </Button>
-      </div>
     </div>
   );
 };

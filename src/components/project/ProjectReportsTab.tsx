@@ -45,7 +45,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
                 </div>
               </div>
 
-              <span className="text-[10px] font-bold bg-[#1C2A44] text-slate-300 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-bold bg-[#1C2A44] text-slate-300 px-2.5 py-0.5 rounded-full">
                 {rep.type}
               </span>
             </div>
