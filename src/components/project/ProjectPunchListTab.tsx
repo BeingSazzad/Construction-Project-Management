@@ -48,7 +48,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 font-sans text-slate-100 animate-fade-in max-w-[430px] mx-auto">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans text-slate-100 animate-fade-in max-w-[430px] mx-auto">
       
       {/* ── 1. Page Header & Live Open Count ── */}
       <div className="flex items-center justify-between gap-3">

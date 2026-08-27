@@ -36,8 +36,8 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   onOpenReports
 }) => {
   const totalBudget = projects.reduce((acc, p) => acc + (p.budget?.total || 0), 0);
-  const atRiskCount = projects.filter(p => p.status === 'At Risk' || p.status === 'Delayed').length;
-  const activeCount = projects.filter(p => p.status === 'On Schedule' || p.status === 'At Risk').length;
+  const atRiskCount = projects.filter(p => p.status === 'On Hold' || p.status === 'At Risk' || p.status === 'Delayed').length;
+  const activeCount = projects.filter(p => p.status === 'In Progress' || p.status === 'Pre-Construction' || p.status === 'On Schedule').length;
 
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">

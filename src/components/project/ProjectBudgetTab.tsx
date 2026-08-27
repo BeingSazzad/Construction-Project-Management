@@ -57,9 +57,9 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   const maxVal = 1000;
 
   return (
-    <div className="flex flex-col gap-4 pb-24">
-      {/* Budget Overview Card (Matching Design Board) */}
-      <div className="card-dark p-4 bg-[#0D131F] border-[#1A2436]">
+    <div className="w-full flex flex-col gap-4 pt-1 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      {/* Budget Overview Card */}
+      <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Budget Overview</span>
           <div className="flex items-center gap-2">
