@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Project, Task, Priority } from '../../types';
 import { Button } from '../common/Button';
 import { X, CheckSquare, Calendar, User as UserIcon, Tag, MapPin } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -106,16 +107,12 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="font-bold text-slate-300 mb-1 block">Priority</label>
-              <select
+              <CustomSelect
                 value={priority}
-                onChange={(e) => setPriority(e.target.value as Priority)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
-              >
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Critical">Critical</option>
-              </select>
+                onChange={(v) => setPriority(v as Priority)}
+                options={['Low', 'Medium', 'High', 'Critical']}
+                size="md"
+              />
             </div>
             <div>
               <label className="font-bold text-slate-300 mb-1 block">Due Date</label>
@@ -151,15 +148,16 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
           <div>
             <label className="font-bold text-slate-300 mb-1 block">Assignee</label>
-            <select
+            <CustomSelect
               value={assigneeName}
-              onChange={(e) => setAssigneeName(e.target.value)}
-              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
-            >
-              <option value="John Smith">John Smith (Superintendent)</option>
-              <option value="Sarah Johnson">Sarah Johnson (Project Manager)</option>
-              <option value="Mike Davis">Mike Davis (Site Engineer)</option>
-            </select>
+              onChange={setAssigneeName}
+              options={[
+                { value: 'John Smith', label: 'John Smith (Superintendent)' },
+                { value: 'Sarah Johnson', label: 'Sarah Johnson (Project Manager)' },
+                { value: 'Mike Davis', label: 'Mike Davis (Site Engineer)' }
+              ]}
+              size="md"
+            />
           </div>
 
           <div className="pt-2">

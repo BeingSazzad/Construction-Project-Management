@@ -4,6 +4,7 @@ import {
   User, FileText, Plus, LayoutGrid, Copy, FileSpreadsheet, 
   Upload, Sparkle 
 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateBudgetModalProps {
   isOpen: boolean;
@@ -189,29 +190,22 @@ export const CreateBudgetModal: React.FC<CreateBudgetModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-slate-300 font-semibold mb-1">Project Type</label>
-                <select
+                <CustomSelect
                   value={projectType}
-                  onChange={(e) => setProjectType(e.target.value)}
-                  className="w-full bg-[#080D17] border border-[#182438] rounded-xl px-3 py-2 text-white outline-none focus:border-teal-400"
-                >
-                  <option value="Custom Home">Custom Home</option>
-                  <option value="Remodel">Remodel</option>
-                  <option value="Commercial Fitout">Commercial Fitout</option>
-                  <option value="Multi-Family">Multi-Family</option>
-                </select>
+                  onChange={setProjectType}
+                  options={['Custom Home', 'Remodel', 'Commercial Fitout', 'Multi-Family']}
+                  size="md"
+                />
               </div>
 
               <div>
                 <label className="block text-slate-300 font-semibold mb-1">Budget Status</label>
-                <select
+                <CustomSelect
                   value={budgetStatus}
-                  onChange={(e) => setBudgetStatus(e.target.value)}
-                  className="w-full bg-[#080D17] border border-[#182438] rounded-xl px-3 py-2 text-white outline-none focus:border-teal-400"
-                >
-                  <option value="Draft">Draft</option>
-                  <option value="In Review">In Review</option>
-                  <option value="Approved">Approved</option>
-                </select>
+                  onChange={setBudgetStatus}
+                  options={['Draft', 'In Review', 'Approved']}
+                  size="md"
+                />
               </div>
             </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Project, PunchItem, Priority } from '../../types';
 import { Button } from '../common/Button';
 import { X, AlertCircle, MapPin, Camera, User as UserIcon } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreatePunchModalProps {
   isOpen: boolean;
@@ -110,30 +111,27 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="font-bold text-slate-300 mb-1 block">Responsible Trade</label>
-              <select
+              <CustomSelect
                 value={trade}
-                onChange={(e) => setTrade(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
-              >
-                <option value="Concrete Solutions Inc.">Concrete Solutions</option>
-                <option value="Steel Masters LLC">Steel Masters</option>
-                <option value="Prime Electrical">Prime Electrical</option>
-                <option value="HVAC Leaders Group">HVAC Leaders</option>
-                <option value="Craft Drywall LLC">Craft Drywall</option>
-              </select>
+                onChange={setTrade}
+                options={[
+                  { value: 'Concrete Solutions Inc.', label: 'Concrete Solutions' },
+                  { value: 'Steel Masters LLC', label: 'Steel Masters' },
+                  { value: 'Prime Electrical', label: 'Prime Electrical' },
+                  { value: 'HVAC Leaders Group', label: 'HVAC Leaders' },
+                  { value: 'Craft Drywall LLC', label: 'Craft Drywall' }
+                ]}
+                size="md"
+              />
             </div>
             <div>
               <label className="font-bold text-slate-300 mb-1 block">Priority</label>
-              <select
+              <CustomSelect
                 value={priority}
-                onChange={(e) => setPriority(e.target.value as Priority)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
-              >
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Critical">Critical</option>
-              </select>
+                onChange={(v) => setPriority(v as Priority)}
+                options={['Low', 'Medium', 'High', 'Critical']}
+                size="md"
+              />
             </div>
           </div>
 

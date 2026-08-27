@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Project } from '../../types';
 import { ArrowLeft, Building2, Calendar, DollarSign, UserCheck, MapPin, Check, Key } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateProjectViewProps {
   onBack: () => void;
@@ -171,30 +172,23 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Type</label>
-              <select
+              <CustomSelect
                 value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-              >
-                <option>Commercial Highrise</option>
-                <option>Multi-Family Residential</option>
-                <option>Medical Office Facility</option>
-                <option>Industrial Warehouse</option>
-              </select>
+                onChange={setType}
+                options={['Commercial Highrise', 'Multi-Family Residential', 'Medical Office Facility', 'Industrial Warehouse']}
+                size="md"
+              />
             </div>
           </div>
 
           <div>
             <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Assigned Project Manager</label>
-            <select
+            <CustomSelect
               value={pmName}
-              onChange={(e) => setPmName(e.target.value)}
-              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-            >
-              <option>Sarah Johnson (Lead PM)</option>
-              <option>Michael Chang (Finance & PM)</option>
-              <option>David Miller (Senior PM)</option>
-            </select>
+              onChange={setPmName}
+              options={['Sarah Johnson (Lead PM)', 'Michael Chang (Finance & PM)', 'David Miller (Senior PM)']}
+              size="md"
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-2">

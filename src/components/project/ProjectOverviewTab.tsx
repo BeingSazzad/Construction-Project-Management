@@ -9,6 +9,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { AddTasksTemplateModal } from '../modals/AddTasksTemplateModal';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectOverviewTabProps {
   project: Project;
@@ -496,17 +497,12 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               </div>
               <div>
                 <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Estimated Duration</label>
-                <select
+                <CustomSelect
                   value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                  className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-                >
-                  <option>3 months</option>
-                  <option>6 months</option>
-                  <option>9 months</option>
-                  <option>12 months</option>
-                  <option>18 months</option>
-                </select>
+                  onChange={setDuration}
+                  options={['3 months', '6 months', '9 months', '12 months', '18 months']}
+                  size="md"
+                />
               </div>
               <button
                 onClick={() => setIsTimelineModalOpen(false)}

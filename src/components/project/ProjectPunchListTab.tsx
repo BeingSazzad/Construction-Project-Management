@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Project, PunchItem, PunchStatus } from '../../types';
-import { Plus, MapPin, Trash2, ChevronDown, Folder, CheckCircle2 } from 'lucide-react';
+import { Plus, MapPin, Trash2, Folder } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectPunchListTabProps {
   project: Project;
@@ -37,32 +38,32 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   };
 
   const STATUS_DOT: Record<PunchStatus, string> = {
-    'Open': 'bg-amber-400',
-    'In Progress': 'bg-blue-400',
-    'Resolved': 'bg-emerald-400',
-    'Verified': 'bg-teal-400',
-    'Closed': 'bg-slate-500',
+    'Open': 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]',
+    'In Progress': 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]',
+    'Resolved': 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]',
+    'Verified': 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.5)]',
+    'Closed': 'bg-slate-500 shadow-[0_0_8px_rgba(100,116,139,0.5)]',
   };
 
   return (
-    <div className="w-full flex flex-col gap-3.5 pt-2 pb-24 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="flex flex-col gap-4 font-sans text-slate-100">
       
-      {/* 1. Filter Pills & Add Button */}
+      {/* Top Controls: Filter Pills + Add Punch */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 flex-1">
-          {(['All', 'Open', 'In Progress', 'Resolved', 'Verified'] as const).map((filter) => {
-            const isActive = activeFilter === filter;
+        <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar">
+          {(['All', 'Open', 'In Progress', 'Resolved', 'Verified'] as const).map((st) => {
+            const isActive = activeFilter === st;
             return (
               <button
-                key={filter}
-                onClick={() => setActiveFilter(filter as any)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                  isActive 
-                    ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20' 
-                    : 'bg-[#070D1A] text-slate-400 hover:text-white border border-[#142036]'
+                key={st}
+                onClick={() => setActiveFilter(st)}
+                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                    : 'bg-[#070D1A] border border-[#142036] text-slate-400 hover:text-slate-200'
                 }`}
               >
-                {filter}
+                {st}
               </button>
             );
           })}
@@ -70,28 +71,23 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
         <button
           onClick={onCreatePunch}
-          className="h-8 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1 cursor-pointer flex-shrink-0 shadow-sm active:scale-95 transition-all"
+          className="px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all cursor-pointer flex-shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>New</span>
+          <span>New Punch</span>
         </button>
       </div>
 
-      {/* 2. Group Header */}
-      <div className="flex items-center gap-2 px-1 pt-1">
-        <Folder className="w-4 h-4 text-emerald-400" />
-        <span className="text-xs font-bold text-white tracking-tight">{project.name}</span>
-        <span className="text-xs text-slate-500 font-semibold">{filteredItems.length}</span>
-      </div>
-
-      {/* 3. Punch Items List */}
-      <div className="flex flex-col gap-2.5">
-        {filteredItems.length === 0 ? (
-          <div className="p-8 rounded-2xl bg-[#070D1A] border border-[#142036] text-center text-slate-400 text-xs">
-            No punch list items found under this status.
-          </div>
-        ) : (
-          filteredItems.map((item) => {
+      {/* Punch Items List */}
+      {filteredItems.length === 0 ? (
+        <div className="p-8 rounded-2xl bg-[#070D1A] border border-[#142036] text-center flex flex-col items-center justify-center gap-2">
+          <Folder className="w-8 h-8 text-slate-600" />
+          <p className="text-xs font-bold text-slate-400">No punch list items for this filter</p>
+          <p className="text-[11px] text-slate-500">Tap "New Punch" to record field defects & trade tasks.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2.5">
+          {filteredItems.map((item) => {
             return (
               <div
                 key={item.id}
@@ -108,18 +104,13 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     {/* Status Dropdown Selector */}
-                    <div className="relative">
-                      <select
+                    <div className="w-28">
+                      <CustomSelect
                         value={item.status}
-                        onChange={(e) => handleStatusChange(item.id, e.target.value as PunchStatus)}
-                        className="h-7 px-2.5 pr-6 bg-[#0E1726] border border-[#1E2E48] rounded-xl text-[11px] font-bold text-slate-300 focus:border-blue-500 outline-none appearance-none cursor-pointer"
-                      >
-                        <option value="Open">Open</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Verified">Verified</option>
-                      </select>
-                      <ChevronDown className="w-3 h-3 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        onChange={(v) => handleStatusChange(item.id, v as PunchStatus)}
+                        options={['Open', 'In Progress', 'Resolved', 'Verified']}
+                        size="sm"
+                      />
                     </div>
 
                     {/* Trash Delete Button */}
@@ -164,10 +155,9 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 )}
               </div>
             );
-          })
-        )}
-      </div>
-
+          })}
+        </div>
+      )}
     </div>
   );
 };

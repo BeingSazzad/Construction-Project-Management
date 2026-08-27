@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Project, SitePhoto } from '../../types';
 import { Button } from '../common/Button';
 import { X, Camera, Upload, MapPin, Tag, CheckCircle2 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface PhotoUploadModalProps {
   isOpen: boolean;
@@ -102,17 +103,12 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
             </div>
             <div>
               <label className="font-bold text-slate-300 mb-1 block">Category</label>
-              <select
+              <CustomSelect
                 value={category}
-                onChange={(e) => setCategory(e.target.value as any)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
-              >
-                <option value="Site Photos">Site Photos</option>
-                <option value="Progress">Progress</option>
-                <option value="Inspections">Inspections</option>
-                <option value="Safety">Safety</option>
-                <option value="Punch List">Punch List</option>
-              </select>
+                onChange={(v) => setCategory(v as any)}
+                options={['Site Photos', 'Progress', 'Inspections', 'Safety', 'Punch List']}
+                size="md"
+              />
             </div>
           </div>
 

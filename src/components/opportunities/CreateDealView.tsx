@@ -4,6 +4,7 @@ import {
   User, Flag, CheckCircle2, ChevronDown, Calendar, Percent, Plus,
   ArrowRight, Sparkles, Building2, Briefcase, FileText
 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateDealViewProps {
   onBack: () => void;
@@ -209,13 +210,13 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
       {/* ─── STEP CONTENT ─── */}
       <div className="px-5 pt-4 flex-1 flex flex-col justify-between">
         
-        {/* STEP 1: PROJECT & CLIENT INFO */}
+        {/* STEP 1: OPPORTUNITY & CLIENT INFO */}
         {currentStep === 1 && (
           <div className="flex flex-col gap-4 animate-fade-in">
             <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
               <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
                 <Building2 className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-bold text-white">Project Identity & Client</span>
+                <span className="text-xs font-bold text-white">Opportunity & Client Info</span>
               </div>
 
               <div>
@@ -281,39 +282,23 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
                 {/* Project Type */}
                 <div>
                   <InputLabel label="Project Type" />
-                  <div className="relative">
-                    <select
-                      value={projectType}
-                      onChange={e => setProjectType(e.target.value as any)}
-                      className={`${inputClass} appearance-none pr-8 cursor-pointer font-semibold`}
-                    >
-                      {PROJECT_TYPES.map(type => (
-                        <option key={type} value={type} className="bg-[#0A111F] text-white">
-                          {type}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
+                  <CustomSelect
+                    value={projectType}
+                    onChange={v => setProjectType(v as any)}
+                    options={PROJECT_TYPES}
+                    size="md"
+                  />
                 </div>
 
                 {/* Stage */}
                 <div>
                   <InputLabel label="Initial Stage" />
-                  <div className="relative">
-                    <select
-                      value={stage}
-                      onChange={e => setStage(e.target.value as any)}
-                      className={`${inputClass} appearance-none pr-8 cursor-pointer font-semibold text-blue-400`}
-                    >
-                      {OPPORTUNITY_STAGES.map(s => (
-                        <option key={s} value={s} className="bg-[#0A111F] text-white">
-                          {s}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
+                  <CustomSelect
+                    value={stage}
+                    onChange={v => setStage(v as any)}
+                    options={OPPORTUNITY_STAGES}
+                    size="md"
+                  />
                 </div>
               </div>
 
@@ -355,21 +340,13 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <InputLabel label="Lead Source" />
-                  <div className="relative">
-                    <select
-                      value={leadSource}
-                      onChange={e => setLeadSource(e.target.value)}
-                      className={`${inputClass} appearance-none pr-8 cursor-pointer`}
-                    >
-                      <option value="" className="bg-[#0A111F] text-slate-500">— Select Source —</option>
-                      {LEAD_SOURCES.map(src => (
-                        <option key={src} value={src} className="bg-[#0A111F] text-white">
-                          {src}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
+                  <CustomSelect
+                    value={leadSource}
+                    onChange={setLeadSource}
+                    options={['— None —', ...LEAD_SOURCES]}
+                    placeholder="Select source..."
+                    size="md"
+                  />
                 </div>
 
                 <div>

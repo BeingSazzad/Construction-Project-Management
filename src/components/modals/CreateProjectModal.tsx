@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Project } from '../../types';
 import { X, Building2 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateProjectModalProps {
   isOpen: boolean;
@@ -155,15 +156,16 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
           <div>
             <label className="text-xs font-semibold text-slate-300 mb-1.5 block">Assigned Project Manager</label>
-            <select
+            <CustomSelect
               value={pmName}
-              onChange={(e) => setPmName(e.target.value)}
-              className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl px-3.5 text-sm text-white focus:outline-none focus:border-[#2563EB] transition-colors cursor-pointer"
-            >
-              <option value="Sarah Johnson">Sarah Johnson (Senior PM)</option>
-              <option value="David Vance">David Vance (Commercial PM)</option>
-              <option value="Elena Rossi">Elena Rossi (Infrastructure Lead)</option>
-            </select>
+              onChange={setPmName}
+              options={[
+                { value: 'Sarah Johnson', label: 'Sarah Johnson (Senior PM)' },
+                { value: 'David Vance', label: 'David Vance (Commercial PM)' },
+                { value: 'Elena Rossi', label: 'Elena Rossi (Infrastructure Lead)' }
+              ]}
+              size="md"
+            />
           </div>
 
           <div className="pt-2 flex items-center gap-2.5">

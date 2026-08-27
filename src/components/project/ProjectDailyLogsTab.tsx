@@ -5,6 +5,7 @@ import {
   Plus, Calendar, CheckCircle2, PackageCheck, AlertTriangle, 
   HardHat, FileText 
 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectDailyLogsTabProps {
   project: Project;
@@ -33,10 +34,10 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
     if (!workSummary.trim()) return;
 
     const newLog: DailyLogItem = {
-      id: `log-${Date.now()}`,
+      id: `dl-${Date.now()}`,
       projectId: project.id,
       projectName: project.name,
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       weather: {
         condition: condition,
         temperature: '76°F / 24°C',
@@ -102,15 +103,16 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Weather</label>
-              <select
+              <CustomSelect
                 value={condition}
-                onChange={(e) => setCondition(e.target.value as any)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-2.5 text-xs text-white outline-none focus:border-[#2563EB]"
-              >
-                <option value="Sunny">☀️ Sunny</option>
-                <option value="Partly Cloudy">⛅ Partly Cloudy</option>
-                <option value="Rainy">🌧️ Rainy</option>
-              </select>
+                onChange={(v) => setCondition(v as any)}
+                options={[
+                  { value: 'Sunny', label: '☀️ Sunny' },
+                  { value: 'Partly Cloudy', label: '⛅ Partly Cloudy' },
+                  { value: 'Rainy', label: '🌧️ Rainy' }
+                ]}
+                size="md"
+              />
             </div>
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Total Headcount</label>

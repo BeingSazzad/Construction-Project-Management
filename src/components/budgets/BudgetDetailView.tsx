@@ -4,6 +4,7 @@ import {
   DollarSign, TrendingUp, ShieldCheck, AlertTriangle, Layers, 
   FileText, Users, BarChart3, Clock, Sparkles, Plus, Check 
 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface BudgetDetailViewProps {
   budgetId?: string;
@@ -110,15 +111,18 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
         </button>
 
         <div className="flex items-center gap-2">
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value as any)}
-            className="bg-[#0D1422] border border-[#1E293B] rounded-xl px-3 py-1.5 text-xs font-bold text-slate-200 outline-none focus:border-teal-400 cursor-pointer"
-          >
-            <option value="in review">In Review ▾</option>
-            <option value="draft">Draft ▾</option>
-            <option value="approved">Approved ▾</option>
-          </select>
+          <div className="w-32">
+            <CustomSelect
+              value={status}
+              onChange={(v) => setStatus(v as any)}
+              options={[
+                { value: 'in review', label: 'In Review' },
+                { value: 'draft', label: 'Draft' },
+                { value: 'approved', label: 'Approved' }
+              ]}
+              size="sm"
+            />
+          </div>
 
           <button
             onClick={() => alert("Exporting Budget to PDF/CSV...")}

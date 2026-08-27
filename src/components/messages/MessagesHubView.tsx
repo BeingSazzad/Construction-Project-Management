@@ -5,6 +5,7 @@ import {
   Calendar, CheckCheck, Paperclip, Check, UserPlus,
   Users, ChevronRight, Clock, ShieldCheck, AlertTriangle
 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface MessagesHubViewProps {
   currentUser: User;
@@ -469,15 +470,12 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
 
           <div>
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Select Project</label>
-            <select
+            <CustomSelect
               value={selectedProjectId}
-              onChange={e => setSelectedProjectId(e.target.value)}
-              className="w-full h-10 bg-[#070D1A] border border-[#142036] rounded-xl px-3 text-xs text-white outline-none focus:border-blue-500"
-            >
-              {projects.map(p => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
+              onChange={setSelectedProjectId}
+              options={projects.map(p => ({ value: p.id, label: p.name }))}
+              size="md"
+            />
           </div>
 
           {/* Toggle: Automatic vs Manual Member Selection */}

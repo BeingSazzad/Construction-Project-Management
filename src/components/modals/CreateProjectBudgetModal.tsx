@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, DollarSign, Building2, Users, FileSpreadsheet, Sparkles, ChevronRight, ArrowLeft } from 'lucide-react';
 import { Project } from '../../types';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateProjectBudgetModalProps {
   isOpen?: boolean;
@@ -118,15 +119,12 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
             </div>
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Type</label>
-              <select
+              <CustomSelect
                 value={projectType}
-                onChange={(e) => setProjectType(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-              >
-                <option>Commercial Construction</option>
-                <option>Custom Residential</option>
-                <option>Multi-Family Rehab</option>
-              </select>
+                onChange={setProjectType}
+                options={['Commercial Construction', 'Custom Residential', 'Multi-Family Rehab']}
+                size="md"
+              />
             </div>
           </div>
 
@@ -180,17 +178,12 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
           {attachType === 'project' && (
             <div className="mt-2">
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Select Active Project</label>
-              <select
+              <CustomSelect
                 value={selectedProjectId}
-                onChange={(e) => setSelectedProjectId(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-              >
-                {projects.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} ({p.cityState})
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedProjectId}
+                options={projects.map(p => ({ value: p.id, label: `${p.name} (${p.cityState})` }))}
+                size="md"
+              />
             </div>
           )}
         </div>

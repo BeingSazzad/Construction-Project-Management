@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ArrowLeft, Edit3, DollarSign, MapPin, User, Mail, 
   Calendar, Briefcase, TrendingUp, Sparkles, CheckCircle2, 
   Trash2, Phone, Share2, ArrowUpRight, Clock, ShieldCheck, Flag,
-  ChevronDown
+  ChevronDown, MoreVertical
 } from 'lucide-react';
 import { Opportunity } from './OpportunitiesView';
 import { EditDealModal } from './EditDealModal';
 import { OPPORTUNITY_STAGES } from './CreateDealView';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface OpportunityDetailViewProps {
   deal: Opportunity;
@@ -25,6 +26,8 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
   onConvertToProject
 }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isActionsOpen, setIsActionsOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [convertedToast, setConvertedToast] = useState(false);
 
   const getStageBadgeColor = (stage: string) => {
@@ -89,14 +92,48 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsEditOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A111F] hover:bg-[#121D33] text-slate-200 hover:text-white border border-[#142036] text-xs font-bold transition-all cursor-pointer active:scale-95"
-        >
-          <Edit3 className="w-3.5 h-3.5 text-blue-400" />
-          <span>Edit</span>
-        </button>
+        {/* Action Menu (Edit & Delete Options) */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setIsActionsOpen(!isActionsOpen)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#0A111F] hover:bg-[#121D33] text-slate-200 hover:text-white border border-[#142036] text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-sm"
+          >
+            <span className="text-[11px] font-semibold text-slate-300">Options</span>
+            <MoreVertical className="w-4 h-4 text-slate-400" />
+          </button>
+
+          {/* Custom Floating DOM Menu */}
+          {isActionsOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-[#0B1324] border border-[#182642] rounded-2xl p-1.5 shadow-2xl z-50 animate-fade-in flex flex-col gap-1 backdrop-blur-xl">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsActionsOpen(false);
+                  setIsEditOpen(true);
+                }}
+                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-200 hover:bg-[#142036] hover:text-white flex items-center gap-2.5 transition-colors cursor-pointer"
+              >
+                <Edit3 className="w-4 h-4 text-blue-400" />
+                <span>Edit Opportunity</span>
+              </button>
+
+              <div className="h-px bg-[#142036] my-0.5" />
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsActionsOpen(false);
+                  setIsDeleteConfirmOpen(true);
+                }}
+                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 flex items-center gap-2.5 transition-colors cursor-pointer"
+              >
+                <Trash2 className="w-4 h-4 text-rose-400" />
+                <span>Delete Opportunity</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Converted Toast */}
@@ -104,6 +141,45 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
         <div className="mx-5 mt-4 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-2 animate-fade-in">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           <span>Converted to Won Project successfully!</span>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteConfirmOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-[#0C121E] border border-[#1A263E] rounded-3xl p-5 w-full max-w-[360px] shadow-2xl flex flex-col gap-4 text-slate-100">
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+              <Trash2 className="w-6 h-6" />
+            </div>
+
+            <div className="text-center">
+              <h3 className="text-base font-bold text-white">Delete Opportunity?</h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Are you sure you want to delete <span className="text-white font-semibold">"{deal.title}"</span>? This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                className="h-11 rounded-xl bg-[#141F33] hover:bg-[#1C2C47] text-slate-300 font-bold text-xs cursor-pointer transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsDeleteConfirmOpen(false);
+                  onDelete(deal.id);
+                  onBack();
+                }}
+                className="h-11 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs cursor-pointer transition-colors shadow-lg shadow-rose-600/30"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -123,20 +199,15 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
               </h2>
             </div>
 
-            {/* Interactive Status / Stage Dropdown Picker */}
-            <div className="relative flex-shrink-0">
-              <select
+            {/* Custom Status / Stage Picker */}
+            <div className="w-36 flex-shrink-0">
+              <CustomSelect
                 value={deal.stage}
-                onChange={(e) => handleStageChange(e.target.value)}
-                className={`pl-3 pr-7 py-1.5 rounded-xl text-xs font-bold border appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all ${getStageBadgeColor(deal.stage)}`}
-              >
-                {OPPORTUNITY_STAGES.map(s => (
-                  <option key={s} value={s} className="bg-[#0A111F] text-white">
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                onChange={handleStageChange}
+                options={OPPORTUNITY_STAGES}
+                size="sm"
+                triggerClassName={getStageBadgeColor(deal.stage)}
+              />
             </div>
           </div>
 

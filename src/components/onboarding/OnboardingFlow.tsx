@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserRole } from '../../types';
 import { LatticeLogo } from '../common/LatticeLogo';
 import { Button } from '../common/Button';
+import { CustomSelect } from '../common/CustomSelect';
 import {
   ShieldCheck, Briefcase, DollarSign, HardHat,
   ArrowRight, ChevronLeft, Check, Sparkles, Bot,
@@ -462,17 +463,18 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                   <span>🔨</span>
                   <span>What do you build?</span>
                 </label>
-                <select
+                <CustomSelect
                   value={companySize}
-                  onChange={(e) => setCompanySize(e.target.value)}
-                  className="w-full h-12 bg-[#0C121E] border border-[#00D2B4] rounded-xl px-4 text-sm text-white focus:outline-none ring-1 ring-[#00D2B4]/40 cursor-pointer"
-                >
-                  <option value="Custom Home Builder">Custom Home Builder</option>
-                  <option value="Remodeler & Renovation">Remodeler & Renovation</option>
-                  <option value="Commercial General Contractor">Commercial General Contractor</option>
-                  <option value="Design-Build Firm">Design-Build Firm</option>
-                  <option value="Residential Developer">Residential Developer</option>
-                </select>
+                  onChange={setCompanySize}
+                  options={[
+                    'Custom Home Builder',
+                    'Remodeler & Renovation',
+                    'Commercial General Contractor',
+                    'Design-Build Firm',
+                    'Residential Developer'
+                  ]}
+                  size="md"
+                />
               </div>
 
               <div>

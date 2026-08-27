@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Project, Task, Priority } from '../../types';
 import { ArrowLeft, CheckSquare, Calendar, User as UserIcon, Tag, MapPin, Check } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateTaskViewProps {
   project?: Project | null;
@@ -99,16 +100,12 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Priority Level</label>
-              <select
+              <CustomSelect
                 value={priority}
-                onChange={(e) => setPriority(e.target.value as Priority)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-              >
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Critical">Critical</option>
-              </select>
+                onChange={(v) => setPriority(v as Priority)}
+                options={['Low', 'Medium', 'High', 'Critical']}
+                size="md"
+              />
             </div>
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Due Date</label>
@@ -124,17 +121,12 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Trade Milestone</label>
-              <select
+              <CustomSelect
                 value={milestone}
-                onChange={(e) => setMilestone(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-              >
-                <option>Site Prep & Excavation</option>
-                <option>Foundations & Concrete</option>
-                <option>Structural Framing</option>
-                <option>MEP Rough-In</option>
-                <option>Finishes & Drywall</option>
-              </select>
+                onChange={setMilestone}
+                options={['Site Prep & Excavation', 'Foundations & Concrete', 'Structural Framing', 'MEP Rough-In', 'Finishes & Drywall']}
+                size="md"
+              />
             </div>
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Location / Zone</label>
@@ -149,15 +141,12 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
 
           <div>
             <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Assigned Superintendent / Lead</label>
-            <select
+            <CustomSelect
               value={assigneeName}
-              onChange={(e) => setAssigneeName(e.target.value)}
-              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-            >
-              <option>John Smith (Superintendent)</option>
-              <option>Sarah Johnson (Lead PM)</option>
-              <option>Dave Miller (Field Engineer)</option>
-            </select>
+              onChange={setAssigneeName}
+              options={['John Smith (Superintendent)', 'Sarah Johnson (Lead PM)', 'Dave Miller (Field Engineer)']}
+              size="md"
+            />
           </div>
 
           <div>

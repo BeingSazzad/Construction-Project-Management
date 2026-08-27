@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Opportunity } from './OpportunitiesView';
 import { PROJECT_TYPES, OPPORTUNITY_STAGES, LEAD_SOURCES } from './CreateDealView';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface EditDealModalProps {
   deal: Opportunity;
@@ -95,10 +96,10 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
         {/* Scrollable Form Body */}
         <form id="edit-deal-form" onSubmit={handleSubmit} className="p-5 overflow-y-auto flex flex-col gap-4 flex-1 scrollbar-none">
           
-          {/* 1. Project & Client Info */}
+          {/* 1. Opportunity & Client Info */}
           <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
             <div>
-              <InputLabel label="Project / Opportunity Name" required />
+              <InputLabel label="Opportunity Title" required />
               <input
                 type="text"
                 value={title}
@@ -150,39 +151,23 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
               {/* Project Type */}
               <div>
                 <InputLabel label="Project Type" />
-                <div className="relative">
-                  <select
-                    value={projectType}
-                    onChange={e => setProjectType(e.target.value as any)}
-                    className={`${inputClass} appearance-none pr-8 cursor-pointer font-semibold`}
-                  >
-                    {PROJECT_TYPES.map(type => (
-                      <option key={type} value={type} className="bg-[#0A111F] text-white">
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
+                <CustomSelect
+                  value={projectType}
+                  onChange={v => setProjectType(v as any)}
+                  options={PROJECT_TYPES}
+                  size="md"
+                />
               </div>
 
               {/* Stage */}
               <div>
                 <InputLabel label="Stage" />
-                <div className="relative">
-                  <select
-                    value={stage}
-                    onChange={e => setStage(e.target.value as any)}
-                    className={`${inputClass} appearance-none pr-8 cursor-pointer font-semibold text-blue-400`}
-                  >
-                    {OPPORTUNITY_STAGES.map(s => (
-                      <option key={s} value={s} className="bg-[#0A111F] text-white">
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
+                <CustomSelect
+                  value={stage}
+                  onChange={v => setStage(v as any)}
+                  options={OPPORTUNITY_STAGES}
+                  size="md"
+                />
               </div>
             </div>
 
@@ -224,21 +209,13 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <InputLabel label="Lead Source" />
-                <div className="relative">
-                  <select
-                    value={leadSource}
-                    onChange={e => setLeadSource(e.target.value)}
-                    className={`${inputClass} appearance-none pr-8 cursor-pointer`}
-                  >
-                    <option value="" className="bg-[#0A111F] text-slate-500">— Select Source —</option>
-                    {LEAD_SOURCES.map(src => (
-                      <option key={src} value={src} className="bg-[#0A111F] text-white">
-                        {src}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
+                <CustomSelect
+                  value={leadSource}
+                  onChange={setLeadSource}
+                  options={['— None —', ...LEAD_SOURCES]}
+                  placeholder="Select source..."
+                  size="md"
+                />
               </div>
 
               <div>

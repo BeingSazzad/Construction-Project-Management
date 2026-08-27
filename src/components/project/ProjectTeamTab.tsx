@@ -3,6 +3,7 @@ import { Project } from '../../types';
 import { 
   Users, Phone, Search, UserPlus, ArrowLeft, Check, ShieldCheck, Mail
 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectTeamTabProps {
   project?: Project;
@@ -186,17 +187,18 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({
 
             <div>
               <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Assigned Role</label>
-              <select
+              <CustomSelect
                 value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-              >
-                <option>Senior Project Manager (PM)</option>
-                <option>Director of Project Finance</option>
-                <option>Lead Field Superintendent</option>
-                <option>QA/QC Site Engineer</option>
-                <option>Field Safety Officer</option>
-              </select>
+                onChange={setRole}
+                options={[
+                  'Senior Project Manager (PM)',
+                  'Director of Project Finance',
+                  'Lead Field Superintendent',
+                  'QA/QC Site Engineer',
+                  'Field Safety Officer'
+                ]}
+                size="md"
+              />
             </div>
 
             <div>
