@@ -6,7 +6,7 @@ interface ImportBudgetModalProps {
   isOpen: boolean;
   onClose: () => void;
   projects: Project[];
-  onImportSuccess: (budgetName: string, totalAmount: number) => void;
+  onImportSuccess: (projectId: string, budgetName: string, totalAmount: number) => void;
 }
 
 export const ImportBudgetModal: React.FC<ImportBudgetModalProps> = ({
@@ -38,7 +38,7 @@ export const ImportBudgetModal: React.FC<ImportBudgetModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onImportSuccess(selectedFile, totalEstimatedValue);
+    onImportSuccess(selectedProjectId, selectedFile, totalEstimatedValue);
     onClose();
   };
 

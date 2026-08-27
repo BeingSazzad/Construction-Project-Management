@@ -99,7 +99,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
   const completedCount = PHASES_DATA.filter(p => p.status === 'Completed').length;
 
   return (
-    <div className="w-full flex flex-col gap-3 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in pb-24">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
       {/* ─── 1. CLEAN HEADER ─── */}
       <div className="flex items-center justify-between pt-1">

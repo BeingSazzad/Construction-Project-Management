@@ -80,7 +80,9 @@ export function App() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [currentRole, setCurrentRole] = useState<UserRole>('admin'); // Default to Company Owner (Phase 1 Focus)
   const [activeTab, setActiveTab] = useState<string>('home');
+  const [previousTab, setPreviousTab] = useState<string>('home');
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [projectSubTab, setProjectSubTab] = useState<string>('overview');
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false);
 
   // Entities state
@@ -122,9 +124,9 @@ export function App() {
   const currentUser = CURRENT_USERS[currentRole] || CURRENT_USERS.admin;
   const unreadNotifsCount = notifications.filter(n => !n.read).length;
 
-  const handleImportBudgetSuccess = (budgetName: string, totalValue: number) => {
-    setProjects(prev => prev.map((p, idx) => {
-      if (idx === 0) {
+  const handleImportBudgetSuccess = (projectId: string, budgetName: string, totalValue: number) => {
+    setProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
         return {
           ...p,
           budget: {
@@ -136,6 +138,19 @@ export function App() {
       }
       return p;
     }));
+    
+    // Also update activeProject state if currently active
+    if (activeProject && activeProject.id === projectId) {
+      setActiveProject(prev => prev ? {
+        ...prev,
+        budget: {
+          ...prev.budget,
+          total: totalValue,
+          remaining: totalValue - prev.budget.actual
+        }
+      } : null);
+    }
+    
     alert(`Successfully imported "${budgetName}" ($${(totalValue / 1000000).toFixed(2)}M) into Project Financial Ledger!`);
   };
 
@@ -378,7 +393,35 @@ export function App() {
   };
 
   const handleUpdateTaskStatus = (taskId: string, newStatus: TaskStatus) => {
-    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
+    setTasks(prevTasks => {
+      const updatedTasks = prevTasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t);
+      
+      const task = prevTasks.find(t => t.id === taskId);
+      if (task) {
+        const projTasks = updatedTasks.filter(t => t.projectId === task.projectId);
+        const completedCount = projTasks.filter(t => t.status === 'Completed').length;
+        const nextProgress = projTasks.length > 0 ? Math.round((completedCount / projTasks.length) * 100) : 0;
+        
+        setProjects(prevProjects => prevProjects.map(p => {
+          if (p.id === task.projectId) {
+            const updatedProject = {
+              ...p,
+              progress: nextProgress,
+              metrics: {
+                ...p.metrics,
+                completedTasks: completedCount
+              }
+            };
+            if (activeProject && activeProject.id === p.id) {
+              setActiveProject(updatedProject);
+            }
+            return updatedProject;
+          }
+          return p;
+        }));
+      }
+      return updatedTasks;
+    });
   };
 
   const handleToggleSubtask = (taskId: string, subtaskId: string) => {
@@ -448,6 +491,35 @@ export function App() {
     setChatMessages(prev => [...prev, newMsg]);
   };
 
+  const handleSelectProject = (p: Project) => {
+    setPreviousTab(activeTab);
+    setActiveProject(p);
+    setProjectSubTab('overview');
+  };
+
+  const handleHeaderBack = () => {
+    if (isCreateProjectOpen) {
+      setIsCreateProjectOpen(false);
+    } else if (isCreateDealOpen) {
+      setIsCreateDealOpen(false);
+    } else if (isCreateTaskOpen) {
+      setIsCreateTaskOpen(false);
+    } else if (isCreateBudgetOpen) {
+      setIsCreateBudgetOpen(false);
+    } else if (isDealAnalyzerOpen) {
+      setIsDealAnalyzerOpen(false);
+    } else if (activeProject) {
+      if (projectSubTab !== 'overview') {
+        setProjectSubTab('overview');
+      } else {
+        setActiveProject(null);
+        setActiveTab(previousTab || 'home');
+      }
+    } else if (activeTab !== 'home') {
+      setActiveTab('home');
+    }
+  };
+
   const handleOpenQuickAction = () => {
     setIsQuickActionSheetOpen(true);
   };
@@ -484,7 +556,8 @@ export function App() {
             activeTab={activeTab}
             unreadNotifsCount={unreadNotifsCount}
             unreadMessagesCount={2}
-            onBackToHome={() => { setActiveProject(null); setActiveTab('home'); }}
+            onBack={handleHeaderBack}
+            onBackToHome={handleHeaderBack}
             onOpenNotifications={() => { setActiveProject(null); setActiveTab('notifications'); }}
             onOpenMessages={() => { setActiveProject(null); setActiveTab('messages'); }}
             onOpenLatti={() => {
@@ -496,6 +569,7 @@ export function App() {
             onOpenDrawer={() => setIsSideDrawerOpen(true)}
             onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
             onOpenEditProject={() => setIsEditProjectOpen(true)}
+            onDeleteProject={handleDeleteProject}
           />
 
           {/* Body Content Area */}
@@ -542,6 +616,8 @@ export function App() {
                 project={activeProject}
                 currentRole={currentRole}
                 currentUser={currentUser}
+                activeSubTab={projectSubTab}
+                onSubTabChange={setProjectSubTab}
                 tasks={tasks}
                 ganttItems={ganttItems}
                 categories={categories}
@@ -570,6 +646,7 @@ export function App() {
                 onSendMessage={handleSendMessage}
                 onAddTasksFromTemplate={handleAddTasksFromTemplate}
                 onUpdateProjectStatus={handleUpdateProjectStatus}
+                onImportBudget={() => setIsImportBudgetOpen(true)}
               />
             ) : (
               /* Global Hub Views */
@@ -582,7 +659,7 @@ export function App() {
                       categories={categories}
                       draws={draws}
                       lienWaivers={lienWaivers}
-                      onSelectProject={(p) => setActiveProject(p)}
+                      onSelectProject={handleSelectProject}
                       onOpenDraws={() => setActiveTab('finance')}
                       onOpenLienWaivers={() => setActiveTab('finance')}
                       onOpenBudgets={() => setActiveTab('budgets')}
@@ -596,11 +673,11 @@ export function App() {
                     <SimpleHomeView
                       currentUser={currentUser}
                       projects={projects}
-                      onSelectProject={(p) => setActiveProject(p)}
+                      onSelectProject={handleSelectProject}
                       onOpenLatti={() => setActiveTab('latti')}
                       onOpenMessages={() => setActiveTab('messages')}
                       onOpenTasks={() => {
-                        setActiveProject(projects[0]);
+                        handleSelectProject(projects[0]);
                       }}
                       onOpenProjects={() => setActiveTab('projects')}
                       onOpenBudgets={() => setActiveTab('budgets')}
@@ -621,7 +698,7 @@ export function App() {
                 {activeTab === 'projects' && (
                   <ProjectsList
                     projects={projects}
-                    onSelectProject={(p) => setActiveProject(p)}
+                    onSelectProject={handleSelectProject}
                     onCreateProject={() => setIsCreateProjectOpen(true)}
                   />
                 )}
@@ -662,32 +739,28 @@ export function App() {
 
                 {/* 6. REPORTS TAB */}
                 {activeTab === 'reports' && (
-                  <div className="px-5 pt-3 pb-24">
-                    <ProjectReportsTab
-                      project={projects[0]}
-                      reports={reports}
-                      onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
-                    />
-                  </div>
+                  <ProjectReportsTab
+                    project={projects[0]}
+                    reports={reports}
+                    onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
+                  />
                 )}
 
                 {/* 7. LATTI AI ASSISTANT */}
                 {activeTab === 'latti' && (
-                  <div className="px-5 pt-3 pb-24">
-                    <LattiAssistant
-                      currentRole={currentRole}
-                      activeProject={null}
-                      tasks={tasks}
-                      punchItems={punchItems}
-                      onNavigate={(tab) => {
-                        if (tab === 'overview' || tab === 'tasks') {
-                          setActiveProject(projects[0]);
-                        } else {
-                          setActiveTab(tab);
-                        }
-                      }}
-                    />
-                  </div>
+                  <LattiAssistant
+                    currentRole={currentRole}
+                    activeProject={null}
+                    tasks={tasks}
+                    punchItems={punchItems}
+                    onNavigate={(tab) => {
+                      if (tab === 'overview' || tab === 'tasks') {
+                        handleSelectProject(projects[0]);
+                      } else {
+                        setActiveTab(tab);
+                      }
+                    }}
+                  />
                 )}
 
                 {/* 8. MORE / SETTINGS VIEW */}

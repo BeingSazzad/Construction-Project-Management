@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, ProjectStatus } from '../../types';
-import { X, Trash2, Check, Building, MapPin, DollarSign, Calendar, UserCheck } from 'lucide-react';
+import { X, Check, Building, MapPin, DollarSign, Calendar, UserCheck, FileText } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface EditProjectModalProps {
@@ -8,24 +8,31 @@ interface EditProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdate: (updatedProject: Project) => void;
-  onDelete: (projectId: string) => void;
+  onDelete?: (projectId: string) => void;
 }
+
+const AVAILABLE_PMS = [
+  { name: 'Sarah Johnson', email: 'sarah.j@averymarsh.com', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' },
+  { name: 'Elena Rossi', email: 'elena.r@averymarsh.com', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80' },
+  { name: 'David Vance', email: 'david.v@averymarsh.com', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80' },
+  { name: 'Marcus Chen', email: 'marcus.c@averymarsh.com', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80' }
+];
 
 export const EditProjectModal: React.FC<EditProjectModalProps> = ({
   project,
   isOpen,
   onClose,
-  onUpdate,
-  onDelete
+  onUpdate
 }) => {
   const [name, setName] = useState(project.name);
-  const [cityState, setCityState] = useState(project.cityState);
+  const [location, setLocation] = useState(project.location || '450 Waterfront Blvd');
+  const [cityState, setCityState] = useState(project.cityState || 'New York, NY');
   const [status, setStatus] = useState<ProjectStatus>(project.status);
-  const [pmName, setPmName] = useState(project.projectManager.name);
+  const [selectedPM, setSelectedPM] = useState(project.projectManager.name);
   const [totalBudget, setTotalBudget] = useState(project.budget.total);
-  const [targetEndDate, setTargetEndDate] = useState(project.targetEndDate || '2026-06-30');
-  
-  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [startDate, setStartDate] = useState(project.startDate || '2024-09-01');
+  const [targetEndDate, setTargetEndDate] = useState(project.targetEndDate || '2025-11-30');
+  const [description, setDescription] = useState(project.description || '');
 
   if (!isOpen) return null;
 
@@ -33,15 +40,25 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
     e.preventDefault();
     if (!name.trim()) return;
 
+    const pmObj = AVAILABLE_PMS.find(p => p.name === selectedPM) || {
+      name: selectedPM.trim() || 'Sarah Johnson',
+      email: 'pm@averymarsh.com',
+      avatar: project.projectManager.avatar
+    };
+
     const updated: Project = {
       ...project,
       name: name.trim(),
-      cityState: cityState.trim() || 'Austin, TX',
+      location: location.trim(),
+      cityState: cityState.trim() || 'New York, NY',
       status: status,
+      startDate: startDate,
       targetEndDate: targetEndDate,
+      description: description.trim(),
       projectManager: {
-        ...project.projectManager,
-        name: pmName.trim() || 'Sarah Johnson'
+        id: project.projectManager.id,
+        name: pmObj.name,
+        avatar: pmObj.avatar
       },
       budget: {
         ...project.budget,
@@ -54,19 +71,14 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
     onClose();
   };
 
-  const handleDelete = () => {
-    onDelete(project.id);
-    onClose();
-  };
-
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[420px] bg-[#070D1A] border border-[#1E2E4A] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-slate-100 max-h-[92vh] overflow-y-auto">
+      <div className="w-full max-w-[420px] bg-[#070D1A] border border-[#1E2E4A] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-slate-100 max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
           <div>
-            <h2 className="text-sm font-bold text-white tracking-tight">Edit Project Details</h2>
+            <h2 className="text-sm font-bold text-white tracking-tight">Edit Project Info</h2>
             <p className="text-[11px] text-slate-400 mt-0.5">Code: {project.code}</p>
           </div>
 
@@ -78,139 +90,134 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </button>
         </div>
 
-        {/* Delete Confirmation Warning View */}
-        {isConfirmingDelete ? (
-          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-rose-400 font-bold text-xs">
-              <Trash2 className="w-4 h-4" />
-              <span>Delete this Project?</span>
-            </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Are you sure you want to permanently delete <strong className="text-white">"{project.name}"</strong>? All tasks, drawings, and budget logs will be removed.
-            </p>
-            <div className="flex items-center justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setIsConfirmingDelete(false)}
-                className="px-3 py-1.5 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md cursor-pointer active:scale-95 transition-all"
-              >
-                Yes, Delete Project
-              </button>
-            </div>
+        {/* Edit Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
+          <div>
+            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Title *</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+            />
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
-            {/* Project Name */}
+
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Title *</label>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Site Address</label>
               <input
                 type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="450 Waterfront Blvd"
                 className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
               />
             </div>
 
-            {/* City & State Location */}
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Location / City State</label>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">City / State</label>
               <input
                 type="text"
                 value={cityState}
                 onChange={(e) => setCityState(e.target.value)}
+                placeholder="New York, NY"
                 className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
               />
             </div>
+          </div>
 
-            {/* Status Dropdown */}
+          <div>
+            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lifecycle Status</label>
+            <CustomSelect
+              value={status}
+              onChange={(v) => setStatus(v as ProjectStatus)}
+              options={[
+                'Planning',
+                'Pre-Construction',
+                'In Progress',
+                'On Hold',
+                'Completed',
+                'Warranty'
+              ]}
+              size="md"
+            />
+          </div>
+
+          <div>
+            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lead Project Manager</label>
+            <select
+              value={selectedPM}
+              onChange={(e) => setSelectedPM(e.target.value)}
+              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+            >
+              {AVAILABLE_PMS.map(pm => (
+                <option key={pm.name} value={pm.name}>{pm.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Total Budget ($ USD)</label>
+            <input
+              type="number"
+              value={totalBudget}
+              onChange={(e) => setTotalBudget(Number(e.target.value))}
+              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lifecycle Status</label>
-              <CustomSelect
-                value={status}
-                onChange={(v) => setStatus(v as ProjectStatus)}
-                options={[
-                  'Planning',
-                  'Pre-Construction',
-                  'In Progress',
-                  'On Hold',
-                  'Completed',
-                  'Warranty'
-                ]}
-                size="md"
-              />
-            </div>
-
-            {/* Project Manager & Target End Date */}
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Manager</label>
-                <input
-                  type="text"
-                  value={pmName}
-                  onChange={(e) => setPmName(e.target.value)}
-                  className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Target Completion</label>
-                <input
-                  type="date"
-                  value={targetEndDate}
-                  onChange={(e) => setTargetEndDate(e.target.value)}
-                  className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            {/* Total Budget */}
-            <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Total Budget ($)</label>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Start Date</label>
               <input
-                type="number"
-                value={totalBudget}
-                onChange={(e) => setTotalBudget(Number(e.target.value))}
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
                 className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
               />
             </div>
 
-            {/* Bottom Actions: Delete Button on left, Save on right */}
-            <div className="flex items-center justify-between pt-3 border-t border-[#142036] mt-2">
-              <button
-                type="button"
-                onClick={() => setIsConfirmingDelete(true)}
-                className="text-rose-400 hover:text-rose-300 text-xs font-semibold flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete Project</span>
-              </button>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-3.5 py-2 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-600/30 cursor-pointer active:scale-95 transition-all"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Save Changes</span>
-                </button>
-              </div>
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Target Completion Date</label>
+              <input
+                type="date"
+                value={targetEndDate}
+                onChange={(e) => setTargetEndDate(e.target.value)}
+                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+              />
             </div>
-          </form>
-        )}
+          </div>
+
+          <div>
+            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Scope & Notes</label>
+            <textarea
+              rows={2}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Detailed description of scope and structure..."
+              className="w-full bg-[#050811] border border-[#142036] rounded-xl p-3 text-white text-xs outline-none focus:border-blue-500 resize-none"
+            />
+          </div>
+
+          {/* Bottom Actions: Cancel & Save */}
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#142036] mt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3.5 py-2 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-600/30 cursor-pointer active:scale-95 transition-all"
+            >
+              <Check className="w-3.5 h-3.5" />
+              <span>Save Changes</span>
+            </button>
+          </div>
+        </form>
 
       </div>
     </div>

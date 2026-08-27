@@ -73,11 +73,11 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
   };
 
   return (
-    <div 
+    <div
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-sm animate-fade-in font-sans"
     >
-      <div 
+      <div
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-[430px] bg-[#070D1A] border-t border-x border-[#142036] rounded-t-[28px] p-5 pb-8 shadow-2xl flex flex-col gap-3 text-slate-100 animate-slide-up max-h-[85vh] overflow-y-auto"
       >
@@ -149,13 +149,12 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
                 <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors truncate">
                   {preset.title}
                 </span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${
-                  preset.priority === 'Critical' 
+                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${preset.priority === 'Critical'
                     ? 'text-rose-400 bg-rose-500/10 border-rose-500/20'
                     : preset.priority === 'High'
-                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
-                    : 'text-blue-400 bg-blue-500/10 border-blue-500/20'
-                }`}>
+                      ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                      : 'text-blue-400 bg-blue-500/10 border-blue-500/20'
+                  }`}>
                   {preset.priority}
                 </span>
               </div>

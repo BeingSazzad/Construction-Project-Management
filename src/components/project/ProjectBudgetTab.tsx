@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Project, TradeCategory } from '../../types';
+import { Project, TradeCategory, CostCodeGroup } from '../../types';
 import { 
   ChevronDown, ChevronRight, Search, Plus, 
   Layers, Hammer, Boxes, Flame, Zap, BarChart2, Download
@@ -14,10 +14,18 @@ interface ProjectBudgetTabProps {
 
 export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   project,
-  categories,
-  onAddCostItem,
+  categories: initialCategories,
   onImportBudget
 }) => {
+  const [categories, setCategories] = useState<TradeCategory[]>(initialCategories);
+  const [isAddCodeModalOpen, setIsAddCodeModalOpen] = useState(false);
+
+  // New Code Form State
+  const [tradeName, setTradeName] = useState('03 - Concrete & Formwork');
+  const [costCodeName, setCostCodeName] = useState('');
+  const [budgetAmount, setBudgetAmount] = useState('');
+  const [committedAmount, setCommittedAmount] = useState('');
+
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'cat-03': true,
     'cat-05': false,
@@ -26,6 +34,54 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   });
 
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleAddCodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!costCodeName.trim() || !budgetAmount) return;
+
+    const newCode: CostCodeGroup = {
+      code: `0${Math.floor(10 + Math.random() * 89)}-${Math.floor(100 + Math.random() * 900)}`,
+      name: costCodeName.trim(),
+      estimatedCost: Number(budgetAmount),
+      actualCost: Number(committedAmount) || 0,
+      committedCost: Number(committedAmount) || 0,
+      variance: (Number(committedAmount) || 0) - Number(budgetAmount),
+      items: [
+        {
+          id: `item-${Date.now()}`,
+          code: `0${Math.floor(10 + Math.random() * 89)}`,
+          name: costCodeName.trim(),
+          type: 'Subcontractor',
+          unit: 'ls',
+          quantity: 1,
+          unitPrice: Number(budgetAmount),
+          estimatedCost: Number(budgetAmount),
+          committedCost: Number(committedAmount) || 0,
+          actualCost: Number(committedAmount) || 0,
+          paidCost: 0,
+          remaining: Number(budgetAmount),
+          variance: 0
+        }
+      ]
+    };
+
+    setCategories(prev => prev.map(cat => {
+      if (cat.name.includes(tradeName.split('-')[1]?.trim() || 'Concrete')) {
+        return {
+          ...cat,
+          estimatedCost: cat.estimatedCost + Number(budgetAmount),
+          actualCost: cat.actualCost + (Number(committedAmount) || 0),
+          costCodes: [...cat.costCodes, newCode]
+        };
+      }
+      return cat;
+    }));
+
+    setCostCodeName('');
+    setBudgetAmount('');
+    setCommittedAmount('');
+    setIsAddCodeModalOpen(false);
+  };
 
   const toggleCategory = (catId: string) => {
     setExpandedCategories(prev => ({
@@ -56,8 +112,30 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
   const maxVal = 1000;
 
+  if (project.budget.total === 0) {
+    return (
+      <div className="w-full flex flex-col gap-4 px-5 py-6 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in text-center items-center justify-center min-h-[50vh]">
+        <div className="w-14 h-14 rounded-3xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
+          <Download className="w-7 h-7" />
+        </div>
+        <h3 className="text-sm font-bold text-white">No Budget Ledger Active</h3>
+        <p className="text-xs text-slate-400 max-w-[280px] leading-relaxed mt-1 mb-4">
+          This project does not have a Master CSI budget ledger imported. Import an Excel or CSV template to track trade divisions, allowances, and vendor contracts.
+        </p>
+        {onImportBudget && (
+          <button
+            onClick={onImportBudget}
+            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all active:scale-[0.99] cursor-pointer"
+          >
+            Import Budget Ledger
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full flex flex-col gap-4 pt-1 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       {/* Budget Overview Card */}
       <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-sm">
         <div className="flex items-center justify-between mb-3">
@@ -180,7 +258,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">CSI MasterFormat Trades</h3>
           <button
-            onClick={onAddCostItem}
+            onClick={() => setIsAddCodeModalOpen(true)}
             className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -263,6 +341,93 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           })}
         </div>
       </div>
+
+      {/* ─── ADD COST CODE MODAL ─── */}
+      {isAddCodeModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[380px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-slate-100">
+            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+              <h3 className="text-xs font-bold text-white">Add CSI Cost Code</h3>
+              <button
+                onClick={() => setIsAddCodeModalOpen(false)}
+                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddCodeSubmit} className="flex flex-col gap-2.5 text-xs">
+              <div>
+                <label className="text-[11px] text-slate-400 block mb-1">CSI Trade Division</label>
+                <select
+                  value={tradeName}
+                  onChange={(e) => setTradeName(e.target.value)}
+                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                >
+                  <option value="03 - Concrete & Formwork">03 - Concrete & Formwork</option>
+                  <option value="05 - Metals & Structural Steel">05 - Metals & Structural Steel</option>
+                  <option value="15 - Mechanical & HVAC">15 - Mechanical & HVAC</option>
+                  <option value="16 - Electrical & Power">16 - Electrical & Power</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[11px] text-slate-400 block mb-1">Cost Code Line Item Name *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Slab Rebar Reinforcement"
+                  value={costCodeName}
+                  onChange={(e) => setCostCodeName(e.target.value)}
+                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-slate-400 block mb-1">Budget Amount ($) *</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="45000"
+                    value={budgetAmount}
+                    onChange={(e) => setBudgetAmount(e.target.value)}
+                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] text-slate-400 block mb-1">Committed ($)</label>
+                  <input
+                    type="number"
+                    placeholder="38000"
+                    value={committedAmount}
+                    onChange={(e) => setCommittedAmount(e.target.value)}
+                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsAddCodeModalOpen(false)}
+                  className="px-3 py-1.5 rounded-lg bg-[#0E1A33] text-slate-300 text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
+                >
+                  Save Code
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

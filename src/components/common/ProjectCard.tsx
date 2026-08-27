@@ -20,8 +20,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) =>
       {/* Top Header Row: Thumbnail + Full-Width Title & Status Badge */}
       <div className="flex items-start gap-3">
         <img
-          src={project.thumbnail}
+          src={project.thumbnail || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80'}
           alt={project.name}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80';
+          }}
           className="w-10 h-10 rounded-xl object-cover border border-[#1E2C48] flex-shrink-0 group-hover:scale-105 transition-transform mt-0.5 shadow-sm"
         />
 

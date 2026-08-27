@@ -239,7 +239,7 @@ export const OpportunitiesView: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-3 px-4 sm:px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
       {/* ─── 1. TOP HEADER & PRIMARY ACTION ─── */}
       <div className="flex items-center justify-between">

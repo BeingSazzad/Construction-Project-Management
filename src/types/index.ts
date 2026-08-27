@@ -64,6 +64,7 @@ export interface Project {
     completedMilestones: number;
   };
   thumbnail: string;
+  coverImage?: string;
   description: string;
 }
 

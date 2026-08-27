@@ -85,6 +85,7 @@ export const MOCK_PROJECTS: Project[] = [
       completedMilestones: 5
     },
     thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80',
     description: '14-story Class A commercial office building featuring curtain wall facade, LEED Gold target, and multi-tenant high-efficiency HVAC.'
   },
   {
@@ -120,6 +121,7 @@ export const MOCK_PROJECTS: Project[] = [
       completedMilestones: 4
     },
     thumbnail: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&auto=format&fit=crop&q=80',
     description: 'High-density mixed retail & 28-floor steel frame commercial tower with integrated subterranean transit concourse.'
   },
   {
@@ -155,6 +157,7 @@ export const MOCK_PROJECTS: Project[] = [
       completedMilestones: 6
     },
     thumbnail: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=1200&auto=format&fit=crop&q=80',
     description: '64-unit luxury townhome enclave with clubhouse, underground utility spine, and sustainable stormwater retention basins.'
   },
   {
@@ -190,6 +193,7 @@ export const MOCK_PROJECTS: Project[] = [
       completedMilestones: 3
     },
     thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80',
     description: 'Coastal hurricane-rated reinforced concrete luxury condominium structure with rooftop infinity pool.'
   },
   {
@@ -225,6 +229,7 @@ export const MOCK_PROJECTS: Project[] = [
       completedMilestones: 1
     },
     thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80',
     description: 'Retail shell renovation, food hall structural steel framing, and updated central mechanical plant.'
   },
   {

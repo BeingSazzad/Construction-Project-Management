@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { User, Project } from '../../types';
-import { Bell, ChevronLeft, Sparkles, Menu, MessageSquare } from 'lucide-react';
+import { Bell, ChevronLeft, Sparkles, Menu, MessageSquare, MoreVertical, Edit3, Trash2 } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
 
 interface HeaderProps {
@@ -10,6 +10,7 @@ interface HeaderProps {
   unreadNotifsCount: number;
   unreadMessagesCount?: number;
   onBackToHome?: () => void;
+  onBack?: () => void;
   onOpenNotifications: () => void;
   onOpenMessages?: () => void;
   onOpenLatti: () => void;
@@ -17,6 +18,7 @@ interface HeaderProps {
   onOpenDrawer?: () => void;
   onMarkAllRead?: () => void;
   onOpenEditProject?: () => void;
+  onDeleteProject?: (projectId: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -26,32 +28,61 @@ export const Header: React.FC<HeaderProps> = ({
   unreadNotifsCount,
   unreadMessagesCount = 2,
   onBackToHome,
+  onBack,
   onOpenNotifications,
   onOpenMessages,
   onOpenLatti,
   onOpenSettings,
   onOpenDrawer,
-  onOpenEditProject
+  onOpenEditProject,
+  onDeleteProject
 }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleBackClick = onBack || onBackToHome;
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const firstName = currentUser?.name ? currentUser.name.split(' ')[0] : 'Alex';
   const avatarUrl = currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
 
-  // If on top-level non-home pages (Projects, Tasks, Budgets, Settings, etc.), omit header to prevent double titles
-  if (!activeProject && activeTab !== 'home') {
-    return null;
-  }
+  const getTabTitle = (tab: string) => {
+    switch (tab) {
+      case 'projects': return 'Active Projects';
+      case 'tasks': return 'Task Management';
+      case 'punch': return 'Punch List Items';
+      case 'budgets': return 'Budgets & Financials';
+      case 'draws': return 'Financing Draws';
+      case 'lien-waivers': return 'Lien Waivers';
+      case 'opportunities': return 'Opportunities & Deals';
+      case 'team': return 'Company Team';
+      case 'messages': return 'Messages & Team Chat';
+      case 'notifications': return 'Notifications';
+      case 'more': return 'Settings & Profile';
+      default: return tab.charAt(0).toUpperCase() + tab.slice(1);
+    }
+  };
 
   return (
     <header className="w-full flex-shrink-0 z-40 bg-[#060913] border-b border-[#142036] sticky top-0 font-sans">
       <div className="px-5 py-3 flex items-center justify-between gap-3 max-w-[430px] mx-auto">
         {activeProject ? (
-          // Inside Project Workspace Header (Has Back Button & Edit Project Button)
+          // Inside Project Workspace Header (Has Back Button & 3-Dots Action Menu)
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
-                onClick={onBackToHome}
+                onClick={handleBackClick}
                 className="w-10 h-10 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex items-center justify-center text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95 shadow-sm"
-                title="Back to Home"
+                title="Back"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -67,15 +98,78 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            {onOpenEditProject && (
+            {/* 3-Dots Action Menu (Edit Info / Delete) */}
+            <div className="relative flex-shrink-0" ref={menuRef}>
               <button
-                onClick={onOpenEditProject}
-                className="h-8 px-3 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer flex-shrink-0 active:scale-95 ml-2 shadow-sm"
-                title="Edit Project Info & Settings"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="w-9 h-9 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm ml-2"
+                title="Project Actions"
               >
-                <span>Edit</span>
+                <MoreVertical className="w-4 h-4" />
               </button>
-            )}
+
+              {isMenuOpen && (
+                <div className="absolute right-0 top-11 w-44 bg-[#0A111F] border border-[#1E2E4A] rounded-2xl shadow-2xl overflow-hidden py-1.5 z-50 animate-fade-in backdrop-blur-xl">
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      if (onOpenEditProject) onOpenEditProject();
+                    }}
+                    className="w-full px-3.5 py-2 text-left text-xs font-semibold text-slate-200 hover:bg-[#141F33] hover:text-white flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <Edit3 className="w-3.5 h-3.5 text-blue-400" />
+                    <span>Edit Project Info</span>
+                  </button>
+
+                  <div className="h-px bg-[#142036] my-1" />
+
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      if (onDeleteProject) {
+                        if (window.confirm(`Are you sure you want to permanently delete "${activeProject.name}"?`)) {
+                          onDeleteProject(activeProject.id);
+                        }
+                      }
+                    }}
+                    className="w-full px-3.5 py-2 text-left text-xs font-semibold text-rose-400 hover:bg-rose-500/10 flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Delete Project</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : activeTab !== 'home' ? (
+          // Sub-pages / Non-Home Top Header with Back to Home button
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                onClick={handleBackClick}
+                className="w-10 h-10 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex items-center justify-center text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95 shadow-sm"
+                title="Back to Home"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div>
+                <h1 className="text-sm font-bold text-white tracking-tight leading-tight">
+                  {getTabTitle(activeTab)}
+                </h1>
+                <p className="text-[10px] text-slate-400 font-medium">Avery & Marsh Construction</p>
+              </div>
+            </div>
+
+            <div 
+              onClick={onOpenSettings}
+              className="cursor-pointer"
+            >
+              <img
+                src={avatarUrl}
+                alt={currentUser?.name}
+                className="w-9 h-9 rounded-full object-cover border-2 border-blue-500/30 hover:border-blue-500/60 transition-colors shadow-sm"
+              />
+            </div>
           </div>
         ) : (
           // Home Dashboard Header with Hamburger Drawer Button

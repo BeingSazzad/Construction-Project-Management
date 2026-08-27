@@ -126,8 +126,8 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
             <Sparkles className="w-4.5 h-4.5" />
           </div>
           <div className="text-left min-w-0">
-            <p className="text-xs font-bold text-white">Latti Assistant</p>
-            <p className="text-[11px] text-slate-300 font-medium mt-0.5 truncate">2 schedule risks · 1 budget variance</p>
+            <p className="text-xs font-bold text-white">Latti AI Assistant</p>
+            <p className="text-[11px] text-slate-300 font-medium mt-0.5 truncate">Ask questions, query project budgets, or check timelines</p>
           </div>
         </div>
         <div className="flex items-center gap-1 text-blue-400 group-hover:text-white transition-colors flex-shrink-0">
