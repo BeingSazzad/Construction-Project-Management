@@ -16,6 +16,7 @@ interface HeaderProps {
   onOpenSettings: () => void;
   onOpenDrawer?: () => void;
   onMarkAllRead?: () => void;
+  onOpenEditProject?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -29,7 +30,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenMessages,
   onOpenLatti,
   onOpenSettings,
-  onOpenDrawer
+  onOpenDrawer,
+  onOpenEditProject
 }) => {
   const firstName = currentUser?.name ? currentUser.name.split(' ')[0] : 'Alex';
   const avatarUrl = currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
@@ -43,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="w-full flex-shrink-0 z-40 bg-[#060913] border-b border-[#142036] sticky top-0 font-sans">
       <div className="px-5 py-3 flex items-center justify-between gap-3 max-w-[430px] mx-auto">
         {activeProject ? (
-          // Inside Project Workspace Header (Has Back Button Only - 100% Clean)
+          // Inside Project Workspace Header (Has Back Button & Edit Project Button)
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
@@ -64,6 +66,16 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               </div>
             </div>
+
+            {onOpenEditProject && (
+              <button
+                onClick={onOpenEditProject}
+                className="h-8 px-3 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer flex-shrink-0 active:scale-95 ml-2 shadow-sm"
+                title="Edit Project Info & Settings"
+              >
+                <span>Edit</span>
+              </button>
+            )}
           </div>
         ) : (
           // Home Dashboard Header with Hamburger Drawer Button

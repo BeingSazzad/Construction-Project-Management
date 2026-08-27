@@ -70,6 +70,7 @@ import { ProcessLienWaiverModal } from './components/modals/ProcessLienWaiverMod
 import { ApprovePayAppModal } from './components/modals/ApprovePayAppModal';
 import { TaskCreationTypeModal } from './components/modals/TaskCreationTypeModal';
 import { ImportBudgetModal } from './components/modals/ImportBudgetModal';
+import { EditProjectModal } from './components/modals/EditProjectModal';
 import { NotificationsView } from './components/notifications/NotificationsView';
 import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp } from 'lucide-react';
 
@@ -80,6 +81,7 @@ export function App() {
   const [currentRole, setCurrentRole] = useState<UserRole>('admin'); // Default to Company Owner (Phase 1 Focus)
   const [activeTab, setActiveTab] = useState<string>('home');
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [isEditProjectOpen, setIsEditProjectOpen] = useState(false);
 
   // Entities state
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
@@ -234,6 +236,19 @@ export function App() {
     if (activeProject && activeProject.id === projectId) {
       setActiveProject(prev => prev ? { ...prev, status: newStatus } : null);
     }
+  };
+
+  const handleUpdateProject = (updated: Project) => {
+    setProjects(prev => prev.map(p => p.id === updated.id ? updated : p));
+    if (activeProject && activeProject.id === updated.id) {
+      setActiveProject(updated);
+    }
+  };
+
+  const handleDeleteProject = (projectId: string) => {
+    setProjects(prev => prev.filter(p => p.id !== projectId));
+    setActiveProject(null);
+    setActiveTab('projects');
   };
 
   const handleCreateProject = (newProj: Partial<Project>) => {
@@ -480,6 +495,7 @@ export function App() {
             onOpenSettings={() => { setActiveProject(null); setActiveTab('more'); }}
             onOpenDrawer={() => setIsSideDrawerOpen(true)}
             onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
+            onOpenEditProject={() => setIsEditProjectOpen(true)}
           />
 
           {/* Body Content Area */}
@@ -959,6 +975,16 @@ export function App() {
         <DocumentPreviewModal
           document={selectedDocument}
           onClose={() => setSelectedDocument(null)}
+        />
+      )}
+
+      {activeProject && (
+        <EditProjectModal
+          project={activeProject}
+          isOpen={isEditProjectOpen}
+          onClose={() => setIsEditProjectOpen(false)}
+          onUpdate={handleUpdateProject}
+          onDelete={handleDeleteProject}
         />
       )}
 
