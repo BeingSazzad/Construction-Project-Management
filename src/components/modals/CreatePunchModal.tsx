@@ -18,11 +18,11 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   onCreate
 }) => {
   const [title, setTitle] = useState('');
-  const [location, setLocation] = useState('Level 3 - Grid C-2');
+  const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [trade, setTrade] = useState('Concrete Solutions Inc.');
   const [priority, setPriority] = useState<Priority>('High');
-  const [dueDate, setDueDate] = useState('2025-05-25');
+  const [dueDate, setDueDate] = useState('');
 
   if (!isOpen) return null;
 
@@ -93,6 +93,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
+              placeholder="e.g. Level 3 - Grid C-2"
               className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
             />
           </div>

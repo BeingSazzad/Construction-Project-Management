@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
-  ArrowLeft, TrendingUp, DollarSign, MapPin,
-  User, Flag, CheckCircle2, ChevronDown, Calendar, Percent, Plus,
-  ArrowRight, Sparkles, Building2, Briefcase, FileText
+  ArrowLeft, DollarSign,
+  CheckCircle2, Percent, Plus,
+  Building2, Briefcase, Calendar
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
@@ -60,8 +60,6 @@ export const LEAD_SOURCES = [
 ];
 
 export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate }) => {
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
-
   // Form State
   const [title, setTitle] = useState('');
   const [client, setClient] = useState('');
@@ -79,27 +77,11 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
   const [notes, setNotes] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const isStep1Valid = title.trim().length > 0;
-
-  const handleNext = () => {
-    if (currentStep === 1 && isStep1Valid) {
-      setCurrentStep(2);
-    } else if (currentStep === 2) {
-      setCurrentStep(3);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentStep > 1) {
-      setCurrentStep((prev) => (prev - 1) as 1 | 2 | 3);
-    } else {
-      onBack();
-    }
-  };
+  const isValid = title.trim().length > 0;
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!isStep1Valid) return;
+    if (!isValid) return;
 
     setIsSuccess(true);
     setTimeout(() => {
@@ -131,12 +113,6 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
   const inputClass =
     'w-full h-11 bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] focus:bg-[#0A1220] transition-all font-medium';
 
-  const STEPS = [
-    { num: 1, label: 'Project Info' },
-    { num: 2, label: 'Pipeline & Value' },
-    { num: 3, label: 'Schedule & Scope' },
-  ];
-
   return (
     <div className="w-full min-h-screen bg-[#070A12] font-sans pb-32 max-w-[430px] mx-auto text-slate-100 animate-fade-in flex flex-col">
 
@@ -145,57 +121,15 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={handlePrev}
+            onClick={onBack}
             className="w-9 h-9 rounded-xl bg-[#0A111F] border border-[#142036] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-all active:scale-95"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <h1 className="text-sm font-bold text-white tracking-tight">New Opportunity</h1>
-            <p className="text-[10px] text-slate-500">Step {currentStep} of 3 • {STEPS[currentStep - 1].label}</p>
+            <p className="text-[10px] text-slate-500">Create pre-construction lead</p>
           </div>
-        </div>
-
-        <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-400">
-          {currentStep}/3
-        </span>
-      </div>
-
-      {/* ─── STEP PROGRESS BAR ─── */}
-      <div className="px-5 pt-3 pb-1">
-        <div className="flex items-center justify-between gap-2">
-          {STEPS.map((s) => {
-            const isCompleted = currentStep > s.num;
-            const isCurrent = currentStep === s.num;
-
-            return (
-              <button
-                key={s.num}
-                type="button"
-                onClick={() => {
-                  if (s.num === 1 || isStep1Valid) {
-                    setCurrentStep(s.num as any);
-                  }
-                }}
-                className="flex-1 flex flex-col gap-1.5 cursor-pointer text-left group"
-              >
-                <div className={`h-1.5 rounded-full transition-all ${
-                  isCurrent 
-                    ? 'bg-[#3B82F6] shadow-[0_0_8px_rgba(59,130,246,0.6)]' 
-                    : isCompleted 
-                    ? 'bg-[#2563EB]/80' 
-                    : 'bg-[#142036]'
-                }`} />
-                <div className="flex items-center gap-1">
-                  <span className={`text-[10px] font-bold ${
-                    isCurrent ? 'text-white' : isCompleted ? 'text-blue-300' : 'text-slate-500'
-                  }`}>
-                    {s.num}. {s.label}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
         </div>
       </div>
 
@@ -207,283 +141,223 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
         </div>
       )}
 
-      {/* ─── STEP CONTENT ─── */}
-      <div className="px-5 pt-4 flex-1 flex flex-col justify-between">
+      {/* ─── FORM CONTENT ─── */}
+      <form onSubmit={handleSubmit} className="px-5 pt-4 flex-1 flex flex-col gap-4">
         
-        {/* STEP 1: OPPORTUNITY & CLIENT INFO */}
-        {currentStep === 1 && (
-          <div className="flex flex-col gap-4 animate-fade-in">
-            <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-              <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
-                <Building2 className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-bold text-white">Opportunity & Client Info</span>
-              </div>
+        {/* SECTION 1: OPPORTUNITY & CLIENT INFO */}
+        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
+            <Building2 className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-bold text-white">Opportunity & Client Info</span>
+          </div>
 
-              <div>
-                <InputLabel label="Project / Opportunity Name" required />
-                <input
-                  type="text"
-                  value={title}
-                  onChange={e => setTitle(e.target.value)}
-                  placeholder="e.g. Maple Ridge Custom Home"
-                  className={inputClass}
-                  autoFocus
-                  required
-                />
-              </div>
+          <div>
+            <InputLabel label="Project / Opportunity Name" required />
+            <input
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="e.g. Maple Ridge Custom Home"
+              className={inputClass}
+              autoFocus
+              required
+            />
+          </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <InputLabel label="Client Name" />
-                  <input
-                    type="text"
-                    value={client}
-                    onChange={e => setClient(e.target.value)}
-                    placeholder="e.g. Sarah Johnson"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <InputLabel label="Client Email" />
-                  <input
-                    type="email"
-                    value={clientEmail}
-                    onChange={e => setClientEmail(e.target.value)}
-                    placeholder="client@email.com"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <InputLabel label="Property Address" />
-                <input
-                  type="text"
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
-                  placeholder="123 Builder Way, Boulder, CO"
-                  className={inputClass}
-                />
-              </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <InputLabel label="Client Name" />
+              <input
+                type="text"
+                value={client}
+                onChange={e => setClient(e.target.value)}
+                placeholder="e.g. Sarah Johnson"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <InputLabel label="Client Email" />
+              <input
+                type="email"
+                value={clientEmail}
+                onChange={e => setClientEmail(e.target.value)}
+                placeholder="client@email.com"
+                className={inputClass}
+              />
             </div>
           </div>
-        )}
 
-        {/* STEP 2: PIPELINE & VALUATION */}
-        {currentStep === 2 && (
-          <div className="flex flex-col gap-4 animate-fade-in">
-            <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-              <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
-                <Briefcase className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-bold text-white">Pipeline Classification & Financials</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                {/* Project Type */}
-                <div>
-                  <InputLabel label="Project Type" />
-                  <CustomSelect
-                    value={projectType}
-                    onChange={v => setProjectType(v as any)}
-                    options={PROJECT_TYPES}
-                    size="md"
-                  />
-                </div>
-
-                {/* Stage */}
-                <div>
-                  <InputLabel label="Initial Stage" />
-                  <CustomSelect
-                    value={stage}
-                    onChange={v => setStage(v as any)}
-                    options={OPPORTUNITY_STAGES}
-                    size="md"
-                  />
-                </div>
-              </div>
-
-              {/* Value & Probability */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <InputLabel label="Est. Construction Value" />
-                  <div className="relative">
-                    <DollarSign className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                    <input
-                      type="number"
-                      min={0}
-                      value={value}
-                      onChange={e => setValue(e.target.value)}
-                      placeholder="0"
-                      className={`${inputClass} pl-8`}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <InputLabel label="Probability (%)" />
-                  <div className="relative">
-                    <Percent className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={probability}
-                      onChange={e => setProbability(e.target.value)}
-                      placeholder="10"
-                      className={`${inputClass} pl-8`}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Lead Source & Assigned To */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <InputLabel label="Lead Source" />
-                  <CustomSelect
-                    value={leadSource}
-                    onChange={setLeadSource}
-                    options={['— None —', ...LEAD_SOURCES]}
-                    placeholder="Select source..."
-                    size="md"
-                  />
-                </div>
-
-                <div>
-                  <InputLabel label="Assigned To" />
-                  <input
-                    type="text"
-                    value={assignedTo}
-                    onChange={e => setAssignedTo(e.target.value)}
-                    placeholder="Team member"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            </div>
+          <div>
+            <InputLabel label="Property Address" />
+            <input
+              type="text"
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+              placeholder="123 Builder Way, Boulder, CO"
+              className={inputClass}
+            />
           </div>
-        )}
-
-        {/* STEP 3: SCHEDULE & NOTES + SUMMARY PREVIEW */}
-        {currentStep === 3 && (
-          <div className="flex flex-col gap-4 animate-fade-in">
-            {/* Quick Preview Card */}
-            <div className="p-3.5 rounded-2xl bg-blue-600/10 border border-blue-500/25 flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> Deal Summary
-                </span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                  {stage}
-                </span>
-              </div>
-              <div className="flex items-baseline justify-between pt-0.5">
-                <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-white truncate">{title || 'Untitled Opportunity'}</h4>
-                  <p className="text-[11px] text-slate-400 truncate">{client || 'Private Client'} • {projectType}</p>
-                </div>
-                <span className="text-sm font-black text-white ml-2 flex-shrink-0">
-                  ${Number(value || 0).toLocaleString()}
-                </span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-              <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
-                <Calendar className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-bold text-white">Timeline & Scope Details</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <InputLabel label="Expected Start Date" />
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={e => setStartDate(e.target.value)}
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <InputLabel label="Follow-up Date" />
-                  <input
-                    type="date"
-                    value={followUpDate}
-                    onChange={e => setFollowUpDate(e.target.value)}
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <InputLabel label="Project Description" />
-                <textarea
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                  placeholder="Scope outline, architectural specs, client wishlist..."
-                  rows={2}
-                  className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
-                />
-              </div>
-
-              <div>
-                <InputLabel label="Internal Notes" />
-                <textarea
-                  value={notes}
-                  onChange={e => setNotes(e.target.value)}
-                  placeholder="Private notes for estimating team..."
-                  rows={2}
-                  className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ─── BOTTOM NAVIGATION BUTTONS ─── */}
-        <div className="pt-6 flex items-center gap-3">
-          {currentStep > 1 && (
-            <button
-              type="button"
-              onClick={handlePrev}
-              className="h-12 px-5 rounded-2xl bg-[#0A111F] hover:bg-[#101A2E] text-slate-300 border border-[#142036] font-bold text-xs cursor-pointer transition-all active:scale-95"
-            >
-              Back
-            </button>
-          )}
-
-          {currentStep < 3 ? (
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={currentStep === 1 && !isStep1Valid}
-              className={`flex-1 h-12 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg cursor-pointer ${
-                (currentStep === 1 ? isStep1Valid : true)
-                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-600/30 active:scale-[0.99]'
-                  : 'bg-[#0D1422] text-slate-500 border border-[#142036] cursor-not-allowed'
-              }`}
-            >
-              <span>Next</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => handleSubmit()}
-              disabled={!isStep1Valid || isSuccess}
-              className={`flex-1 h-12 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer ${
-                isStep1Valid && !isSuccess
-                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-600/30 active:scale-[0.99]'
-                  : 'bg-[#0D1422] text-slate-500 border border-[#142036] cursor-not-allowed'
-              }`}
-            >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>{isSuccess ? 'Opportunity Created!' : 'Create Opportunity'}</span>
-            </button>
-          )}
         </div>
 
-      </div>
+        {/* SECTION 2: PIPELINE & VALUATION */}
+        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
+            <Briefcase className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-bold text-white">Pipeline Classification & Financials</span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {/* Project Type */}
+            <div>
+              <InputLabel label="Project Type" />
+              <CustomSelect
+                value={projectType}
+                onChange={v => setProjectType(v as any)}
+                options={PROJECT_TYPES}
+                size="md"
+              />
+            </div>
+
+            {/* Stage */}
+            <div>
+              <InputLabel label="Initial Stage" />
+              <CustomSelect
+                value={stage}
+                onChange={v => setStage(v as any)}
+                options={OPPORTUNITY_STAGES}
+                size="md"
+              />
+            </div>
+          </div>
+
+          {/* Value & Probability */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <InputLabel label="Est. Construction Value" />
+              <div className="relative">
+                <DollarSign className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="number"
+                  min={0}
+                  value={value}
+                  onChange={e => setValue(e.target.value)}
+                  placeholder="0"
+                  className={`${inputClass} pl-8`}
+                />
+              </div>
+            </div>
+
+            <div>
+              <InputLabel label="Probability (%)" />
+              <div className="relative">
+                <Percent className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={probability}
+                  onChange={e => setProbability(e.target.value)}
+                  placeholder="10"
+                  className={`${inputClass} pl-8`}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Lead Source & Assigned To */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <InputLabel label="Lead Source" />
+              <CustomSelect
+                value={leadSource}
+                onChange={setLeadSource}
+                options={['— None —', ...LEAD_SOURCES]}
+                placeholder="Select source..."
+                size="md"
+              />
+            </div>
+
+            <div>
+              <InputLabel label="Assigned To" />
+              <input
+                type="text"
+                value={assignedTo}
+                onChange={e => setAssignedTo(e.target.value)}
+                placeholder="Team member"
+                className={inputClass}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 3: SCHEDULE & NOTES */}
+        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
+            <Calendar className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-bold text-white">Timeline & Scope Details</span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <InputLabel label="Expected Start Date" />
+              <input
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <InputLabel label="Follow-up Date" />
+              <input
+                type="date"
+                value={followUpDate}
+                onChange={e => setFollowUpDate(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <div>
+            <InputLabel label="Project Description" />
+            <textarea
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Scope outline, architectural specs, client wishlist..."
+              rows={2}
+              className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+            />
+          </div>
+
+          <div>
+            <InputLabel label="Internal Notes" />
+            <textarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              placeholder="Private notes for estimating team..."
+              rows={2}
+              className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+            />
+          </div>
+        </div>
+
+        {/* ─── PRIMARY SUBMIT ACTION ─── */}
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={!isValid || isSuccess}
+            className={`w-full h-12 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer ${
+              isValid && !isSuccess
+                ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-600/30 active:scale-[0.99]'
+                : 'bg-[#0D1422] text-slate-500 border border-[#142036] cursor-not-allowed'
+            }`}
+          >
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <span>{isSuccess ? 'Opportunity Created!' : 'Create Opportunity'}</span>
+          </button>
+        </div>
+
+      </form>
     </div>
   );
 };

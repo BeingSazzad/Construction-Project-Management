@@ -63,30 +63,6 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
         </div>
       )}
 
-      {/* Custom Report Branding Card */}
-      <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-        <div className="flex items-start gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0 mt-0.5">
-            <Crown className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-xs font-bold text-white">Custom Report Branding</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-              Upload your company logo to brand exported PDF reports. Available on <strong className="text-white">Lattice Pro</strong> and higher plans.
-            </p>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => alert('Upgrade to Pro to customize exported PDF reports with your company logo.')}
-          className="mt-1 w-full sm:w-auto self-start px-3.5 py-1.5 rounded-xl bg-blue-600/15 border border-blue-500/30 text-blue-400 text-xs font-bold hover:bg-blue-600 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1.5"
-        >
-          <Crown className="w-3.5 h-3.5" />
-          <span>Upgrade to Unlock</span>
-        </button>
-      </div>
-
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         {/* Company Information Form Card */}
         <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3 shadow-sm">
@@ -96,10 +72,6 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               <h2 className="text-xs font-bold text-white uppercase tracking-wider">
                 Company Details
               </h2>
-            </div>
-            <div className="flex items-center gap-1 text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-md border border-blue-500/20">
-              <Award className="w-3 h-3" />
-              <span>Score: 40/100</span>
             </div>
           </div>
 
