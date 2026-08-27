@@ -17,8 +17,8 @@ const LEFT_ITEMS = [
 ];
 
 const RIGHT_ITEMS = [
-  { id: 'opportunities', label: 'Pipeline', icon: TrendingUp },
-  { id: 'budgets',       label: 'Finance',  icon: DollarSign },
+  { id: 'opportunities', label: 'Opportunities', icon: TrendingUp },
+  { id: 'budgets',       label: 'Finance',       icon: DollarSign },
 ];
 
 export const BottomNav: React.FC<BottomNavProps> = ({

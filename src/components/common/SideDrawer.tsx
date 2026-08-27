@@ -1,7 +1,7 @@
 import React from 'react';
 import { User } from '../../types';
 import { 
-  X, Users, FileText, Sparkles, 
+  X, Users, FileText, Sparkles, TrendingUp,
   Award, Settings, LogOut, Shield,
   ChevronRight
 } from 'lucide-react';
@@ -41,6 +41,13 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
   const TOOLS_ITEMS: NavItem[] = [
     {
+      id: 'opportunities',
+      label: 'Opportunities',
+      icon: TrendingUp,
+      badge: '$3.77M',
+      badgeStyle: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+    },
+    {
       id: 'team',
       label: 'Team Directory',
       icon: Users,
@@ -60,13 +67,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   ];
 
   const ACCOUNT_ITEMS: NavItem[] = [
-    {
-      id: 'more',
-      label: 'Builder Score',
-      icon: Award,
-      badge: '40/100',
-      badgeStyle: 'bg-[#101D38] text-blue-400 border-[#1E325A]',
-    },
     {
       id: 'more',
       label: 'Settings',
@@ -105,7 +105,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex font-sans overflow-hidden animate-fade-in">
+    <div className="absolute inset-0 z-50 flex font-sans overflow-hidden animate-fade-in">
       {/* Backdrop */}
       <div
         onClick={onClose}
@@ -114,7 +114,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
       {/* Drawer Panel */}
       <div
-        className="relative w-[270px] max-w-[80%] bg-[#070D1A] border-r border-[#142036] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-slate-100 animate-slide-in"
+        className="relative w-[280px] max-w-[85%] bg-[#070D1A] border-r border-[#142036] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-slate-100 animate-slide-in"
       >
 
         {/* ─── Profile Header ─── */}

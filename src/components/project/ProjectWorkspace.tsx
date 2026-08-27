@@ -91,20 +91,18 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
-  // Role based tabs filtering
+  // Role based tabs filtering in clean logical operational order
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
     { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-    { id: 'daily-logs', label: 'Daily Logs', icon: Calendar },
-    { id: 'plangrid', label: 'Drawings', icon: MapPin },
     { id: 'schedule', label: 'Schedule', icon: CalendarDays },
+    { id: 'plangrid', label: 'Drawings', icon: MapPin },
     { id: 'punch', label: 'Punch List', icon: AlertCircle },
-    { id: 'messages', label: 'Messages', icon: MessageSquare },
-    { id: 'team', label: 'Team', icon: Users2 },
-    { id: 'subcontractors', label: 'Subcontractors', icon: Users, hideFor: ['field'] },
+    { id: 'daily-logs', label: 'Daily Logs', icon: Calendar },
     { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
     { id: 'photos', label: 'Photos', icon: Camera },
     { id: 'documents', label: 'Documents', icon: FileText },
+    { id: 'team', label: 'Team', icon: Users2 },
     { id: 'reports', label: 'Reports', icon: BarChart3, hideFor: ['field'] },
     { id: 'latti', label: 'Latti AI', icon: Sparkles },
   ];
@@ -114,8 +112,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   return (
     <div className="w-full flex flex-col flex-1">
       {/* Project Sub-navigation Scrollable Pills */}
-      <div className="w-full bg-[#060913] border-b border-[#142036] sticky top-[56px] z-30 px-5 py-2">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
+      <div className="w-full bg-[#060913]/95 backdrop-blur-md border-b border-[#142036] sticky top-0 z-20 px-5 py-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5 max-w-[430px] mx-auto">
           {visibleTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -123,10 +121,10 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-1.5 px-3.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                className={`py-1.5 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   isActive
                     ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20'
-                    : 'bg-[#070D1A] text-slate-400 hover:text-white border border-[#142036]'
+                    : 'bg-[#0A111F] text-slate-400 hover:text-white border border-[#142036]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -138,7 +136,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
       </div>
 
       {/* Main Tab Content */}
-      <div className="px-5 pt-1 flex-1">
+      <div className="px-5 pt-2 flex-1">
         {activeTab === 'overview' && (
           <ProjectOverviewTab
             project={project}

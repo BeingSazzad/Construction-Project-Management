@@ -15,15 +15,17 @@ interface FinanceDashboardProps {
   onOpenBudgetDetails: () => void;
   onOpenReports: () => void;
   onOpenLatti: () => void;
+  onOpenOpportunities?: () => void;
 }
 
 export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
   projects,
   onSelectProject,
   onOpenReports,
-  onOpenLatti
+  onOpenLatti,
+  onOpenOpportunities
 }) => {
-  const [financeTab, setFinanceTab] = useState<'overview' | 'rates' | 'draws' | 'lien'>('overview');
+  const [financeTab, setFinanceTab] = useState<'overview' | 'rates' | 'draws' | 'lien' | 'pipeline'>('overview');
   const draws = MOCK_FINANCING_DRAWS;
   const lienWaivers = MOCK_LIEN_WAIVERS;
 
@@ -78,6 +80,16 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
           }`}
         >
           Lien Waivers ({lienWaivers.length})
+        </button>
+        <button
+          onClick={() => setFinanceTab('pipeline')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+            financeTab === 'pipeline'
+              ? 'bg-[#2563EB] text-white shadow-sm font-bold'
+              : 'text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          Pipeline ($3.8M)
         </button>
       </div>
 
@@ -206,6 +218,41 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {financeTab === 'pipeline' && (
+        <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-white tracking-tight">Pre-Construction Pipeline</h2>
+              <p className="text-[10px] text-slate-400 mt-0.5">Est. incoming contract cashflow</p>
+            </div>
+            <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+              $3.77M Gross
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="p-3 rounded-2xl bg-[#090E1A] border border-[#141F33]">
+              <div className="text-[10px] font-semibold text-slate-400 uppercase">Weighted Value</div>
+              <div className="text-base font-bold text-white mt-1">$1.48M</div>
+            </div>
+            <div className="p-3 rounded-2xl bg-[#090E1A] border border-[#141F33]">
+              <div className="text-[10px] font-semibold text-slate-400 uppercase">Avg Win Prob</div>
+              <div className="text-base font-bold text-emerald-400 mt-1">42%</div>
+            </div>
+          </div>
+
+          {onOpenOpportunities && (
+            <button
+              onClick={onOpenOpportunities}
+              className="w-full py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer mt-1"
+            >
+              <span>Manage Pre-Con Opportunities</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       )}
     </div>

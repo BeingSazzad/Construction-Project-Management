@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Project, PunchItem, PunchStatus } from '../../types';
-import { StatusBadge } from '../common/StatusBadge';
-import { Plus, MapPin, Check } from 'lucide-react';
+import { Plus, MapPin, Trash2, ChevronDown, Folder, CheckCircle2 } from 'lucide-react';
 
 interface ProjectPunchListTabProps {
   project: Project;
@@ -19,17 +18,36 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   onUpdatePunchStatus
 }) => {
   const [activeFilter, setActiveFilter] = useState<PunchStatus | 'All'>('All');
+  const [items, setItems] = useState<PunchItem[]>(
+    punchItems.filter(p => p.projectId === project.id)
+  );
 
-  const projectPunch = punchItems.filter(p => p.projectId === project.id);
-
-  const filteredItems = projectPunch.filter(p => {
+  const filteredItems = items.filter(p => {
     if (activeFilter === 'All') return true;
     return p.status === activeFilter;
   });
 
+  const handleStatusChange = (punchId: string, newStatus: PunchStatus) => {
+    setItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
+    if (onUpdatePunchStatus) onUpdatePunchStatus(punchId, newStatus);
+  };
+
+  const handleDeletePunch = (punchId: string) => {
+    setItems(prev => prev.filter(p => p.id !== punchId));
+  };
+
+  const STATUS_DOT: Record<PunchStatus, string> = {
+    'Open': 'bg-amber-400',
+    'In Progress': 'bg-blue-400',
+    'Resolved': 'bg-emerald-400',
+    'Verified': 'bg-teal-400',
+    'Closed': 'bg-slate-500',
+  };
+
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-      {/* Top Filter & Create Action */}
+    <div className="w-full flex flex-col gap-3.5 pt-2 pb-24 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      
+      {/* 1. Filter Pills & Add Button */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 flex-1">
           {(['All', 'Open', 'In Progress', 'Resolved', 'Verified'] as const).map((filter) => {
@@ -38,13 +56,13 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter as any)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   isActive 
                     ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20' 
                     : 'bg-[#070D1A] text-slate-400 hover:text-white border border-[#142036]'
                 }`}
               >
-                {filter} {filter === 'All' ? `(${projectPunch.length})` : ''}
+                {filter}
               </button>
             );
           })}
@@ -52,17 +70,24 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
         <button
           onClick={onCreatePunch}
-          className="h-9 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1 cursor-pointer flex-shrink-0 shadow-sm"
+          className="h-8 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1 cursor-pointer flex-shrink-0 shadow-sm active:scale-95 transition-all"
         >
-          <Plus className="w-4 h-4" />
-          <span>Add Item</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>New</span>
         </button>
       </div>
 
-      {/* Punch Items List */}
-      <div className="flex flex-col gap-3">
+      {/* 2. Group Header */}
+      <div className="flex items-center gap-2 px-1 pt-1">
+        <Folder className="w-4 h-4 text-emerald-400" />
+        <span className="text-xs font-bold text-white tracking-tight">{project.name}</span>
+        <span className="text-xs text-slate-500 font-semibold">{filteredItems.length}</span>
+      </div>
+
+      {/* 3. Punch Items List */}
+      <div className="flex flex-col gap-2.5">
         {filteredItems.length === 0 ? (
-          <div className="p-8 rounded-2xl bg-[#0D1424] border border-[#1A263E] text-center text-slate-400 text-xs">
+          <div className="p-8 rounded-2xl bg-[#070D1A] border border-[#142036] text-center text-slate-400 text-xs">
             No punch list items found under this status.
           </div>
         ) : (
@@ -70,78 +95,79 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
             return (
               <div
                 key={item.id}
-                className="p-4 rounded-2xl bg-[#0D1424] border border-[#1A263E] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm flex flex-col gap-2.5"
-                onClick={() => onOpenPunchDetails(item)}
+                className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-[#1E325A] transition-all flex flex-col gap-2.5 shadow-sm"
               >
+                {/* Header Row: Dot + Title + Status Dropdown + Delete */}
                 <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-sm font-bold text-white tracking-tight hover:text-[#3875F6] transition-colors">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${STATUS_DOT[item.status] || 'bg-amber-400'}`} />
+                    <h4 className="text-xs font-bold text-white truncate">
                       {item.title}
                     </h4>
-                    <p className="text-xs text-slate-400 font-medium flex items-center gap-1 mt-0.5">
-                      <MapPin className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
-                      <span>{item.location}</span>
-                    </p>
                   </div>
-                  <StatusBadge status={item.status} size="xs" />
+
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {/* Status Dropdown Selector */}
+                    <div className="relative">
+                      <select
+                        value={item.status}
+                        onChange={(e) => handleStatusChange(item.id, e.target.value as PunchStatus)}
+                        className="h-7 px-2.5 pr-6 bg-[#0E1726] border border-[#1E2E48] rounded-xl text-[11px] font-bold text-slate-300 focus:border-blue-500 outline-none appearance-none cursor-pointer"
+                      >
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Verified">Verified</option>
+                      </select>
+                      <ChevronDown className="w-3 h-3 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+
+                    {/* Trash Delete Button */}
+                    <button
+                      onClick={() => handleDeletePunch(item.id)}
+                      className="w-7 h-7 rounded-xl bg-[#140D12] border border-[#2E161C] hover:bg-rose-500/20 text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                      title="Delete item"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
-                <p className="text-xs text-slate-300 bg-[#090E1A] p-2.5 rounded-xl border border-[#141F33] line-clamp-2 leading-relaxed">
+                {/* Description */}
+                <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
                   {item.description}
                 </p>
 
-                {/* Subcontractor & Due Date Row */}
-                <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-[#162238]">
-                  <span className="text-slate-300 font-medium">{item.assignedTo.trade}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-amber-400 font-medium">Due {item.dueDate.slice(5)}</span>
-                    <StatusBadge status={item.priority} size="xs" />
-                  </div>
+                {/* Tags: Trade + Location */}
+                <div className="flex items-center gap-2 flex-wrap text-[10px]">
+                  <span className="px-2 py-0.5 rounded-lg bg-[#0E1726] text-slate-300 border border-[#1A2840] font-semibold">
+                    {item.assignedTo?.trade || 'General Trade'}
+                  </span>
+
+                  {item.location && (
+                    <span className="flex items-center gap-1 text-slate-400 font-medium">
+                      <MapPin className="w-3 h-3 text-rose-400 flex-shrink-0" />
+                      <span>{item.location}</span>
+                    </span>
+                  )}
                 </div>
 
-                {/* Resolution workflow quick action */}
-                <div className="pt-2 border-t border-[#162238] flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Created {item.createdDate}</span>
-                  {item.status === 'Open' && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onUpdatePunchStatus(item.id, 'In Progress');
-                      }}
-                      className="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold hover:bg-amber-500/25"
-                    >
-                      Assign to Fix
-                    </button>
-                  )}
-                  {item.status === 'In Progress' && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onUpdatePunchStatus(item.id, 'Resolved');
-                      }}
-                      className="px-2.5 py-1 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-bold hover:bg-purple-500/25"
-                    >
-                      Mark Resolved
-                    </button>
-                  )}
-                  {item.status === 'Resolved' && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onUpdatePunchStatus(item.id, 'Verified');
-                      }}
-                      className="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold hover:bg-emerald-500/25 flex items-center gap-1"
-                    >
-                      <Check className="w-3.5 h-3.5" />
-                      <span>PM Verify & Close</span>
-                    </button>
-                  )}
-                </div>
+                {/* Attached Photo Thumbnail */}
+                {item.photos && item.photos.length > 0 && (
+                  <div className="pt-1 flex items-center gap-2">
+                    <img
+                      src={item.photos[0]}
+                      alt="defect"
+                      className="w-12 h-12 rounded-xl object-cover border border-[#1E2E48]"
+                    />
+                  </div>
+                )}
               </div>
             );
           })
         )}
       </div>
+
     </div>
   );
 };

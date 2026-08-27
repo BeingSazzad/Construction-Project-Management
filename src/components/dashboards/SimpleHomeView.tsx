@@ -3,7 +3,7 @@ import { Project, User } from '../../types';
 import { 
   FolderKanban, CheckCircle2, ShieldAlert, DollarSign,
   Sparkles, ChevronRight, FolderPlus, FileSpreadsheet,
-  Users, FileText, ArrowUpRight, MessageSquare
+  Users, FileText, ArrowUpRight, MessageSquare, TrendingUp
 } from 'lucide-react';
 import { StatusBadge } from '../common/StatusBadge';
 
@@ -17,6 +17,7 @@ interface SimpleHomeViewProps {
   onOpenTasks: () => void;
   onOpenProjects: () => void;
   onOpenBudgets: () => void;
+  onOpenOpportunities?: () => void;
   onOpenNewProject?: () => void;
   onOpenTeam?: () => void;
   onOpenReports?: () => void;
@@ -29,6 +30,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   onOpenMessages,
   onOpenProjects,
   onOpenBudgets,
+  onOpenOpportunities,
   onOpenNewProject,
   onOpenTeam,
   onOpenReports
@@ -133,6 +135,31 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
           <ArrowUpRight className="w-3.5 h-3.5" />
         </div>
       </button>
+
+      {/* ── 3.5 Opportunities Pipeline Snapshot Card ── */}
+      {onOpenOpportunities && (
+        <button
+          onClick={onOpenOpportunities}
+          className="w-full p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-blue-500/40 flex items-center justify-between gap-3 cursor-pointer transition-all active:scale-[0.99] group shadow-sm"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 flex-shrink-0">
+              <TrendingUp className="w-4.5 h-4.5" />
+            </div>
+            <div className="text-left min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white">Opportunities Pipeline</span>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">6 Active</span>
+              </div>
+              <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">$3.77M Pipeline Value · 25% Avg Prob</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 text-slate-400 group-hover:text-blue-400 transition-colors flex-shrink-0">
+            <span className="text-[11px] font-bold">Pipeline</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </div>
+        </button>
+      )}
 
       {/* ── 4. Active Projects Feed ── */}
       <div className="flex flex-col gap-3">

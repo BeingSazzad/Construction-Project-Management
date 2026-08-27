@@ -42,6 +42,7 @@ import { TeamHubView } from './components/team/TeamHubView';
 
 // Opportunities & Budgets Hub
 import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
+import { CreateDealView } from './components/opportunities/CreateDealView';
 import { BudgetsHubView } from './components/budgets/BudgetsHubView';
 import { MessagesHubView } from './components/messages/MessagesHubView';
 
@@ -62,7 +63,7 @@ import { TaskDetailsModal } from './components/modals/TaskDetailsModal';
 import { PhotoPreviewModal } from './components/modals/PhotoPreviewModal';
 import { DocumentPreviewModal } from './components/modals/DocumentPreviewModal';
 import { NotificationsView } from './components/notifications/NotificationsView';
-import { FolderKanban, DollarSign, Sparkles, CheckSquare, X } from 'lucide-react';
+import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp } from 'lucide-react';
 
 export function App() {
   // Navigation & View State
@@ -91,6 +92,7 @@ export function App() {
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
   const [isQuickActionSheetOpen, setIsQuickActionSheetOpen] = useState(false);
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
+  const [isCreateDealOpen, setIsCreateDealOpen] = useState(false);
   const [isCreateBudgetOpen, setIsCreateBudgetOpen] = useState(false);
   const [isDealAnalyzerOpen, setIsDealAnalyzerOpen] = useState(false);
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
@@ -397,6 +399,14 @@ export function App() {
                 onBack={() => setIsCreateProjectOpen(false)}
                 onCreate={handleCreateProject}
               />
+            ) : isCreateDealOpen ? (
+              <CreateDealView
+                onBack={() => setIsCreateDealOpen(false)}
+                onCreate={(dealData) => {
+                  setIsCreateDealOpen(false);
+                  setActiveTab('opportunities');
+                }}
+              />
             ) : isCreateTaskOpen ? (
               <CreateTaskView
                 project={activeProject || projects[0]}
@@ -469,6 +479,7 @@ export function App() {
                     }}
                     onOpenProjects={() => setActiveTab('projects')}
                     onOpenBudgets={() => setActiveTab('budgets')}
+                    onOpenOpportunities={() => setActiveTab('opportunities')}
                     onOpenNewProject={() => setIsCreateProjectOpen(true)}
                     onOpenTeam={() => setActiveTab('team')}
                     onOpenReports={() => setActiveTab('reports')}
@@ -599,7 +610,7 @@ export function App() {
       {isQuickActionSheetOpen && (
         <div 
           onClick={() => setIsQuickActionSheetOpen(false)}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-sm animate-fade-in font-sans"
+          className="absolute inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-sm animate-fade-in font-sans"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
@@ -608,33 +619,29 @@ export function App() {
             {/* Top Pull Indicator Bar */}
             <div className="w-10 h-1.5 rounded-full bg-slate-600/60 mx-auto -mt-1 mb-1" />
 
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-              <div>
-                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">Create New Action</h3>
-                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Select an enterprise construction action</p>
-              </div>
+            <div className="flex items-center justify-between pb-2.5 border-b border-[#142036]">
+              <h3 className="text-sm font-bold text-white tracking-tight">Create New</h3>
               <button
                 onClick={() => setIsQuickActionSheetOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95"
+                className="w-7 h-7 rounded-xl bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            <div className="flex flex-col gap-2 pt-1">
+            <div className="flex flex-col gap-1.5 pt-1">
               <button
                 onClick={() => {
                   setIsQuickActionSheetOpen(false);
                   setIsCreateProjectOpen(true);
                 }}
-                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
-                  <FolderKanban className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">New Construction Project</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Initialize commercial or custom home site</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <FolderKanban className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">New Project</span>
                 </div>
               </button>
 
@@ -643,14 +650,28 @@ export function App() {
                   setIsQuickActionSheetOpen(false);
                   setIsCreateBudgetOpen(true);
                 }}
-                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
-                  <DollarSign className="w-5 h-5" />
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <DollarSign className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-white group-hover:text-purple-400 transition-colors">Project Budget</span>
                 </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">4-Step Project Budget</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Master CSI ledger with vendor cost allocations</p>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsQuickActionSheetOpen(false);
+                  setIsCreateDealOpen(true);
+                }}
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <TrendingUp className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors">Opportunity</span>
                 </div>
               </button>
 
@@ -659,14 +680,13 @@ export function App() {
                   setIsQuickActionSheetOpen(false);
                   setIsDealAnalyzerOpen(true);
                 }}
-                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">Latti Deal Analyzer™</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Evaluate acquisition ARV, debt & Deal Score</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">Deal Analyzer</span>
                 </div>
               </button>
 
@@ -675,14 +695,13 @@ export function App() {
                   setIsQuickActionSheetOpen(false);
                   setIsCreateTaskOpen(true);
                 }}
-                className="p-3.5 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99]"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
-                  <CheckSquare className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">New Construction Task</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Assign milestones, due dates and subtasks</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <CheckSquare className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-white group-hover:text-amber-400 transition-colors">New Task</span>
                 </div>
               </button>
             </div>

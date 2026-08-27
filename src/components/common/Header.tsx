@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="w-full flex-shrink-0 z-40 bg-[#060913] border-b border-[#142036] sticky top-0 font-sans">
       <div className="px-5 py-3 flex items-center justify-between gap-3 max-w-[430px] mx-auto">
         {activeProject ? (
-          // Inside Project Workspace Header (Has Back Button)
+          // Inside Project Workspace Header (Has Back Button Only - 100% Clean)
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
@@ -63,42 +63,6 @@ export const Header: React.FC<HeaderProps> = ({
                   <StatusBadge status={activeProject.status} size="xs" />
                 </div>
               </div>
-            </div>
-
-            {/* Workspace Action Icons */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              {onOpenMessages && (
-                <button
-                  onClick={onOpenMessages}
-                  className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
-                  title="Team Chat"
-                >
-                  <MessageSquare className="w-4 h-4 text-slate-300" />
-                  {unreadMessagesCount > 0 && (
-                    <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#3875F6] ring-2 ring-[#0D1424]" />
-                  )}
-                </button>
-              )}
-
-              <button
-                onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
-                title="Notifications"
-              >
-                <Bell className="w-4 h-4 text-slate-300" />
-                {unreadNotifsCount > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-[#0D1424]" />
-                )}
-              </button>
-
-              <button
-                onClick={onOpenLatti}
-                className="w-9 h-9 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 relative"
-                title="Latti AI Assistant"
-              >
-                <Sparkles className="w-4 h-4 text-white" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#2563EB]" />
-              </button>
             </div>
           </div>
         ) : (

@@ -18,6 +18,7 @@ interface AdminDashboardProps {
   onOpenTasks: () => void;
   onOpenProjects: () => void;
   onOpenBudgets: () => void;
+  onOpenOpportunities?: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -28,7 +29,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onOpenNotifications,
   onOpenTasks,
   onOpenProjects,
-  onOpenBudgets
+  onOpenBudgets,
+  onOpenOpportunities
 }) => {
   const [activeSection, setActiveSection] = useState<'overview' | 'pipeline'>('overview');
 
@@ -127,26 +129,49 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {activeSection === 'pipeline' && (
         <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-white tracking-tight">Active Opportunities</h2>
-            <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-              ${(totalPipelineVal / 1000000).toFixed(1)}M Total
-            </span>
+            <div>
+              <h2 className="text-sm font-bold text-white tracking-tight">Active Opportunities</h2>
+              <p className="text-[10px] text-slate-400 mt-0.5">Pre-construction deal flow & probability</p>
+            </div>
+            {onOpenOpportunities && (
+              <button
+                onClick={onOpenOpportunities}
+                className="text-xs font-bold text-[#3875F6] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>View All</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col gap-2.5">
             {deals.map((deal) => (
-              <div key={deal.id} className="p-3.5 rounded-2xl bg-[#090E1A] border border-[#141F33] flex flex-col gap-2">
+              <div 
+                key={deal.id} 
+                onClick={onOpenOpportunities}
+                className="p-3.5 rounded-2xl bg-[#090E1A] border border-[#141F33] hover:border-blue-500/40 flex flex-col gap-2 cursor-pointer transition-all active:scale-[0.99] group"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white">{deal.projectTitle}</span>
+                  <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">{deal.projectTitle}</span>
                   <span className="text-xs font-bold text-blue-400">${(deal.estimatedValue / 1000000).toFixed(2)}M</span>
                 </div>
                 <div className="flex items-center justify-between text-xs text-slate-400 font-medium pt-1 border-t border-[#141F33]">
                   <span>{deal.clientName}</span>
-                  <span className="text-amber-400 font-semibold">{deal.stage} ({deal.winProbability}%)</span>
+                  <span className="text-emerald-400 font-semibold">{deal.stage} ({deal.winProbability}%)</span>
                 </div>
               </div>
             ))}
           </div>
+
+          {onOpenOpportunities && (
+            <button
+              onClick={onOpenOpportunities}
+              className="w-full py-2.5 rounded-xl bg-[#090E1A] border border-[#142036] hover:border-blue-500/40 text-blue-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer mt-1"
+            >
+              <span>Open Opportunities Hub</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       )}
     </div>

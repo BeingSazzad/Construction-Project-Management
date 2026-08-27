@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
   ArrowLeft, TrendingUp, DollarSign, MapPin,
-  User, Flag, CheckCircle2, ChevronDown
+  User, Flag, CheckCircle2, ChevronDown, Calendar, Percent, Plus,
+  ArrowRight, Sparkles, Building2, Briefcase, FileText
 } from 'lucide-react';
 
 interface CreateDealViewProps {
@@ -9,234 +10,503 @@ interface CreateDealViewProps {
   onCreate: (deal: {
     title: string;
     client: string;
+    clientEmail?: string;
     address: string;
     value: number;
     stage: string;
     type: string;
+    probability: number;
+    leadSource?: string;
+    assignedTo?: string;
+    startDate?: string;
+    followUpDate?: string;
+    description?: string;
     notes: string;
   }) => void;
 }
 
-const STAGES = ['Estimating', 'Proposal Sent', 'Under Contract', 'Won'] as const;
-const DEAL_TYPES = ['Custom Home', 'Commercial Build', 'Remodel / Renovation', 'Addition', 'Multi-Family', 'Other'];
+export const PROJECT_TYPES = [
+  'Custom Home',
+  'Remodel',
+  'New Construction',
+  'Design-Build',
+  'General Contracting',
+  'Residential Development'
+] as const;
+
+export const OPPORTUNITY_STAGES = [
+  'New Lead',
+  'Contacted',
+  'Discovery',
+  'Plans Received',
+  'Estimating',
+  'Proposal Sent',
+  'Negotiation',
+  'Won',
+  'Lost',
+  'On Hold'
+] as const;
+
+export const LEAD_SOURCES = [
+  'Referral',
+  'Website',
+  'Repeat Client',
+  'Architect Partner',
+  'Subcontractor',
+  'Social Media',
+  'Cold Outreach',
+  'Other'
+];
 
 export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate }) => {
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
+
+  // Form State
   const [title, setTitle] = useState('');
   const [client, setClient] = useState('');
+  const [clientEmail, setClientEmail] = useState('');
   const [address, setAddress] = useState('');
-  const [value, setValue] = useState('');
-  const [stage, setStage] = useState<typeof STAGES[number]>('Estimating');
-  const [dealType, setDealType] = useState(DEAL_TYPES[0]);
+  const [projectType, setProjectType] = useState<typeof PROJECT_TYPES[number]>('Custom Home');
+  const [stage, setStage] = useState<typeof OPPORTUNITY_STAGES[number]>('New Lead');
+  const [value, setValue] = useState('0');
+  const [probability, setProbability] = useState('10');
+  const [leadSource, setLeadSource] = useState('');
+  const [assignedTo, setAssignedTo] = useState('Alex Chen');
+  const [startDate, setStartDate] = useState('');
+  const [followUpDate, setFollowUpDate] = useState('');
+  const [description, setDescription] = useState('');
   const [notes, setNotes] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const isValid = title.trim().length > 0 && client.trim().length > 0 && Number(value) > 0;
+  const isStep1Valid = title.trim().length > 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isValid) return;
+  const handleNext = () => {
+    if (currentStep === 1 && isStep1Valid) {
+      setCurrentStep(2);
+    } else if (currentStep === 2) {
+      setCurrentStep(3);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => (prev - 1) as 1 | 2 | 3);
+    } else {
+      onBack();
+    }
+  };
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!isStep1Valid) return;
 
     setIsSuccess(true);
     setTimeout(() => {
       onCreate({
         title: title.trim(),
-        client: client.trim(),
-        address: address.trim(),
-        value: Number(value),
+        client: client.trim() || 'Private Client',
+        clientEmail: clientEmail.trim(),
+        address: address.trim() || 'Site Address',
+        value: Number(value) || 0,
         stage,
-        type: dealType,
+        type: projectType,
+        probability: Number(probability) || 10,
+        leadSource,
+        assignedTo,
+        startDate,
+        followUpDate,
+        description,
         notes: notes.trim(),
       });
-    }, 900);
+    }, 600);
   };
 
   const InputLabel = ({ label, required }: { label: string; required?: boolean }) => (
-    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">
+    <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
       {label}{required && <span className="text-rose-400 ml-0.5">*</span>}
     </label>
   );
 
   const inputClass =
-    'w-full h-11 bg-[#090E1A] border border-[#1A263B] rounded-2xl px-3.5 text-xs text-white placeholder-slate-600 outline-none focus:border-blue-500/70 focus:bg-[#0A1220] transition-all';
+    'w-full h-11 bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] focus:bg-[#0A1220] transition-all font-medium';
+
+  const STEPS = [
+    { num: 1, label: 'Project Info' },
+    { num: 2, label: 'Pipeline & Value' },
+    { num: 3, label: 'Schedule & Scope' },
+  ];
 
   return (
-    <div className="w-full min-h-screen bg-[#070A12] font-sans pb-32 max-w-[430px] mx-auto animate-fade-in">
+    <div className="w-full min-h-screen bg-[#070A12] font-sans pb-32 max-w-[430px] mx-auto text-slate-100 animate-fade-in flex flex-col">
 
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-10 bg-[#070A12]/95 backdrop-blur-md border-b border-[#142036] px-5 py-3 flex items-center gap-3">
-        <button
-          onClick={onBack}
-          className="w-9 h-9 rounded-xl bg-[#0D1422] border border-[#1A263B] text-slate-300 hover:text-white flex items-center justify-center cursor-pointer transition-all active:scale-95"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </button>
-        <div className="flex-1">
-          <h1 className="text-sm font-bold text-white">New Deal</h1>
-          <p className="text-[10px] text-slate-500">Add to your pipeline</p>
-        </div>
-        {isValid && !isSuccess && (
+      {/* ─── STICKY HEADER ─── */}
+      <div className="sticky top-0 z-20 bg-[#070A12]/95 backdrop-blur-md border-b border-[#142036] px-5 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
           <button
-            form="deal-form"
-            type="submit"
-            className="px-4 h-8 rounded-xl bg-[#2563EB] text-white text-xs font-bold cursor-pointer active:scale-95 transition-all"
+            type="button"
+            onClick={handlePrev}
+            className="w-9 h-9 rounded-xl bg-[#0A111F] border border-[#142036] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-all active:scale-95"
           >
-            Create
+            <ArrowLeft className="w-4 h-4" />
           </button>
-        )}
+          <div>
+            <h1 className="text-sm font-bold text-white tracking-tight">New Opportunity</h1>
+            <p className="text-[10px] text-slate-500">Step {currentStep} of 3 • {STEPS[currentStep - 1].label}</p>
+          </div>
+        </div>
+
+        <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-400">
+          {currentStep}/3
+        </span>
+      </div>
+
+      {/* ─── STEP PROGRESS BAR ─── */}
+      <div className="px-5 pt-3 pb-1">
+        <div className="flex items-center justify-between gap-2">
+          {STEPS.map((s) => {
+            const isCompleted = currentStep > s.num;
+            const isCurrent = currentStep === s.num;
+
+            return (
+              <button
+                key={s.num}
+                type="button"
+                onClick={() => {
+                  if (s.num === 1 || isStep1Valid) {
+                    setCurrentStep(s.num as any);
+                  }
+                }}
+                className="flex-1 flex flex-col gap-1.5 cursor-pointer text-left group"
+              >
+                <div className={`h-1.5 rounded-full transition-all ${
+                  isCurrent 
+                    ? 'bg-[#3B82F6] shadow-[0_0_8px_rgba(59,130,246,0.6)]' 
+                    : isCompleted 
+                    ? 'bg-[#2563EB]/80' 
+                    : 'bg-[#142036]'
+                }`} />
+                <div className="flex items-center gap-1">
+                  <span className={`text-[10px] font-bold ${
+                    isCurrent ? 'text-white' : isCompleted ? 'text-blue-300' : 'text-slate-500'
+                  }`}>
+                    {s.num}. {s.label}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Success banner */}
       {isSuccess && (
         <div className="mx-5 mt-4 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-2 animate-fade-in">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-          <span>Deal added to pipeline!</span>
+          <span>Opportunity created successfully!</span>
         </div>
       )}
 
-      <form id="deal-form" onSubmit={handleSubmit} className="px-5 pt-5 flex flex-col gap-4">
-
-        {/* Section: Deal Info */}
-        <div className="rounded-2xl bg-[#0A111F] border border-[#142036] overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#142036]">
-            <TrendingUp className="w-3.5 h-3.5 text-blue-400" />
-            <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Deal Info</span>
-          </div>
-          <div className="p-4 flex flex-col gap-3.5">
-            <div>
-              <InputLabel label="Project Title" required />
-              <input
-                type="text"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder="e.g. Oakridge Luxury Custom Build"
-                className={inputClass}
-                required
-              />
-            </div>
-            <div>
-              <InputLabel label="Deal Type" />
-              <div className="relative">
-                <select
-                  value={dealType}
-                  onChange={e => setDealType(e.target.value)}
-                  className={`${inputClass} appearance-none pr-8`}
-                >
-                  {DEAL_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+      {/* ─── STEP CONTENT ─── */}
+      <div className="px-5 pt-4 flex-1 flex flex-col justify-between">
+        
+        {/* STEP 1: PROJECT & CLIENT INFO */}
+        {currentStep === 1 && (
+          <div className="flex flex-col gap-4 animate-fade-in">
+            <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
+              <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
+                <Building2 className="w-4 h-4 text-blue-400" />
+                <span className="text-xs font-bold text-white">Project Identity & Client</span>
               </div>
-            </div>
-            <div>
-              <InputLabel label="Stage" />
-              <div className="flex gap-2 flex-wrap">
-                {STAGES.map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setStage(s)}
-                    className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all cursor-pointer border ${
-                      stage === s
-                        ? 'bg-[#2563EB] border-blue-500 text-white'
-                        : 'bg-[#090E1A] border-[#1A263B] text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Section: Client */}
-        <div className="rounded-2xl bg-[#0A111F] border border-[#142036] overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#142036]">
-            <User className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Client</span>
-          </div>
-          <div className="p-4 flex flex-col gap-3.5">
-            <div>
-              <InputLabel label="Client Name" required />
-              <input
-                type="text"
-                value={client}
-                onChange={e => setClient(e.target.value)}
-                placeholder="e.g. Anderson Family Trust"
-                className={inputClass}
-                required
-              />
-            </div>
-            <div>
-              <InputLabel label="Project Address" />
-              <div className="relative">
-                <MapPin className="w-3.5 h-3.5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <div>
+                <InputLabel label="Project / Opportunity Name" required />
+                <input
+                  type="text"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  placeholder="e.g. Maple Ridge Custom Home"
+                  className={inputClass}
+                  autoFocus
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <InputLabel label="Client Name" />
+                  <input
+                    type="text"
+                    value={client}
+                    onChange={e => setClient(e.target.value)}
+                    placeholder="e.g. Sarah Johnson"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <InputLabel label="Client Email" />
+                  <input
+                    type="email"
+                    value={clientEmail}
+                    onChange={e => setClientEmail(e.target.value)}
+                    placeholder="client@email.com"
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <InputLabel label="Property Address" />
                 <input
                   type="text"
                   value={address}
                   onChange={e => setAddress(e.target.value)}
-                  placeholder="e.g. 142 Maple Dr, Austin TX"
-                  className={`${inputClass} pl-9`}
+                  placeholder="123 Builder Way, Boulder, CO"
+                  className={inputClass}
                 />
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Section: Financials */}
-        <div className="rounded-2xl bg-[#0A111F] border border-[#142036] overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#142036]">
-            <DollarSign className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Financials</span>
-          </div>
-          <div className="p-4">
-            <InputLabel label="Estimated Value ($)" required />
-            <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-500 font-semibold">$</span>
-              <input
-                type="number"
-                min={0}
-                value={value}
-                onChange={e => setValue(e.target.value)}
-                placeholder="1,500,000"
-                className={`${inputClass} pl-7`}
-                required
-              />
+        {/* STEP 2: PIPELINE & VALUATION */}
+        {currentStep === 2 && (
+          <div className="flex flex-col gap-4 animate-fade-in">
+            <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
+              <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
+                <Briefcase className="w-4 h-4 text-blue-400" />
+                <span className="text-xs font-bold text-white">Pipeline Classification & Financials</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {/* Project Type */}
+                <div>
+                  <InputLabel label="Project Type" />
+                  <div className="relative">
+                    <select
+                      value={projectType}
+                      onChange={e => setProjectType(e.target.value as any)}
+                      className={`${inputClass} appearance-none pr-8 cursor-pointer font-semibold`}
+                    >
+                      {PROJECT_TYPES.map(type => (
+                        <option key={type} value={type} className="bg-[#0A111F] text-white">
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Stage */}
+                <div>
+                  <InputLabel label="Initial Stage" />
+                  <div className="relative">
+                    <select
+                      value={stage}
+                      onChange={e => setStage(e.target.value as any)}
+                      className={`${inputClass} appearance-none pr-8 cursor-pointer font-semibold text-blue-400`}
+                    >
+                      {OPPORTUNITY_STAGES.map(s => (
+                        <option key={s} value={s} className="bg-[#0A111F] text-white">
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Value & Probability */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <InputLabel label="Est. Construction Value" />
+                  <div className="relative">
+                    <DollarSign className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <input
+                      type="number"
+                      min={0}
+                      value={value}
+                      onChange={e => setValue(e.target.value)}
+                      placeholder="0"
+                      className={`${inputClass} pl-8`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <InputLabel label="Probability (%)" />
+                  <div className="relative">
+                    <Percent className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={probability}
+                      onChange={e => setProbability(e.target.value)}
+                      placeholder="10"
+                      className={`${inputClass} pl-8`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Lead Source & Assigned To */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <InputLabel label="Lead Source" />
+                  <div className="relative">
+                    <select
+                      value={leadSource}
+                      onChange={e => setLeadSource(e.target.value)}
+                      className={`${inputClass} appearance-none pr-8 cursor-pointer`}
+                    >
+                      <option value="" className="bg-[#0A111F] text-slate-500">— Select Source —</option>
+                      {LEAD_SOURCES.map(src => (
+                        <option key={src} value={src} className="bg-[#0A111F] text-white">
+                          {src}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <InputLabel label="Assigned To" />
+                  <input
+                    type="text"
+                    value={assignedTo}
+                    onChange={e => setAssignedTo(e.target.value)}
+                    placeholder="Team member"
+                    className={inputClass}
+                  />
+                </div>
+              </div>
             </div>
           </div>
+        )}
+
+        {/* STEP 3: SCHEDULE & NOTES + SUMMARY PREVIEW */}
+        {currentStep === 3 && (
+          <div className="flex flex-col gap-4 animate-fade-in">
+            {/* Quick Preview Card */}
+            <div className="p-3.5 rounded-2xl bg-blue-600/10 border border-blue-500/25 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> Deal Summary
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                  {stage}
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between pt-0.5">
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white truncate">{title || 'Untitled Opportunity'}</h4>
+                  <p className="text-[11px] text-slate-400 truncate">{client || 'Private Client'} • {projectType}</p>
+                </div>
+                <span className="text-sm font-black text-white ml-2 flex-shrink-0">
+                  ${Number(value || 0).toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
+              <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
+                <Calendar className="w-4 h-4 text-blue-400" />
+                <span className="text-xs font-bold text-white">Timeline & Scope Details</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <InputLabel label="Expected Start Date" />
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <InputLabel label="Follow-up Date" />
+                  <input
+                    type="date"
+                    value={followUpDate}
+                    onChange={e => setFollowUpDate(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <InputLabel label="Project Description" />
+                <textarea
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  placeholder="Scope outline, architectural specs, client wishlist..."
+                  rows={2}
+                  className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+                />
+              </div>
+
+              <div>
+                <InputLabel label="Internal Notes" />
+                <textarea
+                  value={notes}
+                  onChange={e => setNotes(e.target.value)}
+                  placeholder="Private notes for estimating team..."
+                  rows={2}
+                  className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── BOTTOM NAVIGATION BUTTONS ─── */}
+        <div className="pt-6 flex items-center gap-3">
+          {currentStep > 1 && (
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="h-12 px-5 rounded-2xl bg-[#0A111F] hover:bg-[#101A2E] text-slate-300 border border-[#142036] font-bold text-xs cursor-pointer transition-all active:scale-95"
+            >
+              Back
+            </button>
+          )}
+
+          {currentStep < 3 ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={currentStep === 1 && !isStep1Valid}
+              className={`flex-1 h-12 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-lg cursor-pointer ${
+                (currentStep === 1 ? isStep1Valid : true)
+                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-600/30 active:scale-[0.99]'
+                  : 'bg-[#0D1422] text-slate-500 border border-[#142036] cursor-not-allowed'
+              }`}
+            >
+              <span>Next</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleSubmit()}
+              disabled={!isStep1Valid || isSuccess}
+              className={`flex-1 h-12 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer ${
+                isStep1Valid && !isSuccess
+                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-600/30 active:scale-[0.99]'
+                  : 'bg-[#0D1422] text-slate-500 border border-[#142036] cursor-not-allowed'
+              }`}
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>{isSuccess ? 'Opportunity Created!' : 'Create Opportunity'}</span>
+            </button>
+          )}
         </div>
 
-        {/* Section: Notes */}
-        <div className="rounded-2xl bg-[#0A111F] border border-[#142036] overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#142036]">
-            <Flag className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Notes</span>
-          </div>
-          <div className="p-4">
-            <textarea
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              placeholder="Key details, referral source, scope notes..."
-              rows={3}
-              className="w-full bg-[#090E1A] border border-[#1A263B] rounded-2xl px-3.5 py-3 text-xs text-white placeholder-slate-600 outline-none focus:border-blue-500/70 resize-none transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={!isValid || isSuccess}
-          className={`w-full h-12 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer ${
-            isValid && !isSuccess
-              ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-900/30 active:scale-95'
-              : 'bg-[#0D1422] text-slate-500 border border-[#1A263B] cursor-not-allowed'
-          }`}
-        >
-          <TrendingUp className="w-4 h-4" />
-          {isSuccess ? 'Deal Created!' : 'Add to Pipeline'}
-        </button>
-
-      </form>
+      </div>
     </div>
   );
 };
