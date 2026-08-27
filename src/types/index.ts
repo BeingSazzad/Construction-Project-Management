@@ -12,7 +12,16 @@ export interface User {
   assignedProjects: string[];
 }
 
-export type ProjectStatus = 'On Schedule' | 'At Risk' | 'Delayed' | 'Completed' | 'Planning';
+export type ProjectStatus = 
+  | 'Planning' 
+  | 'Pre-Construction' 
+  | 'In Progress' 
+  | 'On Hold' 
+  | 'Completed' 
+  | 'Warranty'
+  | 'On Schedule'
+  | 'At Risk'
+  | 'Delayed';
 
 export interface Milestone {
   id: string;

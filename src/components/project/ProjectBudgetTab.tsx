@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { Project, TradeCategory } from '../../types';
 import { 
   ChevronDown, ChevronRight, Search, Plus, 
-  Layers, Hammer, Boxes, Flame, Zap, BarChart2 
+  Layers, Hammer, Boxes, Flame, Zap, BarChart2, Download
 } from 'lucide-react';
 
 interface ProjectBudgetTabProps {
   project: Project;
   categories: TradeCategory[];
   onAddCostItem?: () => void;
+  onImportBudget?: () => void;
 }
 
 export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   project,
   categories,
-  onAddCostItem
+  onAddCostItem,
+  onImportBudget
 }) => {
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'cat-03': true,
@@ -60,9 +62,20 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
       <div className="card-dark p-4 bg-[#0D131F] border-[#1A2436]">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Budget Overview</span>
-          <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
-            +$230K Favorable
-          </span>
+          <div className="flex items-center gap-2">
+            {onImportBudget && (
+              <button
+                onClick={onImportBudget}
+                className="text-[10px] font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2 py-0.5 rounded flex items-center gap-1 hover:bg-purple-500/20 cursor-pointer transition-all"
+              >
+                <Download className="w-3 h-3" />
+                <span>Import CSV</span>
+              </button>
+            )}
+            <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
+              +$230K Favorable
+            </span>
+          </div>
         </div>
 
         {/* 2 Main Metrics + Circular Percentage Donut */}

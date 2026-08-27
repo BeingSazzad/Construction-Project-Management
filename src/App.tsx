@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { 
   UserRole, Project, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
-  NotificationItem, TaskStatus, PunchStatus, DailyLogItem, PlanGridPin, ProjectChatMessage 
+  NotificationItem, TaskStatus, PunchStatus, DailyLogItem, PlanGridPin, ProjectChatMessage,
+  FinancingDraw, LienWaiver, ProjectStatus
 } from './types';
 import { 
   CURRENT_USERS, MOCK_PROJECTS, MOCK_TASKS, MOCK_GANTT, 
   MOCK_BUDGET_CATEGORIES, MOCK_PUNCH_ITEMS, MOCK_SUBCONTRACTORS, 
   MOCK_PHOTOS, MOCK_DOCUMENTS, MOCK_REPORTS, MOCK_NOTIFICATIONS,
-  MOCK_DAILY_LOGS, MOCK_PLAN_PINS, MOCK_PROJECT_CHATS 
+  MOCK_DAILY_LOGS, MOCK_PLAN_PINS, MOCK_PROJECT_CHATS,
+  MOCK_FINANCING_DRAWS, MOCK_LIEN_WAIVERS
 } from './data/mockData';
 
 // Common Components
@@ -26,6 +28,7 @@ import { SimpleHomeView } from './components/dashboards/SimpleHomeView';
 import { AdminDashboard } from './components/dashboards/AdminDashboard';
 import { PMDashboard } from './components/dashboards/PMDashboard';
 import { FinanceDashboard } from './components/dashboards/FinanceDashboard';
+import { FinanceHomeView } from './components/dashboards/FinanceHomeView';
 import { FieldDashboard } from './components/dashboards/FieldDashboard';
 
 // Projects & Workspace
@@ -62,6 +65,11 @@ import { PhotoUploadModal } from './components/modals/PhotoUploadModal';
 import { TaskDetailsModal } from './components/modals/TaskDetailsModal';
 import { PhotoPreviewModal } from './components/modals/PhotoPreviewModal';
 import { DocumentPreviewModal } from './components/modals/DocumentPreviewModal';
+import { CreateDrawModal } from './components/modals/CreateDrawModal';
+import { ProcessLienWaiverModal } from './components/modals/ProcessLienWaiverModal';
+import { ApprovePayAppModal } from './components/modals/ApprovePayAppModal';
+import { TaskCreationTypeModal } from './components/modals/TaskCreationTypeModal';
+import { ImportBudgetModal } from './components/modals/ImportBudgetModal';
 import { NotificationsView } from './components/notifications/NotificationsView';
 import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp } from 'lucide-react';
 
@@ -87,6 +95,8 @@ export function App() {
   const [dailyLogs, setDailyLogs] = useState<DailyLogItem[]>(MOCK_DAILY_LOGS);
   const [planPins, setPlanPins] = useState<PlanGridPin[]>(MOCK_PLAN_PINS);
   const [chatMessages, setChatMessages] = useState<ProjectChatMessage[]>(MOCK_PROJECT_CHATS);
+  const [draws, setDraws] = useState<FinancingDraw[]>(MOCK_FINANCING_DRAWS);
+  const [lienWaivers, setLienWaivers] = useState<LienWaiver[]>(MOCK_LIEN_WAIVERS);
 
   // Modals state
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
@@ -94,16 +104,90 @@ export function App() {
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
   const [isCreateDealOpen, setIsCreateDealOpen] = useState(false);
   const [isCreateBudgetOpen, setIsCreateBudgetOpen] = useState(false);
+  const [isImportBudgetOpen, setIsImportBudgetOpen] = useState(false);
   const [isDealAnalyzerOpen, setIsDealAnalyzerOpen] = useState(false);
+  const [isTaskTypeSelectOpen, setIsTaskTypeSelectOpen] = useState(false);
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
   const [isCreatePunchOpen, setIsCreatePunchOpen] = useState(false);
   const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
+  const [isCreateDrawOpen, setIsCreateDrawOpen] = useState(false);
+  const [isRecordLienWaiverOpen, setIsRecordLienWaiverOpen] = useState(false);
+  const [isApprovePayAppOpen, setIsApprovePayAppOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<SitePhoto | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<DocumentItem | null>(null);
 
   const currentUser = CURRENT_USERS[currentRole] || CURRENT_USERS.admin;
   const unreadNotifsCount = notifications.filter(n => !n.read).length;
+
+  const handleImportBudgetSuccess = (budgetName: string, totalValue: number) => {
+    setProjects(prev => prev.map((p, idx) => {
+      if (idx === 0) {
+        return {
+          ...p,
+          budget: {
+            ...p.budget,
+            total: totalValue,
+            remaining: totalValue - p.budget.actual
+          }
+        };
+      }
+      return p;
+    }));
+    alert(`Successfully imported "${budgetName}" ($${(totalValue / 1000000).toFixed(2)}M) into Project Financial Ledger!`);
+  };
+
+  // Financial Handlers
+  const handleCreateDraw = (newDraw: Partial<FinancingDraw>) => {
+    const fullDraw: FinancingDraw = {
+      id: `draw-${Date.now()}`,
+      projectId: newDraw.projectId || projects[0].id,
+      drawNumber: draws.length + 1,
+      milestoneTitle: newDraw.milestoneTitle || 'Structural Progress Draw',
+      requestedAmount: newDraw.requestedAmount || 350000,
+      approvedAmount: newDraw.approvedAmount || 350000,
+      fundedAmount: 0,
+      status: 'In Lender Review',
+      requestDate: newDraw.requestDate || new Date().toISOString().split('T')[0],
+      lenderName: newDraw.lenderName || 'Texas Capital Commercial',
+      inspectorName: newDraw.inspectorName,
+      inspectionPassed: newDraw.inspectionPassed
+    };
+    setDraws(prev => [fullDraw, ...prev]);
+  };
+
+  const handleRecordLienWaiver = (newWaiver: Partial<LienWaiver>) => {
+    const fullWaiver: LienWaiver = {
+      id: `lw-${Date.now()}`,
+      projectId: newWaiver.projectId || projects[0].id,
+      subcontractorName: newWaiver.subcontractorName || 'Apex Concrete Masters',
+      trade: newWaiver.trade || 'Division 03 Concrete',
+      amount: newWaiver.amount || 150000,
+      type: newWaiver.type || 'Progress Unconditional',
+      status: newWaiver.status || 'Signed & Active',
+      invoiceRef: newWaiver.invoiceRef || `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+      dateSubmitted: newWaiver.dateSubmitted || new Date().toISOString().split('T')[0]
+    };
+    setLienWaivers(prev => [fullWaiver, ...prev]);
+  };
+
+  const handleDisbursePayApp = (subName: string, netAmount: number) => {
+    // Update first project paid amount
+    setProjects(prev => prev.map((p, idx) => {
+      if (idx === 0) {
+        return {
+          ...p,
+          budget: {
+            ...p.budget,
+            paid: p.budget.paid + netAmount,
+            actual: p.budget.actual + netAmount
+          }
+        };
+      }
+      return p;
+    }));
+    alert(`Successfully disbursed $${netAmount.toLocaleString()} to ${subName}!`);
+  };
 
   // Handlers
   const handleRoleChange = (newRole: UserRole) => {
@@ -143,6 +227,13 @@ export function App() {
     setNotifications(MOCK_NOTIFICATIONS);
     setActiveProject(null);
     setActiveTab('home');
+  };
+
+  const handleUpdateProjectStatus = (projectId: string, newStatus: ProjectStatus) => {
+    setProjects(prev => prev.map(p => p.id === projectId ? { ...p, status: newStatus } : p));
+    if (activeProject && activeProject.id === projectId) {
+      setActiveProject(prev => prev ? { ...prev, status: newStatus } : null);
+    }
   };
 
   const handleCreateProject = (newProj: Partial<Project>) => {
@@ -447,7 +538,7 @@ export function App() {
                 planPins={planPins}
                 chatMessages={chatMessages}
                 onOpenTask={(t) => setSelectedTask(t)}
-                onCreateTask={() => setIsCreateTaskOpen(true)}
+                onCreateTask={() => setIsTaskTypeSelectOpen(true)}
                 onOpenPunch={(p) => setSelectedTask(null)}
                 onCreatePunch={() => setIsCreatePunchOpen(true)}
                 onUpdatePunchStatus={handleUpdatePunchStatus}
@@ -462,28 +553,47 @@ export function App() {
                 onUpdatePinStatus={handleUpdatePinStatus}
                 onSendMessage={handleSendMessage}
                 onAddTasksFromTemplate={handleAddTasksFromTemplate}
+                onUpdateProjectStatus={handleUpdateProjectStatus}
               />
             ) : (
               /* Global Hub Views */
               <>
-                {/* 1. EXECUTIVE HOME DASHBOARD */}
+                {/* 1. ROLE-SPECIFIC HOME DASHBOARD */}
                 {activeTab === 'home' && (
-                  <SimpleHomeView
-                    currentUser={currentUser}
-                    projects={projects}
-                    onSelectProject={(p) => setActiveProject(p)}
-                    onOpenLatti={() => setActiveTab('latti')}
-                    onOpenMessages={() => setActiveTab('messages')}
-                    onOpenTasks={() => {
-                      setActiveProject(projects[0]);
-                    }}
-                    onOpenProjects={() => setActiveTab('projects')}
-                    onOpenBudgets={() => setActiveTab('budgets')}
-                    onOpenOpportunities={() => setActiveTab('opportunities')}
-                    onOpenNewProject={() => setIsCreateProjectOpen(true)}
-                    onOpenTeam={() => setActiveTab('team')}
-                    onOpenReports={() => setActiveTab('reports')}
-                  />
+                  currentRole === 'finance' ? (
+                    <FinanceHomeView
+                      projects={projects}
+                      categories={categories}
+                      draws={draws}
+                      lienWaivers={lienWaivers}
+                      onSelectProject={(p) => setActiveProject(p)}
+                      onOpenDraws={() => setActiveTab('finance')}
+                      onOpenLienWaivers={() => setActiveTab('finance')}
+                      onOpenBudgets={() => setActiveTab('budgets')}
+                      onOpenOpportunities={() => setActiveTab('opportunities')}
+                      onRequestDraw={() => setIsCreateDrawOpen(true)}
+                      onRecordLienWaiver={() => setIsRecordLienWaiverOpen(true)}
+                      onApprovePayApp={() => setIsApprovePayAppOpen(true)}
+                      onOpenLatti={() => setActiveTab('latti')}
+                    />
+                  ) : (
+                    <SimpleHomeView
+                      currentUser={currentUser}
+                      projects={projects}
+                      onSelectProject={(p) => setActiveProject(p)}
+                      onOpenLatti={() => setActiveTab('latti')}
+                      onOpenMessages={() => setActiveTab('messages')}
+                      onOpenTasks={() => {
+                        setActiveProject(projects[0]);
+                      }}
+                      onOpenProjects={() => setActiveTab('projects')}
+                      onOpenBudgets={() => setActiveTab('budgets')}
+                      onOpenOpportunities={() => setActiveTab('opportunities')}
+                      onOpenNewProject={() => setIsCreateProjectOpen(true)}
+                      onOpenTeam={() => setActiveTab('team')}
+                      onOpenReports={() => setActiveTab('reports')}
+                    />
+                  )
                 )}
 
                 {/* 2. OPPORTUNITIES / DEALS TAB */}
@@ -502,7 +612,20 @@ export function App() {
 
                 {/* 4. BUDGETS HUB TAB */}
                 {activeTab === 'budgets' && (
-                  <BudgetsHubView />
+                  <BudgetsHubView onOpenImportBudget={() => setIsImportBudgetOpen(true)} />
+                )}
+
+                {/* 4.5 FINANCE DEEP-DIVE TAB */}
+                {activeTab === 'finance' && (
+                  <FinanceDashboard
+                    projects={projects}
+                    categories={categories}
+                    onSelectProject={(p) => setActiveProject(p)}
+                    onOpenBudgetDetails={() => setActiveTab('budgets')}
+                    onOpenReports={() => setActiveTab('reports')}
+                    onOpenLatti={() => setActiveTab('latti')}
+                    onOpenOpportunities={() => setActiveTab('opportunities')}
+                  />
                 )}
 
                 {/* 5. MESSAGES & DISCUSSIONS HUB */}
@@ -595,7 +718,13 @@ export function App() {
             onClose={() => setIsSideDrawerOpen(false)}
             currentUser={currentUser}
             onNavigateTab={(tab) => {
-              setActiveProject(null);
+              if (['schedule', 'messages', 'photos', 'documents', 'punch', 'daily-logs', 'milestones'].includes(tab)) {
+                if (!activeProject) {
+                  setActiveProject(projects[0]);
+                }
+              } else {
+                setActiveProject(null);
+              }
               setActiveTab(tab);
             }}
             onOpenCreateProject={() => setIsCreateProjectOpen(true)}
@@ -692,15 +821,15 @@ export function App() {
                   <Sparkles className="w-4.5 h-4.5" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Deal Analyzer</h4>
-                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">AI underwriting & financial feasibility</p>
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Record Lien Waiver</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Sub-trade compliance release</p>
                 </div>
               </button>
 
               <button
                 onClick={() => {
                   setIsQuickActionSheetOpen(false);
-                  setIsCreateTaskOpen(true);
+                  setIsApprovePayAppOpen(true);
                 }}
                 className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
@@ -708,8 +837,24 @@ export function App() {
                   <CheckSquare className="w-4.5 h-4.5" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">New Task</h4>
-                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Milestones, assignees & due dates</p>
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">Pay App Approval</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Verify & disburse payments</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsQuickActionSheetOpen(false);
+                  setIsTaskTypeSelectOpen(true);
+                }}
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#3875F6] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <CheckSquare className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-[#3875F6] transition-colors">New Task</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Templates, presets & custom scope</p>
                 </div>
               </button>
             </div>
@@ -717,11 +862,55 @@ export function App() {
         </div>
       )}
 
+      {/* TASK CREATION TYPE SELECTION MODAL */}
+      <TaskCreationTypeModal
+        isOpen={isTaskTypeSelectOpen}
+        onClose={() => setIsTaskTypeSelectOpen(false)}
+        project={activeProject}
+        onSelectTemplate={(tpl) => {
+          handleCreateTask(tpl);
+        }}
+        onSelectCustom={() => {
+          setIsCreateTaskOpen(true);
+        }}
+      />
 
+      {/* IMPORT BUDGET MODAL */}
+      <ImportBudgetModal
+        isOpen={isImportBudgetOpen}
+        onClose={() => setIsImportBudgetOpen(false)}
+        projects={projects}
+        onImportSuccess={handleImportBudgetSuccess}
+      />
+
+      {/* FINANCIAL WORKFLOW MODALS */}
+      <CreateDrawModal
+        isOpen={isCreateDrawOpen}
+        onClose={() => setIsCreateDrawOpen(false)}
+        projects={projects}
+        onCreateDraw={handleCreateDraw}
+      />
+
+      <ProcessLienWaiverModal
+        isOpen={isRecordLienWaiverOpen}
+        onClose={() => setIsRecordLienWaiverOpen(false)}
+        subcontractors={subcontractors}
+        onRecordWaiver={handleRecordLienWaiver}
+      />
+
+      <ApprovePayAppModal
+        isOpen={isApprovePayAppOpen}
+        onClose={() => setIsApprovePayAppOpen(false)}
+        projects={projects}
+        subcontractors={subcontractors}
+        onDisburse={handleDisbursePayApp}
+      />
 
       {/* CREATE PUNCH ITEM MODAL */}
       <CreatePunchModal
         isOpen={isCreatePunchOpen}
+        projects={projects}
+        project={activeProject}
         onClose={() => setIsCreatePunchOpen(false)}
         onCreate={handleCreatePunch}
       />

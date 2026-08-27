@@ -19,6 +19,7 @@ interface ProjectOverviewTabProps {
   onOpenPunch: (item: PunchItem) => void;
   onOpenLatti: () => void;
   onAddTasksFromTemplate?: (tasks: Partial<Task>[]) => void;
+  onUpdateStatus?: (newStatus: any) => void;
 }
 
 export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
@@ -30,12 +31,33 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   onTabChange,
   onOpenTask,
   onOpenPunch,
+  onUpdateStatus,
 }) => {
+  const getInitialStage = (): 'Planning' | 'Pre-Con' | 'In Progress' | 'Completed' => {
+    if (project.status === 'Planning') return 'Planning';
+    if (project.status === 'Pre-Construction') return 'Pre-Con';
+    if (project.status === 'Completed' || project.status === 'Warranty') return 'Completed';
+    return 'In Progress';
+  };
+
   const [currentStage, setCurrentStage] = useState<'Planning' | 'Pre-Con' | 'In Progress' | 'Completed'>(
-    project.status === 'Planning' ? 'Planning' : 'In Progress'
+    getInitialStage()
   );
 
   const stages = ['Planning', 'Pre-Con', 'In Progress', 'Completed'] as const;
+
+  const handleStageChange = (stage: 'Planning' | 'Pre-Con' | 'In Progress' | 'Completed') => {
+    setCurrentStage(stage);
+    if (onUpdateStatus) {
+      const mapped: Record<string, string> = {
+        'Planning': 'Planning',
+        'Pre-Con': 'Pre-Construction',
+        'In Progress': 'In Progress',
+        'Completed': 'Completed'
+      };
+      onUpdateStatus(mapped[stage] || stage);
+    }
+  };
 
   // Calculated Financial Metrics
   const spentM = (project.budget.actual / 1000000).toFixed(2);
@@ -46,6 +68,19 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   const completedTasksCount = tasks.filter(t => t.status === 'Completed').length;
   const openPunchCount = punchItems.filter(p => p.status === 'Open' || p.status === 'In Progress').length;
   const highPriorityPunch = punchItems.filter(p => p.priority === 'High' || p.priority === 'Critical');
+
+  const [isStatusPickerOpen, setIsStatusPickerOpen] = useState(false);
+
+  const handleSelectStatus = (newStatus: any) => {
+    setIsStatusPickerOpen(false);
+    if (onUpdateStatus) {
+      onUpdateStatus(newStatus);
+    }
+    if (newStatus === 'Planning') setCurrentStage('Planning');
+    else if (newStatus === 'Pre-Construction') setCurrentStage('Pre-Con');
+    else if (newStatus === 'Completed' || newStatus === 'Warranty') setCurrentStage('Completed');
+    else setCurrentStage('In Progress');
+  };
 
   return (
     <div className="w-full flex flex-col gap-4 pt-1 pb-24 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
@@ -60,12 +95,52 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         <div className="absolute inset-0 bg-gradient-to-t from-[#070D1A] via-[#070D1A]/60 to-transparent" />
         
         {/* Floating Header Badges */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-20">
           <span className="text-xs font-semibold text-white bg-[#060913]/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-1.5 shadow-md">
             <MapPin className="w-3.5 h-3.5 text-[#3875F6]" />
             <span>{project.cityState}</span>
           </span>
-          <StatusBadge status={project.status} size="xs" />
+
+          <div className="relative">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsStatusPickerOpen(!isStatusPickerOpen);
+              }}
+              className="cursor-pointer transition-transform active:scale-95 flex items-center gap-1"
+              title="Click to update project status"
+            >
+              <StatusBadge status={project.status} size="xs" />
+            </button>
+
+            {/* Quick Status Dropdown Menu */}
+            {isStatusPickerOpen && (
+              <div 
+                onClick={(e) => e.stopPropagation()}
+                className="absolute right-0 top-7 w-44 bg-[#0A111F]/95 backdrop-blur-xl border border-[#1E2E4A] rounded-2xl shadow-2xl overflow-hidden py-1 z-50 animate-fade-in"
+              >
+                <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-[#142036]">
+                  Change Project Status
+                </div>
+                {(['Planning', 'Pre-Construction', 'In Progress', 'On Hold', 'Completed', 'Warranty'] as const).map((st) => (
+                  <button
+                    key={st}
+                    type="button"
+                    onClick={() => handleSelectStatus(st)}
+                    className={`w-full px-3 py-1.5 text-left text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer ${
+                      project.status === st
+                        ? 'bg-blue-600/20 text-blue-400 font-bold'
+                        : 'text-slate-300 hover:bg-[#101B2E] hover:text-white'
+                    }`}
+                  >
+                    <span>{st}</span>
+                    {project.status === st && <Check className="w-3.5 h-3.5 text-blue-400" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Title Overlay */}
@@ -107,7 +182,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             return (
               <button
                 key={stage}
-                onClick={() => setCurrentStage(stage)}
+                onClick={() => handleStageChange(stage)}
                 className="flex flex-col items-center gap-1.5 z-10 cursor-pointer group select-none active:scale-95 transition-transform"
               >
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${

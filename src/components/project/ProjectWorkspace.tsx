@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { 
   Project, UserRole, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
-  PunchStatus, TaskStatus, DailyLogItem, PlanGridPin, ProjectChatMessage, User 
+  PunchStatus, TaskStatus, DailyLogItem, PlanGridPin, ProjectChatMessage, User,
+  ProjectStatus
 } from '../../types';
 import { ProjectOverviewTab } from './ProjectOverviewTab';
 import { ProjectBudgetTab } from './ProjectBudgetTab';
@@ -21,7 +22,7 @@ import { LattiAssistant } from '../ai/LattiAssistant';
 import { 
   Layers, DollarSign, CheckSquare, CalendarDays, 
   AlertCircle, Camera, FileText, Users, Users2, 
-  BarChart3, Sparkles, MapPin, Calendar, MessageSquare 
+  BarChart3, Sparkles, MapPin, Calendar, MessageSquare, ArrowLeft 
 } from 'lucide-react';
 
 interface ProjectWorkspaceProps {
@@ -55,6 +56,7 @@ interface ProjectWorkspaceProps {
   onUpdatePinStatus?: (pinId: string, status: 'open' | 'in-progress' | 'resolved') => void;
   onSendMessage?: (msg: ProjectChatMessage) => void;
   onAddTasksFromTemplate?: (tasks: Partial<Task>[]) => void;
+  onUpdateProjectStatus?: (projectId: string, newStatus: ProjectStatus) => void;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
@@ -87,53 +89,79 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onAddPlanPin,
   onUpdatePinStatus,
   onSendMessage,
-  onAddTasksFromTemplate
+  onAddTasksFromTemplate,
+  onUpdateProjectStatus
 }) => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
-  // Role based tabs filtering in clean logical operational order
+  // Quick Action / Navigation pages that have dedicated views and are accessed directly
+  const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents'].includes(activeTab);
+
+  // Core project tabs (Quick Action items: Tasks, Punch, Photos, Docs are kept separate)
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
-    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
     { id: 'schedule', label: 'Schedule', icon: CalendarDays },
     { id: 'plangrid', label: 'Drawings', icon: MapPin },
-    { id: 'punch', label: 'Punch List', icon: AlertCircle },
     { id: 'daily-logs', label: 'Daily Logs', icon: Calendar },
     { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
-    { id: 'photos', label: 'Photos', icon: Camera },
-    { id: 'documents', label: 'Documents', icon: FileText },
     { id: 'team', label: 'Team', icon: Users2 },
     { id: 'reports', label: 'Reports', icon: BarChart3, hideFor: ['field'] },
-    { id: 'latti', label: 'Latti AI', icon: Sparkles },
   ];
 
   const visibleTabs = allTabs.filter(t => !t.hideFor || !t.hideFor.includes(currentRole));
 
+  const getPageTitle = (tabId: string) => {
+    switch (tabId) {
+      case 'tasks': return 'Project Tasks';
+      case 'punch': return 'Punch List';
+      case 'photos': return 'Site Photos';
+      case 'documents': return 'Project Documents';
+      default: return '';
+    }
+  };
+
   return (
     <div className="w-full flex flex-col flex-1">
-      {/* Project Sub-navigation Scrollable Pills */}
-      <div className="w-full bg-[#060913]/95 backdrop-blur-md border-b border-[#142036] sticky top-0 z-20 px-5 py-2">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5 max-w-[430px] mx-auto">
-          {visibleTabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-1.5 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                  isActive
-                    ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20'
-                    : 'bg-[#0A111F] text-slate-400 hover:text-white border border-[#142036]'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+      {/* Dynamic Header: Dedicated Back Header for Quick Action Pages vs Tab Scrollbar for Project Tabs */}
+      {isQuickActionPage ? (
+        <div className="w-full bg-[#060913]/95 backdrop-blur-md border-b border-[#142036] sticky top-0 z-20 px-5 py-2.5">
+          <div className="flex items-center justify-between max-w-[430px] mx-auto">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className="flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:text-blue-300 cursor-pointer transition-all bg-blue-500/10 hover:bg-blue-500/20 px-3 py-1.5 rounded-full border border-blue-500/20 active:scale-95 shadow-sm"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Back to Overview</span>
+            </button>
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              {getPageTitle(activeTab)}
+            </span>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="w-full bg-[#060913]/95 backdrop-blur-md border-b border-[#142036] sticky top-0 z-20 px-5 py-2">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5 max-w-[430px] mx-auto">
+            {visibleTabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`py-1.5 px-3 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? 'bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/20'
+                      : 'bg-[#0A111F] text-slate-400 hover:text-white border border-[#142036]'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Main Tab Content */}
       <div className="px-5 pt-2 flex-1">
@@ -149,6 +177,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onOpenPunch={onOpenPunch}
             onOpenLatti={() => setActiveTab('latti')}
             onAddTasksFromTemplate={onAddTasksFromTemplate}
+            onUpdateStatus={(newStatus) => onUpdateProjectStatus?.(project.id, newStatus)}
           />
         )}
 

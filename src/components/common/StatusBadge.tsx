@@ -21,17 +21,23 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   const getStyle = () => {
     switch (status) {
-      // Success / On Schedule
+      // Success / On Schedule / Completed / Warranty
       case 'On Schedule':
       case 'Completed':
       case 'Verified':
         return 'bg-[#061F14]/95 text-emerald-300 border border-emerald-500/50 shadow-emerald-950/40';
+
+      case 'Warranty':
+        return 'bg-[#062121]/95 text-teal-300 border border-teal-500/50 shadow-teal-950/40';
       
-      // Warning / At Risk
+      // Warning / At Risk / On Hold
       case 'At Risk':
       case 'High':
       case 'Medium':
         return 'bg-[#291704]/95 text-amber-300 border border-amber-500/50 shadow-amber-950/40';
+
+      case 'On Hold':
+        return 'bg-[#241A0A]/95 text-amber-200 border border-amber-600/40 shadow-amber-950/30';
 
       // Danger / Critical / Overdue
       case 'Critical':
@@ -43,6 +49,10 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       // Active / In Progress
       case 'In Progress':
         return 'bg-[#0A1B38]/95 text-blue-300 border border-blue-500/50 shadow-blue-950/40';
+
+      // Pre-Construction
+      case 'Pre-Construction':
+        return 'bg-[#0A1E2B]/95 text-cyan-300 border border-cyan-500/40 shadow-cyan-950/40';
 
       // Planning / Open
       case 'Planning':
@@ -69,9 +79,12 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'Completed':
       case 'Verified':
         return 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]';
+      case 'Warranty':
+        return 'bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.9)]';
       case 'At Risk':
       case 'High':
       case 'Medium':
+      case 'On Hold':
         return 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.9)]';
       case 'Critical':
       case 'Delayed':
@@ -79,6 +92,10 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'Overdue':
         return 'bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.9)]';
       case 'In Progress':
+        return 'bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.9)]';
+      case 'Pre-Construction':
+        return 'bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.9)]';
+      case 'Planning':
         return 'bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.9)]';
       case 'Resolved':
         return 'bg-purple-400 shadow-[0_0_6px_rgba(192,132,252,0.9)]';

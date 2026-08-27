@@ -58,7 +58,7 @@ export const MOCK_PROJECTS: Project[] = [
     code: 'ROC-2025',
     location: '450 Waterfront Blvd',
     cityState: 'New York, NY',
-    status: 'On Schedule',
+    status: 'In Progress',
     progress: 66,
     startDate: '2024-09-01',
     targetEndDate: '2025-11-30',
@@ -93,7 +93,7 @@ export const MOCK_PROJECTS: Project[] = [
     code: 'DCT-2024',
     location: '1200 Michigan Ave',
     cityState: 'Chicago, IL',
-    status: 'At Risk',
+    status: 'In Progress',
     progress: 42,
     startDate: '2024-04-15',
     targetEndDate: '2026-03-20',
@@ -128,8 +128,8 @@ export const MOCK_PROJECTS: Project[] = [
     code: 'GRD-2025',
     location: '8800 Austin Hills Pkwy',
     cityState: 'Austin, TX',
-    status: 'On Schedule',
-    progress: 78,
+    status: 'Pre-Construction',
+    progress: 18,
     startDate: '2024-01-10',
     targetEndDate: '2025-08-15',
     projectManager: {
@@ -163,8 +163,8 @@ export const MOCK_PROJECTS: Project[] = [
     code: 'SVC-2025',
     location: '320 Ocean Drive',
     cityState: 'Miami, FL',
-    status: 'On Schedule',
-    progress: 55,
+    status: 'Warranty',
+    progress: 100,
     startDate: '2024-07-01',
     targetEndDate: '2025-12-15',
     projectManager: {
@@ -199,7 +199,7 @@ export const MOCK_PROJECTS: Project[] = [
     location: '400 Lakeview Blvd',
     cityState: 'Orlando, FL',
     status: 'Planning',
-    progress: 30,
+    progress: 10,
     startDate: '2024-11-01',
     targetEndDate: '2026-05-30',
     projectManager: {
@@ -226,6 +226,76 @@ export const MOCK_PROJECTS: Project[] = [
     },
     thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
     description: 'Retail shell renovation, food hall structural steel framing, and updated central mechanical plant.'
+  },
+  {
+    id: 'proj-6',
+    name: 'Austin Tech Hub Phase 2',
+    code: 'ATH-2025',
+    location: '720 Congress Ave',
+    cityState: 'Austin, TX',
+    status: 'On Hold',
+    progress: 35,
+    startDate: '2024-03-01',
+    targetEndDate: '2026-08-30',
+    projectManager: {
+      id: 'usr_pm',
+      name: 'Sarah Johnson',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    },
+    budget: {
+      total: 5800000,
+      committed: 3200000,
+      actual: 2100000,
+      paid: 1900000,
+      remaining: 3700000,
+      variance: 0,
+      costToComplete: 3700000
+    },
+    metrics: {
+      totalTasks: 110,
+      completedTasks: 38,
+      overdueTasks: 3,
+      openPunchItems: 4,
+      totalMilestones: 6,
+      completedMilestones: 2
+    },
+    thumbnail: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
+    description: 'Commercial high-density office development with custom glass atrium facade.'
+  },
+  {
+    id: 'proj-7',
+    name: 'Skyline Modern Residence',
+    code: 'SMR-2024',
+    location: '55 Pine Street',
+    cityState: 'Seattle, WA',
+    status: 'Completed',
+    progress: 100,
+    startDate: '2023-06-01',
+    targetEndDate: '2024-12-20',
+    projectManager: {
+      id: 'usr_pm',
+      name: 'David Vance',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+    },
+    budget: {
+      total: 2800000,
+      committed: 2800000,
+      actual: 2750000,
+      paid: 2750000,
+      remaining: 50000,
+      variance: -50000,
+      costToComplete: 0
+    },
+    metrics: {
+      totalTasks: 145,
+      completedTasks: 145,
+      overdueTasks: 0,
+      openPunchItems: 0,
+      totalMilestones: 8,
+      completedMilestones: 8
+    },
+    thumbnail: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80',
+    description: 'Custom luxury architectural residence with integrated smart home automation and solar canopy.'
   }
 ];
 

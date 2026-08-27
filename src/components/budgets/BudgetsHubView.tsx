@@ -67,7 +67,11 @@ const INITIAL_BUDGET_CARDS: BudgetCardItem[] = [
   }
 ];
 
-export const BudgetsHubView: React.FC = () => {
+interface BudgetsHubViewProps {
+  onOpenImportBudget?: () => void;
+}
+
+export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudget }) => {
   const [viewMode, setViewMode] = useState<'analytics' | 'sheets'>('analytics');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>('All');
   const [selectedBudgetId, setSelectedBudgetId] = useState<string | null>(null);
@@ -303,38 +307,52 @@ export const BudgetsHubView: React.FC = () => {
       </div>
 
       {/* ─── 2. QUICK ACTION HUB (Consistent Deep Slate Blue Style) ─── */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-4 gap-2">
         <button
           onClick={() => setIsCreateModalOpen(true)}
           className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-blue-500/40 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer group active:scale-95 shadow-sm text-center"
         >
-          <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <Plus className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <Plus className="w-3.5 h-3.5" />
           </div>
-          <span className="text-[11px] font-bold text-white">Create Budget</span>
-          <span className="text-[9px] text-slate-500">4-Step Wizard</span>
+          <span className="text-[10px] font-bold text-white leading-tight">Create Budget</span>
+          <span className="text-[8px] text-slate-500">Wizard</span>
+        </button>
+
+        <button
+          onClick={() => {
+            if (onOpenImportBudget) onOpenImportBudget();
+            else setIsCreateModalOpen(true);
+          }}
+          className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-purple-500/40 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer group active:scale-95 shadow-sm text-center"
+        >
+          <div className="w-7 h-7 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <Download className="w-3.5 h-3.5" />
+          </div>
+          <span className="text-[10px] font-bold text-white leading-tight">Import Budget</span>
+          <span className="text-[8px] text-slate-500">CSV / XLSX</span>
         </button>
 
         <button
           onClick={() => setIsDealAnalyzerOpen(true)}
           className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-blue-500/40 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer group active:scale-95 shadow-sm text-center"
         >
-          <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <Sparkles className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
           </div>
-          <span className="text-[11px] font-bold text-white">Analyze Deal</span>
-          <span className="text-[9px] text-slate-500">Financing ROI</span>
+          <span className="text-[10px] font-bold text-white leading-tight">AI Underwriting</span>
+          <span className="text-[8px] text-slate-500">Latti Feasibility</span>
         </button>
 
         <button
           onClick={() => setIsFinancingOpen(true)}
           className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-blue-500/40 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer group active:scale-95 shadow-sm text-center"
         >
-          <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <DollarSign className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <Zap className="w-3.5 h-3.5 text-emerald-400" />
           </div>
-          <span className="text-[11px] font-bold text-white">Lender Draws</span>
-          <span className="text-[9px] text-slate-500">Bank Escrow</span>
+          <span className="text-[10px] font-bold text-white leading-tight">Lender Draws</span>
+          <span className="text-[8px] text-slate-500">Bank Escrow</span>
         </button>
       </div>
 

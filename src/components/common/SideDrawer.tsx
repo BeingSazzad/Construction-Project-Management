@@ -2,8 +2,8 @@ import React from 'react';
 import { User } from '../../types';
 import { 
   X, Users, FileText, Sparkles, TrendingUp,
-  Award, Settings, LogOut, Shield,
-  ChevronRight
+  Award, Settings, LogOut, Shield, ChevronRight,
+  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -15,6 +15,8 @@ interface SideDrawerProps {
   onOpenCreateBudget?: () => void;
   onOpenDealAnalyzer?: () => void;
   onSignOut: () => void;
+  currentRole?: string;
+  onRoleChange?: (role: any) => void;
 }
 
 interface NavItem {
@@ -31,6 +33,8 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   currentUser,
   onNavigateTab,
   onSignOut,
+  currentRole = 'admin',
+  onRoleChange
 }) => {
   if (!isOpen) return null;
 
@@ -39,7 +43,54 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     onClose();
   };
 
+  const ROLES = [
+    { id: 'admin', title: 'Company Owner', name: 'Alex Chen' },
+    { id: 'finance', title: 'Finance Director', name: 'Michael Chang' },
+    { id: 'pm', title: 'Senior PM', name: 'Sarah Johnson' },
+    { id: 'field', title: 'Field Super', name: 'John Smith' },
+  ];
+
   const TOOLS_ITEMS: NavItem[] = [
+    {
+      id: 'schedule',
+      label: 'Calendar',
+      icon: CalendarDays,
+    },
+    {
+      id: 'messages',
+      label: 'Messages',
+      icon: MessageSquare,
+      badge: '2 New',
+      badgeStyle: 'bg-[#3875F6]/15 text-[#3875F6] border-[#3875F6]/30',
+    },
+    {
+      id: 'photos',
+      label: 'Photos',
+      icon: Camera,
+    },
+    {
+      id: 'documents',
+      label: 'Documents',
+      icon: FileText,
+    },
+    {
+      id: 'punch',
+      label: 'Punch List',
+      icon: AlertCircle,
+    },
+    {
+      id: 'daily-logs',
+      label: 'Daily Logs',
+      icon: Calendar,
+    },
+    {
+      id: 'milestones',
+      label: 'Milestones',
+      icon: CheckSquare,
+    },
+  ];
+
+  const EXTRA_ITEMS: NavItem[] = [
     {
       id: 'opportunities',
       label: 'Opportunities',
@@ -51,11 +102,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       id: 'team',
       label: 'Team Directory',
       icon: Users,
-    },
-    {
-      id: 'reports',
-      label: 'Field Reports',
-      icon: FileText,
     },
     {
       id: 'latti',
@@ -141,24 +187,52 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
           </button>
         </div>
 
-        {/* ─── Company Badge ─── */}
-        <div className="mx-3 mt-3 p-2 rounded-xl bg-[#091122] border border-[#142036] flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-blue-400 flex-shrink-0">
-            <Shield className="w-3.5 h-3.5" />
+        {/* ─── Role Switcher Selector ─── */}
+        {onRoleChange && (
+          <div className="mx-3 mt-3 p-2.5 rounded-2xl bg-[#091122] border border-[#142036] flex flex-col gap-1.5">
+            <span className="text-[9px] uppercase tracking-wider text-slate-500 font-bold px-0.5">
+              Active User Role
+            </span>
+            <div className="grid grid-cols-2 gap-1.5">
+              {ROLES.map((r) => {
+                const isActive = currentRole === r.id;
+                return (
+                  <button
+                    key={r.id}
+                    onClick={() => {
+                      onRoleChange(r.id);
+                      onClose();
+                    }}
+                    className={`py-1.5 px-2 rounded-xl text-[10px] font-bold transition-all text-left truncate cursor-pointer ${
+                      isActive
+                        ? 'bg-[#2563EB] text-white shadow-sm'
+                        : 'bg-[#050811] text-slate-400 hover:text-slate-200 border border-[#142036]'
+                    }`}
+                  >
+                    {r.title}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-[9px] uppercase tracking-wider text-slate-500 font-bold">Company</p>
-            <p className="text-xs font-bold text-white truncate">Avery Marsh Builders</p>
-          </div>
-        </div>
+        )}
 
         {/* ─── Compact Navigation Sections ─── */}
         <div className="flex-1 overflow-y-auto px-2 py-3 flex flex-col gap-3">
 
-          {/* SECTION: Tools */}
+          {/* SECTION: TOOLS */}
           <div className="flex flex-col gap-0.5">
-            <SectionLabel label="Operations & Tools" />
+            <SectionLabel label="TOOLS" />
             {TOOLS_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-[#142036] mx-3" />
+
+          {/* SECTION: Portfolio & Directory */}
+          <div className="flex flex-col gap-0.5">
+            <SectionLabel label="Directory & AI" />
+            {EXTRA_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
           </div>
 
           {/* Divider */}

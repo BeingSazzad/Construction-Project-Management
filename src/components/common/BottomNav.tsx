@@ -18,14 +18,17 @@ const LEFT_ITEMS = [
 
 const RIGHT_ITEMS = [
   { id: 'opportunities', label: 'Opportunities', icon: TrendingUp },
-  { id: 'budgets',       label: 'Finance',       icon: DollarSign },
+  { id: 'budgets',       label: 'Budgets',       icon: DollarSign },
 ];
 
 export const BottomNav: React.FC<BottomNavProps> = ({
+  currentRole,
   activeTab,
   onTabChange,
   onQuickAction,
 }) => {
+  const leftItems = LEFT_ITEMS;
+  const rightItems = RIGHT_ITEMS;
 
   const NavBtn = ({ id, label, icon: Icon }: { id: string; label: string; icon: React.ElementType }) => {
     const isActive = activeTab === id;
@@ -54,7 +57,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
         {/* Left: Home + Projects */}
         <div className="flex items-center gap-0 flex-1 justify-around">
-          {LEFT_ITEMS.map(item => <NavBtn key={item.id} {...item} />)}
+          {leftItems.map(item => <NavBtn key={item.id} {...item} />)}
         </div>
 
         {/* Center: FAB — primary create action */}
@@ -70,7 +73,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
         {/* Right: Pipeline + Finance */}
         <div className="flex items-center gap-0 flex-1 justify-around">
-          {RIGHT_ITEMS.map(item => <NavBtn key={item.id} {...item} />)}
+          {rightItems.map(item => <NavBtn key={item.id} {...item} />)}
         </div>
 
       </div>
