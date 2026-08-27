@@ -619,29 +619,33 @@ export function App() {
             {/* Top Pull Indicator Bar */}
             <div className="w-10 h-1.5 rounded-full bg-slate-600/60 mx-auto -mt-1 mb-1" />
 
-            <div className="flex items-center justify-between pb-2.5 border-b border-[#142036]">
-              <h3 className="text-sm font-bold text-white tracking-tight">Create New</h3>
+            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+              <div>
+                <h3 className="text-sm font-bold text-white tracking-tight">Create New</h3>
+                <p className="text-[10px] text-slate-400 font-medium mt-0.5">Select an item to initialize</p>
+              </div>
               <button
                 onClick={() => setIsQuickActionSheetOpen(false)}
-                className="w-7 h-7 rounded-xl bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all"
+                className="w-8 h-8 rounded-xl bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex flex-col gap-1.5 pt-1">
+            <div className="flex flex-col gap-2 pt-1">
               <button
                 onClick={() => {
                   setIsQuickActionSheetOpen(false);
                   setIsCreateProjectOpen(true);
                 }}
-                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <FolderKanban className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">New Project</span>
+                <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <FolderKanban className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-blue-400 transition-colors">New Project</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Commercial or custom home site</p>
                 </div>
               </button>
 
@@ -650,13 +654,14 @@ export function App() {
                   setIsQuickActionSheetOpen(false);
                   setIsCreateBudgetOpen(true);
                 }}
-                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <DollarSign className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-bold text-white group-hover:text-purple-400 transition-colors">Project Budget</span>
+                <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <DollarSign className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-purple-400 transition-colors">Project Budget</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">CSI master ledger & vendor costs</p>
                 </div>
               </button>
 
@@ -665,13 +670,14 @@ export function App() {
                   setIsQuickActionSheetOpen(false);
                   setIsCreateDealOpen(true);
                 }}
-                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <TrendingUp className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors">Opportunity</span>
+                <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <TrendingUp className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-cyan-400 transition-colors">Opportunity</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Pre-construction lead & pipeline</p>
                 </div>
               </button>
 
@@ -680,13 +686,14 @@ export function App() {
                   setIsQuickActionSheetOpen(false);
                   setIsDealAnalyzerOpen(true);
                 }}
-                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">Deal Analyzer</span>
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <Sparkles className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Deal Analyzer</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">AI underwriting & financial feasibility</p>
                 </div>
               </button>
 
@@ -695,13 +702,14 @@ export function App() {
                   setIsQuickActionSheetOpen(false);
                   setIsCreateTaskOpen(true);
                 }}
-                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center justify-between transition-all cursor-pointer text-left active:scale-[0.99] group"
+                className="p-3 bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-blue-500/40 rounded-2xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <CheckSquare className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-bold text-white group-hover:text-amber-400 transition-colors">New Task</span>
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <CheckSquare className="w-4.5 h-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">New Task</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Milestones, assignees & due dates</p>
                 </div>
               </button>
             </div>
