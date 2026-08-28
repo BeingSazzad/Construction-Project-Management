@@ -1,9 +1,9 @@
 import React from 'react';
 import { Project, User } from '../../types';
 import { 
-  FolderKanban, CheckCircle2, ShieldAlert, DollarSign,
-  Sparkles, ChevronRight, FolderPlus, FileSpreadsheet,
-  Users, FileText, ArrowUpRight, MessageSquare, TrendingUp
+  FolderKanban, Activity, Calendar, CheckSquare, 
+  AlertTriangle, ChevronRight, FolderPlus, FileSpreadsheet,
+  Users, FileText, ArrowUpRight, TrendingUp, Sparkles
 } from 'lucide-react';
 import { StatusBadge } from '../common/StatusBadge';
 
@@ -27,7 +27,6 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   projects,
   onSelectProject,
   onOpenLatti,
-  onOpenMessages,
   onOpenProjects,
   onOpenBudgets,
   onOpenOpportunities,
@@ -35,55 +34,130 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   onOpenTeam,
   onOpenReports
 }) => {
-  const totalBudget = projects.reduce((acc, p) => acc + (p.budget?.total || 0), 0);
-  const atRiskCount = projects.filter(p => p.status === 'On Hold' || p.status === 'At Risk' || p.status === 'Delayed').length;
   const activeCount = projects.filter(p => p.status === 'In Progress' || p.status === 'Pre-Construction' || p.status === 'On Schedule').length;
+  const atRiskProjects = projects.filter(p => p.status === 'On Hold' || p.status === 'At Risk' || p.status === 'Delayed');
 
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
 
-      {/* ── 1. Company Portfolio KPI Strip ── */}
-      <div className="p-4 rounded-3xl bg-gradient-to-br from-[#0E1A33] via-[#070D1A] to-[#050811] border border-[#1E325A] shadow-lg relative overflow-hidden">
-        {/* Ambient Glow */}
-        <div className="absolute -top-8 -right-8 w-32 h-32 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-4 left-4 w-24 h-24 bg-purple-600/10 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400/80">Avery & Marsh · Portfolio</p>
-              <h2 className="text-xs font-bold text-slate-300 mt-0.5">Company Overview</h2>
+      {/* ── 1. Top 4 KPI Metrics Suite (Matching Reference Web Platform) ── */}
+      <div className="grid grid-cols-2 gap-2.5">
+        {/* Card 1: Active Projects */}
+        <div 
+          onClick={onOpenProjects}
+          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-cyan-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+        >
+          <div className="flex items-center justify-between">
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+              <FolderKanban className="w-4 h-4" />
             </div>
-            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Live
+            <span className="text-[10px] font-bold text-emerald-400">
+              {projects.length} total
             </span>
           </div>
+          <div className="mt-3">
+            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+              {activeCount}
+            </span>
+            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+              Active Projects
+            </span>
+          </div>
+        </div>
 
-          <div className="grid grid-cols-4 gap-2">
-            {[
-              { label: 'Sites', value: String(projects.length), icon: FolderKanban, color: 'text-blue-400', bg: 'bg-blue-500/10', action: onOpenProjects },
-              { label: 'Active', value: String(activeCount), icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/10', action: onOpenProjects },
-              { label: 'At Risk', value: String(atRiskCount), icon: ShieldAlert, color: 'text-amber-400', bg: 'bg-amber-500/10', action: onOpenProjects },
-              { label: 'Budget', value: `$${(totalBudget / 1000000).toFixed(0)}M`, icon: DollarSign, color: 'text-purple-400', bg: 'bg-purple-500/10', action: onOpenBudgets },
-            ].map(({ label, value, icon: Icon, color, bg, action }) => (
-              <button
-                key={label}
-                onClick={action}
-                className="p-2 rounded-2xl bg-[#060913]/60 border border-[#142036] hover:border-blue-500/40 flex flex-col items-center gap-1 cursor-pointer transition-all active:scale-95 group"
-              >
-                <div className={`w-6 h-6 rounded-lg ${bg} flex items-center justify-center ${color}`}>
-                  <Icon className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-sm font-extrabold text-white leading-none">{value}</span>
-                <span className="text-[10px] text-slate-400 font-medium">{label}</span>
-              </button>
-            ))}
+        {/* Card 2: Tasks In Progress */}
+        <div 
+          onClick={onOpenProjects}
+          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-purple-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+        >
+          <div className="flex items-center justify-between">
+            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
+              <Activity className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+              4
+            </span>
+            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+              Tasks In Progress
+            </span>
+          </div>
+        </div>
+
+        {/* Card 3: Tasks Due Today */}
+        <div 
+          onClick={onOpenProjects}
+          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-amber-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+        >
+          <div className="flex items-center justify-between">
+            <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+              <Calendar className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+              2
+            </span>
+            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+              Tasks Due Today
+            </span>
+          </div>
+        </div>
+
+        {/* Card 4: Completed Today */}
+        <div 
+          onClick={onOpenProjects}
+          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-emerald-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+        >
+          <div className="flex items-center justify-between">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+              <CheckSquare className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+              6
+            </span>
+            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+              Completed Today
+            </span>
           </div>
         </div>
       </div>
 
-      {/* ── 2. Quick Actions ── */}
+      {/* ── 2. Risk Alerts Section (Reference Web Specs) ── */}
+      {atRiskProjects.length > 0 && (
+        <div className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col gap-2 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Risk Alerts</h3>
+            </div>
+            <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+              {atRiskProjects.length} Flagged
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-1.5 mt-0.5">
+            {atRiskProjects.map((p) => (
+              <div
+                key={p.id}
+                onClick={() => onSelectProject(p)}
+                className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] hover:border-amber-500/40 flex items-center justify-between text-xs cursor-pointer transition-all active:scale-[0.99]"
+              >
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-white truncate">{p.name}</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 truncate">Status: <strong className="text-amber-400">{p.status}</strong> · Variance alert</p>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── 3. Quick Actions Grid ── */}
       <div className="flex flex-col gap-2">
         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-0.5">Quick Actions</p>
         <div className="grid grid-cols-4 gap-2">
@@ -116,7 +190,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         </div>
       </div>
 
-      {/* ── 3. Latti Assistant Intelligence Strip ── */}
+      {/* ── 4. Latti AI Assistant Banner ── */}
       <button
         onClick={onOpenLatti}
         className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[#141F3B] via-[#0E172E] to-[#070D1A] border border-blue-500/30 hover:border-blue-400/60 flex items-center justify-between gap-3 cursor-pointer transition-all active:scale-[0.99] group shadow-md shadow-blue-500/10"
@@ -136,11 +210,11 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         </div>
       </button>
 
-      {/* ── 3.5 Opportunities Pipeline Snapshot Card ── */}
+      {/* ── 5. Opportunities Pipeline Card ── */}
       {onOpenOpportunities && (
         <button
           onClick={onOpenOpportunities}
-          className="w-full p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-blue-500/40 flex items-center justify-between gap-3 cursor-pointer transition-all active:scale-[0.99] group shadow-sm"
+          className="w-full p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 flex items-center justify-between gap-3 cursor-pointer transition-all active:scale-[0.99] group shadow-sm"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 flex-shrink-0">
@@ -161,7 +235,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         </button>
       )}
 
-      {/* ── 4. Active Projects Feed ── */}
+      {/* ── 6. Active Projects Feed ── */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between px-0.5">
           <h2 className="text-sm font-bold text-white tracking-tight">Active Projects</h2>
