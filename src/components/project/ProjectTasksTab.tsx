@@ -143,11 +143,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [selectedGroupForNewTask, setSelectedGroupForNewTask] = useState('grp-precon');
 
-  // Master Code verification state
-  const [verifyingTask, setVerifyingTask] = useState<{ groupId: string; taskId: string } | null>(null);
-  const [enteredCode, setEnteredCode] = useState('');
-  const [codeError, setCodeError] = useState('');
-
   const getStageIcon = (type: string) => {
     switch (type) {
       case 'eng': return <Layers className="w-4 h-4 text-blue-400" />;
@@ -167,49 +162,22 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
   };
 
   // Toggle task status (Done vs To Do)
+  // Toggle task status seamlessly: todo -> in-progress -> done -> todo
   const toggleTaskStatus = (groupId: string, taskId: string) => {
-    const group = stageGroups.find(g => g.id === groupId);
-    const task = group?.tasks.find(t => t.id === taskId);
-    
-    if (task && task.status !== 'done') {
-      // Prompt for Master Code to mark as Completed
-      setVerifyingTask({ groupId, taskId });
-      setEnteredCode('');
-      setCodeError('');
-    } else {
-      setStageGroups(prev => prev.map(grp => {
-        if (grp.id !== groupId) return grp;
-        return {
-          ...grp,
-          tasks: grp.tasks.map(t => {
-            if (t.id !== taskId) return t;
-            return { ...t, status: 'todo' };
-          })
-        };
-      }));
-    }
-  };
-
-  const handleVerifyMasterCode = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!verifyingTask) return;
-
-    const correctCode = project.masterCode || '1234';
-    if (enteredCode === correctCode) {
-      setStageGroups(prev => prev.map(grp => {
-        if (grp.id !== verifyingTask.groupId) return grp;
-        return {
-          ...grp,
-          tasks: grp.tasks.map(t => {
-            if (t.id !== verifyingTask.taskId) return t;
-            return { ...t, status: 'done' };
-          })
-        };
-      }));
-      setVerifyingTask(null);
-    } else {
-      setCodeError('Incorrect Master Code. Unlock failed.');
-    }
+    setStageGroups(prev => prev.map(grp => {
+      if (grp.id !== groupId) return grp;
+      return {
+        ...grp,
+        tasks: grp.tasks.map(t => {
+          if (t.id !== taskId) return t;
+          let nextStatus: 'todo' | 'in-progress' | 'done' = 'in-progress';
+          if (t.status === 'todo') nextStatus = 'in-progress';
+          else if (t.status === 'in-progress') nextStatus = 'done';
+          else if (t.status === 'done') nextStatus = 'todo';
+          return { ...t, status: nextStatus };
+        })
+      };
+    }));
   };
 
   // Delete task
@@ -402,19 +370,27 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                         </div>
 
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          {/* Status Pill with proper casing */}
+                          {/* Status Pill with 3-state progression */}
                           <button
+                            type="button"
                             onClick={() => toggleTaskStatus(group.id, task.id)}
-                            className={`px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1 ${
+                            className={`px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1.5 ${
                               task.status === 'done'
                                 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
-                                : 'bg-amber-500/10 text-amber-300 border border-amber-500/20 hover:bg-amber-500/20'
+                                : task.status === 'in-progress'
+                                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 shadow-sm'
+                                : 'bg-[#0E1526] text-amber-300 border border-amber-500/20 hover:bg-amber-500/10'
                             }`}
                           >
                             {task.status === 'done' ? (
                               <>
                                 <Check className="w-3 h-3 stroke-[2.5]" />
                                 <span>Done</span>
+                              </>
+                            ) : task.status === 'in-progress' ? (
+                              <>
+                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                                <span>In Progress</span>
                               </>
                             ) : (
                               <span>To Do</span>
@@ -675,70 +651,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                   className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Add Task
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ─── MASTER CODE UNLOCK MODAL ─── */}
-      {verifyingTask && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[340px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100">
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-              <div className="flex items-center gap-1.5 text-blue-400">
-                <Sliders className="w-4 h-4" />
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Security Unlock</h3>
-              </div>
-              <button
-                onClick={() => setVerifyingTask(null)}
-                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleVerifyMasterCode} className="flex flex-col gap-3 text-xs text-center">
-              <p className="text-slate-300 text-[12px] leading-relaxed">
-                Please enter the 4-digit **Project Master Code** to mark this task as completed.
-              </p>
-
-              <div className="flex flex-col items-center gap-2">
-                <input
-                  type="password"
-                  required
-                  maxLength={4}
-                  placeholder="• • • •"
-                  value={enteredCode}
-                  onChange={(e) => {
-                    setEnteredCode(e.target.value.replace(/\D/g, ''));
-                    setCodeError('');
-                  }}
-                  className="w-32 h-10 bg-[#050811] border border-[#142036] rounded-xl text-center text-white text-lg font-black tracking-widest outline-none focus:border-blue-500"
-                />
-                <span className="text-[10px] text-slate-500 italic">Required to unlock completed tasks.</span>
-              </div>
-
-              {codeError && (
-                <div className="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 py-1 px-2 rounded-lg font-bold animate-pulse">
-                  {codeError}
-                </div>
-              )}
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
-                <button
-                  type="button"
-                  onClick={() => setVerifyingTask(null)}
-                  className="px-3.5 py-1.5 rounded-lg bg-[#0E1A33] text-slate-350 text-xs font-semibold cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
-                >
-                  Confirm Unlock
                 </button>
               </div>
             </form>
