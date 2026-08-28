@@ -59,6 +59,89 @@ const INITIAL_BUDGET_CARDS: BudgetCardItem[] = [
   }
 ];
 
+const CSI_DIVISIONS_DATA: Record<string, Array<{
+  code: string;
+  title: string;
+  vendor: string;
+  budget: string;
+  committed: string;
+  actual: string;
+  pct: number;
+}>> = {
+  'All': [
+    { code: '01-000', title: 'General Requirements & PM', vendor: 'Avery Marsh Mgmt', budget: '$1,450,000', committed: '$1,400,000', actual: '$1,280,000', pct: 88 },
+    { code: '02-000', title: 'Site Construction & Grading', vendor: 'Groundworks Excavation', budget: '$1,850,000', committed: '$1,800,000', actual: '$1,750,000', pct: 94 },
+    { code: '03-000', title: 'Concrete & Foundations', vendor: 'Apex Concrete LLC', budget: '$3,450,000', committed: '$3,300,000', actual: '$3,180,000', pct: 92 },
+    { code: '04-000', title: 'Masonry & Brickwork', vendor: 'Stonehenge Masonry', budget: '$920,000', committed: '$880,000', actual: '$750,000', pct: 81 },
+    { code: '05-000', title: 'Metals & Structural Steel', vendor: 'Titan Steel Works', budget: '$4,100,000', committed: '$3,950,000', actual: '$3,400,000', pct: 82 },
+    { code: '06-000', title: 'Wood, Plastics & Carpentry', vendor: 'Lumberjack Framing', budget: '$2,200,000', committed: '$2,100,000', actual: '$1,950,000', pct: 88 },
+    { code: '07-000', title: 'Thermal & Moisture Protection', vendor: 'Vertex Roofing Systems', budget: '$1,350,000', committed: '$1,200,000', actual: '$1,100,000', pct: 81 },
+    { code: '08-000', title: 'Doors & Windows', vendor: 'ClearView Glazing Inc', budget: '$1,150,000', committed: '$1,100,000', actual: '$950,000', pct: 82 },
+    { code: '09-000', title: 'Finishes & Drywall', vendor: 'Precision Interiors', budget: '$2,850,000', committed: '$2,820,000', actual: '$1,410,000', pct: 49 },
+    { code: '10-000', title: 'Specialties', vendor: 'A1 Specialty Fittings', budget: '$420,000', committed: '$380,000', actual: '$310,000', pct: 73 },
+    { code: '11-000', title: 'Equipment', vendor: 'ProKitchen Supply', budget: '$650,000', committed: '$600,000', actual: '$580,000', pct: 89 },
+    { code: '12-000', title: 'Furnishings', vendor: 'OfficeScape Design', budget: '$580,000', committed: '$500,000', actual: '$450,000', pct: 77 },
+    { code: '13-000', title: 'Special Construction', vendor: 'Apex Pools & Spas', budget: '$300,000', committed: '$290,000', actual: '$280,000', pct: 93 },
+    { code: '14-000', title: 'Conveying Systems (Elevators)', vendor: 'Otis Lift Corp', budget: '$1,200,000', committed: '$1,150,000', actual: '$980,000', pct: 81 },
+    { code: '15-000', title: 'Mechanical & HVAC', vendor: 'Cascade Climate HVAC', budget: '$1,620,000', committed: '$1,590,000', actual: '$1,310,000', pct: 80 },
+    { code: '16-000', title: 'Electrical & Power Systems', vendor: 'Volt Electric Inc', budget: '$1,980,000', committed: '$1,950,000', actual: '$1,640,000', pct: 82 }
+  ],
+  'Riverside Office': [
+    { code: '01-000', title: 'General Requirements & PM', vendor: 'Avery Marsh Mgmt', budget: '$350,000', committed: '$340,000', actual: '$310,000', pct: 88 },
+    { code: '02-000', title: 'Site Construction & Grading', vendor: 'Groundworks Excavation', budget: '$450,000', committed: '$430,000', actual: '$420,000', pct: 93 },
+    { code: '03-000', title: 'Concrete & Foundations', vendor: 'Apex Concrete LLC', budget: '$750,000', committed: '$720,000', actual: '$680,000', pct: 90 },
+    { code: '04-000', title: 'Masonry & Brickwork', vendor: 'Stonehenge Masonry', budget: '$180,000', committed: '$170,000', actual: '$150,000', pct: 83 },
+    { code: '05-000', title: 'Metals & Structural Steel', vendor: 'Titan Steel Works', budget: '$800,000', committed: '$750,000', actual: '$680,000', pct: 85 },
+    { code: '06-000', title: 'Wood, Plastics & Carpentry', vendor: 'Lumberjack Framing', budget: '$420,000', committed: '$400,000', actual: '$380,000', pct: 90 },
+    { code: '07-000', title: 'Thermal & Moisture Protection', vendor: 'Vertex Roofing Systems', budget: '$250,000', committed: '$220,000', actual: '$210,000', pct: 84 },
+    { code: '08-000', title: 'Doors & Windows', vendor: 'ClearView Glazing Inc', budget: '$220,000', committed: '$210,000', actual: '$180,000', pct: 81 },
+    { code: '09-000', title: 'Finishes & Drywall', vendor: 'Precision Interiors', budget: '$520,000', committed: '$500,000', actual: '$210,000', pct: 40 },
+    { code: '10-000', title: 'Specialties', vendor: 'A1 Specialty Fittings', budget: '$80,000', committed: '$70,000', actual: '$60,000', pct: 75 },
+    { code: '11-000', title: 'Equipment', vendor: 'ProKitchen Supply', budget: '$110,000', committed: '$100,000', actual: '$90,000', pct: 81 },
+    { code: '12-000', title: 'Furnishings', vendor: 'OfficeScape Design', budget: '$120,000', committed: '$100,000', actual: '$90,000', pct: 75 },
+    { code: '13-000', title: 'Special Construction', vendor: 'Apex Pools & Spas', budget: '$50,000', committed: '$40,000', actual: '$40,000', pct: 80 },
+    { code: '14-000', title: 'Conveying Systems (Elevators)', vendor: 'Otis Lift Corp', budget: '$350,000', committed: '$320,000', actual: '$280,000', pct: 80 },
+    { code: '15-000', title: 'Mechanical & HVAC', vendor: 'Cascade Climate HVAC', budget: '$420,000', committed: '$410,000', actual: '$380,000', pct: 90 },
+    { code: '16-000', title: 'Electrical & Power Systems', vendor: 'Volt Electric Inc', budget: '$480,000', committed: '$460,000', actual: '$410,000', pct: 85 }
+  ],
+  'Downtown Highrise': [
+    { code: '01-000', title: 'General Requirements & PM', vendor: 'Avery Marsh Mgmt', budget: '$650,000', committed: '$620,000', actual: '$580,000', pct: 89 },
+    { code: '02-000', title: 'Site Construction & Grading', vendor: 'Groundworks Excavation', budget: '$850,000', committed: '$820,000', actual: '$800,000', pct: 94 },
+    { code: '03-000', title: 'Concrete & Foundations', vendor: 'Apex Concrete LLC', budget: '$1,850,000', committed: '$1,780,000', actual: '$1,700,000', pct: 91 },
+    { code: '04-000', title: 'Masonry & Brickwork', vendor: 'Stonehenge Masonry', budget: '$480,000', committed: '$460,000', actual: '$410,000', pct: 85 },
+    { code: '05-000', title: 'Metals & Structural Steel', vendor: 'Titan Steel Works', budget: '$2,100,000', committed: '$2,000,000', actual: '$1,800,000', pct: 85 },
+    { code: '06-000', title: 'Wood, Plastics & Carpentry', vendor: 'Lumberjack Framing', budget: '$1,100,000', committed: '$1,050,000', actual: '$980,000', pct: 89 },
+    { code: '07-000', title: 'Thermal & Moisture Protection', vendor: 'Vertex Roofing Systems', budget: '$680,000', committed: '$600,000', actual: '$550,000', pct: 80 },
+    { code: '08-000', title: 'Doors & Windows', vendor: 'ClearView Glazing Inc', budget: '$580,000', committed: '$560,000', actual: '$480,000', pct: 82 },
+    { code: '09-000', title: 'Finishes & Drywall', vendor: 'Precision Interiors', budget: '$1,450,000', committed: '$1,420,000', actual: '$820,000', pct: 56 },
+    { code: '10-000', title: 'Specialties', vendor: 'A1 Specialty Fittings', budget: '$220,000', committed: '$200,000', actual: '$180,000', pct: 81 },
+    { code: '11-000', title: 'Equipment', vendor: 'ProKitchen Supply', budget: '$320,000', committed: '$300,000', actual: '$290,000', pct: 90 },
+    { code: '12-000', title: 'Furnishings', vendor: 'OfficeScape Design', budget: '$280,000', committed: '$250,000', actual: '$230,000', pct: 82 },
+    { code: '13-000', title: 'Special Construction', vendor: 'Apex Pools & Spas', budget: '$150,000', committed: '$140,000', actual: '$140,000', pct: 93 },
+    { code: '14-000', title: 'Conveying Systems (Elevators)', vendor: 'Otis Lift Corp', budget: '$620,000', committed: '$600,000', actual: '$520,000', pct: 83 },
+    { code: '15-000', title: 'Mechanical & HVAC', vendor: 'Cascade Climate HVAC', budget: '$820,000', committed: '$800,000', actual: '$680,000', pct: 82 },
+    { code: '16-000', title: 'Electrical & Power Systems', vendor: 'Volt Electric Inc', budget: '$980,000', committed: '$960,000', actual: '$810,000', pct: 82 }
+  ],
+  'Greenfield Hub': [
+    { code: '01-000', title: 'General Requirements & PM', vendor: 'Avery Marsh Mgmt', budget: '$450,000', committed: '$440,000', actual: '$390,000', pct: 86 },
+    { code: '02-000', title: 'Site Construction & Grading', vendor: 'Groundworks Excavation', budget: '$550,000', committed: '$550,000', actual: '$530,000', pct: 96 },
+    { code: '03-000', title: 'Concrete & Foundations', vendor: 'Apex Concrete LLC', budget: '$850,000', committed: '$800,000', actual: '$800,000', pct: 94 },
+    { code: '04-000', title: 'Masonry & Brickwork', vendor: 'Stonehenge Masonry', budget: '$260,000', committed: '$250,000', actual: '$190,000', pct: 73 },
+    { code: '05-000', title: 'Metals & Structural Steel', vendor: 'Titan Steel Works', budget: '$1,200,000', committed: '$1,200,000', actual: '$920,000', pct: 76 },
+    { code: '06-000', title: 'Wood, Plastics & Carpentry', vendor: 'Lumberjack Framing', budget: '$680,000', committed: '$650,005', actual: '$590,000', pct: 86 },
+    { code: '07-000', title: 'Thermal & Moisture Protection', vendor: 'Vertex Roofing Systems', budget: '$420,000', committed: '$380,000', actual: '$340,000', pct: 80 },
+    { code: '08-000', title: 'Doors & Windows', vendor: 'ClearView Glazing Inc', budget: '$350,000', committed: '$330,000', actual: '$290,000', pct: 82 },
+    { code: '09-000', title: 'Finishes & Drywall', vendor: 'Precision Interiors', budget: '$880,000', committed: '$900,000', actual: '$380,000', pct: 43 },
+    { code: '10-000', title: 'Specialties', vendor: 'A1 Specialty Fittings', budget: '$120,000', committed: '$110,000', actual: '$70,000', pct: 58 },
+    { code: '11-000', title: 'Equipment', vendor: 'ProKitchen Supply', budget: '$220,000', committed: '$200,000', actual: '$200,000', pct: 90 },
+    { code: '12-000', title: 'Furnishings', vendor: 'OfficeScape Design', budget: '$180,000', committed: '$150,000', actual: '$130,000', pct: 72 },
+    { code: '13-000', title: 'Special Construction', vendor: 'Apex Pools & Spas', budget: '$100,000', committed: '$110,000', actual: '$100,000', pct: 100 },
+    { code: '14-000', title: 'Conveying Systems (Elevators)', vendor: 'Otis Lift Corp', budget: '$230,000', committed: '$230,000', actual: '$180,005', pct: 78 },
+    { code: '15-000', title: 'Mechanical & HVAC', vendor: 'Cascade Climate HVAC', budget: '$380,000', committed: '$380,000', actual: '$250,000', pct: 65 },
+    { code: '16-000', title: 'Electrical & Power Systems', vendor: 'Volt Electric Inc', budget: '$520,005', committed: '$530,000', actual: '$420,000', pct: 80 }
+  ]
+};
+
 interface BudgetsHubViewProps {
   onOpenImportBudget?: () => void;
 }
@@ -80,6 +163,21 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
   const [budgets, setBudgets] = useState<BudgetCardItem[]>(INITIAL_BUDGET_CARDS);
 
   const projectsList = ['All', 'Riverside Office', 'Downtown Highrise', 'Greenfield Hub'];
+
+  // Dynamic Portfolio numbers
+  const budgetStats: Record<string, { budget: string; spent: string; committed: string; remaining: string; paidPct: number; committedPct: number; remainingPct: number; activeProjCount: number }> = {
+    'All': { budget: '25.55', spent: '16.83', committed: '20.00', remaining: '5.55', paidPct: 65.8, committedPct: 22.4, remainingPct: 11.8, activeProjCount: 3 },
+    'Riverside Office': { budget: '4.65', spent: '3.25', committed: '3.80', remaining: '0.85', paidPct: 69.9, committedPct: 20.2, remainingPct: 9.9, activeProjCount: 1 },
+    'Downtown Highrise': { budget: '12.50', spent: '9.80', committed: '11.00', remaining: '1.50', paidPct: 78.4, committedPct: 12.0, remainingPct: 9.6, activeProjCount: 1 },
+    'Greenfield Hub': { budget: '8.40', spent: '3.78', committed: '5.20', remaining: '3.20', paidPct: 45.0, committedPct: 34.0, remainingPct: 21.0, activeProjCount: 1 }
+  };
+
+  const filterKey = selectedProjectFilter === 'Greenfield Hub' ? 'Greenfield Hub' : selectedProjectFilter === 'Riverside Office' ? 'Riverside Office' : selectedProjectFilter === 'Downtown Highrise' ? 'Downtown Highrise' : 'All';
+  const currentStats = budgetStats[filterKey];
+  const activeDivisions = CSI_DIVISIONS_DATA[filterKey];
+
+  // Calculate sum total of CSI divisions budgets
+  const csiDivTotal = activeDivisions.reduce((sum, d) => sum + Number(d.budget.replace(/[^0-9.-]+/g,"")), 0);
 
   // 1. If user drilled down into a specific budget sheet details page
   if (selectedBudgetId) {
@@ -144,11 +242,11 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
               Total Budget
             </span>
-            <h2 className="text-2xl font-black text-white tracking-tight mt-0.5">
-              $25.55M
+            <h2 className="text-2xl font-black text-white tracking-tight mt-0.5 transition-all">
+              ${currentStats.budget}M
             </h2>
             <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
-              3 Active Projects
+              {currentStats.activeProjCount} Active {currentStats.activeProjCount === 1 ? 'Project' : 'Projects'}
             </p>
           </div>
 
@@ -156,11 +254,11 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
               Spent to Date
             </span>
-            <span className="text-lg font-bold text-blue-400 mt-0.5 block">
-              $16.83M
+            <span className="text-lg font-bold text-blue-400 mt-0.5 block transition-all">
+              ${currentStats.spent}M
             </span>
-            <span className="text-[11px] text-emerald-400 font-semibold">
-              $3.00M remaining
+            <span className="text-[11px] text-emerald-400 font-semibold transition-all">
+              ${currentStats.remaining}M remaining
             </span>
           </div>
         </div>
@@ -168,23 +266,23 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
         {/* Cashflow Segmented Track */}
         <div className="flex flex-col gap-1.5 pt-2 border-t border-[#142036]">
           <div className="w-full h-2 bg-[#050811] rounded-full overflow-hidden flex border border-[#142036]">
-            <div className="bg-[#2563EB] h-full" style={{ width: '65.8%' }} title="Paid: $16.83M" />
-            <div className="bg-[#60A5FA] h-full" style={{ width: '22.4%' }} title="Committed: $5.72M" />
-            <div className="bg-[#1E2E48] h-full" style={{ width: '11.8%' }} title="Remaining: $3.00M" />
+            <div className="bg-[#2563EB] h-full transition-all duration-500" style={{ width: `${currentStats.paidPct}%` }} title={`Paid: $${currentStats.spent}M`} />
+            <div className="bg-[#60A5FA] h-full transition-all duration-500" style={{ width: `${currentStats.committedPct}%` }} title={`Committed: $${currentStats.committed}M`} />
+            <div className="bg-[#1E2E48] h-full transition-all duration-500" style={{ width: `${currentStats.remainingPct}%` }} title={`Remaining: $${currentStats.remaining}M`} />
           </div>
 
           <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium pt-0.5">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#2563EB]" />
-              <span>Paid: <strong className="text-white">$16.8M</strong></span>
+              <span>Paid: <strong className="text-white">${currentStats.spent}M</strong></span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#60A5FA]" />
-              <span>Committed: <strong className="text-white">$5.7M</strong></span>
+              <span>Committed: <strong className="text-white">${currentStats.committed}M</strong></span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#1E2E48]" />
-              <span>Remaining: <strong className="text-white">$3.0M</strong></span>
+              <span>Remaining: <strong className="text-white">${currentStats.remaining}M</strong></span>
             </div>
           </div>
         </div>
@@ -239,22 +337,15 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between px-0.5 pt-1">
             <span className="text-xs font-bold text-white uppercase tracking-wider">CSI Divisions</span>
-            <span className="text-xs font-semibold text-slate-400">Total $6.24M</span>
+            <span className="text-xs font-semibold text-slate-400">Total ${(csiDivTotal / 1000000).toFixed(2)}M</span>
           </div>
 
           <div className="flex flex-col gap-2">
-            {[
-              { code: '01-000', title: 'General Conditions & PM', vendor: 'Avery Marsh Mgmt', budget: '$450,000', committed: '$450,000', actual: '$380,000', pct: 84 },
-              { code: '03-000', title: 'Concrete & Foundations', vendor: 'Apex Concrete LLC', budget: '$1,250,000', committed: '$1,250,000', actual: '$1,180,000', pct: 94 },
-              { code: '05-000', title: 'Metals & Structural Steel', vendor: 'Titan Steel Works', budget: '$2,100,000', committed: '$1,950,000', actual: '$1,400,000', pct: 67 },
-              { code: '09-000', title: 'Finishes & Drywall', vendor: 'Precision Interiors', budget: '$850,000', committed: '$820,000', actual: '$410,000', pct: 48 },
-              { code: '22-000', title: 'Plumbing & Drainage', vendor: 'Cascade Plumbing', budget: '$620,000', committed: '$590,000', actual: '$310,000', pct: 50 },
-              { code: '26-000', title: 'Electrical & Power Systems', vendor: 'Volt Electric Inc', budget: '$980,000', committed: '$950,000', actual: '$640,000', pct: 65 },
-            ].map((div) => (
+            {activeDivisions.map((div) => (
               <div
                 key={div.code}
                 onClick={() => setSelectedCostCode(div)}
-                className="p-3.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2 shadow-sm active:scale-[0.99] group"
+                className="p-3.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2 shadow-sm active:scale-[0.99] group animate-fade-in"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
@@ -278,7 +369,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
                 </div>
 
                 <div className="w-full bg-[#050811] h-1.5 rounded-full overflow-hidden border border-[#142036]">
-                  <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-full rounded-full" style={{ width: `${div.pct}%` }} />
+                  <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-full rounded-full transition-all duration-500" style={{ width: `${div.pct}%` }} />
                 </div>
               </div>
             ))}
