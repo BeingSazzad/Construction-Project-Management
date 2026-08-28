@@ -170,12 +170,12 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
   const projectsList = ['All', 'Riverside Office', 'Downtown Highrise', 'Greenfield Hub'];
 
-  // Dynamic Portfolio numbers
+  // Dynamic Portfolio numbers based strictly on exact sums
   const budgetStats: Record<string, { budget: string; spent: string; committed: string; remaining: string; paidPct: number; committedPct: number; remainingPct: number; activeProjCount: number }> = {
-    'All': { budget: '25.55', spent: '16.83', committed: '20.00', remaining: '5.55', paidPct: 65.8, committedPct: 22.4, remainingPct: 11.8, activeProjCount: 3 },
-    'Riverside Office': { budget: '4.65', spent: '3.25', committed: '3.80', remaining: '0.85', paidPct: 69.9, committedPct: 20.2, remainingPct: 9.9, activeProjCount: 1 },
-    'Downtown Highrise': { budget: '12.50', spent: '9.80', committed: '11.00', remaining: '1.50', paidPct: 78.4, committedPct: 12.0, remainingPct: 9.6, activeProjCount: 1 },
-    'Greenfield Hub': { budget: '8.40', spent: '3.78', committed: '5.20', remaining: '3.20', paidPct: 45.0, committedPct: 34.0, remainingPct: 21.0, activeProjCount: 1 }
+    'All': { budget: '26.07', spent: '21.32', committed: '24.10', remaining: '4.75', paidPct: 81.7, committedPct: 10.7, remainingPct: 7.6, activeProjCount: 3 },
+    'Riverside Office': { budget: '4.65', spent: '3.25', committed: '3.80', remaining: '1.40', paidPct: 69.9, committedPct: 11.8, remainingPct: 18.3, activeProjCount: 1 },
+    'Downtown Highrise': { budget: '12.50', spent: '9.80', committed: '11.00', remaining: '2.70', paidPct: 78.4, committedPct: 9.6, remainingPct: 12.0, activeProjCount: 1 },
+    'Greenfield Hub': { budget: '8.40', spent: '3.78', committed: '5.20', remaining: '4.62', paidPct: 45.0, committedPct: 16.9, remainingPct: 38.1, activeProjCount: 1 }
   };
 
   const filterKey = selectedProjectFilter === 'Greenfield Hub' ? 'Greenfield Hub' : selectedProjectFilter === 'Riverside Office' ? 'Riverside Office' : selectedProjectFilter === 'Downtown Highrise' ? 'Downtown Highrise' : 'All';
@@ -225,17 +225,21 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
-      {/* ─── 1. TOP HEADER & PRIMARY ACTIONS ─── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-bold text-white tracking-tight">Budgets & Cost Codes</h1>
-          <p className="text-xs text-slate-400 mt-0.5 font-medium">Master CSI Financial Ledger</p>
+      {/* ─── 1. TOP HEADER & PRIMARY ACTIONS (Balanced, No Text-Wrap) ─── */}
+      <div className="flex items-center justify-between gap-2.5">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-base font-bold text-white tracking-tight leading-tight truncate">
+            Budgets & Cost Codes
+          </h1>
+          <p className="text-xs text-slate-400 mt-0.5 font-medium truncate">
+            Master CSI Financial Ledger
+          </p>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
             onClick={() => setIsDealAnalyzerOpen(true)}
-            className="h-9 w-9 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-cyan-500/40 text-cyan-400 flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-sm"
+            className="h-8.5 w-8.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-cyan-500/40 text-cyan-400 flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-sm"
             title="Latti Deal Analyzer"
           >
             <Target className="w-4 h-4" />
@@ -243,7 +247,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
           
           <button
             onClick={() => setIsImportModalOpen(true)}
-            className="h-9 w-9 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-teal-500/40 text-teal-400 flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-sm"
+            className="h-8.5 w-8.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-teal-500/40 text-teal-400 flex items-center justify-center cursor-pointer transition-all active:scale-95 shadow-sm"
             title="Import from BuildScope AI"
           >
             <Ruler className="w-4 h-4" />
@@ -251,9 +255,9 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="h-9 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1 cursor-pointer shadow-md shadow-blue-600/30 active:scale-95 transition-all"
+            className="h-8.5 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1 cursor-pointer shadow-md shadow-blue-600/30 active:scale-95 transition-all whitespace-nowrap"
           >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>New Budget</span>
           </button>
         </div>
@@ -322,7 +326,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
         ]}
       />
 
-      {/* ─── 4. PROJECT FILTER PILLS ─── */}
+      {/* ─── 4. PROJECT FILTER PILLS (Smooth scroll without cut-off) ─── */}
       <FilterPills
         options={projectsList}
         selected={selectedProjectFilter}
@@ -334,7 +338,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between px-0.5 pt-1">
             <span className="text-xs font-bold text-white uppercase tracking-wider">CSI Divisions</span>
-            <span className="text-xs font-semibold text-slate-400">Total ${(csiDivTotal / 1000000).toFixed(2)}M</span>
+            <span className="text-xs font-semibold text-blue-400 font-mono">Total ${(csiDivTotal / 1000000).toFixed(2)}M</span>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -342,15 +346,15 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
               <div
                 key={div.code}
                 onClick={() => setSelectedCostCode(div)}
-                className="p-3.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2 shadow-sm active:scale-[0.99] group animate-fade-in"
+                className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-sm active:scale-[0.99] group animate-fade-in"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 flex-shrink-0">
+                      <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 flex-shrink-0 font-mono">
                         {div.code}
                       </span>
-                      <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                      <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-300 transition-colors">
                         {div.title}
                       </h4>
                     </div>
@@ -361,12 +365,17 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
                   <div className="text-right flex-shrink-0">
                     <span className="text-xs font-bold text-white block">{div.budget}</span>
-                    <span className="text-[10px] text-slate-400 font-semibold block mt-0.5">{div.pct}%</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 inline-block mt-0.5">
+                      {div.pct}%
+                    </span>
                   </div>
                 </div>
 
                 <div className="w-full bg-[#050811] h-1.5 rounded-full overflow-hidden border border-[#142036]">
-                  <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-full rounded-full transition-all duration-500" style={{ width: `${div.pct}%` }} />
+                  <div 
+                    className="bg-gradient-to-r from-blue-600 to-blue-400 h-full rounded-full transition-all duration-500" 
+                    style={{ width: `${div.pct}%` }} 
+                  />
                 </div>
               </div>
             ))}
@@ -384,7 +393,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
               <div
                 key={b.id}
                 onClick={() => setSelectedBudgetId(b.id)}
-                className="p-3.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-sm active:scale-[0.99] group"
+                className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-sm active:scale-[0.99] group"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0">
@@ -425,7 +434,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
           <div className="w-full max-w-[380px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-slate-100">
             <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                <span className="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-mono">
                   {selectedCostCode.code}
                 </span>
                 <h3 className="text-xs font-bold text-white truncate">{selectedCostCode.title}</h3>
@@ -439,19 +448,19 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-lg bg-[#050811] border border-[#142036]">
+              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
                 <span className="text-[10px] text-slate-400 font-medium block">Total Budget</span>
                 <span className="text-sm font-bold text-white mt-0.5 block">{selectedCostCode.budget}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#050811] border border-[#142036]">
+              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
                 <span className="text-[10px] text-slate-400 font-medium block">Committed Subcontracts</span>
                 <span className="text-sm font-bold text-slate-200 mt-0.5 block">{selectedCostCode.committed}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#050811] border border-[#142036]">
+              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
                 <span className="text-[10px] text-slate-400 font-medium block">Paid to Date</span>
                 <span className="text-sm font-bold text-blue-400 mt-0.5 block">{selectedCostCode.actual}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-[#050811] border border-[#142036]">
+              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
                 <span className="text-[10px] text-slate-400 font-medium block">Subcontractor</span>
                 <span className="text-xs font-bold text-white mt-0.5 block truncate">{selectedCostCode.vendor}</span>
               </div>
@@ -460,7 +469,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
             <div className="pt-2 border-t border-[#142036] flex justify-end">
               <button
                 onClick={() => setSelectedCostCode(null)}
-                className="px-4 py-1.5 rounded-lg bg-[#2563EB] text-white text-xs font-bold cursor-pointer"
+                className="px-4 py-1.5 rounded-xl bg-[#2563EB] text-white text-xs font-bold cursor-pointer shadow-md"
               >
                 Close
               </button>
