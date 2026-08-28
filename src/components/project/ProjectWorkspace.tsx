@@ -126,19 +126,15 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
     <div className="w-full flex flex-col flex-1">
       {/* Dynamic Header: Dedicated Back Header for Quick Action Pages vs Tab Scrollbar for Project Tabs */}
       {isQuickActionPage ? (
-        <div className="w-full bg-[#060913]/95 backdrop-blur-md border-b border-[#142036] sticky top-0 z-20 px-5 py-2.5">
+        <div className="w-full bg-[#060913]/95 backdrop-blur-md border-b border-[#142036] sticky top-0 z-20 px-5 py-2">
           <div className="flex items-center justify-between max-w-[430px] mx-auto">
             <button
               onClick={() => setActiveTab('overview')}
-              className="flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:text-blue-300 cursor-pointer transition-all bg-blue-500/10 hover:bg-blue-500/20 px-3 py-1.5 rounded-full border border-blue-500/20 active:scale-95 shadow-sm"
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white cursor-pointer transition-all bg-[#0D1424] hover:bg-[#142036] px-3 py-1.5 rounded-xl border border-[#1E2E4A] active:scale-95 shadow-sm"
             >
-              <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+              <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Overview</span>
             </button>
-
-            <span className="text-xs font-bold text-white tracking-tight uppercase">
-              {getPageTitle(activeTab)}
-            </span>
           </div>
         </div>
       ) : (
