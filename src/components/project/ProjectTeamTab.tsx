@@ -131,6 +131,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
   // Invite new external form state
   const [inviteName, setInviteName] = useState('');
   const [inviteRole, setInviteRole] = useState('Trade Subcontractor Lead');
+  const [inviteType, setInviteType] = useState<'gc' | 'trade'>('trade');
   const [inviteEmail, setInviteEmail] = useState('');
   const [invitePhone, setInvitePhone] = useState('');
   const [inviteCompany, setInviteCompany] = useState('');
@@ -197,12 +198,12 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
     const newStaff: ProjectStaff = {
       id: `ext-${Date.now()}`,
       name: inviteName.trim(),
-      role: inviteRole,
-      company: inviteCompany.trim() || 'Subcontractor Partner',
+      role: inviteRole.trim() || (inviteType === 'gc' ? 'Field Coordinator' : 'Trade Foreman'),
+      company: inviteType === 'gc' ? 'Avery & Marsh Construction' : (inviteCompany.trim() || 'Subcontractor Partner'),
       phone: invitePhone.trim() || '+1 (555) 000-0000',
       email: inviteEmail.trim() || 'trade@partner.com',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-      type: 'trade',
+      type: inviteType,
       isOnSite: true
     };
 
@@ -211,6 +212,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
     setInviteEmail('');
     setInvitePhone('');
     setInviteCompany('');
+    setInviteType('trade');
     setIsAssignModalOpen(false);
   };
 
@@ -531,12 +533,41 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                   />
                 </div>
 
+                {/* Affiliation / Member Type Selector */}
                 <div>
-                  <label className="text-[12px] text-slate-400 block mb-1">On-Site Role</label>
+                  <label className="text-[12px] text-slate-400 block mb-1">Affiliation / Team Type</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setInviteType('gc')}
+                      className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        inviteType === 'gc'
+                          ? 'bg-blue-600/20 border-blue-500 text-blue-400 shadow-sm'
+                          : 'bg-[#050811] border-[#142036] text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span>🏢 GC (In-House Staff)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setInviteType('trade')}
+                      className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        inviteType === 'trade'
+                          ? 'bg-amber-600/20 border-amber-500 text-amber-400 shadow-sm'
+                          : 'bg-[#050811] border-[#142036] text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span>🔨 Sub (Subcontractor)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[12px] text-slate-400 block mb-1">On-Site Role / Designation *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Electrical Foreman"
+                    placeholder={inviteType === 'gc' ? 'e.g. Field Superintendent' : 'e.g. Structural Concrete Lead'}
                     value={inviteRole}
                     onChange={(e) => setInviteRole(e.target.value)}
                     className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
