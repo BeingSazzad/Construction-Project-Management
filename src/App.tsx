@@ -42,6 +42,7 @@ import { ProjectBudgetTab } from './components/project/ProjectBudgetTab';
 import { ProjectReportsTab } from './components/project/ProjectReportsTab';
 import { ProjectTeamTab } from './components/project/ProjectTeamTab';
 import { TeamHubView } from './components/team/TeamHubView';
+import { BuildScopeView } from './components/buildscope/BuildScopeView';
 
 // Opportunities & Budgets Hub
 import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
@@ -51,6 +52,7 @@ import { MessagesHubView } from './components/messages/MessagesHubView';
 
 // AI
 import { LattiAssistant } from './components/ai/LattiAssistant';
+import { AIIntelligenceCenterView } from './components/ai/AIIntelligenceCenterView';
 
 // Settings & Legal
 import { SettingsView } from './components/settings/SettingsView';
@@ -84,6 +86,7 @@ export function App() {
   const [previousTab, setPreviousTab] = useState<string>('home');
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [projectSubTab, setProjectSubTab] = useState<string>('overview');
+  const [activeBudgetName, setActiveBudgetName] = useState<string | null>(null);
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false);
 
   // Entities state
@@ -515,6 +518,8 @@ export function App() {
       setIsCreateBudgetOpen(false);
     } else if (isDealAnalyzerOpen) {
       setIsDealAnalyzerOpen(false);
+    } else if (activeBudgetName) {
+      setActiveBudgetName(null);
     } else if (activeProject) {
       if (projectSubTab !== 'overview') {
         setProjectSubTab('overview');
@@ -561,18 +566,20 @@ export function App() {
             currentUser={currentUser}
             activeProject={activeProject}
             activeTab={activeTab}
+            customTitle={activeBudgetName || undefined}
             unreadNotifsCount={unreadNotifsCount}
             unreadMessagesCount={2}
             onBack={handleHeaderBack}
             onBackToHome={handleHeaderBack}
-            onOpenNotifications={() => { setActiveProject(null); setActiveTab('notifications'); }}
-            onOpenMessages={() => { setActiveProject(null); setActiveTab('messages'); }}
+            onOpenNotifications={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('notifications'); }}
+            onOpenMessages={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('messages'); }}
             onOpenLatti={() => {
               if (!activeProject) {
+                setActiveBudgetName(null);
                 setActiveTab('latti');
               }
             }}
-            onOpenSettings={() => { setActiveProject(null); setActiveTab('more'); }}
+            onOpenSettings={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('more'); }}
             onOpenDrawer={() => setIsSideDrawerOpen(true)}
             onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
             onOpenEditProject={() => setIsEditProjectOpen(true)}
@@ -713,7 +720,10 @@ export function App() {
 
                 {/* 4. BUDGETS HUB TAB */}
                 {activeTab === 'budgets' && (
-                  <BudgetsHubView onOpenImportBudget={() => setIsImportBudgetOpen(true)} />
+                  <BudgetsHubView 
+                    onOpenImportBudget={() => setIsImportBudgetOpen(true)}
+                    onSelectBudgetName={(name) => setActiveBudgetName(name)}
+                  />
                 )}
 
                 {/* 4.5 FINANCE DEEP-DIVE TAB */}
@@ -771,6 +781,21 @@ export function App() {
                   />
                 )}
 
+                {/* 7.5 BUILDSCOPE AI TAKEOFF HUB */}
+                {activeTab === 'buildscope' && (
+                  <BuildScopeView />
+                )}
+
+                {/* 7.6 DEDICATED AI INTELLIGENCE CENTER */}
+                {activeTab === 'intelligence-center' && (
+                  <AIIntelligenceCenterView
+                    projects={projects}
+                    onSelectProject={handleSelectProject}
+                    onOpenLatti={() => setActiveTab('latti')}
+                    onOpenBudgets={() => setActiveTab('budgets')}
+                  />
+                )}
+
                 {/* 8. MORE / SETTINGS VIEW */}
                 {activeTab === 'more' && (
                   <SettingsView
@@ -815,14 +840,18 @@ export function App() {
             onClose={() => setIsSideDrawerOpen(false)}
             currentUser={currentUser}
             onNavigateTab={(tab) => {
-              if (['schedule', 'messages', 'photos', 'documents', 'punch', 'daily-logs', 'milestones'].includes(tab)) {
+              if (tab === 'buildscope' || tab === 'intelligence-center') {
+                setActiveProject(null);
+                setActiveTab(tab);
+              } else if (['schedule', 'messages', 'photos', 'documents', 'punch', 'daily-logs', 'milestones'].includes(tab)) {
                 if (!activeProject) {
                   setActiveProject(projects[0]);
                 }
+                setProjectSubTab(tab);
               } else {
                 setActiveProject(null);
+                setActiveTab(tab);
               }
-              setActiveTab(tab);
             }}
             onOpenCreateProject={() => setIsCreateProjectOpen(true)}
             onOpenCreateBudget={() => setIsCreateBudgetOpen(true)}

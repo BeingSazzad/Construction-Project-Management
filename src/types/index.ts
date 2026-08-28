@@ -69,6 +69,7 @@ export interface Project {
   clientName?: string;
   type?: 'Custom Home' | 'Remodel' | 'New Construction' | 'Commercial' | 'Design-Build';
   masterCode?: string;
+  dailyLogs?: DailyLogItem[];
 }
 
 export type TaskStatus = 'Not Started' | 'In Progress' | 'Blocked' | 'Completed';

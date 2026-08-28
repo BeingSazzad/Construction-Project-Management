@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Project, ReportItem } from '../../types';
-import { FileText, Download, Eye, Plus, X, UploadCloud, Check } from 'lucide-react';
+import { FileText, Download, X, UploadCloud, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectReportsTabProps {
   project: Project;
@@ -15,9 +16,27 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
   onExportReport,
   onAddReport
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [reportTitle, setReportTitle] = useState('');
   const [reportType, setReportType] = useState<'Progress' | 'Daily' | 'Budget' | 'Cost Analysis' | 'Cash Flow' | 'Safety'>('Progress');
+  const [selectedFile, setSelectedFile] = useState<{ name: string; size: string } | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const sizeInMb = (file.size / (1024 * 1024)).toFixed(1);
+      setSelectedFile({
+        name: file.name,
+        size: `${sizeInMb} MB`
+      });
+      if (!reportTitle) {
+        // Auto fill title from filename without extension
+        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+        setReportTitle(cleanName);
+      }
+    }
+  };
 
   const handleUploadSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,11 +50,12 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
         author: 'Alex Chen',
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         summary: 'Uploaded report file document.',
-        fileSize: `${(1.0 + Math.random() * 4).toFixed(1)} MB`
+        fileSize: selectedFile?.size || `${(1.0 + Math.random() * 4).toFixed(1)} MB`
       });
     }
 
     setReportTitle('');
+    setSelectedFile(null);
     setIsUploadOpen(false);
   };
 
@@ -63,10 +83,10 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
 
         <button 
           onClick={() => setIsUploadOpen(true)}
-          className="h-10 px-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all"
+          className="btn-md bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all"
         >
-          <UploadCloud className="w-4 h-4" />
-          <span>Upload</span>
+          <UploadCloud className="w-4 h-4 stroke-[2.5]" />
+          <span>Upload Report</span>
         </button>
       </div>
 
@@ -111,76 +131,130 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
         ))}
       </div>
 
-      {/* ─── UPLOAD REPORT MODAL ─── */}
+      {/* ─── UPLOAD REPORT MODAL (Matching PhotoUploadModal Aesthetics) ─── */}
       {isUploadOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[380px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100">
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-              <div>
-                <h3 className="text-xs font-bold text-white">Upload Report File</h3>
-                <p className="text-[10px] text-slate-400 mt-0.5">Attach a compiled report document</p>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="card-dark w-full max-w-[390px] bg-[#070D1A] border border-[#142036] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-slate-100 scrollbar-none">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3.5 border-b border-[#142036] mb-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-white tracking-tight leading-tight truncate">
+                    Upload Report File
+                  </h3>
+                  <p className="text-xs text-slate-400 font-medium mt-0.5 truncate">
+                    {project?.name || 'Executive & Field Reports'}
+                  </p>
+                </div>
               </div>
+
               <button
                 onClick={() => setIsUploadOpen(false)}
-                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+                className="w-8 h-8 rounded-full bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleUploadSubmit} className="flex flex-col gap-3 text-xs">
-              <div>
-                <label className="text-[12px] text-slate-300 block mb-1">Report Title *</label>
+            {/* Hidden Native File Input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.csv"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
+            {/* Interactive File Dropzone Box */}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="relative h-44 rounded-2xl overflow-hidden mb-4 border border-dashed border-[#1A263E] hover:border-blue-500/80 bg-[#050811] shadow-inner cursor-pointer group transition-all flex flex-col items-center justify-center"
+              title="Click to select report file from your device"
+            >
+              {selectedFile ? (
+                <div className="flex flex-col items-center justify-center gap-2 p-5 text-center w-full">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+                    <CheckCircle2 className="w-6 h-6 stroke-[2.5]" />
+                  </div>
+                  <div className="min-w-0 max-w-full px-4">
+                    <span className="text-xs font-bold text-white block truncate">{selectedFile.name}</span>
+                    <span className="text-[10px] text-emerald-400 font-semibold block mt-0.5">{selectedFile.size} • Ready to Upload</span>
+                  </div>
+
+                  {/* Change File Hover Overlay Pill */}
+                  <div className="absolute top-2.5 right-2.5 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-blue-400 border border-blue-500/30 flex items-center gap-1.5 shadow-md group-hover:bg-blue-600 group-hover:text-white transition-all">
+                    <RefreshCw className="w-3 h-3 group-hover:rotate-180 transition-transform" />
+                    <span>Change File</span>
+                  </div>
+                </div>
+              ) : (
+                /* Centered Clean Dropzone Placeholder */
+                <div className="flex flex-col items-center justify-center gap-2.5 p-5 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <UploadCloud className="w-6 h-6 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-white block group-hover:text-blue-400 transition-colors">
+                      Tap or Drag to Upload Report File
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-medium block mt-0.5">
+                      Supports PDF, DOCX, XLSX up to 25MB
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Clean Upload Form Inputs */}
+            <form onSubmit={handleUploadSubmit} className="flex flex-col gap-3.5 text-xs">
+              
+              {/* Report Title Input */}
+              <div className="flex flex-col gap-1">
+                <label className="font-bold text-slate-300">Report Title *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Geotechnical Investigation Report"
                   value={reportTitle}
                   onChange={(e) => setReportTitle(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                  placeholder="Enter report title (e.g. Geotechnical Soil Report)"
+                  className="w-full h-11 bg-[#050811] border border-[#142036] rounded-xl px-3.5 text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500"
                 />
               </div>
 
-              <div>
-                <label className="text-[12px] text-slate-300 block mb-1">Report Category</label>
-                <select
+              {/* Report Category Input */}
+              <div className="flex flex-col gap-1">
+                <label className="font-bold text-slate-300">Report Category</label>
+                <CustomSelect
                   value={reportType}
-                  onChange={(e) => setReportType(e.target.value as any)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
-                >
-                  <option value="Progress">Progress Report</option>
-                  <option value="Daily">Daily Log Summary</option>
-                  <option value="Budget">Budget variance</option>
-                  <option value="Cost Analysis">Cost-to-Complete</option>
-                  <option value="Cash Flow">Cash Flow Forecast</option>
-                  <option value="Safety">Safety & Compliance</option>
-                </select>
+                  onChange={(v) => setReportType(v as any)}
+                  options={['Progress', 'Daily', 'Budget', 'Cost Analysis', 'Cash Flow', 'Safety']}
+                  size="md"
+                />
               </div>
 
-              {/* Simulated upload box */}
-              <div className="border border-dashed border-[#1E2D4A] rounded-xl p-4 bg-[#050811] flex flex-col items-center justify-center text-center gap-1.5">
-                <UploadCloud className="w-6 h-6 text-blue-400" />
-                <span className="text-[10px] text-slate-300 font-bold">Select File or Drop PDF / Excel here</span>
-                <span className="text-[10px] text-slate-500">Max size 25MB</span>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
+              {/* Equal Size Action Buttons */}
+              <div className="grid grid-cols-2 gap-2.5 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsUploadOpen(false)}
-                  className="px-3 py-1.5 rounded-lg bg-[#0E1A33] text-slate-300 text-xs font-semibold cursor-pointer"
+                  className="w-full btn-lg bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-300 font-bold transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer flex items-center gap-1"
+                  className="w-full btn-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold shadow-md shadow-blue-600/30 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Upload File</span>
+                  <UploadCloud className="w-4 h-4 stroke-[2.5]" />
+                  <span>Upload</span>
                 </button>
               </div>
             </form>
+
           </div>
         </div>
       )}

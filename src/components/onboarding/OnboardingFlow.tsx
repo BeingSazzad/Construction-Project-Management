@@ -207,7 +207,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
   // Phase A: Feature walkthrough (steps 0–3), Phase B: Setup (steps 4–6)
   const [step, setStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<UserRole>('pm');
-  const [companyName, setCompanyName] = useState('Avery & Marsh Construction Group');
+  const [companyName, setCompanyName] = useState('Lattice Construction Group');
   const [companySize, setCompanySize] = useState('51 - 200');
 
   const isWalkthrough = step < 4;    // 0=splash, 1-3=features

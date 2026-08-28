@@ -40,26 +40,26 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
 
-      {/* ── 1. Top 4 KPI Metrics Suite (Matching Reference Web Platform) ── */}
-      <div className="grid grid-cols-2 gap-2.5">
+      {/* ── 1. Top 4 KPI Metrics Suite (Matching User Specified Design) ── */}
+      <div className="grid grid-cols-2 gap-3">
         {/* Card 1: Active Projects */}
         <div 
           onClick={onOpenProjects}
-          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-cyan-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-cyan-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
         >
           <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
-              <FolderKanban className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-full bg-[#0D2938] border border-[#133F54] text-[#00D8C6] flex items-center justify-center flex-shrink-0">
+              <FolderKanban className="w-5 h-5" />
             </div>
-            <span className="text-[10px] font-bold text-emerald-400">
+            <span className="text-xs font-bold text-emerald-400">
               {projects.length} total
             </span>
           </div>
-          <div className="mt-3">
-            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+          <div className="mt-3.5">
+            <span className="text-3xl font-black text-white leading-none tracking-tight block">
               {activeCount}
             </span>
-            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
               Active Projects
             </span>
           </div>
@@ -68,18 +68,18 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         {/* Card 2: Tasks In Progress */}
         <div 
           onClick={onOpenProjects}
-          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-purple-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-purple-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
         >
           <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
-              <Activity className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-full bg-[#231737] border border-[#3A225A] text-purple-400 flex items-center justify-center flex-shrink-0">
+              <Activity className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3">
-            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+          <div className="mt-3.5">
+            <span className="text-3xl font-black text-white leading-none tracking-tight block">
               4
             </span>
-            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
               Tasks In Progress
             </span>
           </div>
@@ -88,18 +88,18 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         {/* Card 3: Tasks Due Today */}
         <div 
           onClick={onOpenProjects}
-          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-amber-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-amber-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
         >
           <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
-              <Calendar className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-full bg-[#2F2110] border border-[#4D3618] text-amber-400 flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3">
-            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+          <div className="mt-3.5">
+            <span className="text-3xl font-black text-white leading-none tracking-tight block">
               2
             </span>
-            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
               Tasks Due Today
             </span>
           </div>
@@ -108,18 +108,18 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         {/* Card 4: Completed Today */}
         <div 
           onClick={onOpenProjects}
-          className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-emerald-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-emerald-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
         >
           <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
-              <CheckSquare className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-full bg-[#0D281E] border border-[#154633] text-emerald-400 flex items-center justify-center flex-shrink-0">
+              <CheckSquare className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3">
-            <span className="text-2xl font-black text-white leading-none tracking-tight block">
+          <div className="mt-3.5">
+            <span className="text-3xl font-black text-white leading-none tracking-tight block">
               6
             </span>
-            <span className="text-[12px] text-slate-400 font-medium mt-1 block group-hover:text-slate-200 transition-colors">
+            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
               Completed Today
             </span>
           </div>

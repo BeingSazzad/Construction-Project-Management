@@ -19,9 +19,10 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   onUpdatePunchStatus
 }) => {
   const [activeFilter, setActiveFilter] = useState<PunchStatus | 'All'>('All');
-  const [items, setItems] = useState<PunchItem[]>(
-    punchItems.filter(p => p.projectId === project.id)
-  );
+  const [items, setItems] = useState<PunchItem[]>(() => {
+    const projItems = punchItems.filter(p => p.projectId === project.id);
+    return projItems.length > 0 ? projItems : punchItems;
+  });
 
   const filteredItems = items.filter(p => {
     if (activeFilter === 'All') return true;
@@ -61,7 +62,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
         <button
           onClick={onCreatePunch}
-          className="px-3.5 py-2 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-900/40 active:scale-95 transition-all cursor-pointer flex-shrink-0"
+          className="btn-md rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-md shadow-blue-900/40 active:scale-95 flex-shrink-0"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>New Item</span>

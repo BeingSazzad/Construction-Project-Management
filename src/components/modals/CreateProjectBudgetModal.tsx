@@ -156,11 +156,11 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
         />
       </div>
 
-      <div className="flex items-center justify-between pt-4 border-t border-[#142036] mt-2">
+      <div className="flex items-center justify-between pt-4 border-t border-[#142036] mt-2 gap-3">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 h-11 rounded-xl border border-[#142036] bg-[#050811] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer active:scale-95 transition-all"
+          className="btn-md border border-[#142036] bg-[#050811] text-slate-300 hover:text-white active:scale-95"
         >
           Cancel
         </button>
@@ -168,7 +168,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
         <button
           type="submit"
           disabled={!isValid}
-          className={`px-5 h-11 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer ${
+          className={`btn-lg flex-1 shadow-md ${
             isValid
               ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-500/25 active:scale-95'
               : 'bg-[#0D1422] text-slate-500 border border-[#142036] cursor-not-allowed'

@@ -7,6 +7,7 @@ interface HeaderProps {
   currentUser: User;
   activeProject?: Project | null;
   activeTab?: string;
+  customTitle?: string;
   unreadNotifsCount: number;
   unreadMessagesCount?: number;
   onBackToHome?: () => void;
@@ -25,6 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
   currentUser,
   activeProject,
   activeTab = 'home',
+  customTitle,
   unreadNotifsCount,
   unreadMessagesCount = 2,
   onBackToHome,
@@ -81,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
                 onClick={handleBackClick}
-                className="w-10 h-10 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex items-center justify-center text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95 shadow-sm"
+                className="w-10 h-10 rounded-full bg-[#131C2E] hover:bg-[#1C2A44] border border-[#1E293B] flex items-center justify-center text-slate-300 hover:text-white transition-all flex-shrink-0 cursor-pointer active:scale-95 shadow-sm"
                 title="Back"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -102,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="relative flex-shrink-0" ref={menuRef}>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="w-9 h-9 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm ml-2"
+                className="w-9 h-9 rounded-full bg-[#131C2E] hover:bg-[#1C2A44] border border-[#1E293B] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm ml-2"
                 title="Project Actions"
               >
                 <MoreVertical className="w-4 h-4" />
@@ -147,16 +149,16 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={handleBackClick}
-                className="w-10 h-10 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex items-center justify-center text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95 shadow-sm"
+                className="w-10 h-10 rounded-full bg-[#131C2E] hover:bg-[#1C2A44] border border-[#1E293B] flex items-center justify-center text-slate-300 hover:text-white transition-all flex-shrink-0 cursor-pointer active:scale-95 shadow-sm"
                 title="Back to Home"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <div>
                 <h1 className="text-sm font-bold text-white tracking-tight leading-tight">
-                  {getTabTitle(activeTab)}
+                  {customTitle || getTabTitle(activeTab)}
                 </h1>
-                <p className="text-[10px] text-slate-400 font-medium">Avery & Marsh Construction</p>
+                <p className="text-[10px] text-slate-400 font-medium">Lattice Construction</p>
               </div>
             </div>
 
@@ -178,7 +180,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Drawer Hamburger Button */}
               <button
                 onClick={onOpenDrawer}
-                className="w-10 h-10 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-sm"
+                className="w-10 h-10 rounded-full bg-[#131C2E] hover:bg-[#1C2A44] border border-[#1E293B] text-slate-200 hover:text-white flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-sm"
                 title="Open Navigation Menu"
               >
                 <Menu className="w-5 h-5" />
@@ -198,44 +200,44 @@ export const Header: React.FC<HeaderProps> = ({
                     Good morning, {firstName}! 👋
                   </h1>
                   <p className="text-[10px] text-slate-400 mt-0.5 font-medium truncate">
-                    Avery & Marsh Construction
+                    Lattice Construction
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0">
               {onOpenMessages && (
                 <button
                   onClick={onOpenMessages}
-                  className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                  className="w-9 h-9 rounded-full bg-[#131C2E] hover:bg-[#1C2A44] border border-[#1E293B] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
                   title="Messages"
                 >
                   <MessageSquare className="w-4 h-4 text-slate-300" />
                   {unreadMessagesCount > 0 && (
-                    <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#3875F6] ring-2 ring-[#0D1424]" />
+                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-[#3875F6] ring-2 ring-[#060913]" />
                   )}
                 </button>
               )}
 
               <button
                 onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-2xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                className="w-9 h-9 rounded-full bg-[#131C2E] hover:bg-[#1C2A44] border border-[#1E293B] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4 text-slate-300" />
                 {unreadNotifsCount > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#2563EB] ring-2 ring-[#0D1424]" />
+                  <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-[#2563EB] ring-2 ring-[#060913]" />
                 )}
               </button>
 
               <button
                 onClick={onOpenLatti}
-                className="w-9 h-9 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 relative"
+                className="w-9 h-9 rounded-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center transition-all cursor-pointer shadow-md active:scale-95 relative"
                 title="Latti AI Assistant"
               >
                 <Sparkles className="w-4 h-4 text-white" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#2563EB]" />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#2563EB]" />
               </button>
             </div>
           </>

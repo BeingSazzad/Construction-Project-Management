@@ -268,7 +268,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
       </div>
 
       {/* ─── 5. PROJECT CARDS FEED ─── */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         {sortedProjects.length === 0 ? (
           <div className="p-8 rounded-2xl bg-[#070D1A] border border-[#142036] text-center text-slate-400 text-xs flex flex-col items-center gap-2">
             <Layers className="w-8 h-8 text-slate-600" />
@@ -285,7 +285,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
               <div
                 key={project.id}
                 onClick={() => onSelectProject(project)}
-                className="rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/50 transition-all cursor-pointer shadow-md group overflow-hidden active:scale-[0.99]"
+                className="rounded-3xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/50 transition-all cursor-pointer shadow-md group overflow-hidden active:scale-[0.99]"
               >
                 {/* Hero Thumbnail Banner */}
                 <div className="h-32 w-full relative overflow-hidden bg-[#050811]">
@@ -298,51 +298,50 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
                   <div className="absolute inset-0 bg-gradient-to-t from-[#070D1A] via-[#070D1A]/40 to-transparent" />
 
                   {/* Floating Status Badge (Web Aligned Status) */}
-                  <div className="absolute top-2.5 right-2.5 z-10">
+                  <div className="absolute top-3 right-3 z-10">
                     <StatusBadge status={project.status} size="xs" />
-                  </div>
-
-                  {/* Location Pill */}
-                  <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1 bg-[#060913]/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 shadow-sm z-10">
-                    <MapPin className="w-3 h-3 text-blue-400" />
-                    <span className="text-[10px] text-white font-medium">{project.cityState}</span>
                   </div>
                 </div>
 
                 {/* Card Body */}
-                <div className="p-3.5 flex flex-col gap-2.5">
+                <div className="p-4 flex flex-col gap-3">
                   
-                  {/* Title + PM */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                  {/* Title + Location & PM */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors leading-tight">
                         {project.name}
                       </h3>
-                      <p className="text-[12px] text-slate-400 mt-0.5 truncate font-medium">
-                        PM: <span className="text-slate-300 font-semibold">{project.projectManager.name}</span> · Code: <span className="text-slate-300 font-mono">{project.code}</span>
-                      </p>
+                      <div className="flex items-center gap-2 text-xs text-slate-400 mt-1 font-medium min-w-0">
+                        <div className="flex items-center gap-1 min-w-0 truncate">
+                          <MapPin className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                          <span className="text-slate-300 font-semibold truncate">{project.cityState}</span>
+                        </div>
+                        <span className="text-slate-600 flex-shrink-0">•</span>
+                        <span className="truncate text-slate-400">PM: <strong className="text-slate-200 font-semibold">{project.projectManager.name}</strong></span>
+                      </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors flex-shrink-0 mt-0.5" />
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors flex-shrink-0 mt-1" />
                   </div>
 
                   {/* KPI Row */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="p-2 bg-[#050811] rounded-xl border border-[#142036] text-center">
+                  <div className="grid grid-cols-3 gap-2.5 pt-0.5">
+                    <div className="p-2.5 bg-[#050811] rounded-2xl border border-[#142036] text-center">
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Budget</p>
                       <p className="text-xs font-bold text-white mt-0.5">${budgetTotalM}M</p>
                     </div>
-                    <div className="p-2 bg-[#050811] rounded-xl border border-[#142036] text-center">
+                    <div className="p-2.5 bg-[#050811] rounded-2xl border border-[#142036] text-center">
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Spent</p>
                       <p className={`text-xs font-bold mt-0.5 ${isAtRisk ? 'text-amber-400' : 'text-emerald-400'}`}>${budgetActualM}M</p>
                     </div>
-                    <div className="p-2 bg-[#050811] rounded-xl border border-[#142036] text-center">
+                    <div className="p-2.5 bg-[#050811] rounded-2xl border border-[#142036] text-center">
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Progress</p>
                       <p className="text-xs font-bold text-white mt-0.5">{project.progress}%</p>
                     </div>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full h-1.5 bg-[#050811] rounded-full overflow-hidden border border-[#142036]">
+                  <div className="w-full h-1.5 bg-[#050811] rounded-full overflow-hidden border border-[#142036] mt-0.5">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         project.status === 'Completed' || project.status === 'Warranty'

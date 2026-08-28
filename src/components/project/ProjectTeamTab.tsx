@@ -27,7 +27,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-1',
     name: 'Sarah Johnson',
     role: 'Lead Project Manager',
-    company: 'Avery & Marsh Construction',
+    company: 'Lattice Construction',
     phone: '+1 (555) 345-6789',
     email: 'sarah.j@averymarsh.com',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
@@ -38,7 +38,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-2',
     name: 'John Smith',
     role: 'Lead Field Superintendent',
-    company: 'Avery & Marsh Construction',
+    company: 'Lattice Construction',
     phone: '+1 (555) 567-8901',
     email: 'john.s@averymarsh.com',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
@@ -49,7 +49,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-3',
     name: 'Emily Brown',
     role: 'Site Safety Officer',
-    company: 'Avery & Marsh Construction',
+    company: 'Lattice Construction',
     phone: '+1 (555) 789-0123',
     email: 'emily.b@averymarsh.com',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
@@ -60,7 +60,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-4',
     name: 'Marcus Chen',
     role: 'Finance Controller',
-    company: 'Avery & Marsh Construction',
+    company: 'Lattice Construction',
     phone: '+1 (555) 456-7890',
     email: 'marcus.c@averymarsh.com',
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
@@ -104,7 +104,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-8',
     name: 'Priya Nair',
     role: 'Assistant Project Manager',
-    company: 'Avery & Marsh Construction',
+    company: 'Lattice Construction',
     phone: '+1 (555) 901-2345',
     email: 'priya.n@averymarsh.com',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
@@ -141,7 +141,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
     id: 'lead-1',
     name: project?.projectManager.name || 'Sarah Johnson',
     role: 'Lead Project Manager',
-    company: 'Avery & Marsh Construction',
+    company: 'Lattice Construction',
     phone: '+1 (555) 345-6789',
     email: 'lead.pm@averymarsh.com',
     avatar: project?.projectManager.avatar || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
@@ -199,7 +199,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
       id: `ext-${Date.now()}`,
       name: inviteName.trim(),
       role: inviteRole.trim() || (inviteType === 'gc' ? 'Field Coordinator' : 'Trade Foreman'),
-      company: inviteType === 'gc' ? 'Avery & Marsh Construction' : (inviteCompany.trim() || 'Subcontractor Partner'),
+      company: inviteType === 'gc' ? 'Lattice Construction' : (inviteCompany.trim() || 'Subcontractor Partner'),
       phone: invitePhone.trim() || '+1 (555) 000-0000',
       email: inviteEmail.trim() || 'trade@partner.com',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
@@ -415,19 +415,28 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
 
       {/* ─── 4. SMART ASSIGN TEAM MEMBER MODAL ─── */}
       {isAssignModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[400px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="card-dark w-full max-w-[420px] bg-[#070D1A] border border-[#142036] p-5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col gap-3.5 text-slate-100 scrollbar-none">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-              <div>
-                <h3 className="text-sm font-bold text-white tracking-tight">Add Team Member to Project</h3>
-                <p className="text-[12px] text-slate-400 mt-0.5">Select from Company Directory or Invite</p>
+            <div className="flex items-center justify-between pb-3.5 border-b border-[#142036]">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-white tracking-tight leading-tight truncate">
+                    Add Team Member to Project
+                  </h3>
+                  <p className="text-xs text-slate-400 font-medium mt-0.5 truncate">
+                    Select from Company Directory or Invite
+                  </p>
+                </div>
               </div>
 
               <button
                 onClick={() => setIsAssignModalOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+                className="w-8 h-8 rounded-full bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>

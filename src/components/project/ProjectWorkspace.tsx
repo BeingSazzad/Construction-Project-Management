@@ -6,6 +6,7 @@ import {
   ProjectStatus
 } from '../../types';
 import { ProjectOverviewTab } from './ProjectOverviewTab';
+import { ProjectDailyLogsTab } from './ProjectDailyLogsTab';
 import { ProjectBudgetTab } from './ProjectBudgetTab';
 import { ProjectTasksTab } from './ProjectTasksTab';
 import { ProjectPunchListTab } from './ProjectPunchListTab';
@@ -17,7 +18,7 @@ import { LattiAssistant } from '../ai/LattiAssistant';
 import { 
   Layers, DollarSign, CheckSquare, 
   AlertCircle, Camera, FileText, Users2, 
-  BarChart3, Sparkles, MapPin, Calendar, ArrowLeft 
+  BarChart3, Sparkles, MapPin, Calendar, ArrowLeft, ClipboardList 
 } from 'lucide-react';
 
 interface ProjectWorkspaceProps {
@@ -100,11 +101,12 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   };
 
   // Quick Action / Navigation pages that have dedicated views and are accessed directly from Overview
-  const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents'].includes(activeTab);
+  const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents', 'daily-logs', 'schedule', 'milestones'].includes(activeTab);
 
   // Core project tabs according to Reference Web Specs (Drawings, Messages, Subcontractors belong in their respective hub/docs)
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
+    { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
     { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
     { id: 'team', label: 'Team', icon: Users2 },
     { id: 'reports', label: 'Reports', icon: BarChart3, hideFor: ['field'] },
@@ -118,6 +120,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
       case 'punch': return 'Punch List';
       case 'photos': return 'Site Photos';
       case 'documents': return 'Project Documents';
+      case 'schedule': return 'Schedule & Calendar';
+      case 'milestones': return 'Milestone Tracker';
       default: return '';
     }
   };
@@ -176,6 +180,42 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             changeOrders={changeOrders}
             onCreateChangeOrder={onCreateChangeOrder}
             onUpdateTaskStatus={onUpdateTaskStatus}
+          />
+        )}
+
+        {activeTab === 'daily-logs' && (
+          <ProjectDailyLogsTab
+            project={project}
+            dailyLogs={project.dailyLogs || [
+              {
+                id: 'dl-1',
+                projectId: project.id,
+                projectName: project.name,
+                date: 'Aug 27, 2026',
+                weather: {
+                  condition: 'Sunny',
+                  temperature: '78°F / 25°C',
+                  windSpeed: '6 mph SW',
+                  precipitation: '0%',
+                  siteCondition: 'Dry & Clear'
+                },
+                totalHeadcount: 24,
+                crews: [
+                  {
+                    trade: 'Concrete & Steel',
+                    subcontractor: 'Apex Concrete LLC',
+                    workersCount: 14,
+                    hoursWorked: 8,
+                    notes: 'Poured foundation slab section B'
+                  }
+                ],
+                workSummary: 'Completed level 4 slab pour and inspected rebar installation. Field Superintendent verified quality check.',
+                materialsReceived: ['3 ready-mix concrete trucks (24 cu yd)', '#4 Rebar 20ft bundles (10)'],
+                safetyIncidents: '0 Incidents. PPE inspection completed 100% compliant.',
+                safetyPassed: true,
+                author: 'Elena Rossi (PM)'
+              }
+            ]}
           />
         )}
 
@@ -239,6 +279,14 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             documents={documents}
             onUploadDocument={onUploadDocument}
             onPreviewDocument={onPreviewDocument}
+          />
+        )}
+
+        {(activeTab === 'schedule' || activeTab === 'milestones') && (
+          <ProjectScheduleTab
+            project={project}
+            ganttItems={ganttItems}
+            onCreateTask={onCreateTask}
           />
         )}
       </div>

@@ -3,7 +3,7 @@ import { User } from '../../types';
 import { 
   X, Users, FileText, Sparkles, TrendingUp,
   Award, Settings, LogOut, Shield, ChevronRight,
-  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare
+  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare, Ruler, Cpu
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -92,6 +92,20 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
   const EXTRA_ITEMS: NavItem[] = [
     {
+      id: 'intelligence-center',
+      label: 'AI Intelligence Center',
+      icon: Cpu,
+      badge: '96.8% Acc',
+      badgeStyle: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+    },
+    {
+      id: 'buildscope',
+      label: 'BuildScope AI',
+      icon: Ruler,
+      badge: 'PlanGrid',
+      badgeStyle: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+    },
+    {
       id: 'opportunities',
       label: 'Opportunities',
       icon: TrendingUp,
@@ -102,13 +116,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       id: 'team',
       label: 'Team Directory',
       icon: Users,
-    },
-    {
-      id: 'latti',
-      label: 'Latti AI Copilot',
-      icon: Sparkles,
-      badge: 'Active',
-      badgeStyle: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
     },
   ];
 
@@ -229,9 +236,9 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
           {/* Divider */}
           <div className="h-px bg-[#142036] mx-3" />
 
-          {/* SECTION: Portfolio & Directory */}
+          {/* SECTION: AI & Intelligence Center */}
           <div className="flex flex-col gap-0.5">
-            <SectionLabel label="Directory & AI" />
+            <SectionLabel label="AI & INTELLIGENCE CENTER" />
             {EXTRA_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
           </div>
 

@@ -35,7 +35,7 @@ const ROLE_COLORS: Record<string, string> = {
 const INITIAL_TEAM: TeamMember[] = [
   {
     id: 't-1',
-    name: 'Avery Marsh',
+    name: 'Lattice Construction',
     role: 'Company Owner',
     roleGroup: 'Owner',
     email: 'avery@averymarsh.com',
@@ -315,7 +315,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
             <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
               <div>
                 <h3 className="text-sm font-bold text-white">Invite Team Member</h3>
-                <p className="text-[12px] text-slate-400 mt-0.5">Send an invitation to join Avery Marsh</p>
+                <p className="text-[12px] text-slate-400 mt-0.5">Send an invitation to join Lattice Construction</p>
               </div>
               <button
                 onClick={() => setIsInviteOpen(false)}

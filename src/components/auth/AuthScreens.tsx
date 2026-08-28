@@ -344,7 +344,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
                 <div className="relative flex items-center">
                   <Building className="w-4 h-4 text-slate-500 absolute left-3" />
                   <input type="text" required value={companyName} onChange={e => setCompanyName(e.target.value)}
-                    placeholder="Avery & Marsh Construction Group" className={inputCls()} />
+                    placeholder="Lattice Construction Group" className={inputCls()} />
                 </div>
               </div>
 

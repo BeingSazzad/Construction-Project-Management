@@ -3,7 +3,7 @@ import { Project, Task, SitePhoto, DocumentItem, PunchItem, ProjectStatus, Chang
 import { 
   MapPin, Calendar, CheckSquare, Camera, FileText, 
   AlertCircle, Check, ChevronDown, ChevronRight, Plus, 
-  Coins, Activity, FilePlus2, User
+  Coins, Activity, FilePlus2, User, ClipboardList 
 } from 'lucide-react';
 import { StatusBadge } from '../common/StatusBadge';
 
@@ -13,6 +13,7 @@ interface ProjectOverviewTabProps {
   photos?: SitePhoto[];
   documents?: DocumentItem[];
   punchItems: PunchItem[];
+  dailyLogs?: any[];
   onSelectTab?: (tab: string) => void;
   onNavigate?: (tab: string) => void;
   onCreateTask?: () => void;
@@ -29,6 +30,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   photos = [],
   documents = [],
   punchItems = [],
+  dailyLogs = [],
   onSelectTab,
   onNavigate,
   changeOrders = [],
@@ -50,6 +52,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   const approvedTimeAdded = useMemo(() => {
     return projectCOs.filter(co => co.status === 'Approved').reduce((sum, co) => sum + co.timeImpact, 0);
   }, [projectCOs]);
+
   const handleTabChange = (tabId: string) => {
     if (onSelectTab) onSelectTab(tabId);
     else if (onNavigate) onNavigate(tabId);
@@ -244,31 +247,40 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ─── 4. QUICK LINKS / NAVIGATION SHORTCUTS (UX Optimized & Redesigned) ─── */}
-      <div className="grid grid-cols-3 gap-2 bg-[#0A111F] p-3 rounded-2xl border border-[#142036] shadow-sm">
+      {/* ─── 4. QUICK LINKS / NAVIGATION SHORTCUTS (4 Quick Action Buttons: Daily Logs, Photos, Documents, Punch List) ─── */}
+      <div className="grid grid-cols-4 gap-2 bg-[#0A111F] p-3 rounded-2xl border border-[#142036] shadow-sm">
+        <button 
+          onClick={() => handleTabChange('daily-logs')}
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-amber-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer group"
+        >
+          <ClipboardList className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+          <span className="text-[10px] font-bold text-white leading-tight">Daily Logs</span>
+          <span className="text-[10px] text-slate-500 font-medium">(Log)</span>
+        </button>
+
         <button 
           onClick={() => handleTabChange('photos')}
-          className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer"
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer group"
         >
-          <Camera className="w-5 h-5 text-sky-400" />
+          <Camera className="w-5 h-5 text-sky-400 group-hover:scale-110 transition-transform" />
           <span className="text-[10px] font-bold text-white leading-tight">Photos</span>
           <span className="text-[10px] text-slate-500 font-medium">({photos.length})</span>
         </button>
 
         <button 
           onClick={() => handleTabChange('documents')}
-          className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-purple-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer"
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-purple-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer group"
         >
-          <FileText className="w-5 h-5 text-purple-400" />
+          <FileText className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
           <span className="text-[10px] font-bold text-white leading-tight">Documents</span>
           <span className="text-[10px] text-slate-500 font-medium">({documents.length})</span>
         </button>
 
         <button 
           onClick={() => handleTabChange('punch')}
-          className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-rose-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer"
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-rose-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer group"
         >
-          <AlertCircle className="w-5 h-5 text-rose-400" />
+          <AlertCircle className="w-5 h-5 text-rose-400 group-hover:scale-110 transition-transform" />
           <span className="text-[10px] font-bold text-white leading-tight">Punch List</span>
           <span className="text-[10px] text-rose-400 font-extrabold bg-rose-500/10 px-1.5 py-0.2 rounded-full">
             {punchItems.filter(p => p.status === 'Open').length}

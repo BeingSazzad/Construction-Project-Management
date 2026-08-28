@@ -16,7 +16,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
   onBack,
   onSave
 }) => {
-  const [companyName, setCompanyName] = useState(currentUser.company || 'Avery & Marsh Construction Group');
+  const [companyName, setCompanyName] = useState(currentUser.company || 'Lattice Construction Group');
   const [phone, setPhone] = useState('(555) 123-4567');
   const [address, setAddress] = useState('123 Main St, Suite 400');
   const [licenseNumber, setLicenseNumber] = useState('GC-12345');
@@ -83,7 +83,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
               required
-              placeholder="e.g. Avery & Marsh Construction Group"
+              placeholder="e.g. Lattice Construction Group"
               className="w-full h-10 bg-[#070D1A] border border-[#142036] rounded-xl px-3 text-xs text-white font-medium focus:border-[#2563EB] focus:outline-none transition-colors"
             />
           </div>

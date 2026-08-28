@@ -337,7 +337,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {userData.email}
             </p>
             <p className="text-xs text-blue-400 font-semibold truncate mt-0.5">
-              {userData.company || 'Avery & Marsh Construction Group'}
+              {userData.company || 'Lattice Construction Group'}
             </p>
           </div>
         </div>
@@ -362,7 +362,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Company Profile</span>
                 <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                  {userData.company || 'Avery & Marsh Construction'} • GC-12345
+                  {userData.company || 'Lattice Construction'} • GC-12345
                 </span>
               </div>
             </div>

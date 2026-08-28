@@ -339,7 +339,9 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
             </div>
           </div>
 
-          {/* Seed Member Message 1 (Sazzad Chowdhury) */}
+          {/* 💬 Rich Construction Team Conversation Thread */}
+          
+          {/* Message 1: Sazzad Chowdhury */}
           <div className="flex items-start gap-2.5 max-w-[88%]">
             <img
               src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
@@ -352,7 +354,101 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 <span className="text-[10px] text-slate-500">10:15 AM</span>
               </div>
               <div className="p-3 rounded-2xl rounded-tl-sm bg-[#0E172A] border border-[#1E2C48] text-xs text-white leading-relaxed shadow-sm">
-                Hello project team
+                Good morning team! Plumbing rough-in inspection for Level 8 commercial floor is set for 9:00 AM today. Please make sure all pressure test gauges are active.
+              </div>
+            </div>
+          </div>
+
+          {/* Message 2: John Smith */}
+          <div className="flex items-start gap-2.5 max-w-[88%]">
+            <img
+              src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+              alt="John Smith"
+              className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A] flex-shrink-0 mt-1"
+            />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-200">John Smith</span>
+                <span className="text-[10px] font-bold text-blue-400">Superintendent</span>
+                <span className="text-[10px] text-slate-500">10:18 AM</span>
+              </div>
+              <div className="p-3 rounded-2xl rounded-tl-sm bg-[#0E172A] border border-[#1E2C48] text-xs text-slate-200 leading-relaxed shadow-sm">
+                Understood Sazzad. Hydrostatic pressure test passed at 120 PSI. Field crew is on site with the city inspector right now.
+              </div>
+            </div>
+          </div>
+
+          {/* Message 3: Sarah Johnson */}
+          <div className="flex items-start gap-2.5 max-w-[88%]">
+            <img
+              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
+              alt="Sarah Johnson"
+              className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A] flex-shrink-0 mt-1"
+            />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-200">Sarah Johnson</span>
+                <span className="text-[10px] font-bold text-emerald-400">Lead PM</span>
+                <span className="text-[10px] text-slate-500">10:22 AM</span>
+              </div>
+              <div className="p-3 rounded-2xl rounded-tl-sm bg-[#0E172A] border border-[#1E2C48] text-xs text-slate-200 leading-relaxed shadow-sm">
+                Great progress! Has the revised MEP coordination drawing v4 been uploaded for the ceiling grid clearance?
+              </div>
+            </div>
+          </div>
+
+          {/* Message 4: Alex Chen */}
+          <div className="flex items-start gap-2.5 max-w-[88%]">
+            <img
+              src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80"
+              alt="Alex Chen"
+              className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A] flex-shrink-0 mt-1"
+            />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-200">Alex Chen</span>
+                <span className="text-[10px] font-bold text-amber-400">Estimator</span>
+                <span className="text-[10px] text-slate-500">10:27 AM</span>
+              </div>
+              <div className="p-3 rounded-2xl rounded-tl-sm bg-[#0E172A] border border-[#1E2C48] text-xs text-slate-200 leading-relaxed shadow-sm">
+                Yes Sarah, drawing v4 is uploaded in Documents. Budget impact is net zero — we offset the additional copper pipe fittings against the contingency reserve.
+              </div>
+            </div>
+          </div>
+
+          {/* Message 5: Carlos Ortiz */}
+          <div className="flex items-start gap-2.5 max-w-[88%]">
+            <img
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+              alt="Carlos Ortiz"
+              className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A] flex-shrink-0 mt-1"
+            />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-200">Carlos Ortiz</span>
+                <span className="text-[10px] font-bold text-purple-400">Trade Lead</span>
+                <span className="text-[10px] text-slate-500">10:32 AM</span>
+              </div>
+              <div className="p-3 rounded-2xl rounded-tl-sm bg-[#0E172A] border border-[#1E2C48] text-xs text-slate-200 leading-relaxed shadow-sm">
+                City inspector just signed off on the Level 8 plumbing rough-in permit! Green card signed. We can proceed with wall framing insulation tomorrow morning.
+              </div>
+            </div>
+          </div>
+
+          {/* Message 6: Sazzad Chowdhury */}
+          <div className="flex items-start gap-2.5 max-w-[88%]">
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+              alt="Sazzad Chowdhury"
+              className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A] flex-shrink-0 mt-1"
+            />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-200">Sazzad Chowdhury</span>
+                <span className="text-[10px] text-slate-500">10:35 AM</span>
+              </div>
+              <div className="p-3 rounded-2xl rounded-tl-sm bg-[#0E172A] border border-[#1E2C48] text-xs text-white leading-relaxed shadow-sm">
+                Excellent work team! Thanks for the quick turnaround Carlos & John. Let's prep the drywall crew for Friday start.
               </div>
             </div>
           </div>

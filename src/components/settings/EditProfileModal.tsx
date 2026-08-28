@@ -157,7 +157,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 required
-                placeholder="e.g. Avery & Marsh Construction"
+                placeholder="e.g. Lattice Construction"
                 className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl pl-10 pr-3.5 text-sm text-white font-medium focus:border-blue-500 focus:outline-none transition-colors"
               />
             </div>

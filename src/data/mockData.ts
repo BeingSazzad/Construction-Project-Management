@@ -13,7 +13,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'admin',
     roleTitle: 'Company Owner & Principal',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    company: 'Avery & Marsh Construction Group',
+    company: 'Lattice Construction Group',
     phone: '+1 (555) 234-5678',
     assignedProjects: ['proj-1', 'proj-2', 'proj-3', 'proj-4', 'proj-5']
   },
@@ -24,7 +24,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'pm',
     roleTitle: 'Senior Project Manager',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    company: 'Avery & Marsh Construction Group',
+    company: 'Lattice Construction Group',
     phone: '+1 (555) 345-6789',
     assignedProjects: ['proj-1', 'proj-2', 'proj-3']
   },
@@ -35,7 +35,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'finance',
     roleTitle: 'Director of Project Finance',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    company: 'Avery & Marsh Construction Group',
+    company: 'Lattice Construction Group',
     phone: '+1 (555) 456-7890',
     assignedProjects: ['proj-1', 'proj-2', 'proj-3', 'proj-4', 'proj-5']
   },
@@ -46,7 +46,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'field',
     roleTitle: 'Lead Field Superintendent',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    company: 'Avery & Marsh Construction Group',
+    company: 'Lattice Construction Group',
     phone: '+1 (555) 567-8901',
     assignedProjects: ['proj-1', 'proj-2']
   }
@@ -691,6 +691,130 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     resolutionEvidence: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop&q=80',
     resolutionNote: 'Installed #10 green ground screw and verified continuity with multimeter (0.02 ohms).',
     createdDate: '2025-05-10'
+  },
+  {
+    id: 'pnch-5',
+    projectId: 'proj-1',
+    title: 'HVAC flex duct kinked in ceiling plenum',
+    location: 'Level 2 - Corridor North',
+    description: 'Flexible duct connection to VAV box VAV-204 is severely kinked reducing airflow to Zone 4. Needs proper hanger support.',
+    assignedTo: {
+      id: 'usr_field',
+      name: 'Dan Gallagher',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      trade: 'Climate HVAC Mechanical'
+    },
+    priority: 'High',
+    dueDate: '2025-05-27',
+    status: 'Open',
+    photos: [
+      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80'
+    ],
+    createdDate: '2025-05-20'
+  },
+  {
+    id: 'pnch-6',
+    projectId: 'proj-1',
+    title: 'Water penetration at west elevation window sill',
+    location: 'Level 3 - Executive Office 304',
+    description: 'Water seepage detected around lower aluminum mullion joint during rain test. Exterior perimeter sealant bead needs re-application.',
+    assignedTo: {
+      id: 'usr_field',
+      name: 'John Smith',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+      trade: 'Apex Glazing & Waterproofing'
+    },
+    priority: 'High',
+    dueDate: '2025-05-24',
+    status: 'Open',
+    photos: [
+      'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80'
+    ],
+    createdDate: '2025-05-19'
+  },
+  {
+    id: 'pnch-7',
+    projectId: 'proj-1',
+    title: 'Unsealed firestop penetration at mechanical shaft',
+    location: 'Level 5 - Shaft B',
+    description: '2-inch copper pipe penetration through 2-hour fire-rated floor slab lacks STI SpecSeal intumescent sealant collar.',
+    assignedTo: {
+      id: 'usr_field',
+      name: 'Mike Davis',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      trade: 'ProShield Firestopping'
+    },
+    priority: 'High',
+    dueDate: '2025-05-29',
+    status: 'In Progress',
+    photos: [
+      'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop&q=80'
+    ],
+    createdDate: '2025-05-17'
+  },
+  {
+    id: 'pnch-8',
+    projectId: 'proj-1',
+    title: 'Missing handrail wall bracket at stairwell 2',
+    location: 'Stairwell 2 - Landing L3',
+    description: 'Wall-mounted stainless steel handrail is missing center support bracket. Handrail flexes under load.',
+    assignedTo: {
+      id: 'usr_field',
+      name: 'John Smith',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+      trade: 'Steel Masters LLC'
+    },
+    priority: 'Medium',
+    dueDate: '2025-05-30',
+    status: 'Open',
+    photos: [
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80'
+    ],
+    createdDate: '2025-05-16'
+  },
+  {
+    id: 'pnch-9',
+    projectId: 'proj-1',
+    title: 'Damaged ceiling tile at elevator lobby',
+    location: 'Level 1 - Main Lobby',
+    description: '2x2 Tegular acoustical ceiling tile chipped at corner during lighting fixture installation.',
+    assignedTo: {
+      id: 'usr_field',
+      name: 'Emily Brown',
+      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+      trade: 'Apex Finishes'
+    },
+    priority: 'Low',
+    dueDate: '2025-05-22',
+    status: 'Resolved',
+    photos: [
+      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80'
+    ],
+    resolutionEvidence: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80',
+    resolutionNote: 'Replaced ceiling tile with new Armstrong Ultima tile.',
+    createdDate: '2025-05-12'
+  },
+  {
+    id: 'pnch-10',
+    projectId: 'proj-1',
+    title: 'Plumbing cleanout plug missing cap',
+    location: 'Level B1 - Parking Garage Bay 4',
+    description: '4-inch sanitary cleanout riser missing threaded brass countersunk plug in traffic area.',
+    assignedTo: {
+      id: 'usr_field',
+      name: 'Marco Rossi',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      trade: 'Prime Plumbing'
+    },
+    priority: 'Medium',
+    dueDate: '2025-05-25',
+    status: 'Verified',
+    photos: [
+      'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop&q=80'
+    ],
+    resolutionEvidence: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop&q=80',
+    resolutionNote: 'Installed 4-inch heavy-duty brass cleanout plug and flush floor plate.',
+    createdDate: '2025-05-11'
   }
 ];
 
@@ -1033,7 +1157,7 @@ export const MOCK_DAILY_LOGS: DailyLogItem[] = [
       },
       {
         trade: 'Site Supervision & Safety',
-        subcontractor: 'Avery & Marsh Field Team',
+        subcontractor: 'Lattice Field Team',
         workersCount: 4,
         hoursWorked: 8.5,
         notes: 'Morning toolbox safety talk conducted. PPE audits 100% compliant.'
@@ -1090,7 +1214,7 @@ export const MOCK_DAILY_LOGS: DailyLogItem[] = [
       },
       {
         trade: 'Site Supervision',
-        subcontractor: 'Avery & Marsh Field Team',
+        subcontractor: 'Lattice Field Team',
         workersCount: 4,
         hoursWorked: 8,
         notes: 'Delivery coordination and crane pick perimeter barricading.'
@@ -1358,7 +1482,7 @@ export const MOCK_CHANGE_ORDERS: ChangeOrder[] = [
     amount: 12500,
     timeImpact: 0,
     category: 'Structural',
-    requestedBy: 'Avery & Marsh Engineering',
+    requestedBy: 'Lattice Engineering',
     status: 'Pending',
     createdDate: '2025-05-18'
   }
