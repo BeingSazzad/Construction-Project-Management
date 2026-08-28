@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Project, TradeCategory, CostCodeGroup } from '../../types';
 import { 
   ChevronDown, ChevronRight, Plus, 
-  Layers, Hammer, Boxes, Flame, Zap, Download, X
+  Layers, Hammer, Boxes, Flame, Zap, Download, Upload, X
 } from 'lucide-react';
 
 interface ProjectBudgetTabProps {
@@ -188,18 +188,25 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
       <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Budget Overview</span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {onImportBudget && (
               <button
                 onClick={onImportBudget}
-                className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/25 px-2 py-1 rounded-xl flex items-center gap-1 hover:bg-blue-500/20 cursor-pointer transition-all"
+                className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/25 px-2 py-1 rounded-xl flex items-center gap-1 hover:bg-blue-500/20 cursor-pointer transition-all active:scale-95"
               >
-                <Download className="w-3 h-3" />
-                <span>Import CSV</span>
+                <Upload className="w-3 h-3" />
+                <span>Import</span>
               </button>
             )}
+            <button
+              onClick={() => alert(`Exporting ${project.name} Master CSI Budget to PDF / Excel...`)}
+              className="text-[10px] font-bold text-slate-300 bg-[#0E1A33] border border-[#1E2E4A] px-2 py-1 rounded-xl flex items-center gap-1 hover:bg-[#142036] cursor-pointer transition-all active:scale-95"
+            >
+              <Download className="w-3 h-3 text-slate-400" />
+              <span>Export</span>
+            </button>
             <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-              +${Math.max(0, Math.round((totalBudget - totalActual) / 1000))}K Favorable
+              +${Math.max(0, Math.round((totalBudget - totalActual) / 1000))}K
             </span>
           </div>
         </div>
