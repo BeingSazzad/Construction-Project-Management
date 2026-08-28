@@ -1,7 +1,7 @@
 import React from 'react';
-import { Project, User } from '../../types';
+import { Project, User, Task } from '../../types';
 import { 
-  FolderKanban, Activity, Calendar, CheckSquare, 
+  FolderKanban, Activity, Calendar, CheckSquare,
   AlertTriangle, ChevronRight, FolderPlus, FileSpreadsheet,
   Users, FileText, ArrowUpRight, TrendingUp, Sparkles
 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { StatusBadge } from '../common/StatusBadge';
 interface SimpleHomeViewProps {
   currentUser?: User;
   projects: Project[];
+  tasks?: Task[];
   onSelectProject: (project: Project) => void;
   onOpenLatti: () => void;
   onOpenNotifications?: () => void;
@@ -24,9 +25,12 @@ interface SimpleHomeViewProps {
 }
 
 export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
+  currentUser,
   projects,
+  tasks = [],
   onSelectProject,
   onOpenLatti,
+  onOpenTasks,
   onOpenProjects,
   onOpenBudgets,
   onOpenOpportunities,
@@ -36,130 +40,106 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
 }) => {
   const activeCount = projects.filter(p => p.status === 'In Progress' || p.status === 'Pre-Construction' || p.status === 'On Schedule').length;
   const atRiskProjects = projects.filter(p => p.status === 'On Hold' || p.status === 'At Risk' || p.status === 'Delayed');
+  
+  const inProgressTasks = tasks.length > 0 
+    ? tasks.filter(t => t.status === 'In Progress' || t.status === 'In Review').length 
+    : 4;
+  const dueTodayTasks = 2;
+  const completedTasks = tasks.length > 0 
+    ? tasks.filter(t => t.status === 'Completed').length 
+    : 6;
+
+  const companyName = currentUser?.company || 'Avery & Marsh Construction';
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
 
-      {/* ── 1. Top 4 KPI Metrics Suite (Matching User Specified Design) ── */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Card 1: Active Projects */}
-        <div 
-          onClick={onOpenProjects}
-          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-cyan-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
-        >
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-full bg-[#0D2938] border border-[#133F54] text-[#00D8C6] flex items-center justify-center flex-shrink-0">
-              <FolderKanban className="w-5 h-5" />
+      {/* ── 1. Top Executive Overview Card (Reference Design with Original Content) ── */}
+      <div className="p-4 sm:p-5 rounded-3xl bg-[#080E1C] border border-[#14223E] shadow-xl shadow-blue-950/20 flex flex-col gap-3.5 relative">
+        {/* Card Header */}
+        <div className="flex items-center justify-between">
+          <h2 className="text-base sm:text-lg font-bold text-white tracking-tight truncate pr-2">
+            {companyName}
+          </h2>
+          <button 
+            onClick={onOpenProjects}
+            className="text-xs sm:text-sm font-semibold text-[#3875F6] hover:text-[#60A5FA] transition-colors cursor-pointer flex-shrink-0"
+          >
+            {companyName}
+          </button>
+        </div>
+
+        {/* 4 Metric Tiles in Horizontal Grid (Original Content: Active Projects, In Progress, Due Today, Completed Today) */}
+        <div className="grid grid-cols-4 gap-2">
+          {/* Tile 1: Active Projects */}
+          <div 
+            onClick={onOpenProjects}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-blue-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#0D223A] border border-[#173A60] text-[#38BDF8] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <FolderKanban className="w-4 h-4" />
             </div>
-            <span className="text-xs font-bold text-emerald-400">
-              {projects.length} total
-            </span>
-          </div>
-          <div className="mt-3.5">
-            <span className="text-3xl font-black text-white leading-none tracking-tight block">
+            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
               {activeCount}
             </span>
-            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
-              Active Projects
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              Active
             </span>
           </div>
-        </div>
 
-        {/* Card 2: Tasks In Progress */}
-        <div 
-          onClick={onOpenProjects}
-          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-purple-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
-        >
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-full bg-[#231737] border border-[#3A225A] text-purple-400 flex items-center justify-center flex-shrink-0">
-              <Activity className="w-5 h-5" />
+          {/* Tile 2: Tasks In Progress */}
+          <div 
+            onClick={onOpenTasks}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-purple-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#231438] border border-[#3D2062] text-[#A855F7] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <Activity className="w-4 h-4" />
             </div>
-          </div>
-          <div className="mt-3.5">
-            <span className="text-3xl font-black text-white leading-none tracking-tight block">
-              4
+            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
+              {inProgressTasks}
             </span>
-            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
-              Tasks In Progress
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              In Progress
             </span>
           </div>
-        </div>
 
-        {/* Card 3: Tasks Due Today */}
-        <div 
-          onClick={onOpenProjects}
-          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-amber-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
-        >
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-full bg-[#2F2110] border border-[#4D3618] text-amber-400 flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5" />
+          {/* Tile 3: Tasks Due Today */}
+          <div 
+            onClick={onOpenTasks}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-amber-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#2A1D0E] border border-[#483015] text-[#F59E0B] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <Calendar className="w-4 h-4" />
             </div>
-          </div>
-          <div className="mt-3.5">
-            <span className="text-3xl font-black text-white leading-none tracking-tight block">
-              2
+            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
+              {dueTodayTasks}
             </span>
-            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
-              Tasks Due Today
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              Due Today
             </span>
           </div>
-        </div>
 
-        {/* Card 4: Completed Today */}
-        <div 
-          onClick={onOpenProjects}
-          className="p-4 rounded-3xl bg-[#091122]/90 border border-[#172540] hover:border-emerald-500/40 flex flex-col justify-between cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
-        >
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-full bg-[#0D281E] border border-[#154633] text-emerald-400 flex items-center justify-center flex-shrink-0">
-              <CheckSquare className="w-5 h-5" />
+          {/* Tile 4: Completed Today */}
+          <div 
+            onClick={onOpenTasks}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-emerald-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#0D281E] border border-[#154633] text-[#10B981] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <CheckSquare className="w-4 h-4" />
             </div>
-          </div>
-          <div className="mt-3.5">
-            <span className="text-3xl font-black text-white leading-none tracking-tight block">
-              6
+            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
+              {completedTasks}
             </span>
-            <span className="text-sm font-semibold text-slate-300 mt-1.5 block group-hover:text-white transition-colors">
-              Completed Today
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              Completed
             </span>
           </div>
         </div>
       </div>
 
-      {/* ── 2. Risk Alerts Section (Reference Web Specs) ── */}
-      {atRiskProjects.length > 0 && (
-        <div className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col gap-2 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Risk Alerts</h3>
-            </div>
-            <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
-              {atRiskProjects.length} Flagged
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-1.5 mt-0.5">
-            {atRiskProjects.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => onSelectProject(p)}
-                className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] hover:border-amber-500/40 flex items-center justify-between text-xs cursor-pointer transition-all active:scale-[0.99]"
-              >
-                <div className="min-w-0 flex-1">
-                  <h4 className="font-bold text-white truncate">{p.name}</h4>
-                  <p className="text-[10px] text-slate-400 mt-0.5 truncate">Status: <strong className="text-amber-400">{p.status}</strong> · Variance alert</p>
-                </div>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ── 3. Quick Actions Grid ── */}
-      <div className="flex flex-col gap-2">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-0.5">Quick Actions</p>
+      {/* ── 2. Quick Actions ── */}
+      <div className="flex flex-col gap-2.5">
+        <h3 className="text-sm font-bold text-white px-0.5 tracking-tight">Quick Actions</h3>
         <div className="grid grid-cols-4 gap-2">
           {[
             {
@@ -189,6 +169,37 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
           ))}
         </div>
       </div>
+
+      {/* ── 3. Risk Alerts Section ── */}
+      {atRiskProjects.length > 0 && (
+        <div className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col gap-2 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Risk Alerts</h3>
+            </div>
+            <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+              {atRiskProjects.length} Flagged
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-1.5 mt-0.5">
+            {atRiskProjects.map((p) => (
+              <div
+                key={p.id}
+                onClick={() => onSelectProject(p)}
+                className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] hover:border-amber-500/40 flex items-center justify-between text-xs cursor-pointer transition-all active:scale-[0.99]"
+              >
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-white truncate">{p.name}</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 truncate">Status: <strong className="text-amber-400">{p.status}</strong> · Variance alert</p>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── 4. Latti AI Assistant Banner ── */}
       <button

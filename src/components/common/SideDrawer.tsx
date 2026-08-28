@@ -52,7 +52,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
   const TOOLS_ITEMS: NavItem[] = [
     {
-      id: 'schedule',
+      id: 'calendar',
       label: 'Calendar',
       icon: CalendarDays,
     },
@@ -104,6 +104,13 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       icon: Ruler,
       badge: 'PlanGrid',
       badgeStyle: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+    },
+    {
+      id: 'trade-network',
+      label: 'Trade Network',
+      icon: Award,
+      badge: 'Soon',
+      badgeStyle: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
     },
     {
       id: 'opportunities',

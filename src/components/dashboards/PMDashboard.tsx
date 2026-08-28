@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Project, Task, Priority } from '../../types';
 import { StatusBadge } from '../common/StatusBadge';
 import { 
   CheckSquare, Users, Plus, ChevronRight, HardHat,
-  Sparkles, AlertCircle, MoreHorizontal, ArrowUp, X, 
-  Wrench, ShieldAlert, FileText, Calendar, MapPin, DollarSign, TrendingDown, TrendingUp
+  Sparkles, AlertCircle, Calendar, MapPin, DollarSign,
+  FolderKanban, Activity, ShieldAlert, ArrowUpRight, Clock
 } from 'lucide-react';
 
 interface PMDashboardProps {
@@ -26,8 +26,6 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
   onOpenSchedule,
   onOpenLatti
 }) => {
-  const [showAiInsight, setShowAiInsight] = useState(true);
-
   const myProjects = projects.filter(p =>
     ['proj-1', 'proj-2', 'proj-3'].includes(p.id)
   );
@@ -40,114 +38,191 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
 
   const totalDueToday = tasks.filter(t => t.status !== 'Completed').length;
   const totalOverdue = tasks.filter(t => t.status === 'Blocked').length;
-  const totalMilestones = myProjects.reduce((sum, p) => sum + p.metrics.totalMilestones - p.metrics.completedMilestones, 0);
-
-  const atRiskProject = myProjects.find(p => p.status === 'At Risk') || myProjects[0];
+  const totalMilestones = myProjects.reduce((sum, p) => sum + (p.metrics?.totalMilestones || 6) - (p.metrics?.completedMilestones || 2), 0);
 
   const milestones = [
-    { month: 'MAY', day: '22', title: 'L12 Concrete Slab Pour', project: 'Riverside Office Complex' },
-    { month: 'MAY', day: '25', title: 'Steel Topping Out Ceremony', project: 'Downtown Commercial Tower' },
-    { month: 'MAY', day: '28', title: 'MEP Rough-in Sign-off (Lvl 5)', project: 'Downtown Commercial Tower' },
-    { month: 'JUN', day: '03', title: 'Final Punch Walk – Bldg C', project: 'Greenfield Residential Dev.' },
+    { month: 'AUG', day: '24', title: 'Rough Framing & MEP Inspection', project: 'Riverside Office Complex', type: 'Inspection' },
+    { month: 'AUG', day: '28', title: 'Foundation Slab Sign-off', project: 'Highland Luxury Villa', type: 'Milestone' },
+    { month: 'AUG', day: '31', title: 'HVAC Duct Pressure Test', project: 'Riverside Office Complex', type: 'Testing' },
   ];
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-      {/* 2. 4-Column KPI Card */}
-      <div className="p-3.5 bg-[#0D1424] border border-[#1A263E] rounded-2xl shadow-sm">
-        <div className="grid grid-cols-4 divide-x divide-[#162033] text-center">
-          <div className="px-1">
-            <div className="text-xs font-semibold text-slate-400">Projects</div>
-            <div className="text-lg font-bold text-white my-1">{myProjects.length}</div>
-            <div className="text-xs text-slate-500 font-medium">Active</div>
+    <div className="w-full flex flex-col gap-4 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      
+      {/* ── 1. Top PM Executive Command Card ── */}
+      <div className="p-4 sm:p-5 rounded-3xl bg-[#080E1C] border border-[#14223E] shadow-xl shadow-blue-950/20 flex flex-col gap-3.5 relative">
+        {/* Card Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-white tracking-tight leading-none">
+              Project Operations Hub
+            </h2>
+            <p className="text-[11px] text-slate-400 font-medium mt-1">Senior Project Manager Oversight</p>
           </div>
-          <div className="px-1">
-            <div className="text-xs font-semibold text-slate-400">Open</div>
-            <div className="text-lg font-bold text-white my-1 flex items-center justify-center gap-0.5">
-              {totalDueToday}
+          <button 
+            onClick={onOpenSchedule}
+            className="text-xs font-semibold text-[#3875F6] hover:text-[#60A5FA] transition-colors cursor-pointer flex-shrink-0"
+          >
+            Full Schedule
+          </button>
+        </div>
+
+        {/* 4 PM Metric Tiles Grid */}
+        <div className="grid grid-cols-4 gap-2">
+          {/* Tile 1: Active Projects */}
+          <div 
+            onClick={onOpenSchedule}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-blue-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#0D223A] border border-[#173A60] text-[#38BDF8] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <FolderKanban className="w-4 h-4" />
             </div>
-            <div className="text-xs text-slate-500 font-medium">Tasks</div>
+            <span className="text-lg font-bold text-white leading-none tracking-tight">
+              {myProjects.length}
+            </span>
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              Projects
+            </span>
           </div>
-          <div className="px-1">
-            <div className="text-xs font-semibold text-slate-400">Blocked</div>
-            <div className="text-lg font-bold text-rose-400 my-1">{totalOverdue || 3}</div>
-            <div className="text-xs text-slate-500 font-medium">Tasks</div>
+
+          {/* Tile 2: Open Tasks */}
+          <div 
+            onClick={onCreateTask}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-purple-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#231438] border border-[#3D2062] text-[#A855F7] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <Activity className="w-4 h-4" />
+            </div>
+            <span className="text-lg font-bold text-white leading-none tracking-tight">
+              {totalDueToday}
+            </span>
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              Open Tasks
+            </span>
           </div>
-          <div className="px-1">
-            <div className="text-xs font-semibold text-slate-400">Milestones</div>
-            <div className="text-lg font-bold text-blue-400 my-1">{totalMilestones}</div>
-            <div className="text-xs text-slate-500 font-medium">Pending</div>
+
+          {/* Tile 3: Blocked / Overdue */}
+          <div 
+            onClick={onOpenSchedule}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-rose-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#2A1118] border border-[#521C2B] text-rose-400 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <ShieldAlert className="w-4 h-4" />
+            </div>
+            <span className="text-lg font-bold text-rose-400 leading-none tracking-tight">
+              {totalOverdue || 2}
+            </span>
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              Blocked
+            </span>
+          </div>
+
+          {/* Tile 4: Pending Milestones */}
+          <div 
+            onClick={onOpenSchedule}
+            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-emerald-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#0D281E] border border-[#154633] text-[#10B981] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+              <CheckSquare className="w-4 h-4" />
+            </div>
+            <span className="text-lg font-bold text-emerald-400 leading-none tracking-tight">
+              {totalMilestones || 8}
+            </span>
+            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
+              Milestones
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 3. My Projects */}
+      {/* ── 2. Quick Actions ── */}
       <div className="flex flex-col gap-2.5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-white tracking-tight">My Projects</h2>
-          <button onClick={onOpenSchedule} className="text-xs text-[#3875F6] hover:underline font-semibold cursor-pointer">
-            View All
+        <h3 className="text-sm font-bold text-white px-0.5 tracking-tight">Quick Actions</h3>
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { label: 'New Task', icon: Plus, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20', action: onCreateTask },
+            { label: 'Schedule', icon: Calendar, color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20', action: onOpenSchedule },
+            { label: 'AI Insights', icon: Sparkles, color: 'text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/20', action: onOpenLatti },
+            { label: 'Team', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', action: onOpenSchedule },
+          ].map(({ label, icon: Icon, color, bg, action }) => (
+            <button
+              key={label}
+              onClick={action}
+              className="p-2.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95 hover:bg-[#0C152B] group"
+            >
+              <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${color} ${bg} group-hover:scale-110 transition-transform`}>
+                <Icon className="w-4 h-4" />
+              </div>
+              <span className="text-[12px] font-semibold text-slate-300 group-hover:text-white transition-colors text-center leading-tight">{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 3. Active PM Projects ── */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between px-0.5">
+          <h2 className="text-sm font-bold text-white tracking-tight">Assigned Projects</h2>
+          <button onClick={onOpenSchedule} className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-0.5 cursor-pointer transition-colors">
+            <span>View All</span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="flex flex-col gap-2.5">
           {myProjects.map((p) => {
             const isAtRisk = p.status === 'At Risk' || p.status === 'Delayed';
-            const budgetActualM = (p.budget.actual / 1_000_000).toFixed(2);
-            const budgetTotalM = (p.budget.total / 1_000_000).toFixed(2);
 
             return (
               <div
                 key={p.id}
                 onClick={() => onSelectProject(p)}
-                className={`p-3.5 rounded-2xl bg-[#0D1424] border hover:border-blue-500/40 transition-all cursor-pointer flex items-center gap-3 shadow-sm group ${
-                  isAtRisk ? 'border-rose-500/30' : 'border-[#1A263E]'
-                }`}
+                className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm group flex items-center gap-3 active:scale-[0.99]"
               >
-                <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-[#090E1A] border border-[#162033]">
+                <div className="relative flex-shrink-0">
                   <img
                     src={p.thumbnail}
                     alt={p.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    className="w-14 h-14 rounded-xl object-cover border border-[#1E2C48]"
                   />
+                  {isAtRisk && (
+                    <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-rose-500 border-2 border-[#070D1A] flex items-center justify-center">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                    </span>
+                  )}
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-1.5">
-                    <h3 className="text-sm font-bold text-white truncate group-hover:text-[#3875F6] transition-colors leading-tight">
-                      {p.name}
-                    </h3>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">{p.name}</h3>
                     <StatusBadge status={p.status} size="xs" />
                   </div>
-
-                  <p className="text-xs text-slate-400 truncate flex items-center gap-1 mt-1 font-medium">
-                    <MapPin className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
-                    {p.cityState}
-                  </p>
-
-                  <div className="flex items-center gap-2 mt-2">
+                  <p className="text-[12px] text-slate-400 font-medium mt-0.5 truncate">{p.cityState}</p>
+                  
+                  <div className="flex items-center justify-between gap-2 mt-2">
                     <div className="flex-1 h-1.5 bg-[#141F33] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${isAtRisk ? 'bg-rose-500' : 'bg-[#2563EB]'}`}
                         style={{ width: `${p.progress}%` }}
                       />
                     </div>
-                    <span className="text-xs font-bold text-slate-200 flex-shrink-0">{p.progress}%</span>
+                    <span className="text-[10px] font-semibold text-blue-400 flex-shrink-0">{p.progress}% Done</span>
                   </div>
                 </div>
-
-                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white flex-shrink-0" />
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* 4. Priority Tasks */}
-      <div className="p-4 rounded-3xl bg-[#0D1424] border border-[#1A263E] shadow-sm flex flex-col gap-3">
+      {/* ── 4. Today's Priority Tasks ── */}
+      <div className="p-4 rounded-3xl bg-[#080E1C] border border-[#14223E] shadow-sm flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-white tracking-tight">Today's Priority Tasks</h3>
-          <button onClick={onCreateTask} className="text-xs font-bold text-[#3875F6] hover:underline flex items-center gap-1 cursor-pointer">
+          <button 
+            onClick={onCreateTask}
+            className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
+          >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Task</span>
           </button>
@@ -158,25 +233,57 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
             <div
               key={t.id}
               onClick={() => onOpenTask(t)}
-              className="p-3 rounded-2xl bg-[#090E1A] border border-[#141F33] hover:border-blue-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 shadow-sm group"
+              className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-blue-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 shadow-sm group active:scale-[0.99]"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-xs font-bold text-white truncate group-hover:text-[#3875F6] transition-colors">
+                  <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
                     {t.title}
                   </h4>
                   <StatusBadge status={t.priority} size="xs" />
                 </div>
-                <p className="text-xs text-slate-400 truncate mt-0.5 font-medium">
-                  {t.projectName} · {t.assignee.name}
+                <p className="text-[11px] text-slate-400 truncate mt-1 font-medium">
+                  {t.projectName} · {t.assignee?.name}
                 </p>
               </div>
 
-              <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors flex-shrink-0" />
             </div>
           ))}
         </div>
       </div>
+
+      {/* ── 5. Upcoming Milestones Preview ── */}
+      <div className="p-4 rounded-3xl bg-[#080E1C] border border-[#14223E] shadow-sm flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-white tracking-tight">Upcoming Schedule Milestones</h3>
+          <button onClick={onOpenSchedule} className="text-xs font-bold text-blue-400 hover:text-blue-300 cursor-pointer">
+            Calendar
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          {milestones.map((m, idx) => (
+            <div
+              key={idx}
+              className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] flex items-center gap-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex flex-col items-center justify-center flex-shrink-0">
+                <span className="text-[9px] font-extrabold uppercase leading-none">{m.month}</span>
+                <span className="text-sm font-black leading-none mt-0.5">{m.day}</span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-xs font-bold text-white truncate">{m.title}</h4>
+                <p className="text-[11px] text-slate-400 truncate mt-0.5">{m.project}</p>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0">
+                {m.type}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </div>
   );
 };

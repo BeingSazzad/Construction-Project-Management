@@ -360,3 +360,19 @@ export interface ProjectChatMessage {
   attachmentUrl?: string;
 }
 
+export type CalendarEventType = 'Inspection' | 'Start Date' | 'Milestone' | 'Meeting' | 'Delivery' | 'Other';
+export type CalendarEventPriority = 'Low' | 'Medium' | 'High' | 'Urgent';
+
+export interface CalendarEventItem {
+  id: string;
+  title: string;
+  date: string; // YYYY-MM-DD or MM/DD/YYYY
+  type: CalendarEventType;
+  projectId?: string;
+  projectName?: string;
+  priority?: CalendarEventPriority;
+  time?: string;
+  notes?: string;
+}
+
+

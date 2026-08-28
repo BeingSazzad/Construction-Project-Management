@@ -60,6 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
   const getTabTitle = (tab: string) => {
     switch (tab) {
       case 'projects': return 'Active Projects';
+      case 'calendar': return 'Master Calendar';
       case 'tasks': return 'Task Management';
       case 'punch': return 'Punch List Items';
       case 'budgets': return 'Budgets & Financials';
@@ -200,7 +201,7 @@ export const Header: React.FC<HeaderProps> = ({
                     Good morning, {firstName}! 👋
                   </h1>
                   <p className="text-[10px] text-slate-400 mt-0.5 font-medium truncate">
-                    Lattice Construction
+                    Avery &amp; Marsh Construction
                   </p>
                 </div>
               </div>

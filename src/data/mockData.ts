@@ -2,7 +2,7 @@ import {
   User, Project, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, NotificationItem,
   DailyLogItem, PlanGridPin, FinancingDraw, LienWaiver, OpportunityDeal, ProjectChatMessage,
-  ChangeOrder
+  ChangeOrder, CalendarEventItem
 } from '../types';
 
 export const CURRENT_USERS: Record<string, User> = {
@@ -1487,4 +1487,91 @@ export const MOCK_CHANGE_ORDERS: ChangeOrder[] = [
     createdDate: '2025-05-18'
   }
 ];
+
+export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
+  {
+    id: 'evt-1',
+    title: 'Rough',
+    date: '2026-08-24',
+    type: 'Inspection',
+    projectId: 'proj-1',
+    projectName: 'Riverside Office Complex',
+    priority: 'High',
+    time: '10:00 AM',
+    notes: 'City framing and MEP rough-in inspection'
+  },
+  {
+    id: 'evt-2',
+    title: 'Sold - Natus dolorem lorem',
+    date: '2026-08-28',
+    type: 'Milestone',
+    projectId: 'proj-2',
+    projectName: 'Natus dolorem lorem',
+    priority: 'Urgent',
+    time: '02:00 PM',
+    notes: 'Client contract finalized and funded'
+  },
+  {
+    id: 'evt-3',
+    title: 'Sold - Sample 2',
+    date: '2026-08-28',
+    type: 'Milestone',
+    projectId: 'proj-3',
+    projectName: 'Sample 2 Residence',
+    priority: 'High',
+    time: '04:30 PM',
+    notes: 'Permits cleared and initial deposit in escrow'
+  },
+  {
+    id: 'evt-4',
+    title: 'Foundation Pour Milestone',
+    date: '2026-08-12',
+    type: 'Milestone',
+    projectId: 'proj-1',
+    projectName: 'Riverside Office Complex',
+    priority: 'Urgent',
+    time: '07:00 AM'
+  },
+  {
+    id: 'evt-5',
+    title: 'Plumbing Rough-in',
+    date: '2026-08-18',
+    type: 'Inspection',
+    projectId: 'proj-1',
+    projectName: 'Riverside Office Complex',
+    priority: 'High',
+    time: '01:30 PM'
+  },
+  {
+    id: 'evt-6',
+    title: 'Cabinetry Delivery',
+    date: '2026-08-21',
+    type: 'Delivery',
+    projectId: 'proj-2',
+    projectName: 'Highland Luxury Villa',
+    priority: 'Medium',
+    time: '09:00 AM'
+  },
+  {
+    id: 'evt-7',
+    title: 'Owner Walkthrough Meeting',
+    date: '2026-08-26',
+    type: 'Meeting',
+    projectId: 'proj-1',
+    projectName: 'Riverside Office Complex',
+    priority: 'Medium',
+    time: '11:00 AM'
+  },
+  {
+    id: 'evt-8',
+    title: 'Framing Start Date',
+    date: '2026-08-05',
+    type: 'Start Date',
+    projectId: 'proj-3',
+    projectName: 'Metro Logistics Warehouse',
+    priority: 'High',
+    time: '08:00 AM'
+  }
+];
+
 

@@ -3,14 +3,15 @@ import {
   UserRole, Project, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
   NotificationItem, TaskStatus, PunchStatus, PlanGridPin, ProjectChatMessage,
-  FinancingDraw, LienWaiver, ProjectStatus, ChangeOrder
+  FinancingDraw, LienWaiver, ProjectStatus, ChangeOrder, CalendarEventItem
 } from './types';
 import { 
   CURRENT_USERS, MOCK_PROJECTS, MOCK_TASKS, MOCK_GANTT, 
   MOCK_BUDGET_CATEGORIES, MOCK_PUNCH_ITEMS, MOCK_SUBCONTRACTORS, 
   MOCK_PHOTOS, MOCK_DOCUMENTS, MOCK_REPORTS, MOCK_NOTIFICATIONS,
   MOCK_PLAN_PINS, MOCK_PROJECT_CHATS,
-  MOCK_FINANCING_DRAWS, MOCK_LIEN_WAIVERS, MOCK_CHANGE_ORDERS
+  MOCK_FINANCING_DRAWS, MOCK_LIEN_WAIVERS, MOCK_CHANGE_ORDERS,
+  MOCK_CALENDAR_EVENTS
 } from './data/mockData';
 
 // Common Components
@@ -43,6 +44,7 @@ import { ProjectReportsTab } from './components/project/ProjectReportsTab';
 import { ProjectTeamTab } from './components/project/ProjectTeamTab';
 import { TeamHubView } from './components/team/TeamHubView';
 import { BuildScopeView } from './components/buildscope/BuildScopeView';
+import { CalendarView } from './components/calendar/CalendarView';
 
 // Opportunities & Budgets Hub
 import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
@@ -105,6 +107,7 @@ export function App() {
   const [draws, setDraws] = useState<FinancingDraw[]>(MOCK_FINANCING_DRAWS);
   const [lienWaivers, setLienWaivers] = useState<LienWaiver[]>(MOCK_LIEN_WAIVERS);
   const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>(MOCK_CHANGE_ORDERS);
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventItem[]>(MOCK_CALENDAR_EVENTS);
 
   // Modals state
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
@@ -684,10 +687,30 @@ export function App() {
                       onApprovePayApp={() => setIsApprovePayAppOpen(true)}
                       onOpenLatti={() => setActiveTab('latti')}
                     />
+                  ) : currentRole === 'pm' ? (
+                    <PMDashboard
+                      projects={projects}
+                      tasks={tasks}
+                      onSelectProject={handleSelectProject}
+                      onOpenTask={(t) => setSelectedTask(t)}
+                      onCreateTask={() => setIsTaskTypeSelectOpen(true)}
+                      onOpenSchedule={() => setActiveTab('calendar')}
+                      onOpenLatti={() => setActiveTab('latti')}
+                    />
+                  ) : currentRole === 'field' ? (
+                    <FieldDashboard
+                      tasks={tasks}
+                      photos={photos}
+                      onOpenTask={(t) => setSelectedTask(t)}
+                      onUpdateTaskStatus={handleUpdateTaskStatus}
+                      onTriggerPhotoUpload={() => setIsPhotoUploadOpen(true)}
+                      onViewDrawings={() => setActiveTab('buildscope')}
+                    />
                   ) : (
                     <SimpleHomeView
                       currentUser={currentUser}
                       projects={projects}
+                      tasks={tasks}
                       onSelectProject={handleSelectProject}
                       onOpenLatti={() => setActiveTab('latti')}
                       onOpenMessages={() => setActiveTab('messages')}
@@ -747,6 +770,16 @@ export function App() {
                     chatMessages={chatMessages}
                     onSendMessage={handleSendMessage}
                     onSelectProject={(p) => setActiveProject(p)}
+                  />
+                )}
+
+                {/* 5.5 CALENDAR & INSPECTIONS MASTER HUB */}
+                {activeTab === 'calendar' && (
+                  <CalendarView
+                    projects={projects}
+                    events={calendarEvents}
+                    onSelectProject={handleSelectProject}
+                    onAddEvent={(evt) => setCalendarEvents(prev => [evt, ...prev])}
                   />
                 )}
 
@@ -840,7 +873,12 @@ export function App() {
             onClose={() => setIsSideDrawerOpen(false)}
             currentUser={currentUser}
             onNavigateTab={(tab) => {
-              if (tab === 'buildscope' || tab === 'intelligence-center') {
+              if (tab === 'trade-network') {
+                alert('Trade Network platform coming soon!');
+              } else if (tab === 'calendar') {
+                setActiveProject(null);
+                setActiveTab('calendar');
+              } else if (tab === 'buildscope' || tab === 'intelligence-center') {
                 setActiveProject(null);
                 setActiveTab(tab);
               } else if (['schedule', 'messages', 'photos', 'documents', 'punch', 'daily-logs', 'milestones'].includes(tab)) {
