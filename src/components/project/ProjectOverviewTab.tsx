@@ -20,6 +20,7 @@ interface ProjectOverviewTabProps {
   onUpdateStatus?: (newStatus: ProjectStatus) => void;
   changeOrders?: ChangeOrder[];
   onCreateChangeOrder?: () => void;
+  onUpdateTaskStatus?: (taskId: string, status: any) => void;
 }
 
 export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
@@ -31,7 +32,8 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   onSelectTab,
   onNavigate,
   changeOrders = [],
-  onCreateChangeOrder
+  onCreateChangeOrder,
+  onUpdateTaskStatus
 }) => {
   const projectCOs = useMemo(() => {
     return (changeOrders || []).filter(co => co.projectId === project.id);
@@ -63,6 +65,38 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
     'MEP Rough-in': false,
     'Site Logistics & Safety': false
   });
+
+  // Master Code verification state
+  const [verifyingTask, setVerifyingTask] = useState<Task | null>(null);
+  const [enteredCode, setEnteredCode] = useState('');
+  const [codeError, setCodeError] = useState('');
+
+  const handleToggleTask = (task: Task) => {
+    if (task.status === 'Completed') {
+      if (onUpdateTaskStatus) {
+        onUpdateTaskStatus(task.id, 'In Progress');
+      }
+    } else {
+      setVerifyingTask(task);
+      setEnteredCode('');
+      setCodeError('');
+    }
+  };
+
+  const handleVerifyMasterCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!verifyingTask) return;
+
+    const correctCode = project.masterCode || '1234';
+    if (enteredCode === correctCode) {
+      if (onUpdateTaskStatus) {
+        onUpdateTaskStatus(verifyingTask.id, 'Completed');
+      }
+      setVerifyingTask(null);
+    } else {
+      setCodeError('Incorrect Master Code. Unlock failed.');
+    }
+  };
 
   const togglePhase = (phaseName: string) => {
     setExpandedPhases(prev => ({
@@ -432,9 +466,12 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                       return (
                         <div key={task.id} className="flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-white/5 text-xs text-slate-300 transition-colors">
                           <div className="flex items-center gap-2 min-w-0">
-                            <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 cursor-pointer ${
-                              isTaskDone ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#2D3E5D]'
-                            }`}>
+                            <div 
+                              onClick={() => handleToggleTask(task)}
+                              className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 cursor-pointer transition-all active:scale-[0.88] ${
+                                isTaskDone ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#2D3E5D] hover:border-blue-400'
+                              }`}
+                            >
                               {isTaskDone && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                             </div>
                             <span className={`truncate font-medium ${isTaskDone ? 'line-through text-slate-500' : 'text-slate-300'}`}>
@@ -535,6 +572,70 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           </div>
         </div>
       </div>
+
+      {/* ─── MASTER CODE UNLOCK MODAL ─── */}
+      {verifyingTask && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[340px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100">
+            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+              <div className="flex items-center gap-1.5 text-blue-400">
+                <CheckSquare className="w-4 h-4" />
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Security Unlock</h3>
+              </div>
+              <button
+                onClick={() => setVerifyingTask(null)}
+                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleVerifyMasterCode} className="flex flex-col gap-3 text-xs text-center">
+              <p className="text-slate-350 text-[11px] leading-relaxed">
+                Please enter the 4-digit **Project Master Code** to mark this task as completed.
+              </p>
+
+              <div className="flex flex-col items-center gap-2">
+                <input
+                  type="password"
+                  required
+                  maxLength={4}
+                  placeholder="• • • •"
+                  value={enteredCode}
+                  onChange={(e) => {
+                    setEnteredCode(e.target.value.replace(/\D/g, ''));
+                    setCodeError('');
+                  }}
+                  className="w-32 h-10 bg-[#050811] border border-[#142036] rounded-xl text-center text-white text-lg font-black tracking-widest outline-none focus:border-blue-500"
+                />
+                <span className="text-[10px] text-slate-500 italic">Required to unlock completed tasks.</span>
+              </div>
+
+              {codeError && (
+                <div className="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 py-1 px-2 rounded-lg font-bold animate-pulse">
+                  {codeError}
+                </div>
+              )}
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
+                <button
+                  type="button"
+                  onClick={() => setVerifyingTask(null)}
+                  className="px-3.5 py-1.5 rounded-lg bg-[#0E1A33] text-slate-350 text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
+                >
+                  Confirm Unlock
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -179,6 +179,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onNavigate={(subTab) => setActiveTab(subTab)}
             changeOrders={changeOrders}
             onCreateChangeOrder={onCreateChangeOrder}
+            onUpdateTaskStatus={onUpdateTaskStatus}
           />
         )}
 
