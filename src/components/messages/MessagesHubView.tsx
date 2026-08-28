@@ -3,7 +3,8 @@ import { Project, ProjectChatMessage, User } from '../../types';
 import { 
   Hash, Search, ArrowLeft, Send, Plus, Sparkles, X, 
   Calendar, CheckCheck, Paperclip, Check, UserPlus,
-  Users, ChevronRight, Clock, ShieldCheck, AlertTriangle
+  Users, ChevronRight, Clock, ShieldCheck, AlertTriangle,
+  MoreVertical, Bell, BellOff, Pin, Trash2
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
@@ -108,9 +109,20 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
   const [isManualMemberMode, setIsManualMemberMode] = useState(false);
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>(['m-1', 'm-3']);
 
-  // In-chat add member modal
+  // In-chat add member & 3-dot menu states
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
+  const [isChannelMenuOpen, setIsChannelMenuOpen] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleDeleteChannel = (discId: string) => {
+    if (window.confirm("Are you sure you want to delete this channel? This action cannot be undone.")) {
+      setDiscussions(prev => prev.filter(d => d.id !== discId));
+      setSelectedDisc(null);
+      setIsChannelMenuOpen(false);
+    }
+  };
 
   useEffect(() => {
     if (selectedDisc) {
@@ -235,16 +247,94 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
             </div>
           </div>
 
-          {/* Quick Add Member Trigger Button */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* 3-Dot Executive Action Menu Trigger */}
+          <div className="relative flex-shrink-0">
             <button
-              onClick={() => setIsAddMemberModalOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-xs font-semibold text-blue-400 hover:text-white transition-all cursor-pointer active:scale-95 shadow-sm"
-              title="Add member to channel"
+              onClick={() => setIsChannelMenuOpen(prev => !prev)}
+              className="w-8 h-8 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm"
+              title="Channel Options"
             >
-              <UserPlus className="w-3.5 h-3.5" />
-              <span className="text-[10px]">Add Member</span>
+              <MoreVertical className="w-4 h-4 text-slate-300" />
             </button>
+
+            {/* Dropdown Menu Popover */}
+            {isChannelMenuOpen && (
+              <>
+                <div 
+                  className="fixed inset-0 z-30" 
+                  onClick={() => setIsChannelMenuOpen(false)} 
+                />
+                <div className="absolute right-0 top-10 z-40 w-52 bg-[#091122] border border-[#1E2E4A] rounded-2xl shadow-2xl p-1.5 flex flex-col gap-0.5 animate-fade-in">
+                  {/* Option 1: Add Member */}
+                  <button
+                    onClick={() => {
+                      setIsChannelMenuOpen(false);
+                      setIsAddMemberModalOpen(true);
+                    }}
+                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                  >
+                    <UserPlus className="w-4 h-4 text-blue-400" />
+                    <span>+ Add Member</span>
+                  </button>
+
+                  {/* Option 2: View Channel Members */}
+                  <button
+                    onClick={() => {
+                      setIsChannelMenuOpen(false);
+                      setIsRosterModalOpen(true);
+                    }}
+                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                  >
+                    <Users className="w-4 h-4 text-emerald-400" />
+                    <span>View Members ({selectedDisc.members.length})</span>
+                  </button>
+
+                  {/* Option 3: Mute Notifications */}
+                  <button
+                    onClick={() => {
+                      setIsMuted(!isMuted);
+                      setIsChannelMenuOpen(false);
+                    }}
+                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                  >
+                    {isMuted ? (
+                      <>
+                        <Bell className="w-4 h-4 text-amber-400" />
+                        <span>Unmute Notifications</span>
+                      </>
+                    ) : (
+                      <>
+                        <BellOff className="w-4 h-4 text-slate-400" />
+                        <span>Mute Channel</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Option 4: Pinned Files */}
+                  <button
+                    onClick={() => {
+                      setIsChannelMenuOpen(false);
+                      alert("Showing 3 Pinned Documents & Drawings for #" + selectedDisc.channelName);
+                    }}
+                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                  >
+                    <Pin className="w-4 h-4 text-cyan-400" />
+                    <span>Pinned Items (3)</span>
+                  </button>
+
+                  <div className="my-1 border-t border-[#142036]" />
+
+                  {/* Option 5: Delete Channel */}
+                  <button
+                    onClick={() => handleDeleteChannel(selectedDisc.id)}
+                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-400" />
+                    <span>Delete Channel</span>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -292,6 +382,50 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
               <button
                 onClick={() => setIsAddMemberModalOpen(false)}
                 className="w-full py-2 rounded-xl bg-[#142036] text-slate-300 text-xs font-bold hover:bg-[#1E2E4A]"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: View Channel Members Roster */}
+        {isRosterModalOpen && (
+          <div className="absolute inset-0 z-30 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+            <div className="w-full max-w-[360px] bg-[#0A111F] border border-[#1E2E4A] rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-emerald-400" />
+                  <span className="text-xs font-bold text-white">Channel Roster ({selectedDisc.members.length})</span>
+                </div>
+                <button onClick={() => setIsRosterModalOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
+                {selectedDisc.members.map(member => (
+                  <div
+                    key={member.id}
+                    className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-2 shadow-sm"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <img src={member.avatar} alt={member.name} className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A]" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-white truncate">{member.name}</p>
+                        <p className="text-[10px] text-slate-400 font-medium truncate">{member.role}</p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex-shrink-0">
+                      Active
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setIsRosterModalOpen(false)}
+                className="w-full py-2 rounded-xl bg-[#142036] text-slate-300 text-xs font-bold hover:bg-[#1E2E4A] cursor-pointer"
               >
                 Close
               </button>
