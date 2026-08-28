@@ -135,7 +135,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                     </span>
                   )}
                   {opt.badge && (
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-medium">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-medium">
                       {opt.badge}
                     </span>
                   )}

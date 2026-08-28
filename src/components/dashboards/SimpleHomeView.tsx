@@ -149,7 +149,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
             <div className="text-left min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-white">Opportunities Pipeline</span>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">6 Active</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">6 Active</span>
               </div>
               <p className="text-[12px] text-slate-400 font-medium mt-0.5 truncate">$3.77M Pipeline Value · 25% Avg Prob</p>
             </div>

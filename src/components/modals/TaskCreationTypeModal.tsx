@@ -149,7 +149,7 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
                 <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors truncate">
                   {preset.title}
                 </span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${preset.priority === 'Critical'
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${preset.priority === 'Critical'
                     ? 'text-rose-400 bg-rose-500/10 border-rose-500/20'
                     : preset.priority === 'High'
                       ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
@@ -161,7 +161,7 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
               <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">
                 {preset.desc}
               </p>
-              <div className="flex items-center justify-between text-[9px] text-slate-500 pt-1 border-t border-[#142036]">
+              <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-[#142036]">
                 <span>Code: <strong className="text-slate-300">{preset.costCode}</strong></span>
                 <span>Subtasks: <strong className="text-emerald-400">{preset.subtasks.length} items</strong></span>
               </div>

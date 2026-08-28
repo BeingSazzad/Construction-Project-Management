@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import { BudgetDetailView } from './BudgetDetailView';
 import { CreateProjectBudgetModal } from '../modals/CreateProjectBudgetModal';
+import { TabSelector } from '../common/TabSelector';
+import { FilterPills } from '../common/FilterPills';
 import { MOCK_PROJECTS } from '../../data/mockData';
 
 export interface BudgetCardItem {
@@ -289,48 +291,21 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
       </div>
 
       {/* ─── 3. SEGMENTED TABS: COST BREAKDOWN vs PROJECT SHEETS ─── */}
-      <div className="flex items-center gap-2 p-1 bg-[#070D1A] rounded-xl border border-[#142036]">
-        <button
-          onClick={() => setViewMode('analytics')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-            viewMode === 'analytics'
-              ? 'bg-[#2563EB] text-white shadow-sm'
-              : 'text-slate-400 hover:text-white font-semibold'
-          }`}
-        >
-          CSI Cost Breakdown
-        </button>
-        <button
-          onClick={() => setViewMode('sheets')}
-          className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-            viewMode === 'sheets'
-              ? 'bg-[#2563EB] text-white shadow-sm'
-              : 'text-slate-400 hover:text-white font-semibold'
-          }`}
-        >
-          Project Sheets ({budgets.length})
-        </button>
-      </div>
+      <TabSelector
+        activeId={viewMode}
+        onChange={(id) => setViewMode(id as 'analytics' | 'sheets')}
+        options={[
+          { id: 'analytics', label: 'CSI Cost Breakdown' },
+          { id: 'sheets', label: `Project Sheets (${budgets.length})` }
+        ]}
+      />
 
       {/* ─── 4. PROJECT FILTER PILLS ─── */}
-      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
-        {projectsList.map((p) => {
-          const isActive = selectedProjectFilter === p;
-          return (
-            <button
-              key={p}
-              onClick={() => setSelectedProjectFilter(p)}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border ${
-                isActive
-                  ? 'bg-[#2563EB] border-blue-500 text-white font-bold shadow-sm'
-                  : 'bg-[#070D1A] text-slate-400 hover:text-white border-[#142036]'
-              }`}
-            >
-              {p}
-            </button>
-          );
-        })}
-      </div>
+      <FilterPills
+        options={projectsList}
+        selected={selectedProjectFilter}
+        onSelect={setSelectedProjectFilter}
+      />
 
       {/* ─── 5. TAB VIEW CONTENT ─── */}
       {viewMode === 'analytics' ? (

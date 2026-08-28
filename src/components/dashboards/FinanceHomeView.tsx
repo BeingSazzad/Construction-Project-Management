@@ -89,13 +89,13 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
             <div className="p-3 rounded-2xl bg-[#060913]/70 border border-[#142036]">
               <p className="text-[10px] font-semibold text-slate-400">Total Portfolio Capital</p>
               <p className="text-base font-extrabold text-white mt-0.5">${(totalBudget / 1000000).toFixed(2)}M</p>
-              <p className="text-[9px] text-slate-500 mt-0.5">Committed: ${(totalCommitted / 1000000).toFixed(2)}M</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">Committed: ${(totalCommitted / 1000000).toFixed(2)}M</p>
             </div>
 
             <div className="p-3 rounded-2xl bg-[#060913]/70 border border-[#142036]">
               <p className="text-[10px] font-semibold text-slate-400">Disbursed to Date</p>
               <p className="text-base font-extrabold text-emerald-400 mt-0.5">${(totalPaid / 1000000).toFixed(2)}M</p>
-              <p className="text-[9px] text-slate-500 mt-0.5">Spent: ${(totalActual / 1000000).toFixed(2)}M</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">Spent: ${(totalActual / 1000000).toFixed(2)}M</p>
             </div>
 
             <div 
@@ -107,7 +107,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                 <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400" />
               </div>
               <p className="text-base font-extrabold text-blue-400 mt-0.5">${(pendingDrawsAmount / 1000).toFixed(0)}K</p>
-              <p className="text-[9px] text-blue-400/80 font-medium mt-0.5">{pendingDraws.length} Draws in Review</p>
+              <p className="text-[10px] text-blue-400/80 font-medium mt-0.5">{pendingDraws.length} Draws in Review</p>
             </div>
 
             <div 
@@ -119,7 +119,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                 <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400" />
               </div>
               <p className="text-base font-extrabold text-amber-400 mt-0.5">{actionRequiredWaivers.length} Action Needed</p>
-              <p className="text-[9px] text-slate-400 font-medium mt-0.5">{signedWaivers} Signed Waivers</p>
+              <p className="text-[10px] text-slate-400 font-medium mt-0.5">{signedWaivers} Signed Waivers</p>
             </div>
           </div>
         </div>
@@ -137,7 +137,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
               <Landmark className="w-4 h-4" />
             </div>
             <span className="text-xs font-bold text-white leading-tight">Request Draw</span>
-            <span className="text-[9px] text-slate-400">Lender Draw</span>
+            <span className="text-[10px] text-slate-400">Lender Draw</span>
           </button>
 
           <button
@@ -148,7 +148,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
               <FileCheck className="w-4 h-4" />
             </div>
             <span className="text-xs font-bold text-white leading-tight">Log Waiver</span>
-            <span className="text-[9px] text-slate-400">Sub Compliance</span>
+            <span className="text-[10px] text-slate-400">Sub Compliance</span>
           </button>
 
           <button
@@ -159,7 +159,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
               <DollarSign className="w-4 h-4" />
             </div>
             <span className="text-xs font-bold text-white leading-tight">Pay Application</span>
-            <span className="text-[9px] text-slate-400">Disbursement</span>
+            <span className="text-[10px] text-slate-400">Disbursement</span>
           </button>
         </div>
       </div>
@@ -186,7 +186,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-white truncate">{d.milestoneTitle}</span>
-                  <span className="text-[9px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">
+                  <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">
                     Draw #{d.drawNumber}
                   </span>
                 </div>
@@ -207,7 +207,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-white truncate">{l.subcontractorName}</span>
-                  <span className="text-[9px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
+                  <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
                     {l.type}
                   </span>
                 </div>
@@ -306,7 +306,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
             <div key={idx} className="p-2.5 rounded-2xl bg-[#090E1A] border border-[#141F33] flex flex-col gap-1">
               <span className="text-[10px] font-bold text-white truncate">{m.name}</span>
               <span className="text-[10px] text-slate-400 font-medium">{m.rate}</span>
-              <div className={`mt-0.5 px-2 py-0.5 rounded-md text-[9px] font-bold flex items-center gap-1 border self-start ${
+              <div className={`mt-0.5 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 border self-start ${
                 m.isUp 
                   ? 'text-rose-400 bg-rose-500/10 border-rose-500/20' 
                   : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'

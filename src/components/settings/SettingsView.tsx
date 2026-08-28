@@ -117,7 +117,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         {/* Current Plan Card */}
         <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Current Plan</span>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Current Plan</span>
             <h3 className="text-base font-black text-white mt-0.5">Trial</h3>
             <p className="text-[12px] text-slate-400 mt-0.5 font-medium">14-day free trial · No credit card required</p>
           </div>
@@ -128,7 +128,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Pricing Tier 1: Professional ($19/mo) */}
         <div className="p-4 rounded-2xl bg-[#0A111F] border-2 border-blue-500/50 shadow-md flex flex-col gap-3 relative">
-          <span className="text-[9px] font-black tracking-wider text-blue-400 uppercase">Most Popular</span>
+          <span className="text-[10px] font-black tracking-wider text-blue-400 uppercase">Most Popular</span>
           <div className="flex items-baseline justify-between">
             <h4 className="text-sm font-bold text-white">Professional</h4>
             <div className="text-right">

@@ -376,7 +376,7 @@ export const OpportunitiesView: React.FC = () => {
                   onClick={() => setIsStageMenuOpen(false)}
                 />
                 <div className="absolute right-0 top-full mt-1.5 w-48 rounded-2xl bg-[#0A111F] border border-[#1E2D4A] p-1.5 shadow-2xl shadow-black/80 backdrop-blur-xl z-50 flex flex-col gap-0.5 animate-fade-in">
-                  <div className="px-2 py-1 text-[9px] font-bold text-slate-500 uppercase tracking-wider">
+                  <div className="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                     Filter by Stage
                   </div>
 
@@ -463,7 +463,7 @@ export const OpportunitiesView: React.FC = () => {
                   onClick={() => setIsSortMenuOpen(false)}
                 />
                 <div className="absolute right-0 top-full mt-1.5 w-44 rounded-2xl bg-[#0A111F] border border-[#1E2D4A] p-1.5 shadow-2xl shadow-black/80 backdrop-blur-xl z-50 flex flex-col gap-0.5 animate-fade-in">
-                  <div className="px-2 py-1 text-[9px] font-bold text-slate-500 uppercase tracking-wider">
+                  <div className="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                     Sort Deals
                   </div>
 

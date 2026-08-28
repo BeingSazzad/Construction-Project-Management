@@ -74,7 +74,7 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
             <span>GPS: 40.7128° N, 74.0060° W</span>
           </div>
 
-          <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-0.5 rounded text-[9px] text-slate-300 font-mono">
+          <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-0.5 rounded text-[10px] text-slate-300 font-mono">
             4K UHD • 12.4 MB
           </div>
         </div>

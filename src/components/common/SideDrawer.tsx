@@ -190,7 +190,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
         {/* ─── Role Switcher Selector ─── */}
         {onRoleChange && (
           <div className="mx-3 mt-3 p-2.5 rounded-2xl bg-[#091122] border border-[#142036] flex flex-col gap-1.5">
-            <span className="text-[9px] uppercase tracking-wider text-slate-500 font-bold px-0.5">
+            <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold px-0.5">
               Active User Role
             </span>
             <div className="grid grid-cols-2 gap-1.5">

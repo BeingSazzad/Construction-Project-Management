@@ -316,7 +316,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                       <div key={cc.code} className="py-3 first:pt-2.5 last:pb-0 flex flex-col gap-2 animate-fade-in">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="font-mono text-[9px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.2 rounded border border-blue-500/20 flex-shrink-0">
+                            <span className="font-mono text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.2 rounded border border-blue-500/20 flex-shrink-0">
                               {cc.code}
                             </span>
                             <span className="font-bold text-white text-[12px] truncate">{cc.name}</span>
@@ -348,7 +348,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <span className="w-1 h-1 rounded-full bg-slate-600 flex-shrink-0" />
                                 <span className="font-medium text-slate-300 truncate">{item.name}</span>
-                                <span className="text-[8px] uppercase text-slate-500 font-bold flex-shrink-0">({item.type})</span>
+                                <span className="text-[10px] uppercase text-slate-500 font-bold flex-shrink-0">({item.type})</span>
                               </div>
                               <span className="font-semibold text-slate-300 flex-shrink-0">${item.actualCost.toLocaleString()}</span>
                             </div>

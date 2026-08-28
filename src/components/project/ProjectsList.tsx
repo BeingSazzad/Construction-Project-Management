@@ -328,15 +328,15 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
                   {/* KPI Row */}
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-2 bg-[#050811] rounded-xl border border-[#142036] text-center">
-                      <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Budget</p>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Budget</p>
                       <p className="text-xs font-bold text-white mt-0.5">${budgetTotalM}M</p>
                     </div>
                     <div className="p-2 bg-[#050811] rounded-xl border border-[#142036] text-center">
-                      <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Spent</p>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Spent</p>
                       <p className={`text-xs font-bold mt-0.5 ${isAtRisk ? 'text-amber-400' : 'text-emerald-400'}`}>${budgetActualM}M</p>
                     </div>
                     <div className="p-2 bg-[#050811] rounded-xl border border-[#142036] text-center">
-                      <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Progress</p>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Progress</p>
                       <p className="text-xs font-bold text-white mt-0.5">{project.progress}%</p>
                     </div>
                   </div>

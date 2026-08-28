@@ -318,7 +318,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 </div>
                 <div>
                   <span className="text-xs font-black text-white tracking-tight">Latti</span>
-                  <span className="ml-1.5 text-[9px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded">Milestone Alert</span>
+                  <span className="ml-1.5 text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded">Milestone Alert</span>
                 </div>
               </div>
               <span className="text-[10px] text-slate-400 font-medium">4:57 AM</span>
@@ -389,7 +389,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                   {isMe && (
                     <div className="flex items-center gap-1 pr-1">
                       <CheckCheck className="w-3.5 h-3.5 text-blue-400" />
-                      <span className="text-[9px] text-slate-500">Delivered</span>
+                      <span className="text-[10px] text-slate-500">Delivered</span>
                     </div>
                   )}
                 </div>
@@ -519,7 +519,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                         <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full object-cover" />
                         <div className="min-w-0">
                           <p className="text-[12px] font-bold text-white truncate">{member.name}</p>
-                          <p className="text-[9px] text-slate-400 truncate">{member.role}</p>
+                          <p className="text-[10px] text-slate-400 truncate">{member.role}</p>
                         </div>
                       </div>
                       <div className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 ${

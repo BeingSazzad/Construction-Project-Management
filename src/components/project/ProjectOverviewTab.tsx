@@ -177,7 +177,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         <div className="p-2.5 rounded-xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-1 text-slate-400">
             <Activity className="w-3 h-3 text-blue-400" />
-            <span className="text-[9px] font-bold uppercase tracking-wider">Progress</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Progress</span>
           </div>
           <div className="mt-1">
             <span className="text-base font-black text-white">{project.progress}%</span>
@@ -191,11 +191,11 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         <div className="p-2.5 rounded-xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-1 text-slate-400">
             <CheckSquare className="w-3 h-3 text-emerald-400" />
-            <span className="text-[9px] font-bold uppercase tracking-wider">Tasks</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Tasks</span>
           </div>
           <div className="mt-1 flex flex-col">
             <span className="text-base font-black text-white">{completedTasksCount}/{tasks.length || 71}</span>
-            <span className="text-[9px] text-slate-400 font-medium">completed</span>
+            <span className="text-[10px] text-slate-400 font-medium">completed</span>
           </div>
         </div>
 
@@ -203,11 +203,11 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         <div className="p-2.5 rounded-xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-1 text-slate-400">
             <Calendar className="w-3 h-3 text-amber-400" />
-            <span className="text-[9px] font-bold uppercase tracking-wider">Timeline</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Timeline</span>
           </div>
           <div className="mt-1 flex flex-col leading-tight">
             <span className="text-xs font-bold text-white truncate">Oct 15</span>
-            <span className="text-[9px] text-slate-400 truncate">→ Apr 2027</span>
+            <span className="text-[10px] text-slate-400 truncate">→ Apr 2027</span>
           </div>
         </div>
       </div>
@@ -277,7 +277,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         >
           <Camera className="w-5 h-5 text-sky-400" />
           <span className="text-[10px] font-bold text-white leading-tight">Photos</span>
-          <span className="text-[9px] text-slate-500 font-medium">({photos.length})</span>
+          <span className="text-[10px] text-slate-500 font-medium">({photos.length})</span>
         </button>
 
         <button 
@@ -286,7 +286,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         >
           <FileText className="w-5 h-5 text-purple-400" />
           <span className="text-[10px] font-bold text-white leading-tight">Documents</span>
-          <span className="text-[9px] text-slate-500 font-medium">({documents.length})</span>
+          <span className="text-[10px] text-slate-500 font-medium">({documents.length})</span>
         </button>
 
         <button 
@@ -295,7 +295,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         >
           <AlertCircle className="w-5 h-5 text-rose-400" />
           <span className="text-[10px] font-bold text-white leading-tight">Punch List</span>
-          <span className="text-[9px] text-rose-400 font-extrabold bg-rose-500/10 px-1.5 py-0.2 rounded-full">
+          <span className="text-[10px] text-rose-400 font-extrabold bg-rose-500/10 px-1.5 py-0.2 rounded-full">
             {punchItems.filter(p => p.status === 'Open').length}
           </span>
         </button>
@@ -311,7 +311,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                 <Coins className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Master CSI Budget</span>
               </div>
-              <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                 Active
               </span>
             </div>
@@ -392,8 +392,8 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                 <div key={co.id} className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between text-xs transition-colors animate-fade-in">
                   <div className="flex flex-col gap-1 min-w-0">
                     <h4 className="font-bold text-white leading-tight truncate max-w-[200px]">{co.title}</h4>
-                    <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-semibold">
-                      <span className="bg-[#142036] px-1.5 py-0.2 rounded text-[8px] text-blue-300 font-bold uppercase tracking-wider">{co.category}</span>
+                    <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold">
+                      <span className="bg-[#142036] px-1.5 py-0.2 rounded text-[10px] text-blue-300 font-bold uppercase tracking-wider">{co.category}</span>
                       <span>•</span>
                       <span>By: {co.requestedBy}</span>
                     </div>
@@ -401,10 +401,10 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                   <div className="text-right flex flex-col items-end gap-1 flex-shrink-0">
                     <span className="font-black text-white">${co.amount.toLocaleString()}</span>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[9px] text-slate-400 font-medium">
+                      <span className="text-[10px] text-slate-400 font-medium">
                         {co.timeImpact > 0 ? `+${co.timeImpact}d` : 'no delay'}
                       </span>
-                      <span className={`text-[8px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider ${
+                      <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider ${
                         co.status === 'Approved'
                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                           : co.status === 'Pending'
@@ -479,10 +479,10 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                             </span>
                           </div>
                           
-                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             isTaskDone ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
                           }`}>
-                            {isTaskDone ? 'done' : 'todo'}
+                            {isTaskDone ? 'Done' : 'To Do'}
                           </span>
                         </div>
                       );
@@ -503,7 +503,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           <div className="flex items-start gap-2 text-xs">
             <MapPin className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
-              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Address</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Address</span>
               <span className="font-medium text-white text-[12px] break-words">{project.location || '1235 Cordova Blvd NE'}</span>
               <span className="text-[10px] text-slate-400 block mt-0.5">{project.cityState}</span>
             </div>
@@ -512,16 +512,16 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           <div className="flex items-start gap-2 text-xs">
             <User className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
-              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Lead PM</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Lead PM</span>
               <span className="font-medium text-white text-[12px]">{project.projectManager.name}</span>
-              <span className="text-[9px] text-slate-400 block">GC Owner: Sazzad</span>
+              <span className="text-[10px] text-slate-400 block">GC Owner: Sazzad</span>
             </div>
           </div>
 
           <div className="flex items-start gap-2 text-xs">
             <Calendar className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
-              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Start Date</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Start Date</span>
               <span className="font-medium text-white text-[12px]">{project.startDate || 'Jan 10, 2025'}</span>
             </div>
           </div>
@@ -529,7 +529,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           <div className="flex items-start gap-2 text-xs">
             <Calendar className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
-              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Target End</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Target End</span>
               <span className="font-medium text-white text-[12px]">{project.targetEndDate || 'Jun 30, 2026'}</span>
             </div>
           </div>

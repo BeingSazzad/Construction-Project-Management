@@ -61,7 +61,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
             <span className="text-[10px] text-cyan-300 font-mono mt-2">LEVEL 12 ELEVATED SLAB REBAR SPACING</span>
           </div>
 
-          <div className="flex justify-between text-[9px] text-slate-400 font-mono">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>ISSUED FOR CONSTRUCTION</span>
             <span>REV DATE: MAY 17, 2025</span>
           </div>

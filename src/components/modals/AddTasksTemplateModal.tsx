@@ -406,7 +406,7 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
                             <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-1">{task.description}</p>
                           </div>
 
-                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
                             task.priority === 'Critical'
                               ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                               : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'

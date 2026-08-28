@@ -84,8 +84,8 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
               </div>
               <div className="min-w-0">
                 <h3 className="text-xs font-bold text-white leading-tight truncate max-w-[200px]">{rep.title}</h3>
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-semibold mt-1">
-                  <span className="bg-[#142036] px-1.5 py-0.2 rounded text-[8px] text-blue-300 font-bold uppercase tracking-wider">{rep.type}</span>
+                <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold mt-1">
+                  <span className="bg-[#142036] px-1.5 py-0.2 rounded text-[10px] text-blue-300 font-bold uppercase tracking-wider">{rep.type}</span>
                   <span>•</span>
                   <span>By: {rep.author}</span>
                   <span>•</span>
@@ -161,7 +161,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
               <div className="border border-dashed border-[#1E2D4A] rounded-xl p-4 bg-[#050811] flex flex-col items-center justify-center text-center gap-1.5">
                 <UploadCloud className="w-6 h-6 text-blue-400" />
                 <span className="text-[10px] text-slate-300 font-bold">Select File or Drop PDF / Excel here</span>
-                <span className="text-[9px] text-slate-500">Max size 25MB</span>
+                <span className="text-[10px] text-slate-500">Max size 25MB</span>
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">

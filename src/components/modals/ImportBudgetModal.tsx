@@ -123,12 +123,12 @@ export const ImportBudgetModal: React.FC<ImportBudgetModalProps> = ({
                       <FileSpreadsheet className="w-4 h-4 text-purple-400 flex-shrink-0" />
                       <span className="text-xs font-bold truncate">{f.name}</span>
                     </div>
-                    <span className="text-[9px] font-bold text-slate-400 bg-[#070D1A] px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-bold text-slate-400 bg-[#070D1A] px-2 py-0.5 rounded">
                       {f.size}
                     </span>
                   </div>
                   <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-1">{f.desc}</p>
-                  <div className="flex items-center justify-between text-[9px] pt-1 text-slate-400">
+                  <div className="flex items-center justify-between text-[10px] pt-1 text-slate-400">
                     <span>Divisions Mapped: <strong className="text-purple-400">{f.divisions} CSI Divisions</strong></span>
                     <span>Total Value: <strong className="text-emerald-400">${(f.total / 1000000).toFixed(2)}M</strong></span>
                   </div>

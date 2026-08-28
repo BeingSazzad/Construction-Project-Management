@@ -50,14 +50,14 @@ const ProjectsPreview: React.FC = () => (
   <div className="w-full bg-[#0A1120] border border-[#1A2840] rounded-2xl p-3 shadow-2xl">
     <div className="flex items-center justify-between mb-2.5">
       <span className="text-[12px] font-bold text-white">Project Overview</span>
-      <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wide">Live</span>
+      <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Live</span>
     </div>
     {/* KPI row */}
     <div className="grid grid-cols-3 gap-2 mb-3">
       {[{ v: '72%', l: 'Progress' }, { v: '$2.45M', l: 'Budget' }, { v: '24', l: 'Active Tasks' }].map(k => (
         <div key={k.l} className="bg-[#111B2E] rounded-xl p-2 text-center border border-[#1A2840]">
           <div className="text-sm font-black text-blue-400">{k.v}</div>
-          <div className="text-[9px] text-slate-400 mt-0.5 font-medium">{k.l}</div>
+          <div className="text-[10px] text-slate-400 mt-0.5 font-medium">{k.l}</div>
         </div>
       ))}
     </div>
@@ -69,11 +69,11 @@ const ProjectsPreview: React.FC = () => (
         { label: 'Façade Works', w: 33, color: 'bg-amber-500' },
       ].map(b => (
         <div key={b.label} className="flex items-center gap-2">
-          <span className="text-[9px] text-slate-400 w-20 flex-shrink-0">{b.label}</span>
+          <span className="text-[10px] text-slate-400 w-20 flex-shrink-0">{b.label}</span>
           <div className="flex-1 h-2 bg-[#1A2840] rounded-full overflow-hidden">
             <div className={`h-full rounded-full ${b.color}`} style={{ width: `${b.w}%` }} />
           </div>
-          <span className="text-[9px] font-bold text-slate-300 w-7 text-right">{b.w}%</span>
+          <span className="text-[10px] font-bold text-slate-300 w-7 text-right">{b.w}%</span>
         </div>
       ))}
     </div>
@@ -100,8 +100,8 @@ const BudgetPreview: React.FC = () => (
             strokeDasharray="8 74" strokeDashoffset="-74" strokeLinecap="round" />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-[9px] font-black text-white leading-none">$2.45M</span>
-          <span className="text-[7px] text-slate-400">Total</span>
+          <span className="text-[10px] font-black text-white leading-none">$2.45M</span>
+          <span className="text-[10px] text-slate-400">Total</span>
         </div>
       </div>
       {/* Legend */}
@@ -115,16 +115,16 @@ const BudgetPreview: React.FC = () => (
           <div key={row.label} className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <div className={`w-2 h-2 rounded-full ${row.dot}`} />
-              <span className="text-[9px] text-slate-400">{row.label}</span>
+              <span className="text-[10px] text-slate-400">{row.label}</span>
             </div>
-            <span className="text-[9px] font-bold text-white">{row.val}</span>
+            <span className="text-[10px] font-bold text-white">{row.val}</span>
           </div>
         ))}
       </div>
     </div>
     {/* Cost vs Actual mini bar */}
     <div className="bg-[#111B2E] rounded-xl p-2 border border-[#1A2840]">
-      <div className="text-[9px] text-slate-400 mb-1.5">Cost vs Actual</div>
+      <div className="text-[10px] text-slate-400 mb-1.5">Cost vs Actual</div>
       <div className="flex gap-1 items-end h-7">
         {[60, 80, 50, 90, 70, 55, 75].map((h, i) => (
           <div key={i} className="flex-1 flex flex-col gap-0.5 items-center">
@@ -153,7 +153,7 @@ const LattiPreview: React.FC = () => {
         </div>
         <div>
           <div className="text-[10px] font-bold text-white">Latti AI</div>
-          <div className="text-[8px] text-emerald-400 font-semibold flex items-center gap-1">
+          <div className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             AI Assistant
           </div>
@@ -173,19 +173,19 @@ const LattiPreview: React.FC = () => {
       <div className="bg-[#111B2E] rounded-xl rounded-tl-sm p-2.5 text-[10px] text-slate-300 border border-[#1A2840] space-y-1.5">
         <p className="leading-relaxed">2 projects are at risk due to schedule delays and budget overruns.</p>
         <div className="bg-[#0A1120] rounded-lg p-1.5 space-y-1 border border-[#1A2840]">
-          <div className="text-[8px] font-bold text-slate-400 uppercase tracking-wide mb-1">At Risk Projects</div>
+          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">At Risk Projects</div>
           {[
             { name: 'Downtown Tower', color: 'text-rose-400' },
             { name: 'Riverside Office', color: 'text-amber-400' },
           ].map(r => (
             <div key={r.name} className="flex items-center justify-between">
-              <span className="text-[9px] text-slate-300">{r.name}</span>
-              <span className={`text-[9px] font-bold ${r.color}`}>● At Risk</span>
+              <span className="text-[10px] text-slate-300">{r.name}</span>
+              <span className={`text-[10px] font-bold ${r.color}`}>● At Risk</span>
             </div>
           ))}
         </div>
         {!typing ? null : (
-          <div className="bg-blue-600 text-white text-[9px] font-bold text-center py-1 rounded-lg mt-1 cursor-pointer hover:bg-blue-500 transition-colors">
+          <div className="bg-blue-600 text-white text-[10px] font-bold text-center py-1 rounded-lg mt-1 cursor-pointer hover:bg-blue-500 transition-colors">
             View Details
           </div>
         )}
@@ -534,7 +534,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                 <div className="text-right flex items-center gap-3 flex-shrink-0">
                   <div>
                     <div className="text-sm font-black text-white">$49.99</div>
-                    <div className="text-[9px] text-slate-500">/mo · 14-day trial</div>
+                    <div className="text-[10px] text-slate-500">/mo · 14-day trial</div>
                   </div>
                   <button
                     onClick={() => onComplete(selectedRole)}
@@ -550,7 +550,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-black text-white">Pro</span>
-                    <span className="text-[9px] font-black uppercase text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                    <span className="text-[10px] font-black uppercase text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
                       MOST POPULAR
                     </span>
                   </div>
@@ -561,7 +561,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                 <div className="text-right flex items-center gap-3 flex-shrink-0">
                   <div>
                     <div className="text-sm font-black text-white">$199.00</div>
-                    <div className="text-[9px] text-slate-500">/mo · 14-day trial</div>
+                    <div className="text-[10px] text-slate-500">/mo · 14-day trial</div>
                   </div>
                   <button
                     onClick={() => onComplete(selectedRole)}
@@ -577,7 +577,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-black text-white">Intelligence</span>
-                    <span className="text-[9px] font-black uppercase text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                    <span className="text-[10px] font-black uppercase text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
                       COMPLETE AI PLATFORM
                     </span>
                   </div>
@@ -588,7 +588,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                 <div className="text-right flex items-center gap-3 flex-shrink-0">
                   <div>
                     <div className="text-sm font-black text-white">$349.00</div>
-                    <div className="text-[9px] text-slate-500">/mo · 14-day trial</div>
+                    <div className="text-[10px] text-slate-500">/mo · 14-day trial</div>
                   </div>
                   <button
                     onClick={() => onComplete(selectedRole)}

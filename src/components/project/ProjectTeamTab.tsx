@@ -320,7 +320,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <h4 className="text-xs font-bold text-white truncate">{staff.name}</h4>
-                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
                       staff.type === 'gc'
                         ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                         : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
