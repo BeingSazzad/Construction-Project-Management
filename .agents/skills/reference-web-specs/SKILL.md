@@ -3,38 +3,45 @@ name: reference-web-specs
 description: Complete persistent memory and master reference specifications for Avery Marsh Construction Project Management web/mobile application.
 ---
 
-# Complete Master Reference Specifications & Memory Skill
+# Master Reference Specifications & Persistent Domain Memory
 
-Use this skill whenever working on the Avery Marsh Construction Project Management codebase. It contains the complete memory and specifications collected from the Lattice Web Reference Platform across all application modules.
+This skill provides persistent memory and exact operational standards derived from the comprehensive audit of the **Lattice Web Reference Platform** and the **Avery Marsh Construction Management** ecosystem.
 
-## System Memory & Core Rules
+## 🎨 Visual System & Dark Sapphire Design Tokens
+- Canvas Base: `#070A12`
+- Surface Cards: `#070D1A` / `#0A111F`
+- Input / Inner Nested Surfaces: `#050811` / `#0E1A33`
+- Borders: `#142036`
+- Primary Accent: `#2563EB` (Sapphire Blue)
+- Functional Badges:
+  - Success/Done: `#10B981` (Emerald)
+  - In Progress: `#06B6D4` / `#0EA5E9` (Cyan/Sky with pulse dot)
+  - Pending/To Do: `#F59E0B` (Amber)
+  - Critical/Punch: `#EF4444` (Rose)
+  - AI Assistant: `#8B5CF6` (Purple)
+- Typography Scale: Strict even scale `10px`, `12px`, `14px`, `16px+`. Zero `8px`, `9px`, `11px`, or `13px` fonts.
+- Safe Bottom Padding: `pb-28` to `pb-32` across all scrollable containers so elements never hide behind the bottom navigation bar.
 
-1. **New Project Creation Form Content**:
-   - Strictly 5 fields (+ Cover Photo Upload & Presets):
-     1. Cover Photo Upload & Presets (`Modern Build`, `Custom Residence`, `Commercial Highrise`, `Renovation`)
-     2. `Project Name *` (`placeholder="e.g. Johnson Residence"`)
-     3. `Client Name` (`placeholder="e.g. John & Sarah Johnson"`)
-     4. `Address` (`placeholder="123 Oak Lane, Austin TX"`)
-     5. `Type` (`Custom Home`, `Remodel`, `New Construction`, `Commercial`, `Design-Build`)
-     6. `Master Code (4 digits) *` (`placeholder="1 2 3 4"`, subtext: `Required to unlock completed tasks.`)
-   - Primary submit button: `Create Project`
+## 📊 Home Dashboard 4-KPI Metric Suite
+1. `Active Projects` (with `{total} total` top-right green badge)
+2. `Tasks In Progress` (Activity/Pulse icon)
+3. `Tasks Due Today` (Calendar icon)
+4. `Completed Today` (CheckSquare icon)
+- Followed by `Risk Alerts` real-time feed.
 
-2. **Design Tokens & Theme Architecture**:
-   - Base Theme: `#070A12` Ultra Dark Navy
-   - Card Fill: `#0A111F` / `#070D1A`
-   - Primary Brand Accent: `#2563EB` Sapphire Blue
-   - Borders: `#142036`
-   - Zero nakli/fake pre-filled state initializers
-   - Zero multi-step wizard friction in creation forms
-   - Zero upsell clutter in settings
+## 💰 Budgets & Financials Architecture
+- **Primary Action Trio**: `Create Project Budget`, `Analyze a Deal` (Latti Deal Score 1-100, ARV, 3 Scenarios, ROI), `Import from BuildScope AI`.
+- **CSI 16-Division Master Ledger**: Complete 01-000 through 16-000 breakdown with synchronized portfolio totals, committed subcontracts, actual paid, and remaining balances.
+- **Pre-Built Templates**: Commercial Highrise (71 Div), Custom Residential (50 Div), Multi-Family Renovation (28 Div).
 
-3. **Master Modules Breakdown**:
-   - **Projects List**: Portfolio value ($M), live search, 4 filter pills (`All`, `On Schedule`, `At Risk`, `Completed`), project cards with photo thumbnail, location pill, budget KPIs, progress bar.
-   - **Project Overview**: Hero image banner, 4-stage connected stepper (`Planning` → `Pre-Con` → `In Progress` → `Completed`), 4 Vitals KPI cards, Quick Navigation grid (`Tasks`, `Punch`, `Photos`, `Docs`), Priority Punch items feed.
-   - **Opportunities & Pipeline**: Pipeline stages kanban/list, single-page creation form with 3 clear sections (`Create Opportunity`).
-   - **Budgets & Finance**: Master budget ledger, CSI 16-division breakdown, single-page budget creation (`Create Project Budget`).
-   - **Team & Messages**: Unified discussion thread with Latti AI bot, company team directory with role filters.
-   - **Settings & Company Profile**: Clean 4-field company profile form (`Company Name`, `Business Phone`, `Office Address`, `GC License #`).
+## ⚡ Task Management
+- 1-Click seamless 3-state cycle: `To Do` ➔ `In Progress` ➔ `Done` ➔ `To Do`.
+- Zero security code / PIN popup friction during normal task checking.
 
-4. **Build Verification**:
-   - `npx tsc --noEmit` must return 0 errors.
+## 👥 Team Directory & Member Affiliations
+- Explicit `🏢 GC (In-House Staff)` vs `🔨 Sub (Subcontractor)` toggle.
+- Full role designations (PM, Superintendent, Architect, MEP Lead, Specialty Subs).
+
+## 📸 Site Photo Gallery
+- Unobstructed `aspect-square` grid with minimal glassmorphism category tags.
+- High-res Lightbox modal with zoom, download, metadata, and fallback fail-safe.
