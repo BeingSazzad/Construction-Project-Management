@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { 
   Plus, Target, Ruler, Upload, Download, ChevronRight, Layers, 
   DollarSign, Check, X, FileSpreadsheet, Search, Trash2,
-  Building2, Sparkles, Calculator, Archive, RotateCcw, TrendingUp
+  Building2, Sparkles, Calculator, Archive, RotateCcw, TrendingUp,
+  ArrowUpRight, Sliders
 } from 'lucide-react';
 import { BudgetDetailView } from './BudgetDetailView';
 import { CreateProjectBudgetModal } from '../modals/CreateProjectBudgetModal';
 import { DealAnalyzerModal } from '../modals/DealAnalyzerModal';
 import { ImportBudgetModal } from '../modals/ImportBudgetModal';
 import { TabSelector } from '../common/TabSelector';
-import { FilterPills } from '../common/FilterPills';
 import { MOCK_PROJECTS } from '../../data/mockData';
 
 export interface BudgetCardItem {
@@ -64,13 +64,13 @@ const INITIAL_BUDGET_CARDS: BudgetCardItem[] = [
   },
   {
     id: 'b-4',
-    name: 'Sample Construction Deal',
+    name: 'Sample Development Deal',
     type: 'Standalone budget',
-    totalBudget: 0,
-    estimated: 3500,
-    committed: 0,
-    actual: 0,
-    progress: 0,
+    totalBudget: 1850000,
+    estimated: 1850000,
+    committed: 650000,
+    actual: 420000,
+    progress: 23,
     itemsCount: 71,
     status: 'DRAFT'
   }
@@ -184,30 +184,38 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
-      {/* ─── 1. TOP HEADER & SUBTITLE ─── */}
-      <div className="flex flex-col gap-0.5">
-        <h1 className="text-lg font-bold text-white tracking-tight">Budgets & Financials</h1>
-        <p className="text-xs text-slate-400 font-medium leading-relaxed">
-          Create project budgets, analyze deals and monitor financial performance across your company.
-        </p>
+      {/* ─── 1. TOP MOBILE HEADER ─── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-bold text-white tracking-tight">Budgets & Cost Codes</h1>
+          <p className="text-xs text-slate-400 mt-0.5 font-medium">Master CSI Financial Ledger</p>
+        </div>
+
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="h-9 px-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md shadow-blue-600/30 active:scale-95 transition-all flex-shrink-0"
+        >
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <span>New Budget</span>
+        </button>
       </div>
 
-      {/* ─── 2. TOP 3 ACTION LAUNCHPAD CARDS (Reference Platform Trio) ─── */}
-      <div className="grid grid-cols-3 gap-2">
+      {/* ─── 2. MOBILE QUICK LAUNCHPAD (Horizontal Thumb-Friendly Action Cards) ─── */}
+      <div className="flex items-center gap-2.5 overflow-x-auto scrollbar-none pb-1 -mx-5 px-5">
         {/* Action 1: Create Project Budget */}
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="p-3 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/50 flex flex-col justify-between text-left cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+          className="w-48 p-3 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 flex items-center gap-3 cursor-pointer transition-all active:scale-[0.98] group shadow-sm flex-shrink-0 text-left"
         >
-          <div className="w-7 h-7 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-            <Plus className="w-4 h-4 stroke-[2.5]" />
+          <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+            <Plus className="w-4.5 h-4.5 stroke-[2.5]" />
           </div>
-          <div>
-            <h3 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors leading-tight">
+          <div className="min-w-0">
+            <h3 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors truncate">
               Create Budget
             </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-2">
-              Detailed CSI budget linked or standalone.
+            <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+              Linked or standalone
             </p>
           </div>
         </button>
@@ -215,17 +223,17 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
         {/* Action 2: Analyze a Deal */}
         <button
           onClick={() => setIsDealAnalyzerOpen(true)}
-          className="p-3 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-cyan-500/50 flex flex-col justify-between text-left cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+          className="w-48 p-3 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-cyan-500/40 flex items-center gap-3 cursor-pointer transition-all active:scale-[0.98] group shadow-sm flex-shrink-0 text-left"
         >
-          <div className="w-7 h-7 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-            <Target className="w-4 h-4" />
+          <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+            <Target className="w-4.5 h-4.5" />
           </div>
-          <div>
-            <h3 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors leading-tight">
-              Analyze a Deal
+          <div className="min-w-0">
+            <h3 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors truncate">
+              Deal Analyzer
             </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-2">
-              Latti Deal Score, ARV & profitability.
+            <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+              Latti Deal Score & ARV
             </p>
           </div>
         </button>
@@ -233,41 +241,41 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
         {/* Action 3: Import from BuildScope AI */}
         <button
           onClick={() => setIsImportModalOpen(true)}
-          className="p-3 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-teal-500/50 flex flex-col justify-between text-left cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
+          className="w-48 p-3 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-teal-500/40 flex items-center gap-3 cursor-pointer transition-all active:scale-[0.98] group shadow-sm flex-shrink-0 text-left"
         >
-          <div className="w-7 h-7 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-            <Ruler className="w-4 h-4" />
+          <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+            <Ruler className="w-4.5 h-4.5" />
           </div>
-          <div>
-            <h3 className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors leading-tight">
-              Import AI
+          <div className="min-w-0">
+            <h3 className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors truncate">
+              Import from AI
             </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-2">
-              Import scopes from BuildScope AI.
+            <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+              BuildScope AI Takeoffs
             </p>
           </div>
         </button>
       </div>
 
-      {/* ─── 3. SUB-NAVIGATION 4 TABS (Matching Reference Specs) ─── */}
+      {/* ─── 3. SUB-NAVIGATION 4 TABS (Mobile Segmented Switcher) ─── */}
       <TabSelector
         activeId={activeTab}
         onChange={(id) => setActiveTab(id as any)}
         options={[
-          { id: 'budgets', label: 'Project Budgets', count: budgets.length },
-          { id: 'deal_analyzer', label: 'Deal Analyzer' },
+          { id: 'budgets', label: 'Budgets', count: budgets.length },
+          { id: 'deal_analyzer', label: 'Deal Score' },
           { id: 'templates', label: 'Templates' },
-          { id: 'archived', label: 'Archived', count: archivedBudgets.length }
+          { id: 'archived', label: 'Archive', count: archivedBudgets.length }
         ]}
       />
 
-      {/* ─── 4. SEARCH BAR (For Budgets, Templates, and Archive) ─── */}
+      {/* ─── 4. SEARCH BAR (Mobile-optimized input) ─── */}
       {activeTab !== 'deal_analyzer' && (
         <div className="relative w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search by name, project, address..."
+            placeholder="Search budgets, templates, projects..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full h-10 bg-[#070D1A] border border-[#142036] rounded-xl pl-9.5 pr-3 text-white text-xs outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500"
@@ -277,9 +285,9 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
       {/* ─── 5. TAB VIEW CONTENT ─── */}
 
-      {/* TAB 1: PROJECT BUDGETS LIST */}
+      {/* TAB 1: PROJECT BUDGETS LIST (Mobile-First High-Readability Card Design) */}
       {activeTab === 'budgets' && (
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {filteredBudgets.length === 0 ? (
             <div className="p-8 text-center rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col items-center">
               <FileSpreadsheet className="w-8 h-8 text-slate-500 mb-2" />
@@ -287,99 +295,112 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
               <p className="text-[10px] text-slate-400 mt-0.5">Try searching with a different keyword or create a new budget.</p>
             </div>
           ) : (
-            filteredBudgets.map((b) => (
-              <div
-                key={b.id}
-                onClick={() => setSelectedBudgetId(b.id)}
-                className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-sm active:scale-[0.99] group"
-              >
-                {/* Card Header: Icon + Title + Type + Status Badge */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
-                      <FileSpreadsheet className="w-4 h-4" />
+            filteredBudgets.map((b) => {
+              const remaining = Math.max(0, b.totalBudget - b.actual);
+              return (
+                <div
+                  key={b.id}
+                  onClick={() => setSelectedBudgetId(b.id)}
+                  className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-3 shadow-sm active:scale-[0.99] group"
+                >
+                  {/* Card Header: Icon + Title + Status */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                        <FileSpreadsheet className="w-4.5 h-4.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors truncate">
+                          {b.name}
+                        </h3>
+                        <span className="text-[10px] text-slate-400 font-medium block mt-0.5 truncate">
+                          {b.type} · {b.itemsCount} Cost Codes
+                        </span>
+                      </div>
                     </div>
-                    <div className="min-w-0">
-                      <h3 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors truncate">
-                        {b.name}
-                      </h3>
-                      <span className="text-[10px] text-slate-400 font-medium block mt-0.5 truncate">
-                        {b.type}
+
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                        b.status === 'ACTIVE'
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                          : b.status === 'APPROVED'
+                          ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                          : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                      }`}>
+                        {b.status}
+                      </span>
+                      <button
+                        onClick={(e) => handleDeleteBudget(b.id, e)}
+                        className="w-7 h-7 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center cursor-pointer transition-colors"
+                        title="Archive Budget"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2x2 Clean Mobile Metrics (Zero Squished Text) */}
+                  <div className="p-3 rounded-xl bg-[#050811] border border-[#142036] grid grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-medium block">Total Budget</span>
+                      <span className="text-sm font-black text-white mt-0.5 block">
+                        ${(b.totalBudget / 1000000).toFixed(2)}M
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-medium block">Spent to Date</span>
+                      <span className="text-sm font-black text-blue-400 mt-0.5 block">
+                        ${(b.actual / 1000000).toFixed(2)}M
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-medium block">Committed Subcontracts</span>
+                      <span className="text-xs font-bold text-slate-300 mt-0.5 block">
+                        ${(b.committed / 1000000).toFixed(2)}M
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-medium block">Remaining Balance</span>
+                      <span className="text-xs font-bold text-emerald-400 mt-0.5 block">
+                        ${(remaining / 1000000).toFixed(2)}M
                       </span>
                     </div>
                   </div>
 
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                    b.status === 'ACTIVE'
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                      : b.status === 'APPROVED'
-                      ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                      : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                  }`}>
-                    {b.status}
-                  </span>
-                </div>
-
-                {/* 4 Standard Metrics Grid (Matching Reference Screenshot) */}
-                <div className="grid grid-cols-4 gap-1.5 py-2 px-2.5 rounded-xl bg-[#050811] border border-[#142036]/80 text-center">
-                  <div>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">Total Budget</span>
-                    <span className="text-[12px] font-bold text-white mt-0.5 block truncate">
-                      ${b.totalBudget > 0 ? (b.totalBudget / 1000).toLocaleString() + 'K' : '$0'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">Estimated</span>
-                    <span className="text-[12px] font-bold text-blue-400 mt-0.5 block truncate">
-                      ${(b.estimated / 1000).toLocaleString()}K
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">Committed</span>
-                    <span className="text-[12px] font-bold text-slate-300 mt-0.5 block truncate">
-                      ${b.committed > 0 ? (b.committed / 1000).toLocaleString() + 'K' : '$0'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase block">Actual</span>
-                    <span className="text-[12px] font-bold text-emerald-400 mt-0.5 block truncate">
-                      ${b.actual > 0 ? (b.actual / 1000).toLocaleString() + 'K' : '$0'}
-                    </span>
+                  {/* Progress Bar & Footer */}
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                      <span>Progress</span>
+                      <span className="font-bold text-white">{b.progress}%</span>
+                    </div>
+                    <div className="w-full bg-[#050811] h-2 rounded-full overflow-hidden border border-[#142036]">
+                      <div 
+                        className="bg-gradient-to-r from-blue-600 to-blue-400 h-full rounded-full transition-all duration-500" 
+                        style={{ width: `${b.progress}%` }} 
+                      />
+                    </div>
                   </div>
                 </div>
-
-                {/* Card Footer: Items Count + Delete Action */}
-                <div className="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
-                  <span className="font-semibold text-slate-300 flex items-center gap-1">
-                    <DollarSign className="w-3 h-3 text-slate-400" />
-                    <span>{b.itemsCount} items</span>
-                  </span>
-
-                  <button
-                    onClick={(e) => handleDeleteBudget(b.id, e)}
-                    className="w-6 h-6 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center cursor-pointer transition-colors"
-                    title="Archive Budget"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}
 
       {/* TAB 2: EMBEDDED LATTI DEAL ANALYZER */}
       {activeTab === 'deal_analyzer' && (
-        <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-sm flex flex-col gap-3">
+        <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-sm flex flex-col gap-3.5">
           <div className="flex items-center justify-between border-b border-[#142036] pb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                <Target className="w-4 h-4" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0">
+                <Target className="w-4.5 h-4.5" />
               </div>
               <div>
                 <h3 className="text-xs font-bold text-white">Latti Deal Analyzer™</h3>
-                <p className="text-[10px] text-slate-400">Underwrite property deals, margins & construction loans</p>
+                <p className="text-[10px] text-slate-400">Underwrite margins, soft costs & loans</p>
               </div>
             </div>
 
@@ -387,14 +408,14 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
               onClick={() => setIsDealAnalyzerOpen(true)}
               className="px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95"
             >
-              Full Screen
+              Full View
             </button>
           </div>
 
-          <div className="p-3 bg-[#050811] rounded-xl border border-[#142036] text-xs flex flex-col gap-2">
+          <div className="p-3.5 bg-[#050811] rounded-xl border border-[#142036] text-xs flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
               <span className="text-slate-400">Sample Property:</span>
-              <strong className="text-white">742 Evergreen Terrace, Austin TX</strong>
+              <strong className="text-white truncate max-w-[200px]">742 Evergreen Terrace, Austin TX</strong>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-slate-400">Latti Deal Score:</span>
@@ -410,9 +431,9 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
           <button
             onClick={() => setIsDealAnalyzerOpen(true)}
-            className="w-full py-2 rounded-xl bg-[#0E1A33] hover:bg-[#142036] text-blue-400 hover:text-white text-xs font-bold border border-blue-500/30 flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-bold shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-4 h-4" />
             <span>Launch Interactive Scenario Calculator</span>
           </button>
         </div>
@@ -420,11 +441,11 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
       {/* TAB 3: CSI BUDGET TEMPLATES */}
       {activeTab === 'templates' && (
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {BUDGET_TEMPLATES.map((tmpl) => (
             <div
               key={tmpl.id}
-              className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all flex flex-col gap-2.5 shadow-sm"
+              className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all flex flex-col gap-3 shadow-sm"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
@@ -445,7 +466,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
               <div className="pt-2 border-t border-[#142036] flex justify-end">
                 <button
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-1"
+                  className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer transition-all active:scale-95 flex items-center gap-1.5"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Use Template</span>
@@ -458,7 +479,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
       {/* TAB 4: ARCHIVED BUDGETS */}
       {activeTab === 'archived' && (
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {archivedBudgets.length === 0 ? (
             <div className="p-8 text-center rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col items-center">
               <Archive className="w-8 h-8 text-slate-500 mb-2" />
@@ -469,7 +490,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
             archivedBudgets.map((b) => (
               <div
                 key={b.id}
-                className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-3 shadow-sm"
+                className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-3 shadow-sm"
               >
                 <div className="min-w-0">
                   <h3 className="text-xs font-bold text-slate-300 truncate">{b.name}</h3>
@@ -478,7 +499,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
 
                 <button
                   onClick={(e) => handleRestoreBudget(b.id, e)}
-                  className="px-3 py-1.5 rounded-xl bg-[#0E1A33] hover:bg-[#142036] text-blue-400 hover:text-white text-xs font-bold border border-[#1E2E4A] flex items-center gap-1 cursor-pointer transition-all active:scale-95 flex-shrink-0"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#0E1A33] hover:bg-[#142036] text-blue-400 hover:text-white text-xs font-bold border border-[#1E2E4A] flex items-center gap-1 cursor-pointer transition-all active:scale-95 flex-shrink-0"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Restore</span>
@@ -489,7 +510,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
         </div>
       )}
 
-      {/* ─── 6. MODALS ─── */}
+      {/* ─── 6. FULL-SCREEN MODALS ─── */}
       {isDealAnalyzerOpen && (
         <DealAnalyzerModal
           isFullScreenPage={true}
