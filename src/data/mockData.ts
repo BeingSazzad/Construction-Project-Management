@@ -754,7 +754,7 @@ export const MOCK_PHOTOS: SitePhoto[] = [
     id: 'ph-1',
     projectId: 'proj-1',
     projectName: 'Riverside Office Complex',
-    url: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=800&auto=format&fit=crop&q=80',
+    url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
     caption: 'Tower crane setting Level 12 deck perimeter safety screens and rebar bundles',
     category: 'Progress',
     uploadedBy: 'John Smith',
@@ -778,7 +778,7 @@ export const MOCK_PHOTOS: SitePhoto[] = [
     id: 'ph-3',
     projectId: 'proj-1',
     projectName: 'Riverside Office Complex',
-    url: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=800&auto=format&fit=crop&q=80',
+    url: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&auto=format&fit=crop&q=80',
     caption: 'Rebar placement inspection for shear wall foundation anchor',
     category: 'Inspections',
     uploadedBy: 'John Smith',
@@ -802,13 +802,25 @@ export const MOCK_PHOTOS: SitePhoto[] = [
     id: 'ph-5',
     projectId: 'proj-1',
     projectName: 'Riverside Office Complex',
-    url: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&auto=format&fit=crop&q=80',
-    caption: 'Overhead HVAC duct installation in corridor Level 4',
+    url: 'https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?w=800&auto=format&fit=crop&q=80',
+    caption: 'Overhead structural framing and HVAC duct layout Level 4',
     category: 'Site Photos',
     uploadedBy: 'Carlos Mendez',
     timestamp: 'May 16, 2025',
     location: 'Level 4 Corridor',
-    tags: ['HVAC', 'Ductwork']
+    tags: ['Framing', 'HVAC']
+  },
+  {
+    id: 'ph-6',
+    projectId: 'proj-1',
+    projectName: 'Riverside Office Complex',
+    url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
+    caption: 'Safety rail and harness inspection check on perimeter scaffold',
+    category: 'Safety',
+    uploadedBy: 'David Miller',
+    timestamp: 'May 15, 2025',
+    location: 'Perimeter Scaffold',
+    tags: ['Safety', 'Scaffold']
   }
 ];
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, SitePhoto } from '../../types';
-import { Camera, Plus, MapPin, Eye, Image as ImageIcon } from 'lucide-react';
+import { Camera, Eye, MapPin, Image as ImageIcon } from 'lucide-react';
 import { FilterPills } from '../common/FilterPills';
 
 interface ProjectPhotosTabProps {
@@ -10,7 +10,7 @@ interface ProjectPhotosTabProps {
   onPreviewPhoto: (photo: SitePhoto) => void;
 }
 
-const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80';
+const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80';
 
 export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
   project,
@@ -34,7 +34,7 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base font-bold text-white tracking-tight">Site Photo Gallery</h2>
-          <p className="text-xs text-slate-400 mt-0.5 font-medium">{filteredPhotos.length} {filteredPhotos.length === 1 ? 'Photo' : 'Photos'} Captured</p>
+          <p className="text-xs text-slate-400 mt-0.5 font-medium">{filteredPhotos.length} {filteredPhotos.length === 1 ? 'Photo' : 'Photos'}</p>
         </div>
 
         <button
@@ -53,7 +53,7 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
         onSelect={setActiveCategory}
       />
 
-      {/* ─── 3. PREMIUM GRID OF SITE PHOTOS (Clean Visual Hierarchy) ─── */}
+      {/* ─── 3. TRUE GALLERY GRID (Clean Visual Focus, No Text Clutter Over Photos) ─── */}
       {filteredPhotos.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 rounded-2xl bg-[#070D1A] border border-[#142036] text-center mt-2">
           <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
@@ -74,46 +74,43 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
             <div
               key={photo.id}
               onClick={() => onPreviewPhoto(photo)}
-              className="relative aspect-[4/5] rounded-2xl overflow-hidden group cursor-pointer border border-[#142036] hover:border-blue-500/50 transition-all bg-[#070D1A] shadow-md active:scale-[0.98] flex flex-col justify-between"
+              className="relative aspect-square rounded-2xl overflow-hidden group cursor-pointer border border-[#142036] hover:border-blue-500/50 transition-all bg-[#070D1A] shadow-md active:scale-[0.98]"
             >
-              {/* Image Background */}
+              {/* Clean Photo Thumbnail */}
               <img
                 src={photo.url}
-                alt=""
+                alt={photo.caption}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = FALLBACK_PHOTO;
                 }}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
               />
 
-              {/* Gradient Scrim for Top & Bottom readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070D1A] via-[#070D1A]/30 to-black/40 pointer-events-none" />
+              {/* Subtle Ambient Vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity" />
 
-              {/* Top Category Badge */}
-              <div className="relative z-10 p-2.5 flex items-start justify-between">
+              {/* Top Category Tag (Minimal Glass Pill) */}
+              <div className="absolute top-2 left-2 z-10">
                 <span className="bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-lg text-[10px] font-bold text-cyan-300 border border-white/10 shadow-sm">
                   {photo.category}
                 </span>
+              </div>
 
-                <div className="w-6 h-6 rounded-full bg-black/50 backdrop-blur-md text-white/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <Eye className="w-3.5 h-3.5" />
+              {/* Hover Center Eye Action */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-md text-white flex items-center justify-center border border-white/20 shadow-lg">
+                  <Eye className="w-4 h-4" />
                 </div>
               </div>
 
-              {/* Bottom Caption & Location Overlay */}
-              <div className="relative z-10 p-2.5 flex flex-col gap-0.5">
-                <h4 className="text-xs font-bold text-white leading-tight truncate drop-shadow-sm group-hover:text-blue-300 transition-colors">
+              {/* Bottom Minimal Info Strip (Gallery Aesthetic) */}
+              <div className="absolute bottom-0 inset-x-0 p-2.5 z-10 flex items-end justify-between gap-1 text-[10px] text-slate-300 font-medium pointer-events-none">
+                <span className="truncate max-w-[65%] text-white font-semibold drop-shadow-sm">
                   {photo.caption}
-                </h4>
-                <div className="flex items-center justify-between text-[10px] text-slate-300 font-medium pt-0.5">
-                  <span className="flex items-center gap-1 truncate max-w-[65%]">
-                    <MapPin className="w-2.5 h-2.5 text-blue-400 flex-shrink-0" />
-                    <span className="truncate">{photo.location.split('-')[0].trim()}</span>
-                  </span>
-                  <span className="text-slate-400 text-[10px] flex-shrink-0">
-                    {photo.timestamp.split(',')[0]}
-                  </span>
-                </div>
+                </span>
+                <span className="text-slate-400 text-[10px] flex-shrink-0 drop-shadow-sm">
+                  {photo.timestamp.split(',')[0]}
+                </span>
               </div>
             </div>
           ))}
