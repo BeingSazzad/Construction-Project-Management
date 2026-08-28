@@ -257,14 +257,14 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
                     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${ROLE_COLORS[member.roleGroup]}`}>
                       {member.roleGroup}
                     </span>
-                    <span className="text-[11px] text-slate-400 truncate">{member.role}</span>
+                    <span className="text-[12px] text-slate-400 truncate">{member.role}</span>
                   </div>
                 </div>
 
                 <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors flex-shrink-0" />
               </div>
 
-              <div className="mt-2.5 pt-2.5 border-t border-[#142036] flex items-center justify-between text-[11px] text-slate-400">
+              <div className="mt-2.5 pt-2.5 border-t border-[#142036] flex items-center justify-between text-[12px] text-slate-400">
                 <div className="flex items-center gap-1.5">
                   <Briefcase className="w-3.5 h-3.5 text-blue-400" />
                   <span>{member.projects} project{member.projects !== 1 ? 's' : ''} assigned</span>
@@ -296,7 +296,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-blue-400" />
           <div>
-            <p className="text-[11px] font-bold text-white">Seat Usage</p>
+            <p className="text-[12px] font-bold text-white">Seat Usage</p>
             <p className="text-[10px] text-slate-400">{stats.active + stats.invited} of 10 allocated seats used</p>
           </div>
         </div>
@@ -315,7 +315,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
             <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
               <div>
                 <h3 className="text-sm font-bold text-white">Invite Team Member</h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Send an invitation to join Avery Marsh</p>
+                <p className="text-[12px] text-slate-400 mt-0.5">Send an invitation to join Avery Marsh</p>
               </div>
               <button
                 onClick={() => setIsInviteOpen(false)}
@@ -327,7 +327,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
 
             <form onSubmit={handleSendInvite} className="flex flex-col gap-3.5 text-xs">
               <div>
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Full Name</label>
+                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Full Name</label>
                 <input
                   type="text"
                   value={inviteName}
@@ -339,7 +339,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Work Email</label>
+                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Work Email</label>
                 <input
                   type="email"
                   value={inviteEmail}
@@ -351,7 +351,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Role & Permissions</label>
+                <label className="text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Role & Permissions</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'PM', label: 'PM', title: 'Project Manager' },

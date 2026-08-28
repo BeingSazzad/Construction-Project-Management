@@ -89,7 +89,7 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
               <h4 className="text-xs font-bold text-white line-clamp-1 group-hover:text-blue-400 transition-colors">
                 {photo.caption}
               </h4>
-              <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-1 font-medium">
+              <p className="text-[12px] text-slate-400 flex items-center gap-1 mt-1 font-medium">
                 <MapPin className="w-3 h-3 text-blue-400 flex-shrink-0" />
                 <span className="truncate">{photo.location}</span>
               </p>

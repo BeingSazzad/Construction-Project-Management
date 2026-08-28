@@ -84,7 +84,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
           
           {/* Title */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
               Title *
             </label>
             <input
@@ -99,7 +99,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
 
           {/* Description */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
               Description
             </label>
             <textarea
@@ -114,7 +114,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
           {/* Amount & Time Impact */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
                 Amount ($)
               </label>
               <input
@@ -127,7 +127,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
                 Time Impact (days)
               </label>
               <input
@@ -143,7 +143,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
           {/* Category & Requested By */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
                 Category
               </label>
               <input
@@ -156,7 +156,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
                 Requested By
               </label>
               <input

@@ -105,12 +105,12 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-bold text-white tracking-tight">Master Schedule</h2>
-          <span className="text-[11px] text-slate-400">
+          <span className="text-[12px] text-slate-400">
             ({completedCount} of {PHASES_DATA.length} complete)
           </span>
         </div>
 
-        <span className="text-[11px] font-semibold text-emerald-400">
+        <span className="text-[12px] font-semibold text-emerald-400">
           Target: Nov 2025
         </span>
       </div>
@@ -165,7 +165,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
               </div>
 
               {/* Row 2: Subcontractor & Date Span */}
-              <div className="flex items-center justify-between text-[11px] text-slate-400">
+              <div className="flex items-center justify-between text-[12px] text-slate-400">
                 <span className="text-slate-300 font-medium truncate">{phase.subcontractor}</span>
                 <span className="text-slate-400 font-medium flex-shrink-0">{phase.dates}</span>
               </div>

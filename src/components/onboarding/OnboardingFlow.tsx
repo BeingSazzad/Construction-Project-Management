@@ -49,7 +49,7 @@ const FEATURE_SLIDES = [
 const ProjectsPreview: React.FC = () => (
   <div className="w-full bg-[#0A1120] border border-[#1A2840] rounded-2xl p-3 shadow-2xl">
     <div className="flex items-center justify-between mb-2.5">
-      <span className="text-[11px] font-bold text-white">Project Overview</span>
+      <span className="text-[12px] font-bold text-white">Project Overview</span>
       <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wide">Live</span>
     </div>
     {/* KPI row */}
@@ -84,7 +84,7 @@ const ProjectsPreview: React.FC = () => (
 const BudgetPreview: React.FC = () => (
   <div className="w-full bg-[#0A1120] border border-[#1A2840] rounded-2xl p-3 shadow-2xl">
     <div className="flex items-center justify-between mb-2.5">
-      <span className="text-[11px] font-bold text-white">Budget Overview</span>
+      <span className="text-[12px] font-bold text-white">Budget Overview</span>
       <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
     </div>
     <div className="flex items-center gap-3 mb-3">
@@ -374,7 +374,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
           ))}
         </div>
 
-        <span className="text-[11px] font-bold text-slate-400">Step {setupStep + 1}/{setupTotal}</span>
+        <span className="text-[12px] font-bold text-slate-400">Step {setupStep + 1}/{setupTotal}</span>
       </div>
 
       {/* ── STEP 4: Select Role ── */}
@@ -411,7 +411,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
 
                   <div className="flex-1 min-w-0">
                     <h3 className="text-xs font-bold text-white">{opt.title}</h3>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">{opt.desc}</p>
+                    <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{opt.desc}</p>
                   </div>
 
                   <div className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-all ${
@@ -527,7 +527,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
               <div className="p-4 rounded-2xl bg-[#0C121E] border border-[#182438] flex items-center justify-between gap-3 shadow-sm hover:border-slate-600 transition-all">
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-black text-white">Base</div>
-                  <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                  <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">
                     For solo contractors and small construction teams getting organized.
                   </p>
                 </div>
@@ -554,7 +554,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                       MOST POPULAR
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                  <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">
                     For active builders managing projects, budgets, trades and clients.
                   </p>
                 </div>
@@ -581,7 +581,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onBa
                       COMPLETE AI PLATFORM
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                  <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">
                     For builders who want BuildScope AI, Deal Analyzer and company-wide Latti intelligence.
                   </p>
                 </div>

@@ -77,7 +77,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
 
           {/* Company Name */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Company Name</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">Company Name</label>
             <input
               type="text"
               value={companyName}
@@ -90,7 +90,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
 
           {/* Phone */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Business Phone</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">Business Phone</label>
             <input
               type="text"
               value={phone}
@@ -102,7 +102,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
 
           {/* Address */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Office Address</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">Office Address</label>
             <input
               type="text"
               value={address}
@@ -114,7 +114,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
 
           {/* License # */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">General Contractor License #</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">General Contractor License #</label>
             <input
               type="text"
               value={licenseNumber}

@@ -125,7 +125,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div className="flex items-center justify-between pb-2.5 border-b border-[#142036]">
           <div>
             <h3 className="text-sm font-bold text-white tracking-tight">Create New Project</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">Initialize a new project workspace</p>
+            <p className="text-[12px] text-slate-400 mt-0.5">Initialize a new project workspace</p>
           </div>
 
           <button
@@ -140,7 +140,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           
           {/* Cover Photo Upload Box */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
               Project Cover Photo
             </label>
             <div className="h-28 w-full relative rounded-2xl overflow-hidden border border-[#142036] bg-[#050811] group">
@@ -187,7 +187,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
           {/* Project Title */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
               Project Title *
             </label>
             <input
@@ -203,7 +203,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Client / Owner & Project Type */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Client / Owner
               </label>
               <input
@@ -216,7 +216,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Project Type
               </label>
               <CustomSelect
@@ -231,7 +231,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Site Address & City/State */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Site Address
               </label>
               <input
@@ -244,7 +244,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 City / State
               </label>
               <input
@@ -260,7 +260,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Lead PM & Total Estimated Budget */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Lead Project Manager
               </label>
               <select
@@ -275,7 +275,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Total Budget ($ USD)
               </label>
               <input
@@ -291,7 +291,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Target Completion Date & Master Code */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Target Completion Date
               </label>
               <input
@@ -303,7 +303,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Master Code (4 digits) *
               </label>
               <input
@@ -320,7 +320,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
           {/* Project Scope & Description */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
               Project Scope & Notes
             </label>
             <textarea

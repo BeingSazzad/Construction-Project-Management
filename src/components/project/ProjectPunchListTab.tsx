@@ -54,7 +54,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
       <div className="flex items-center justify-between gap-3">
         <div>
           <h2 className="text-base font-extrabold text-white tracking-tight">Punch List</h2>
-          <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+          <p className="text-[12px] text-slate-400 mt-0.5 font-medium">
             {openCount} open {openCount === 1 ? 'item' : 'items'}
           </p>
         </div>
@@ -104,7 +104,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
         <div className="p-8 rounded-2xl bg-[#0D1424] border border-[#141F33] text-center flex flex-col items-center justify-center gap-2">
           <Folder className="w-8 h-8 text-slate-600" />
           <p className="text-xs font-bold text-slate-300">No punch items for this filter</p>
-          <p className="text-[11px] text-slate-400 font-medium">Tap "+ New Item" to log a field defect.</p>
+          <p className="text-[12px] text-slate-400 font-medium">Tap "+ New Item" to log a field defect.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">

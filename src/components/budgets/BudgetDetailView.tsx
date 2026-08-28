@@ -310,7 +310,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-slate-400 font-medium">
+                    <span className="text-[12px] text-slate-400 font-medium">
                       {sec.items.length} items
                     </span>
                     <span className="text-xs font-bold text-blue-400">
@@ -337,12 +337,12 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                             {item.qty}
                           </div>
 
-                          <div className="w-14 bg-[#080D18] border border-[#1E293B] rounded-lg px-2 py-1 text-center text-[11px] text-slate-400 font-bold">
+                          <div className="w-14 bg-[#080D18] border border-[#1E293B] rounded-lg px-2 py-1 text-center text-[12px] text-slate-400 font-bold">
                             {item.unit}
                           </div>
 
                           <div className="flex items-center bg-[#080D18] border border-[#1E293B] rounded-lg px-2 py-1 w-24">
-                            <span className="text-[11px] text-slate-500 mr-1">$</span>
+                            <span className="text-[12px] text-slate-500 mr-1">$</span>
                             <input
                               type="number"
                               value={item.unitCost}

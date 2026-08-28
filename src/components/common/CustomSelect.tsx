@@ -64,7 +64,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'inline-block'} ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+        <label className="block text-[12px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
           {label} {required && <span className="text-red-400">*</span>}
         </label>
       )}

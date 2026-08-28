@@ -52,7 +52,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
 
         {/* Description Box */}
         <div className="mb-4">
-          <h4 className="text-[11px] font-bold uppercase text-slate-400 mb-1">Scope & Instructions</h4>
+          <h4 className="text-[12px] font-bold uppercase text-slate-400 mb-1">Scope & Instructions</h4>
           <p className="text-xs text-slate-200 bg-[#0B101D] p-3 rounded-xl border border-[#182338] leading-relaxed">
             {task.description}
           </p>
@@ -61,7 +61,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
         {/* Subtask Checklist */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-[11px] font-bold uppercase text-slate-400">Subtask Execution Checklist</h4>
+            <h4 className="text-[12px] font-bold uppercase text-slate-400">Subtask Execution Checklist</h4>
             <span className="text-[10px] text-cyan-400 font-bold">
               {task.subtasks.filter(s => s.completed).length}/{task.subtasks.length} Completed
             </span>

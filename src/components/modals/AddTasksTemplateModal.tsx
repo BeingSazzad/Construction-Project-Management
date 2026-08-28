@@ -375,7 +375,7 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
                     <span className="text-xs font-bold text-white">{group.name}</span>
                   </div>
 
-                  <span className="text-[11px] font-bold text-slate-400 bg-[#050811] px-2 py-0.5 rounded-md border border-[#142036]">
+                  <span className="text-[12px] font-bold text-slate-400 bg-[#050811] px-2 py-0.5 rounded-md border border-[#142036]">
                     {groupSelectedCount}/{group.tasks.length}
                   </span>
                 </div>

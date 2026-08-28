@@ -285,7 +285,7 @@ export const OpportunitiesView: React.FC = () => {
           </div>
 
           <div className="mt-2.5">
-            <span className="text-[11px] font-medium text-slate-400 block leading-tight">
+            <span className="text-[12px] font-medium text-slate-400 block leading-tight">
               Pipeline Value
             </span>
             <div className="text-lg font-black text-white mt-0.5 tracking-tight">
@@ -312,7 +312,7 @@ export const OpportunitiesView: React.FC = () => {
           </div>
 
           <div className="mt-2.5">
-            <span className="text-[11px] font-medium text-slate-400 block leading-tight">
+            <span className="text-[12px] font-medium text-slate-400 block leading-tight">
               Won Value
             </span>
             <div className="text-lg font-black text-white mt-0.5 tracking-tight">
@@ -508,7 +508,7 @@ export const OpportunitiesView: React.FC = () => {
           </div>
           <div>
             <h4 className="text-xs font-bold text-white">No opportunities found</h4>
-            <p className="text-[11px] text-slate-400 mt-1 max-w-[220px]">
+            <p className="text-[12px] text-slate-400 mt-1 max-w-[220px]">
               {selectedStageFilter !== 'All' 
                 ? `There are currently no opportunities in "${selectedStageFilter}".`
                 : 'No opportunities match your search criteria.'}
@@ -535,7 +535,7 @@ export const OpportunitiesView: React.FC = () => {
                   <h3 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">
                     {deal.title}
                   </h3>
-                  <p className="text-[11px] text-slate-400 font-medium truncate mt-0.5">
+                  <p className="text-[12px] text-slate-400 font-medium truncate mt-0.5">
                     {deal.client} <span className="text-slate-600">·</span> <span className="text-slate-400">{deal.type || 'Custom Home'}</span>
                   </p>
                 </div>

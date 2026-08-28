@@ -32,7 +32,7 @@ export const LatticeLogo: React.FC<LatticeLogoProps> = ({
 
   const taglineClassMap = {
     sm: 'text-[9px] tracking-widest font-semibold',
-    md: 'text-[11px] tracking-widest font-semibold',
+    md: 'text-[12px] tracking-widest font-semibold',
     lg: 'text-xs tracking-widest font-bold',
     xl: 'text-sm tracking-widest font-bold',
     hero: 'text-sm tracking-[0.25em] font-extrabold'

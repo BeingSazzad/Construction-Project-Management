@@ -86,7 +86,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
           <div>
             <h2 className="text-sm font-bold text-white tracking-tight">Edit Project Info</h2>
-            <p className="text-[11px] text-slate-400 mt-0.5">Code: {project.code}</p>
+            <p className="text-[12px] text-slate-400 mt-0.5">Code: {project.code}</p>
           </div>
 
           <button
@@ -100,7 +100,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         {/* Edit Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Title *</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Project Title *</label>
             <input
               type="text"
               required
@@ -112,7 +112,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Site Address</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Site Address</label>
               <input
                 type="text"
                 value={location}
@@ -123,7 +123,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">City / State</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">City / State</label>
               <input
                 type="text"
                 value={cityState}
@@ -137,7 +137,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           {/* Status & Progress % */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lifecycle Status</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Lifecycle Status</label>
               <CustomSelect
                 value={status}
                 onChange={(v) => setStatus(v as ProjectStatus)}
@@ -154,7 +154,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Progress %</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Progress %</label>
               <input
                 type="number"
                 min={0}
@@ -170,7 +170,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           {/* Budget & Client Name */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Total Budget ($ USD)</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Total Budget ($ USD)</label>
               <input
                 type="number"
                 value={totalBudget}
@@ -180,7 +180,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Client Name</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Client Name</label>
               <input
                 type="text"
                 value={clientName}
@@ -194,7 +194,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           {/* Master Code & Project Manager */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lead Project Manager</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Lead Project Manager</label>
               <select
                 value={selectedPM}
                 onChange={(e) => setSelectedPM(e.target.value)}
@@ -207,7 +207,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Master Code (4 digits)</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Master Code (4 digits)</label>
               <input
                 type="text"
                 maxLength={4}
@@ -222,7 +222,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Start Date</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Start Date</label>
               <input
                 type="date"
                 value={startDate}
@@ -232,7 +232,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Target Completion Date</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Target Completion Date</label>
               <input
                 type="date"
                 value={targetEndDate}
@@ -243,7 +243,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Project Scope & Notes</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Project Scope & Notes</label>
             <textarea
               rows={2}
               value={description}

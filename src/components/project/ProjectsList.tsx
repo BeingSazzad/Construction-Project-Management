@@ -255,7 +255,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
       </div>
 
       {/* ─── 4. RESULTS COUNT PILL ─── */}
-      <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium px-0.5">
+      <div className="flex items-center justify-between text-[12px] text-slate-400 font-medium px-0.5">
         <span>Showing {sortedProjects.length} of {projects.length} sites</span>
         {selectedStatus !== 'All Status' && (
           <button
@@ -273,7 +273,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
           <div className="p-8 rounded-2xl bg-[#070D1A] border border-[#142036] text-center text-slate-400 text-xs flex flex-col items-center gap-2">
             <Layers className="w-8 h-8 text-slate-600" />
             <p className="font-semibold text-slate-300">No projects found</p>
-            <p className="text-[11px] text-slate-500">Try changing your search term or status filter.</p>
+            <p className="text-[12px] text-slate-500">Try changing your search term or status filter.</p>
           </div>
         ) : (
           sortedProjects.map((project) => {
@@ -318,7 +318,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
                       <h3 className="text-sm font-bold text-white truncate group-hover:text-blue-400 transition-colors">
                         {project.name}
                       </h3>
-                      <p className="text-[11px] text-slate-400 mt-0.5 truncate font-medium">
+                      <p className="text-[12px] text-slate-400 mt-0.5 truncate font-medium">
                         PM: <span className="text-slate-300 font-semibold">{project.projectManager.name}</span> · Code: <span className="text-slate-300 font-mono">{project.code}</span>
                       </p>
                     </div>

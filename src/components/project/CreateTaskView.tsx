@@ -86,7 +86,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Task Title *</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Task Title *</label>
             <input
               type="text"
               required
@@ -99,7 +99,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Priority Level</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Priority Level</label>
               <CustomSelect
                 value={priority}
                 onChange={(v) => setPriority(v as Priority)}
@@ -108,7 +108,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Due Date</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Due Date</label>
               <input
                 type="date"
                 value={dueDate}
@@ -120,7 +120,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Trade Milestone</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Trade Milestone</label>
               <CustomSelect
                 value={milestone}
                 onChange={setMilestone}
@@ -129,7 +129,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Location / Zone</label>
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Location / Zone</label>
               <input
                 type="text"
                 value={location}
@@ -140,7 +140,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
           </div>
 
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Assigned Superintendent / Lead</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Assigned Superintendent / Lead</label>
             <CustomSelect
               value={assigneeName}
               onChange={setAssigneeName}
@@ -150,7 +150,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
           </div>
 
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Scope Notes & Description</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Scope Notes & Description</label>
             <textarea
               rows={3}
               placeholder="Provide specific trade instructions, inspection requirements..."

@@ -332,7 +332,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 <p className="text-xs font-bold text-white leading-snug">
                   Plumbing Inspection Scheduled
                 </p>
-                <p className="text-[11px] text-slate-300 font-medium mt-0.5">
+                <p className="text-[12px] text-slate-300 font-medium mt-0.5">
                   July 17 at 9:00 AM • Level 8 Commercial Floor
                 </p>
               </div>
@@ -374,7 +374,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 )}
                 <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
                   <div className="flex items-center gap-1.5 px-1">
-                    <span className="text-[11px] font-bold text-slate-300">{isMe ? 'You' : m.senderName}</span>
+                    <span className="text-[12px] font-bold text-slate-300">{isMe ? 'You' : m.senderName}</span>
                     <span className="text-[10px] text-slate-500">{m.timestamp}</span>
                   </div>
                   <div
@@ -518,7 +518,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                       <div className="flex items-center gap-2 min-w-0">
                         <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full object-cover" />
                         <div className="min-w-0">
-                          <p className="text-[11px] font-bold text-white truncate">{member.name}</p>
+                          <p className="text-[12px] font-bold text-white truncate">{member.name}</p>
                           <p className="text-[9px] text-slate-400 truncate">{member.role}</p>
                         </div>
                       </div>
@@ -586,13 +586,13 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
               </div>
               
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[11px] text-blue-400 font-semibold truncate">
+                <span className="text-[12px] text-blue-400 font-semibold truncate">
                   {disc.projectName}
                 </span>
                 <span className="text-[10px] text-slate-500">• {disc.members.length} members</span>
               </div>
 
-              <p className="text-[11px] text-slate-400 truncate mt-1">
+              <p className="text-[12px] text-slate-400 truncate mt-1">
                 {disc.lastMessage}
               </p>
             </div>

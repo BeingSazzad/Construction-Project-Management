@@ -190,7 +190,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                     Draw #{d.drawNumber}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                <p className="text-[12px] text-slate-400 mt-0.5 font-medium">
                   {d.lenderName} · Requested ${(d.requestedAmount / 1000).toFixed(0)}K
                 </p>
               </div>
@@ -211,7 +211,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                     {l.type}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                <p className="text-[12px] text-slate-400 mt-0.5 font-medium">
                   {l.trade} · Inv #{l.invoiceRef} · ${(l.amount / 1000).toFixed(0)}K
                 </p>
               </div>

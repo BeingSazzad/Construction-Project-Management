@@ -161,7 +161,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                   <h3 className={`text-xs font-bold leading-snug ${isUnread ? 'text-white' : 'text-slate-200'}`}>
                     {n.title}
                   </h3>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                  <p className="text-[12px] text-slate-400 mt-1 leading-relaxed">
                     {n.message}
                   </p>
                 </div>

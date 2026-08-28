@@ -130,7 +130,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
 
             <form onSubmit={handleUploadSubmit} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-[11px] text-slate-300 block mb-1">Report Title *</label>
+                <label className="text-[12px] text-slate-300 block mb-1">Report Title *</label>
                 <input
                   type="text"
                   required
@@ -142,7 +142,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-300 block mb-1">Report Category</label>
+                <label className="text-[12px] text-slate-300 block mb-1">Report Category</label>
                 <select
                   value={reportType}
                   onChange={(e) => setReportType(e.target.value as any)}

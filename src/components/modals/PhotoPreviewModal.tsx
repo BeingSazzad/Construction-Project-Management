@@ -45,7 +45,7 @@ export const PhotoPreviewModal: React.FC<PhotoPreviewModalProps> = ({
         <div className="flex flex-col gap-2 text-xs">
           <h4 className="font-bold text-white leading-snug">{photo.caption}</h4>
 
-          <div className="p-3 bg-[#0B101D] rounded-xl border border-[#172238] space-y-1.5 text-[11px] text-slate-400">
+          <div className="p-3 bg-[#0B101D] rounded-xl border border-[#172238] space-y-1.5 text-[12px] text-slate-400">
             <div className="flex items-center gap-1.5 text-slate-300">
               <MapPin className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
               <span>Location: {photo.location}</span>

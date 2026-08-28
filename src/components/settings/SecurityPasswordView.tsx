@@ -153,7 +153,7 @@ export const SecurityPasswordView: React.FC<SecurityPasswordViewProps> = ({ onBa
           {/* Password Strength Indicator */}
           {newPassword.length > 0 && (
             <div className="flex flex-col gap-1 pt-1">
-              <div className="flex items-center justify-between text-[11px] font-medium text-slate-400">
+              <div className="flex items-center justify-between text-[12px] font-medium text-slate-400">
                 <span>Password Strength</span>
                 <span className={strength === 3 ? 'text-emerald-400 font-bold' : strength === 2 ? 'text-amber-400 font-bold' : 'text-rose-400'}>
                   {strength === 3 ? 'Strong' : strength === 2 ? 'Medium' : 'Weak'}
@@ -189,7 +189,7 @@ export const SecurityPasswordView: React.FC<SecurityPasswordViewProps> = ({ onBa
           </div>
 
           {confirmPassword.length > 0 && (
-            <div className="text-[11px] font-semibold mt-0.5 flex items-center gap-1">
+            <div className="text-[12px] font-semibold mt-0.5 flex items-center gap-1">
               {passwordsMatch ? (
                 <span className="text-emerald-400 flex items-center gap-1">
                   <Check className="w-3.5 h-3.5" /> Passwords match

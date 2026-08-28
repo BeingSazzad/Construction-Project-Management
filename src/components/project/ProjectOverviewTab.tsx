@@ -143,7 +143,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           
           {/* Top Status & Code Badge */}
           <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold text-slate-200 bg-black/65 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 shadow-sm">
+            <span className="text-[12px] font-mono font-bold text-slate-200 bg-black/65 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 shadow-sm">
               {project.code}
             </span>
             <StatusBadge status={project.status} size="sm" />
@@ -164,7 +164,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
 
         {/* Project Meta Info Sub-header */}
-        <div className="px-3 py-2 bg-[#070D1A] border-t border-[#142036] flex items-center justify-between text-[11px] text-slate-400">
+        <div className="px-3 py-2 bg-[#070D1A] border-t border-[#142036] flex items-center justify-between text-[12px] text-slate-400">
           <span>GC Owner: <strong className="text-white font-bold">Sazzad</strong></span>
           <span className="text-slate-500">•</span>
           <span>Target End: <strong className="text-white font-bold">{project.targetEndDate || 'Jun 2026'}</strong></span>
@@ -258,7 +258,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                   )}
                 </div>
 
-                <span className={`text-[11px] font-bold leading-tight ${
+                <span className={`text-[12px] font-bold leading-tight ${
                   isActive ? 'text-white' : isCompleted ? 'text-emerald-400' : 'text-slate-500'
                 }`}>
                   {stage === 'Pre-Construction' ? 'Pre-Con' : stage}
@@ -316,7 +316,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               </span>
             </div>
             <div className="flex items-center justify-between gap-3 mt-0.5">
-              <p className="text-[11px] text-slate-400 leading-normal flex-1">
+              <p className="text-[12px] text-slate-400 leading-normal flex-1">
                 CSI 16-Division Master Ledger (${(project.budget.total / 1000000).toFixed(2)}M) is active.
               </p>
               <button 
@@ -336,7 +336,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               </div>
             </div>
             <div className="flex items-center justify-between gap-3 mt-0.5">
-              <p className="text-[11px] text-slate-400 leading-normal flex-1">
+              <p className="text-[12px] text-slate-400 leading-normal flex-1">
                 No budget spreadsheet imported for this project yet.
               </p>
               <button 
@@ -383,7 +383,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
 
           {/* Change Order List */}
           {projectCOs.length === 0 ? (
-            <p className="text-center text-[11px] text-slate-500 py-1 font-medium italic">
+            <p className="text-center text-[12px] text-slate-500 py-1 font-medium italic">
               No change orders yet.
             </p>
           ) : (
@@ -431,7 +431,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           </div>
           <button 
             onClick={() => handleTabChange('tasks')}
-            className="text-[11px] text-blue-400 font-bold hover:underline cursor-pointer"
+            className="text-[12px] text-blue-400 font-bold hover:underline cursor-pointer"
           >
             View All
           </button>
@@ -497,14 +497,14 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
 
       {/* ─── 7. STATIC PROJECT DETAILS / SPECIFICATIONS ─── */}
       <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-        <h3 className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Project Specification</h3>
+        <h3 className="text-[12px] font-bold text-slate-300 uppercase tracking-wider">Project Specification</h3>
         
         <div className="grid grid-cols-2 gap-3.5 mt-0.5">
           <div className="flex items-start gap-2 text-xs">
             <MapPin className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Address</span>
-              <span className="font-medium text-white text-[11px] break-words">{project.location || '1235 Cordova Blvd NE'}</span>
+              <span className="font-medium text-white text-[12px] break-words">{project.location || '1235 Cordova Blvd NE'}</span>
               <span className="text-[10px] text-slate-400 block mt-0.5">{project.cityState}</span>
             </div>
           </div>
@@ -513,7 +513,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             <User className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Lead PM</span>
-              <span className="font-medium text-white text-[11px]">{project.projectManager.name}</span>
+              <span className="font-medium text-white text-[12px]">{project.projectManager.name}</span>
               <span className="text-[9px] text-slate-400 block">GC Owner: Sazzad</span>
             </div>
           </div>
@@ -522,7 +522,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             <Calendar className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Start Date</span>
-              <span className="font-medium text-white text-[11px]">{project.startDate || 'Jan 10, 2025'}</span>
+              <span className="font-medium text-white text-[12px]">{project.startDate || 'Jan 10, 2025'}</span>
             </div>
           </div>
 
@@ -530,7 +530,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             <Calendar className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Target End</span>
-              <span className="font-medium text-white text-[11px]">{project.targetEndDate || 'Jun 30, 2026'}</span>
+              <span className="font-medium text-white text-[12px]">{project.targetEndDate || 'Jun 30, 2026'}</span>
             </div>
           </div>
         </div>
@@ -591,7 +591,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             </div>
 
             <form onSubmit={handleVerifyMasterCode} className="flex flex-col gap-3 text-xs text-center">
-              <p className="text-slate-350 text-[11px] leading-relaxed">
+              <p className="text-slate-350 text-[12px] leading-relaxed">
                 Please enter the 4-digit **Project Master Code** to mark this task as completed.
               </p>
 

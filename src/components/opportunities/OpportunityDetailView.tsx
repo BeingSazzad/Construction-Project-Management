@@ -99,7 +99,7 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
             onClick={() => setIsActionsOpen(!isActionsOpen)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#0A111F] hover:bg-[#121D33] text-slate-200 hover:text-white border border-[#142036] text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-sm"
           >
-            <span className="text-[11px] font-semibold text-slate-300">Options</span>
+            <span className="text-[12px] font-semibold text-slate-300">Options</span>
             <MoreVertical className="w-4 h-4 text-slate-400" />
           </button>
 
@@ -253,29 +253,29 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
 
           <div className="flex flex-col gap-2.5 text-xs">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 text-[11px]">Client Name</span>
+              <span className="text-slate-400 text-[12px]">Client Name</span>
               <span className="text-white font-bold">{deal.client || 'Private Client'}</span>
             </div>
 
             {deal.clientEmail && (
               <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-[11px]">Email</span>
+                <span className="text-slate-400 text-[12px]">Email</span>
                 <span className="text-blue-400 font-medium">{deal.clientEmail}</span>
               </div>
             )}
 
             <div className="flex items-start justify-between gap-4">
-              <span className="text-slate-400 text-[11px] flex-shrink-0">Site Address</span>
+              <span className="text-slate-400 text-[12px] flex-shrink-0">Site Address</span>
               <span className="text-white font-medium text-right break-words">{deal.address}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 text-[11px]">Lead Source</span>
+              <span className="text-slate-400 text-[12px]">Lead Source</span>
               <span className="text-slate-200 font-semibold">{deal.leadSource || 'Direct Outreach'}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 text-[11px]">Assigned Manager</span>
+              <span className="text-slate-400 text-[12px]">Assigned Manager</span>
               <span className="text-slate-200 font-semibold">{deal.assignedTo || 'Alex Chen'}</span>
             </div>
           </div>

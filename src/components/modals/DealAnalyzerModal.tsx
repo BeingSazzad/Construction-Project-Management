@@ -61,7 +61,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
             key={s.id}
             type="button"
             onClick={() => setScenario(s.id as any)}
-            className={`flex-1 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer text-center ${
+            className={`flex-1 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer text-center ${
               scenario === s.id
                 ? 'bg-[#2563EB] text-white shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -101,7 +101,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
       {/* Input Parameters */}
       <div className="flex flex-col gap-2.5 text-xs">
         <div>
-          <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Property / Site Address</label>
+          <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Property / Site Address</label>
           <input
             type="text"
             value={address}
@@ -112,7 +112,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
 
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Purchase / Land ($)</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Purchase / Land ($)</label>
             <input
               type="number"
               value={purchasePrice}
@@ -121,7 +121,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
             />
           </div>
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Hard Construction ($)</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Hard Construction ($)</label>
             <input
               type="number"
               value={constructionCost}
@@ -133,7 +133,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
 
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Soft / Permits ($)</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Soft / Permits ($)</label>
             <input
               type="number"
               value={softCosts}
@@ -142,7 +142,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
             />
           </div>
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Expected ARV / Exit ($)</label>
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Expected ARV / Exit ($)</label>
             <input
               type="number"
               value={targetARV}

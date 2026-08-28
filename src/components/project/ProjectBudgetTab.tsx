@@ -319,7 +319,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                             <span className="font-mono text-[9px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.2 rounded border border-blue-500/20 flex-shrink-0">
                               {cc.code}
                             </span>
-                            <span className="font-bold text-white text-[11px] truncate">{cc.name}</span>
+                            <span className="font-bold text-white text-[12px] truncate">{cc.name}</span>
                           </div>
                           
                           <div className="flex items-center gap-2 flex-shrink-0">
@@ -344,7 +344,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                         {/* Cost Line Items - Flat Indented Row items */}
                         <div className="flex flex-col gap-1.5 pl-3">
                           {cc.items.map((item) => (
-                            <div key={item.id} className="flex items-center justify-between text-[11px] text-slate-400 py-0.5">
+                            <div key={item.id} className="flex items-center justify-between text-[12px] text-slate-400 py-0.5">
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <span className="w-1 h-1 rounded-full bg-slate-600 flex-shrink-0" />
                                 <span className="font-medium text-slate-300 truncate">{item.name}</span>
@@ -380,7 +380,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
             <form onSubmit={handleAddCodeSubmit} className="flex flex-col gap-2.5 text-xs">
               <div>
-                <label className="text-[11px] text-slate-400 block mb-1">CSI Trade Division</label>
+                <label className="text-[12px] text-slate-400 block mb-1">CSI Trade Division</label>
                 <select
                   value={tradeName}
                   onChange={(e) => setTradeName(e.target.value)}
@@ -394,7 +394,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Cost Code Line Item Name *</label>
+                <label className="text-[12px] text-slate-400 block mb-1">Cost Code Line Item Name *</label>
                 <input
                   type="text"
                   required
@@ -407,7 +407,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Budget Amount ($) *</label>
+                  <label className="text-[12px] text-slate-400 block mb-1">Budget Amount ($) *</label>
                   <input
                     type="number"
                     required
@@ -419,7 +419,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Committed ($)</label>
+                  <label className="text-[12px] text-slate-400 block mb-1">Committed ($)</label>
                   <input
                     type="number"
                     placeholder="38000"
@@ -469,7 +469,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
             <form onSubmit={handleEditCodeSubmit} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-[11px] text-slate-350 block mb-1">Cost Code Line Item Name *</label>
+                <label className="text-[12px] text-slate-350 block mb-1">Cost Code Line Item Name *</label>
                 <input
                   type="text"
                   required
@@ -482,7 +482,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[11px] text-slate-350 block mb-1">Budget Amount ($) *</label>
+                  <label className="text-[12px] text-slate-350 block mb-1">Budget Amount ($) *</label>
                   <input
                     type="number"
                     required
@@ -494,7 +494,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-350 block mb-1">Committed / Actual ($)</label>
+                  <label className="text-[12px] text-slate-350 block mb-1">Committed / Actual ($)</label>
                   <input
                     type="number"
                     required

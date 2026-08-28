@@ -352,12 +352,12 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                   </div>
                   <div className="text-left">
                     <h3 className="text-xs font-bold text-white tracking-tight">{group.name}</h3>
-                    <p className="text-[11px] text-slate-400 mt-0.5">{totalCount} items in phase</p>
+                    <p className="text-[12px] text-slate-400 mt-0.5">{totalCount} items in phase</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                  <span className={`text-[12px] font-bold px-2 py-0.5 rounded-full border ${
                     isAllDone
                       ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                       : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
@@ -456,7 +456,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
             <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
               <div>
                 <h3 className="text-sm font-bold text-white tracking-tight">Select Task Creation Mode</h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Pick standard build phases or create a single task</p>
+                <p className="text-[12px] text-slate-400 mt-0.5">Pick standard build phases or create a single task</p>
               </div>
               <button
                 onClick={() => setIsBottomSheetOpen(false)}
@@ -482,7 +482,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                   <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
                     Construction Phase Template
                   </h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-[12px] text-slate-400 mt-0.5">
                     Pre-loaded build order: Pre-Con, Drywall, Finishes & MEP (71 Tasks)
                   </p>
                 </div>
@@ -506,7 +506,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                   <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
                     Custom Single Task
                   </h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-[12px] text-slate-400 mt-0.5">
                     Create an individual task or inspection from scratch
                   </p>
                 </div>
@@ -530,7 +530,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                   <Layers className="w-4 h-4 text-emerald-400" />
                   <h3 className="text-sm font-bold text-white tracking-tight">Add Tasks — Construction Template</h3>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5">Select tasks in sequential build order</p>
+                <p className="text-[12px] text-slate-400 mt-0.5">Select tasks in sequential build order</p>
               </div>
 
               <button
@@ -543,7 +543,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
 
             {/* Select / Deselect All Controls */}
             <div className="flex items-center justify-between px-1 py-1 text-xs">
-              <span className="text-[11px] text-slate-400 font-semibold">
+              <span className="text-[12px] text-slate-400 font-semibold">
                 {selectedTemplateCount} tasks selected
               </span>
 
@@ -551,7 +551,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                 <button
                   type="button"
                   onClick={() => handleSelectAllTemplates(true)}
-                  className="text-[11px] font-bold text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-[12px] font-bold text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <Check className="w-3 h-3" />
                   <span>Select all</span>
@@ -559,7 +559,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                 <button
                   type="button"
                   onClick={() => handleSelectAllTemplates(false)}
-                  className="text-[11px] font-bold text-slate-400 hover:text-white cursor-pointer"
+                  className="text-[12px] font-bold text-slate-400 hover:text-white cursor-pointer"
                 >
                   Deselect all
                 </button>
@@ -638,7 +638,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
 
             <form onSubmit={handleAddCustomTaskSubmit} className="flex flex-col gap-2.5 text-xs">
               <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Target Phase / Category</label>
+                <label className="text-[12px] text-slate-400 block mb-1">Target Phase / Category</label>
                 <select
                   value={selectedGroupForNewTask}
                   onChange={(e) => setSelectedGroupForNewTask(e.target.value)}
@@ -651,7 +651,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Task Title *</label>
+                <label className="text-[12px] text-slate-400 block mb-1">Task Title *</label>
                 <input
                   type="text"
                   required
@@ -700,7 +700,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
             </div>
 
             <form onSubmit={handleVerifyMasterCode} className="flex flex-col gap-3 text-xs text-center">
-              <p className="text-slate-300 text-[11px] leading-relaxed">
+              <p className="text-slate-300 text-[12px] leading-relaxed">
                 Please enter the 4-digit **Project Master Code** to mark this task as completed.
               </p>
 

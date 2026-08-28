@@ -110,7 +110,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
               <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${color} ${bg} group-hover:scale-110 transition-transform`}>
                 <Icon className="w-4 h-4" />
               </div>
-              <span className="text-[11px] font-semibold text-slate-300 group-hover:text-white transition-colors text-center leading-tight">{label}</span>
+              <span className="text-[12px] font-semibold text-slate-300 group-hover:text-white transition-colors text-center leading-tight">{label}</span>
             </button>
           ))}
         </div>
@@ -127,11 +127,11 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
           </div>
           <div className="text-left min-w-0">
             <p className="text-xs font-bold text-white">Latti AI Assistant</p>
-            <p className="text-[11px] text-slate-300 font-medium mt-0.5 truncate">Ask questions, query project budgets, or check timelines</p>
+            <p className="text-[12px] text-slate-300 font-medium mt-0.5 truncate">Ask questions, query project budgets, or check timelines</p>
           </div>
         </div>
         <div className="flex items-center gap-1 text-blue-400 group-hover:text-white transition-colors flex-shrink-0">
-          <span className="text-[11px] font-bold">Ask Latti</span>
+          <span className="text-[12px] font-bold">Ask Latti</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </div>
       </button>
@@ -151,11 +151,11 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
                 <span className="text-xs font-bold text-white">Opportunities Pipeline</span>
                 <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">6 Active</span>
               </div>
-              <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">$3.77M Pipeline Value · 25% Avg Prob</p>
+              <p className="text-[12px] text-slate-400 font-medium mt-0.5 truncate">$3.77M Pipeline Value · 25% Avg Prob</p>
             </div>
           </div>
           <div className="flex items-center gap-1 text-slate-400 group-hover:text-blue-400 transition-colors flex-shrink-0">
-            <span className="text-[11px] font-bold">Pipeline</span>
+            <span className="text-[12px] font-bold">Pipeline</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </div>
         </button>
@@ -203,12 +203,12 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
                     <h3 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">{project.name}</h3>
                     <StatusBadge status={project.status} size="xs" />
                   </div>
-                  <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">{project.cityState}</p>
+                  <p className="text-[12px] text-slate-400 font-medium mt-0.5 truncate">{project.cityState}</p>
                   
                   <div className="flex items-center justify-between gap-2 mt-2">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] text-slate-500 font-medium">Budget:</span>
-                      <span className="text-[11px] font-bold text-white">${((project.budget?.total || 0) / 1000000).toFixed(1)}M</span>
+                      <span className="text-[12px] font-bold text-white">${((project.budget?.total || 0) / 1000000).toFixed(1)}M</span>
                     </div>
                     <span className="text-[10px] font-semibold text-blue-400">{project.progress}% Done</span>
                   </div>

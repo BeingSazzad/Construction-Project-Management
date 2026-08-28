@@ -260,14 +260,14 @@ export const CreateBudgetModal: React.FC<CreateBudgetModalProps> = ({
                 <input type="radio" name="attachType" defaultChecked className="accent-teal-400" />
                 <div>
                   <div className="font-bold text-white">Standalone Budget</div>
-                  <div className="text-[11px] text-slate-400">Independent cost model for initial client bidding & opportunity</div>
+                  <div className="text-[12px] text-slate-400">Independent cost model for initial client bidding & opportunity</div>
                 </div>
               </label>
               <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#080D18] border border-[#182438] cursor-pointer">
                 <input type="radio" name="attachType" className="accent-teal-400" />
                 <div>
                   <div className="font-bold text-white">Link to Active Project</div>
-                  <div className="text-[11px] text-slate-400">Attach directly to Riverside Complex or Downtown Tower</div>
+                  <div className="text-[12px] text-slate-400">Attach directly to Riverside Complex or Downtown Tower</div>
                 </div>
               </label>
             </div>
@@ -357,7 +357,7 @@ export const CreateBudgetModal: React.FC<CreateBudgetModalProps> = ({
 
                     <div className="min-w-0 flex-1">
                       <div className="font-bold text-white text-xs">{opt.title}</div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">{opt.desc}</div>
+                      <div className="text-[12px] text-slate-400 mt-0.5">{opt.desc}</div>
                     </div>
                   </div>
                 );

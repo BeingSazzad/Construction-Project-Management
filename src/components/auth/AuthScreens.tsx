@@ -214,7 +214,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
         {/* Brand */}
         <div className="flex flex-col items-center text-center">
           <LatticeLogo size="lg" />
-          <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mt-2">
+          <p className="text-[12px] font-bold tracking-widest text-slate-400 uppercase mt-2">
             Build Better. Together.
           </p>
         </div>
@@ -229,7 +229,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
 
             <form onSubmit={handleSignIn} className="flex flex-col gap-3">
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 block mb-1">Work Email</label>
+                <label className="text-[12px] font-semibold text-slate-300 block mb-1">Work Email</label>
                 <div className="relative flex items-center">
                   <Mail className="w-4 h-4 text-slate-500 absolute left-3" />
                   <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
@@ -238,7 +238,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 block mb-1">Password</label>
+                <label className="text-[12px] font-semibold text-slate-300 block mb-1">Password</label>
                 <div className="relative flex items-center">
                   <Lock className="w-4 h-4 text-slate-500 absolute left-3" />
                   <input type={showPassword ? 'text' : 'password'} required value={password}
@@ -255,10 +255,10 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
                     className="w-4 h-4 rounded border-[#182438] text-blue-500 focus:ring-0" />
-                  <span className="text-slate-300 text-[11px]">Remember me</span>
+                  <span className="text-slate-300 text-[12px]">Remember me</span>
                 </label>
                 <button type="button" onClick={goToForgot}
-                  className="text-[11px] font-semibold text-blue-400 hover:underline cursor-pointer">
+                  className="text-[12px] font-semibold text-blue-400 hover:underline cursor-pointer">
                   Forgot password?
                 </button>
               </div>
@@ -322,7 +322,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
 
             <form onSubmit={handleSignUp} className="flex flex-col gap-3">
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 block mb-1">Full Name</label>
+                <label className="text-[12px] font-semibold text-slate-300 block mb-1">Full Name</label>
                 <div className="relative flex items-center">
                   <User className="w-4 h-4 text-slate-500 absolute left-3" />
                   <input type="text" required value={fullName} onChange={e => setFullName(e.target.value)}
@@ -331,7 +331,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 block mb-1">Work Email</label>
+                <label className="text-[12px] font-semibold text-slate-300 block mb-1">Work Email</label>
                 <div className="relative flex items-center">
                   <Mail className="w-4 h-4 text-slate-500 absolute left-3" />
                   <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
@@ -340,7 +340,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 block mb-1">Company Name</label>
+                <label className="text-[12px] font-semibold text-slate-300 block mb-1">Company Name</label>
                 <div className="relative flex items-center">
                   <Building className="w-4 h-4 text-slate-500 absolute left-3" />
                   <input type="text" required value={companyName} onChange={e => setCompanyName(e.target.value)}
@@ -349,7 +349,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] font-semibold text-slate-300 block mb-1">Password</label>
+                <label className="text-[12px] font-semibold text-slate-300 block mb-1">Password</label>
                 <div className="relative flex items-center">
                   <Lock className="w-4 h-4 text-slate-500 absolute left-3" />
                   <input type={showSignupPass ? 'text' : 'password'} required value={signupPass}
@@ -366,7 +366,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
               <label className="flex items-start gap-2 cursor-pointer pt-1">
                 <input type="checkbox" required defaultChecked
                   className="w-4 h-4 rounded border-[#182438] text-blue-500 focus:ring-0 mt-0.5 flex-shrink-0" />
-                <span className="text-[11px] text-slate-400 leading-tight">
+                <span className="text-[12px] text-slate-400 leading-tight">
                   I agree to Lattice's{' '}
                   <span className="text-slate-200 underline">Terms of Service</span> and{' '}
                   <span className="text-slate-200 underline">Privacy Policy</span>.
@@ -416,7 +416,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
 
                 <form onSubmit={handleSendOtp} className="flex flex-col gap-3">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-300 block mb-1">Work Email</label>
+                    <label className="text-[12px] font-semibold text-slate-300 block mb-1">Work Email</label>
                     <div className="relative flex items-center">
                       <Mail className="w-4 h-4 text-slate-500 absolute left-3" />
                       <input type="email" required value={forgotEmail} onChange={e => setForgotEmail(e.target.value)}
@@ -454,7 +454,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
                   <div className="space-y-2">
                     <OtpInput value={otpValues} onChange={v => { setOtpValues(v); setOtpError(false); }} />
                     {otpError && (
-                      <p className="text-center text-[11px] text-rose-400 font-medium">
+                      <p className="text-center text-[12px] text-rose-400 font-medium">
                         Invalid code. Please check your email and try again.
                       </p>
                     )}
@@ -496,7 +496,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
 
                 <form onSubmit={handleResetPassword} className="flex flex-col gap-3">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-300 block mb-1">New Password</label>
+                    <label className="text-[12px] font-semibold text-slate-300 block mb-1">New Password</label>
                     <div className="relative flex items-center">
                       <Lock className="w-4 h-4 text-slate-500 absolute left-3" />
                       <input type={showNewPass ? 'text' : 'password'} required value={newPassword}
@@ -511,7 +511,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-300 block mb-1">Confirm Password</label>
+                    <label className="text-[12px] font-semibold text-slate-300 block mb-1">Confirm Password</label>
                     <div className="relative flex items-center">
                       <Lock className="w-4 h-4 text-slate-500 absolute left-3" />
                       <input type={showConfirmPass ? 'text' : 'password'} required value={confirmPassword}
@@ -535,7 +535,7 @@ export const AuthScreens: React.FC<AuthScreensProps> = ({
                   </div>
 
                   {resetError && (
-                    <p className="text-[11px] text-rose-400 font-medium -mt-1">{resetError}</p>
+                    <p className="text-[12px] text-rose-400 font-medium -mt-1">{resetError}</p>
                   )}
 
                   <div className="pt-1">

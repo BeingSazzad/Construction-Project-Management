@@ -137,7 +137,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           
           {/* Cover Photo Upload Box */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
               Project Cover Photo
             </label>
             <div className="h-32 w-full relative rounded-2xl overflow-hidden border border-[#142036] bg-[#050811] group">
@@ -184,7 +184,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
 
           {/* Project Title */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
               Project Title *
             </label>
             <input
@@ -200,7 +200,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Client / Owner & Project Type */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Client / Owner
               </label>
               <input
@@ -213,7 +213,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Project Type
               </label>
               <CustomSelect
@@ -228,7 +228,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Site Address & City/State */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Site Address
               </label>
               <input
@@ -241,7 +241,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 City / State
               </label>
               <input
@@ -257,7 +257,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Lead PM & Total Estimated Budget */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Lead Project Manager
               </label>
               <select
@@ -272,7 +272,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Total Budget ($ USD)
               </label>
               <input
@@ -288,7 +288,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Target Completion Date & Master Code */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Target Completion Date
               </label>
               <input
@@ -300,7 +300,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
                 Master Code (4 digits) *
               </label>
               <input
@@ -317,7 +317,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
 
           {/* Project Scope & Description */}
           <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
               Project Scope & Notes
             </label>
             <textarea

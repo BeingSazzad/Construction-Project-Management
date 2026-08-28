@@ -135,7 +135,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
           <div className="grid grid-cols-3 gap-2.5">
             {/* Trade * */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold text-slate-300">Trade *</label>
+              <label className="text-[12px] font-bold text-slate-300">Trade *</label>
               <select
                 value={trade}
                 onChange={(e) => setTrade(e.target.value)}
@@ -152,7 +152,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
             {/* Priority */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold text-slate-300">Priority</label>
+              <label className="text-[12px] font-bold text-slate-300">Priority</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as Priority)}
@@ -167,7 +167,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
             {/* Location */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold text-slate-300">Location</label>
+              <label className="text-[12px] font-bold text-slate-300">Location</label>
               <input
                 type="text"
                 value={location}

@@ -40,7 +40,7 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
           <span className="text-xs font-black tracking-wider text-white uppercase">LATTICE</span>
-          <span className="hidden sm:inline text-[11px] text-slate-400 font-medium">| Construction Suite</span>
+          <span className="hidden sm:inline text-[12px] text-slate-400 font-medium">| Construction Suite</span>
         </div>
 
         {/* Quick Demo Role Switcher */}

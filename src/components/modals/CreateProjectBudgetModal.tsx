@@ -52,7 +52,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
   const formContent = (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">
       <div>
-        <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+        <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
           Budget Name <span className="text-rose-400">*</span>
         </label>
         <input
@@ -68,7 +68,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+          <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
             Budget Number
           </label>
           <input
@@ -79,7 +79,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
           />
         </div>
         <div>
-          <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+          <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
             Project Type
           </label>
           <CustomSelect
@@ -93,7 +93,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+          <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
             Attach to Project
           </label>
           <CustomSelect
@@ -104,7 +104,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
           />
         </div>
         <div>
-          <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+          <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
             Prepared By
           </label>
           <input
@@ -118,7 +118,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
       </div>
 
       <div>
-        <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+        <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
           Budget Methodology
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -144,7 +144,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
       </div>
 
       <div>
-        <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+        <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
           Scope / Notes
         </label>
         <textarea

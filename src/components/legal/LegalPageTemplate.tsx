@@ -50,7 +50,7 @@ export const LegalPageTemplate: React.FC<LegalPageTemplateProps> = ({
           </div>
           <div className="text-center">
             <h1 className="text-xl font-extrabold text-white tracking-tight">{title}</h1>
-            <p className="text-[11px] text-slate-400 font-medium mt-1">{updatedDate}</p>
+            <p className="text-[12px] text-slate-400 font-medium mt-1">{updatedDate}</p>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ export const LegalPageTemplate: React.FC<LegalPageTemplateProps> = ({
         </div>
 
         {/* Footer Contact */}
-        <div className="flex items-center justify-center gap-1.5 py-2 text-[11px] text-slate-500">
+        <div className="flex items-center justify-center gap-1.5 py-2 text-[12px] text-slate-500">
           <span>Questions?</span>
           <span className="text-[#3875F6] font-semibold">Contact Lattice support</span>
         </div>

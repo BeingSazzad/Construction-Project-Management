@@ -119,7 +119,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <div>
             <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Current Plan</span>
             <h3 className="text-base font-black text-white mt-0.5">Trial</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-medium">14-day free trial · No credit card required</p>
+            <p className="text-[12px] text-slate-400 mt-0.5 font-medium">14-day free trial · No credit card required</p>
           </div>
           <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
             Active
@@ -233,7 +233,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
             <div>
               <h3 className="text-xs font-bold text-white">Push Notifications</h3>
-              <p className="text-[11px] text-slate-400">Receive alerts on device</p>
+              <p className="text-[12px] text-slate-400">Receive alerts on device</p>
             </div>
           </div>
           <button
@@ -272,7 +272,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <div key={item.key} className="py-3 flex items-center justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <h4 className="text-xs font-bold text-white">{item.label}</h4>
-                    <p className="text-[11px] text-slate-400 mt-0.5">{item.desc}</p>
+                    <p className="text-[12px] text-slate-400 mt-0.5">{item.desc}</p>
                   </div>
 
                   <button
@@ -361,7 +361,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <Building className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Company Profile</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   {userData.company || 'Avery & Marsh Construction'} • GC-12345
                 </span>
               </div>
@@ -378,7 +378,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <Crown className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Subscription & Plan</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   Trial (14-Day Free) • Professional $19/mo
                 </span>
               </div>
@@ -403,7 +403,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <Bell className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Push Notifications</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   Inspection, budget & schedule alerts (6 rules)
                 </span>
               </div>
@@ -425,7 +425,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <Lock className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Security & Password</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   Password & account credentials
                 </span>
               </div>
@@ -449,7 +449,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <HelpCircle className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Help Center & Guides</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   FAQs, documentation & priority support
                 </span>
               </div>
@@ -474,7 +474,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <ShieldCheck className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Privacy Policy</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   How we handle your data
                 </span>
               </div>
@@ -491,7 +491,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <FileText className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Terms of Service</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   Platform usage agreement
                 </span>
               </div>
@@ -508,7 +508,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <Sparkles className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">AI Disclaimer</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   AI output limitations & responsibility
                 </span>
               </div>
@@ -525,7 +525,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <Crown className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Subscription Terms</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   Billing, trials & credits
                 </span>
               </div>
@@ -542,7 +542,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <ShieldCheck className="w-4 h-4 text-blue-400 flex-shrink-0" />
               <div className="min-w-0">
                 <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Beta Agreement</span>
-                <span className="text-[11px] text-slate-400 font-medium block mt-0.5 truncate">
+                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
                   Closed beta participation terms
                 </span>
               </div>

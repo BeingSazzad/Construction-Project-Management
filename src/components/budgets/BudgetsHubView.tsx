@@ -245,7 +245,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
             <h2 className="text-2xl font-black text-white tracking-tight mt-0.5 transition-all">
               ${currentStats.budget}M
             </h2>
-            <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+            <p className="text-[12px] text-slate-400 mt-0.5 font-medium">
               {currentStats.activeProjCount} Active {currentStats.activeProjCount === 1 ? 'Project' : 'Projects'}
             </p>
           </div>
@@ -257,7 +257,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
             <span className="text-lg font-bold text-blue-400 mt-0.5 block transition-all">
               ${currentStats.spent}M
             </span>
-            <span className="text-[11px] text-emerald-400 font-semibold transition-all">
+            <span className="text-[12px] text-emerald-400 font-semibold transition-all">
               ${currentStats.remaining}M remaining
             </span>
           </div>
@@ -357,7 +357,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
                         {div.title}
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-400 font-medium mt-1">
+                    <p className="text-[12px] text-slate-400 font-medium mt-1">
                       {div.vendor} · <span className="text-slate-300 font-semibold">{div.actual} paid</span>
                     </p>
                   </div>
@@ -394,7 +394,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
                     <h3 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">
                       {b.name}
                     </h3>
-                    <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                    <p className="text-[12px] text-slate-400 mt-0.5 font-medium">
                       {b.itemsCount} Cost Code Items
                     </p>
                   </div>
@@ -404,7 +404,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onOpenImportBudg
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#142036] text-[11px]">
+                <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#142036] text-[12px]">
                   <span className="text-slate-400">
                     Spent: <strong className="text-blue-400">${(b.actual / 1000000).toFixed(2)}M</strong>
                   </span>

@@ -97,7 +97,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
 
           {/* Full Name */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Full Name</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">Full Name</label>
             <input
               type="text"
               value={name}
@@ -109,7 +109,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
 
           {/* Official Email */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Official Email</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">Official Email</label>
             <input
               type="email"
               value={email}
@@ -121,7 +121,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
 
           {/* Direct Phone */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Direct Phone</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">Direct Phone</label>
             <input
               type="text"
               value={phone}
@@ -133,7 +133,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
 
           {/* Role / Title */}
           <div>
-            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Role / Position</label>
+            <label className="block text-[12px] font-semibold text-slate-400 mb-1">Role / Position</label>
             <input
               type="text"
               value={roleTitle}

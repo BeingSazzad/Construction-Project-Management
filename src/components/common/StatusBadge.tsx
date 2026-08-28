@@ -15,7 +15,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 }) => {
   const sizeClasses = {
     xs: 'px-2.5 py-1 text-[10px] font-bold rounded-full whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 leading-none backdrop-blur-md shadow-sm',
-    sm: 'px-3 py-1 text-[11px] font-bold rounded-full whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 leading-none backdrop-blur-md shadow-sm',
+    sm: 'px-3 py-1 text-[12px] font-bold rounded-full whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 leading-none backdrop-blur-md shadow-sm',
     md: 'px-3.5 py-1.5 text-xs font-bold rounded-full whitespace-nowrap shrink-0 inline-flex items-center gap-2 leading-none backdrop-blur-md shadow-sm'
   };
 
