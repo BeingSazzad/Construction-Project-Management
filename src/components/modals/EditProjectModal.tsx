@@ -34,6 +34,10 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
   const [targetEndDate, setTargetEndDate] = useState(project.targetEndDate || '2025-11-30');
   const [description, setDescription] = useState(project.description || '');
 
+  const [clientName, setClientName] = useState(project.clientName || '');
+  const [progress, setProgress] = useState(project.progress);
+  const [masterCode, setMasterCode] = useState(project.masterCode || '1234');
+
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -52,9 +56,12 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
       location: location.trim(),
       cityState: cityState.trim() || 'New York, NY',
       status: status,
+      progress: Number(progress) || 0,
       startDate: startDate,
       targetEndDate: targetEndDate,
       description: description.trim(),
+      clientName: clientName.trim(),
+      masterCode: masterCode.trim(),
       projectManager: {
         id: project.projectManager.id,
         name: pmObj.name,
@@ -127,44 +134,90 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
           </div>
 
-          <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lifecycle Status</label>
-            <CustomSelect
-              value={status}
-              onChange={(v) => setStatus(v as ProjectStatus)}
-              options={[
-                'Planning',
-                'Pre-Construction',
-                'In Progress',
-                'On Hold',
-                'Completed',
-                'Warranty'
-              ]}
-              size="md"
-            />
+          {/* Status & Progress % */}
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lifecycle Status</label>
+              <CustomSelect
+                value={status}
+                onChange={(v) => setStatus(v as ProjectStatus)}
+                options={[
+                  'Planning',
+                  'Pre-Construction',
+                  'In Progress',
+                  'On Hold',
+                  'Completed',
+                  'Warranty'
+                ]}
+                size="md"
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Progress %</label>
+              <input
+                type="number"
+                min={0}
+                max={100}
+                required
+                value={progress}
+                onChange={(e) => setProgress(Number(e.target.value))}
+                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lead Project Manager</label>
-            <select
-              value={selectedPM}
-              onChange={(e) => setSelectedPM(e.target.value)}
-              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
-            >
-              {AVAILABLE_PMS.map(pm => (
-                <option key={pm.name} value={pm.name}>{pm.name}</option>
-              ))}
-            </select>
+          {/* Budget & Client Name */}
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Total Budget ($ USD)</label>
+              <input
+                type="number"
+                value={totalBudget}
+                onChange={(e) => setTotalBudget(Number(e.target.value))}
+                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Client Name</label>
+              <input
+                type="text"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                placeholder="e.g. Texas Commercial LLC"
+                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Total Budget ($ USD)</label>
-            <input
-              type="number"
-              value={totalBudget}
-              onChange={(e) => setTotalBudget(Number(e.target.value))}
-              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
-            />
+          {/* Master Code & Project Manager */}
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Lead Project Manager</label>
+              <select
+                value={selectedPM}
+                onChange={(e) => setSelectedPM(e.target.value)}
+                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+              >
+                {AVAILABLE_PMS.map(pm => (
+                  <option key={pm.name} value={pm.name}>{pm.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">Master Code (4 digits)</label>
+              <input
+                type="text"
+                maxLength={4}
+                required
+                value={masterCode}
+                onChange={(e) => setMasterCode(e.target.value.replace(/\D/g, ''))}
+                placeholder="1234"
+                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">

@@ -42,10 +42,7 @@ export const OPPORTUNITY_STAGES = [
   'Plans Received',
   'Estimating',
   'Proposal Sent',
-  'Negotiation',
-  'Won',
-  'Lost',
-  'On Hold'
+  'Contract Signed'
 ] as const;
 
 export const LEAD_SOURCES = [

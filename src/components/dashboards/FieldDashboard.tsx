@@ -14,7 +14,6 @@ interface FieldDashboardProps {
   onUpdateTaskStatus: (taskId: string, newStatus: any) => void;
   onTriggerPhotoUpload: () => void;
   onViewDrawings: () => void;
-  onOpenDailyLogs?: () => void;
 }
 
 export const FieldDashboard: React.FC<FieldDashboardProps> = ({
@@ -22,8 +21,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
   onOpenTask,
   onUpdateTaskStatus,
   onTriggerPhotoUpload,
-  onViewDrawings,
-  onOpenDailyLogs
+  onViewDrawings
 }) => {
   const fieldTasks = [
     {
@@ -194,14 +192,6 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
             <p className="text-xs text-slate-400 mt-0.5 font-medium">Wind 6 mph WSW • Dry Ground</p>
           </div>
         </div>
-
-        <button
-          onClick={onOpenDailyLogs}
-          className="text-xs font-bold text-[#3875F6] hover:underline flex items-center gap-1 cursor-pointer"
-        >
-          <span>Logs</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
       </div>
 
       {/* 6. Active Field Tasks */}

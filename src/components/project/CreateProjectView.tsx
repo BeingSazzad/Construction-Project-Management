@@ -9,12 +9,11 @@ interface CreateProjectViewProps {
 }
 
 export const PROJECT_TYPES = [
-  'Commercial Office',
-  'Luxury Residential',
   'Custom Home',
-  'Retail Expansion',
-  'Mixed-Use Tower',
-  'Renovation / Fit-out'
+  'Remodel',
+  'New Construction',
+  'Commercial',
+  'Design-Build'
 ] as const;
 
 export const DEFAULT_PRESET_PHOTOS = [
@@ -44,6 +43,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
   const [totalBudget, setTotalBudget] = useState('3500000');
   const [targetEndDate, setTargetEndDate] = useState('2026-06-30');
   const [description, setDescription] = useState('');
+  const [masterCode, setMasterCode] = useState('1234');
   const [thumbnail, setThumbnail] = useState<string>(DEFAULT_PRESET_PHOTOS[0].url);
 
   const isValid = name.trim().length > 0;
@@ -101,7 +101,10 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
       },
       thumbnail: thumbnail || DEFAULT_PRESET_PHOTOS[0].url,
       coverImage: thumbnail || DEFAULT_PRESET_PHOTOS[0].url,
-      description: description.trim() || `${type} development for ${clientName.trim() || 'Client'}.`
+      description: description.trim() || `${type} development for ${clientName.trim() || 'Client'}.`,
+      clientName: clientName.trim(),
+      type: type as any,
+      masterCode: masterCode.trim()
     });
   };
 
@@ -282,17 +285,34 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
           </div>
 
-          {/* Target Completion Date */}
-          <div>
-            <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
-              Target Completion Date
-            </label>
-            <input
-              type="date"
-              value={targetEndDate}
-              onChange={(e) => setTargetEndDate(e.target.value)}
-              className={inputClass}
-            />
+          {/* Target Completion Date & Master Code */}
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+                Target Completion Date
+              </label>
+              <input
+                type="date"
+                value={targetEndDate}
+                onChange={(e) => setTargetEndDate(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold text-slate-300 mb-1 block">
+                Master Code (4 digits) *
+              </label>
+              <input
+                type="text"
+                maxLength={4}
+                required
+                value={masterCode}
+                onChange={(e) => setMasterCode(e.target.value.replace(/\D/g, ''))}
+                placeholder="1234"
+                className={inputClass}
+              />
+            </div>
           </div>
 
           {/* Project Scope & Description */}

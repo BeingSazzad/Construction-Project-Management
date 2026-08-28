@@ -85,7 +85,7 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
     clientEmail: 'mvance@vancecap.com',
     address: '42 Red Mountain Rd, Aspen, CO',
     value: 340000,
-    stage: 'Negotiation',
+    stage: 'Proposal Sent',
     type: 'Design-Build',
     probability: 80,
     leadSource: 'Architect Partner',
@@ -102,7 +102,7 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
     clientEmail: 'mdavis@coloradohealth.org',
     address: '250 Columbine St, Denver, CO',
     value: 95000,
-    stage: 'Won',
+    stage: 'Contract Signed',
     type: 'Remodel',
     probability: 100,
     leadSource: 'Referral',
@@ -126,15 +126,15 @@ export const OpportunitiesView: React.FC = () => {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
   const totalPipeline = opportunities
-    .filter(o => o.stage !== 'Won' && o.stage !== 'Lost')
+    .filter(o => o.stage !== 'Contract Signed')
     .reduce((sum, o) => sum + o.value, 0);
 
   const wonValue = opportunities
-    .filter(o => o.stage === 'Won')
+    .filter(o => o.stage === 'Contract Signed')
     .reduce((sum, o) => sum + o.value, 0);
 
-  const activeCount = opportunities.filter(o => o.stage !== 'Won' && o.stage !== 'Lost').length;
-  const wonCount = opportunities.filter(o => o.stage === 'Won').length;
+  const activeCount = opportunities.filter(o => o.stage !== 'Contract Signed').length;
+  const wonCount = opportunities.filter(o => o.stage === 'Contract Signed').length;
   const conversionRate = opportunities.length > 0 ? Math.round((wonCount / opportunities.length) * 100) : 17;
 
   // Filter & Sort Logic
@@ -221,6 +221,7 @@ export const OpportunitiesView: React.FC = () => {
   const getStageBadgeClasses = (stage: string) => {
     switch (stage) {
       case 'Won':
+      case 'Contract Signed':
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
       case 'Estimating':
       case 'Proposal Sent':

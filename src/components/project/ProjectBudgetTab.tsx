@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Project, TradeCategory, CostCodeGroup } from '../../types';
 import { 
-  ChevronDown, ChevronRight, Search, Plus, 
-  Layers, Hammer, Boxes, Flame, Zap, BarChart2, Download
+  ChevronDown, ChevronRight, Plus, 
+  Layers, Hammer, Boxes, Flame, Zap, Download, X
 } from 'lucide-react';
 
 interface ProjectBudgetTabProps {
@@ -26,14 +26,18 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   const [budgetAmount, setBudgetAmount] = useState('');
   const [committedAmount, setCommittedAmount] = useState('');
 
+  // Edit Code Form State
+  const [editingCode, setEditingCode] = useState<CostCodeGroup | null>(null);
+  const [editingName, setEditingName] = useState('');
+  const [editingBudget, setEditingBudget] = useState('');
+  const [editingCommitted, setEditingCommitted] = useState('');
+
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     'cat-03': true,
     'cat-05': false,
     'cat-15': false,
     'cat-16': false,
   });
-
-  const [searchQuery, setSearchQuery] = useState('');
 
   const handleAddCodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,11 +71,13 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
     setCategories(prev => prev.map(cat => {
       if (cat.name.includes(tradeName.split('-')[1]?.trim() || 'Concrete')) {
+        const updatedCodes = [...cat.costCodes, newCode];
         return {
           ...cat,
-          estimatedCost: cat.estimatedCost + Number(budgetAmount),
-          actualCost: cat.actualCost + (Number(committedAmount) || 0),
-          costCodes: [...cat.costCodes, newCode]
+          estimatedCost: updatedCodes.reduce((sum, cc) => sum + cc.estimatedCost, 0),
+          actualCost: updatedCodes.reduce((sum, cc) => sum + cc.actualCost, 0),
+          committedCost: updatedCodes.reduce((sum, cc) => sum + cc.committedCost, 0),
+          costCodes: updatedCodes
         };
       }
       return cat;
@@ -81,6 +87,52 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
     setBudgetAmount('');
     setCommittedAmount('');
     setIsAddCodeModalOpen(false);
+  };
+
+  const handleEditCodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCode) return;
+
+    const newEst = Number(editingBudget) || 0;
+    const newAct = Number(editingCommitted) || 0;
+
+    setCategories(prev => prev.map(cat => {
+      const hasCode = cat.costCodes.some(cc => cc.code === editingCode.code);
+      if (hasCode) {
+        const updatedCodes = cat.costCodes.map(cc => {
+          if (cc.code === editingCode.code) {
+            return {
+              ...cc,
+              name: editingName.trim(),
+              estimatedCost: newEst,
+              actualCost: newAct,
+              committedCost: newAct,
+              variance: newAct - newEst,
+              items: cc.items.map(item => ({
+                ...item,
+                name: editingName.trim(),
+                estimatedCost: newEst,
+                committedCost: newAct,
+                actualCost: newAct,
+                remaining: Math.max(0, newEst - newAct)
+              }))
+            };
+          }
+          return cc;
+        });
+
+        return {
+          ...cat,
+          estimatedCost: updatedCodes.reduce((sum, cc) => sum + cc.estimatedCost, 0),
+          actualCost: updatedCodes.reduce((sum, cc) => sum + cc.actualCost, 0),
+          committedCost: updatedCodes.reduce((sum, cc) => sum + cc.committedCost, 0),
+          costCodes: updatedCodes
+        };
+      }
+      return cat;
+    }));
+
+    setEditingCode(null);
   };
 
   const toggleCategory = (catId: string) => {
@@ -100,17 +152,13 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
     }
   };
 
-  // Monthly Budget vs Actual Data
-  const monthlyData = [
-    { month: 'Jan', budget: 450, actual: 420 },
-    { month: 'Feb', budget: 620, actual: 590 },
-    { month: 'Mar', budget: 850, actual: 810 },
-    { month: 'Apr', budget: 920, actual: 950 },
-    { month: 'May', budget: 980, actual: 880 },
-    { month: 'Jun', budget: 830, actual: 0 }
-  ];
-
-  const maxVal = 1000;
+  // Dynamic ledger totals recalculation
+  const totalBudget = categories.reduce((sum, cat) => sum + cat.estimatedCost, 0);
+  const totalActual = categories.reduce((sum, cat) => sum + cat.actualCost, 0);
+  const totalCommitted = categories.reduce((sum, cat) => sum + cat.committedCost, 0);
+  const totalPaid = categories.reduce((sum, cat) => sum + (cat.actualCost * 0.88), 0); // 88% paid simulation
+  const totalRemaining = totalBudget - totalActual;
+  const progressPercent = totalBudget > 0 ? Math.round((totalActual / totalBudget) * 100) : 0;
 
   if (project.budget.total === 0) {
     return (
@@ -137,43 +185,43 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       {/* Budget Overview Card */}
-      <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-sm">
+      <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Budget Overview</span>
           <div className="flex items-center gap-2">
             {onImportBudget && (
               <button
                 onClick={onImportBudget}
-                className="text-[10px] font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2 py-0.5 rounded flex items-center gap-1 hover:bg-purple-500/20 cursor-pointer transition-all"
+                className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/25 px-2 py-1 rounded-xl flex items-center gap-1 hover:bg-blue-500/20 cursor-pointer transition-all"
               >
                 <Download className="w-3 h-3" />
                 <span>Import CSV</span>
               </button>
             )}
-            <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
-              +$230K Favorable
+            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+              +${Math.max(0, Math.round((totalBudget - totalActual) / 1000))}K Favorable
             </span>
           </div>
         </div>
 
         {/* 2 Main Metrics + Circular Percentage Donut */}
-        <div className="flex items-center justify-between bg-[#080D17] p-3 rounded-xl border border-[#141E2F] mb-3">
+        <div className="flex items-center justify-between bg-[#070D1A] p-3 rounded-xl border border-[#142036] mb-3">
           <div className="space-y-2">
             <div>
-              <span className="text-xs text-slate-400 font-medium">Total Budget</span>
-              <div className="text-lg font-bold text-white">${(project.budget.total / 1000000).toFixed(2)}M</div>
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Budget</span>
+              <div className="text-lg font-black text-white mt-0.5">${(totalBudget / 1000000).toFixed(2)}M</div>
             </div>
             <div>
-              <span className="text-xs text-slate-400 font-medium">Total Cost (Actual)</span>
-              <div className="text-lg font-bold text-blue-400">${(project.budget.actual / 1000000).toFixed(2)}M</div>
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Cost (Actual)</span>
+              <div className="text-lg font-black text-blue-400 mt-0.5">${(totalActual / 1000000).toFixed(2)}M</div>
             </div>
           </div>
 
-          {/* 70% Progress Ring */}
+          {/* Progress Ring */}
           <div className="relative w-16 h-16 flex items-center justify-center flex-shrink-0">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
               <path
-                className="text-[#172238]"
+                className="text-[#142036]"
                 strokeWidth="3.5"
                 stroke="currentColor"
                 fill="none"
@@ -181,7 +229,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               />
               <path
                 className="text-emerald-400"
-                strokeDasharray="70, 100"
+                strokeDasharray={`${progressPercent}, 100`}
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 stroke="currentColor"
@@ -189,73 +237,30 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
-            <span className="absolute text-xs font-bold text-white">70%</span>
+            <span className="absolute text-xs font-bold text-white">{progressPercent}%</span>
           </div>
         </div>
 
         {/* Financial Line Breakdown */}
-        <div className="space-y-1.5 text-xs text-slate-300">
+        <div className="space-y-2 text-xs text-slate-300">
           <div className="flex items-center justify-between">
             <span className="text-slate-400">Committed (Subcontracts):</span>
-            <span className="font-semibold text-white">${(project.budget.committed / 1000000).toFixed(2)}M</span>
+            <span className="font-bold text-white">${(totalCommitted / 1000000).toFixed(2)}M</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-slate-400">Paid Invoices:</span>
-            <span className="font-semibold text-slate-200">${(project.budget.paid / 1000000).toFixed(2)}M</span>
+            <span className="font-bold text-slate-200">${(totalPaid / 1000000).toFixed(2)}M</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-slate-400">Remaining Balance:</span>
-            <span className="font-semibold text-emerald-400">${(project.budget.remaining / 1000000).toFixed(2)}M</span>
+            <span className="font-bold text-emerald-400">${(totalRemaining / 1000000).toFixed(2)}M</span>
           </div>
-        </div>
-      </div>
-
-      {/* Budget vs Actual Monthly Bar Chart */}
-      <div className="card-dark p-4 bg-[#0D131F] border-[#1A2436]">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-1.5">
-            <BarChart2 className="w-4 h-4 text-blue-400" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Budget vs Actual</h3>
-          </div>
-          <div className="flex items-center gap-3 text-[10px]">
-            <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-sm bg-blue-500"></span>
-              <span className="text-slate-400">Budget</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-sm bg-cyan-400"></span>
-              <span className="text-slate-400">Actual</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Monthly Bar Visualizer */}
-        <div className="h-32 flex items-end justify-between gap-2 pt-4 pb-1 border-b border-[#182338]">
-          {monthlyData.map((d) => (
-            <div key={d.month} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-              <div className="w-full flex items-end justify-center gap-1 h-full">
-                {/* Budget bar */}
-                <div 
-                  className="w-2.5 bg-blue-600/80 rounded-t-sm transition-all"
-                  style={{ height: `${(d.budget / maxVal) * 100}%` }}
-                  title={`Budget: $${d.budget}K`}
-                />
-                {/* Actual bar */}
-                <div 
-                  className={`w-2.5 rounded-t-sm transition-all ${d.actual > 0 ? 'bg-cyan-400' : 'bg-slate-700/30'}`}
-                  style={{ height: `${(d.actual / maxVal) * 100}%` }}
-                  title={`Actual: $${d.actual}K`}
-                />
-              </div>
-              <span className="text-[10px] text-slate-400 mt-1 font-medium">{d.month}</span>
-            </div>
-          ))}
         </div>
       </div>
 
       {/* CSI Cost Codes Accordion */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
+      <div className="flex flex-col gap-2.5">
+        <div className="flex items-center justify-between">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">CSI MasterFormat Trades</h3>
           <button
             onClick={() => setIsAddCodeModalOpen(true)}
@@ -272,28 +277,29 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             return (
               <div 
                 key={cat.id}
-                className="card-dark overflow-hidden border-[#1A2436] bg-[#0D131F]"
+                className="rounded-2xl border border-[#142036] bg-[#0A111F] overflow-hidden"
               >
                 {/* Category Header */}
-                <div
+                <button
+                  type="button"
                   onClick={() => toggleCategory(cat.id)}
-                  className="p-3 flex items-center justify-between cursor-pointer hover:bg-[#111A2C] transition-colors"
+                  className="w-full p-3.5 flex items-center justify-between cursor-pointer hover:bg-[#111A2C] transition-colors text-left"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-[#111827] border border-[#1E293B]">
+                    <div className="text-blue-400">
                       {getIcon(cat.icon)}
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-white">{cat.name}</h4>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[10px] text-slate-400 mt-0.5">
                         ${(cat.actualCost / 1000).toFixed(0)}K of ${(cat.estimatedCost / 1000).toFixed(0)}K
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-blue-400">
-                      {Math.round((cat.actualCost / cat.estimatedCost) * 100)}%
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-xs font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                      {cat.estimatedCost > 0 ? Math.round((cat.actualCost / cat.estimatedCost) * 100) : 0}%
                     </span>
                     {isExpanded ? (
                       <ChevronDown className="w-4 h-4 text-slate-400" />
@@ -301,34 +307,50 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                       <ChevronRight className="w-4 h-4 text-slate-400" />
                     )}
                   </div>
-                </div>
+                </button>
 
-                {/* Expanded Cost Codes */}
+                {/* Expanded Cost Codes - Flat Design, No Nested Box Cards */}
                 {isExpanded && (
-                  <div className="p-2.5 bg-[#080D17] border-t border-[#162033] space-y-2">
+                  <div className="px-3.5 pb-3.5 pt-0 border-t border-[#142036] bg-[#070D1A]/50 divide-y divide-[#142036]/50">
                     {cat.costCodes.map((cc) => (
-                      <div key={cc.code} className="bg-[#0D131F] rounded-lg p-2.5 border border-[#182338] text-xs">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-mono text-xs font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">
+                      <div key={cc.code} className="py-3 first:pt-2.5 last:pb-0 flex flex-col gap-2 animate-fade-in">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-mono text-[9px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.2 rounded border border-blue-500/20 flex-shrink-0">
                               {cc.code}
                             </span>
-                            <span className="font-bold text-white">{cc.name}</span>
+                            <span className="font-bold text-white text-[11px] truncate">{cc.name}</span>
                           </div>
-                          <span className={`text-xs font-bold ${cc.variance <= 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                            {cc.variance <= 0 ? `-$${Math.abs(cc.variance).toLocaleString()}` : `+$${cc.variance.toLocaleString()}`}
-                          </span>
+                          
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className={`text-[10px] font-bold ${cc.variance <= 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                              {cc.variance <= 0 ? `-$${Math.abs(cc.variance).toLocaleString()}` : `+$${cc.variance.toLocaleString()}`}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingCode(cc);
+                                setEditingName(cc.name);
+                                setEditingBudget(String(cc.estimatedCost));
+                                setEditingCommitted(String(cc.actualCost));
+                              }}
+                              className="text-[10px] font-bold text-blue-400 hover:text-blue-300 cursor-pointer active:scale-95 transition-all"
+                            >
+                              Edit
+                            </button>
+                          </div>
                         </div>
 
-                        {/* Cost Line Items */}
-                        <div className="space-y-1.5 mt-2">
+                        {/* Cost Line Items - Flat Indented Row items */}
+                        <div className="flex flex-col gap-1.5 pl-3">
                           {cc.items.map((item) => (
-                            <div key={item.id} className="p-2 bg-[#090E18] rounded border border-[#141E2F] flex items-center justify-between text-xs">
-                              <div>
-                                <span className="font-medium text-slate-200">{item.name}</span>
-                                <span className="text-xs uppercase text-slate-500 ml-1.5 font-bold">({item.type})</span>
+                            <div key={item.id} className="flex items-center justify-between text-[11px] text-slate-400 py-0.5">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="w-1 h-1 rounded-full bg-slate-600 flex-shrink-0" />
+                                <span className="font-medium text-slate-300 truncate">{item.name}</span>
+                                <span className="text-[8px] uppercase text-slate-500 font-bold flex-shrink-0">({item.type})</span>
                               </div>
-                              <span className="font-bold text-slate-300">${item.actualCost.toLocaleString()}</span>
+                              <span className="font-semibold text-slate-300 flex-shrink-0">${item.actualCost.toLocaleString()}</span>
                             </div>
                           ))}
                         </div>
@@ -421,6 +443,82 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                   className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Save Code
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── EDIT COST CODE MODAL ─── */}
+      {editingCode && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[380px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100">
+            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+              <div>
+                <h3 className="text-xs font-bold text-white">Edit CSI Cost Code ({editingCode.code})</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">Modify budget and actual costs</p>
+              </div>
+              <button
+                onClick={() => setEditingCode(null)}
+                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleEditCodeSubmit} className="flex flex-col gap-3 text-xs">
+              <div>
+                <label className="text-[11px] text-slate-350 block mb-1">Cost Code Line Item Name *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Slab Rebar Reinforcement"
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-slate-350 block mb-1">Budget Amount ($) *</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="45000"
+                    value={editingBudget}
+                    onChange={(e) => setEditingBudget(e.target.value)}
+                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] text-slate-350 block mb-1">Committed / Actual ($)</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="38000"
+                    value={editingCommitted}
+                    onChange={(e) => setEditingCommitted(e.target.value)}
+                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
+                <button
+                  type="button"
+                  onClick={() => setEditingCode(null)}
+                  className="px-3 py-1.5 rounded-lg bg-[#0E1A33] text-slate-300 text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
+                >
+                  Save Changes
                 </button>
               </div>
             </form>

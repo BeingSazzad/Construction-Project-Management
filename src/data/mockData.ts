@@ -1,7 +1,8 @@
 import { 
   User, Project, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, NotificationItem,
-  DailyLogItem, PlanGridPin, FinancingDraw, LienWaiver, OpportunityDeal, ProjectChatMessage 
+  DailyLogItem, PlanGridPin, FinancingDraw, LienWaiver, OpportunityDeal, ProjectChatMessage,
+  ChangeOrder
 } from '../types';
 
 export const CURRENT_USERS: Record<string, User> = {
@@ -86,7 +87,10 @@ export const MOCK_PROJECTS: Project[] = [
     },
     thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
     coverImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80',
-    description: '14-story Class A commercial office building featuring curtain wall facade, LEED Gold target, and multi-tenant high-efficiency HVAC.'
+    description: '14-story Class A commercial office building featuring curtain wall facade, LEED Gold target, and multi-tenant high-efficiency HVAC.',
+    clientName: 'Waterfront Development LLC',
+    type: 'Commercial',
+    masterCode: '1234'
   },
   {
     id: 'proj-2',
@@ -122,7 +126,10 @@ export const MOCK_PROJECTS: Project[] = [
     },
     thumbnail: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
     coverImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&auto=format&fit=crop&q=80',
-    description: 'High-density mixed retail & 28-floor steel frame commercial tower with integrated subterranean transit concourse.'
+    description: 'High-density mixed retail & 28-floor steel frame commercial tower with integrated subterranean transit concourse.',
+    clientName: 'Metropolitan Trust',
+    type: 'Commercial',
+    masterCode: '5678'
   },
   {
     id: 'proj-3',
@@ -1315,6 +1322,33 @@ export const MOCK_PROJECT_CHATS: ProjectChatMessage[] = [
     senderAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     text: 'Underground telecom conduit pull completed. We are moving our 4-man crew up to Level 8 as planned.',
     timestamp: '9:30 AM'
+  }
+];
+
+export const MOCK_CHANGE_ORDERS: ChangeOrder[] = [
+  {
+    id: 'co-1',
+    projectId: 'proj-1',
+    title: 'Upgrade Lobby Finishes to Premium Marble',
+    description: 'Upgrade the flooring and wall finishes in the main lobby area from standard porcelain tiles to premium Carrera marble panels.',
+    amount: 45000,
+    timeImpact: 3,
+    category: 'Finishes',
+    requestedBy: 'Anderson Family Trust',
+    status: 'Approved',
+    createdDate: '2025-05-10'
+  },
+  {
+    id: 'co-2',
+    projectId: 'proj-1',
+    title: 'HVAC Roof Platform Structural Reinforcement',
+    description: 'Reinforce the structural support steel columns on the Level 14 roof deck to support the heavier dry cooler chilling units.',
+    amount: 12500,
+    timeImpact: 0,
+    category: 'Structural',
+    requestedBy: 'Avery & Marsh Engineering',
+    status: 'Pending',
+    createdDate: '2025-05-18'
   }
 ];
 

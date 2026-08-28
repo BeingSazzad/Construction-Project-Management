@@ -54,7 +54,7 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
     onUpdate({
       ...deal,
       stage: newStage,
-      probability: newStage === 'Won' ? 100 : newStage === 'Lost' ? 0 : deal.probability
+      probability: newStage === 'Contract Signed' ? 100 : deal.probability
     });
   };
 
@@ -66,7 +66,7 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
     setTimeout(() => {
       onUpdate({
         ...deal,
-        stage: 'Won',
+        stage: 'Contract Signed',
         probability: 100
       });
       setConvertedToast(false);
@@ -352,19 +352,19 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
           <span>Edit</span>
         </button>
 
-        {deal.stage !== 'Won' ? (
+        {deal.stage !== 'Contract Signed' ? (
           <button
             type="button"
             onClick={handleConvert}
             className="flex-1 h-12 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 cursor-pointer transition-all active:scale-95"
           >
             <Sparkles className="w-4 h-4 stroke-[2.5]" />
-            <span>Convert to Won Project</span>
+            <span>Convert to Signed Project</span>
           </button>
         ) : (
           <div className="flex-1 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
-            <span>Active Won Project</span>
+            <span>Active Signed Project</span>
           </div>
         )}
       </div>

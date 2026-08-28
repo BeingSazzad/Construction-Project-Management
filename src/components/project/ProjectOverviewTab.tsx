@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Project, Task, SitePhoto, DocumentItem, PunchItem, ProjectStatus } from '../../types';
+import React, { useState, useMemo } from 'react';
+import { Project, Task, SitePhoto, DocumentItem, PunchItem, ProjectStatus, ChangeOrder } from '../../types';
 import { 
   MapPin, Calendar, CheckSquare, Camera, FileText, 
   AlertCircle, Check, ChevronDown, ChevronRight, Plus, 
@@ -18,6 +18,8 @@ interface ProjectOverviewTabProps {
   onCreateTask?: () => void;
   onCreatePunch?: () => void;
   onUpdateStatus?: (newStatus: ProjectStatus) => void;
+  changeOrders?: ChangeOrder[];
+  onCreateChangeOrder?: () => void;
 }
 
 export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
@@ -25,10 +27,27 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   tasks,
   photos = [],
   documents = [],
-  punchItems,
+  punchItems = [],
   onSelectTab,
-  onNavigate
+  onNavigate,
+  changeOrders = [],
+  onCreateChangeOrder
 }) => {
+  const projectCOs = useMemo(() => {
+    return (changeOrders || []).filter(co => co.projectId === project.id);
+  }, [changeOrders, project.id]);
+
+  const pendingCOValue = useMemo(() => {
+    return projectCOs.filter(co => co.status === 'Pending').reduce((sum, co) => sum + co.amount, 0);
+  }, [projectCOs]);
+
+  const approvedCOValue = useMemo(() => {
+    return projectCOs.filter(co => co.status === 'Approved').reduce((sum, co) => sum + co.amount, 0);
+  }, [projectCOs]);
+
+  const approvedTimeAdded = useMemo(() => {
+    return projectCOs.filter(co => co.status === 'Approved').reduce((sum, co) => sum + co.timeImpact, 0);
+  }, [projectCOs]);
   const handleTabChange = (tabId: string) => {
     if (onSelectTab) onSelectTab(tabId);
     else if (onNavigate) onNavigate(tabId);
@@ -216,167 +235,160 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ─── 4. MOCK 3D/2D SITE CONSTRUCT VISUALIZER (Premium Accent Viewport) ─── */}
-      <div className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
-        <div className="flex items-center justify-between text-xs font-bold text-slate-300 uppercase tracking-wider">
-          <span>Site Blueprint Viewport</span>
-          <span className="text-[10px] text-emerald-400 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            7% built
+      {/* ─── 4. QUICK LINKS / NAVIGATION SHORTCUTS (UX Optimized & Redesigned) ─── */}
+      <div className="grid grid-cols-3 gap-2 bg-[#0A111F] p-3 rounded-2xl border border-[#142036] shadow-sm">
+        <button 
+          onClick={() => handleTabChange('photos')}
+          className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer"
+        >
+          <Camera className="w-5 h-5 text-sky-400" />
+          <span className="text-[10px] font-bold text-white leading-tight">Photos</span>
+          <span className="text-[9px] text-slate-500 font-medium">({photos.length})</span>
+        </button>
+
+        <button 
+          onClick={() => handleTabChange('documents')}
+          className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-purple-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer"
+        >
+          <FileText className="w-5 h-5 text-purple-400" />
+          <span className="text-[10px] font-bold text-white leading-tight">Documents</span>
+          <span className="text-[9px] text-slate-500 font-medium">({documents.length})</span>
+        </button>
+
+        <button 
+          onClick={() => handleTabChange('punch')}
+          className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-rose-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer"
+        >
+          <AlertCircle className="w-5 h-5 text-rose-400" />
+          <span className="text-[10px] font-bold text-white leading-tight">Punch List</span>
+          <span className="text-[9px] text-rose-400 font-extrabold bg-rose-500/10 px-1.5 py-0.2 rounded-full">
+            {punchItems.filter(p => p.status === 'Open').length}
           </span>
-        </div>
-        
-        {/* Beautiful Custom Mesh Blueprint Viewport */}
-        <div className="h-28 w-full bg-[#050811] rounded-xl border border-[#142036] relative overflow-hidden flex items-center justify-center">
-          {/* Isometric Blueprint Grid */}
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: `linear-gradient(#2563eb 1px, transparent 1px), linear-gradient(90deg, #2563eb 1px, transparent 1px)`,
-            backgroundSize: '16px 16px'
-          }} />
-          
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050811] via-transparent to-transparent" />
+        </button>
+      </div>
 
-          {/* Blueprint Construction Mock Drawing */}
-          <svg className="w-24 h-24 text-blue-500/40 relative z-10" viewBox="0 0 100 100" fill="none">
-            <line x1="10" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="25" y1="80" x2="25" y2="30" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="75" y1="80" x2="75" y2="30" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
-            {/* Structural wireframe */}
-            <rect x="30" y="40" width="40" height="40" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="30" y1="60" x2="70" y2="60" stroke="currentColor" strokeWidth="1" />
-            <line x1="50" y1="40" x2="50" y2="80" stroke="currentColor" strokeWidth="1" />
-            {/* Crane wireframe */}
-            <path d="M75,80 L75,20 L65,15 M75,25 L90,25" stroke="currentColor" strokeWidth="1.2" />
-          </svg>
-
-          {/* Indicator text */}
-          <div className="absolute bottom-2 left-2 text-[10px] text-slate-400 font-mono">
-            Phase 1: Cleared Lot
+      {/* ─── 5. FINANCIAL CONTROL BLOCK (Budget + Change Orders Grouped) ─── */}
+      <div className="flex flex-col gap-2.5">
+        {/* Budget Strip */}
+        {project.budget.total > 0 ? (
+          <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wider">
+                <Coins className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Master CSI Budget</span>
+              </div>
+              <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                Active
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-3 mt-0.5">
+              <p className="text-[11px] text-slate-400 leading-normal flex-1">
+                CSI 16-Division Master Ledger (${(project.budget.total / 1000000).toFixed(2)}M) is active.
+              </p>
+              <button 
+                onClick={() => handleTabChange('budget')}
+                className="text-xs font-bold text-slate-300 hover:text-white bg-[#070D1A] border border-[#142036] px-3.5 py-1.5 rounded-xl hover:border-slate-600 active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
+              >
+                View Ledger
+              </button>
+            </div>
           </div>
+        ) : (
+          <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wider">
+                <Coins className="w-3.5 h-3.5 text-amber-400" />
+                <span>Project Budget</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-3 mt-0.5">
+              <p className="text-[11px] text-slate-400 leading-normal flex-1">
+                No budget spreadsheet imported for this project yet.
+              </p>
+              <button 
+                onClick={() => handleTabChange('budget')}
+                className="text-xs font-bold text-blue-400 hover:text-blue-300 bg-blue-500/10 px-3.5 py-1.5 rounded-xl border border-blue-500/20 active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
+              >
+                Import Budget
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Change Orders Card */}
+        <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <FilePlus2 className="w-3.5 h-3.5 text-blue-400" />
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider">Change Orders</h3>
+            </div>
+            <button 
+              onClick={onCreateChangeOrder}
+              className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-lg border border-blue-500/20 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+            >
+              <Plus className="w-2.5 h-2.5" />
+              <span>New</span>
+            </button>
+          </div>
+
+          {/* Change Order Stats Grid */}
+          <div className="grid grid-cols-3 gap-2 bg-[#070D1A] p-2 rounded-xl border border-[#142036] text-center text-xs">
+            <div>
+              <span className="text-[10px] text-slate-400 block font-medium">Pending</span>
+              <span className="font-bold text-white text-xs mt-0.5 block">${pendingCOValue.toLocaleString()}</span>
+            </div>
+            <div className="border-x border-[#142036]">
+              <span className="text-[10px] text-slate-400 block font-medium">Approved</span>
+              <span className="font-bold text-emerald-400 text-xs mt-0.5 block">${approvedCOValue.toLocaleString()}</span>
+            </div>
+            <div>
+              <span className="text-[10px] text-slate-400 block font-medium">Time Added</span>
+              <span className="font-bold text-blue-400 text-xs mt-0.5 block">{approvedTimeAdded}d</span>
+            </div>
+          </div>
+
+          {/* Change Order List */}
+          {projectCOs.length === 0 ? (
+            <p className="text-center text-[11px] text-slate-500 py-1 font-medium italic">
+              No change orders yet.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2 mt-1">
+              {projectCOs.map((co) => (
+                <div key={co.id} className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between text-xs transition-colors animate-fade-in">
+                  <div className="flex flex-col gap-1 min-w-0">
+                    <h4 className="font-bold text-white leading-tight truncate max-w-[200px]">{co.title}</h4>
+                    <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-semibold">
+                      <span className="bg-[#142036] px-1.5 py-0.2 rounded text-[8px] text-blue-300 font-bold uppercase tracking-wider">{co.category}</span>
+                      <span>•</span>
+                      <span>By: {co.requestedBy}</span>
+                    </div>
+                  </div>
+                  <div className="text-right flex flex-col items-end gap-1 flex-shrink-0">
+                    <span className="font-black text-white">${co.amount.toLocaleString()}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9px] text-slate-400 font-medium">
+                        {co.timeImpact > 0 ? `+${co.timeImpact}d` : 'no delay'}
+                      </span>
+                      <span className={`text-[8px] font-black px-1.5 py-0.2 rounded-full uppercase tracking-wider ${
+                        co.status === 'Approved'
+                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          : co.status === 'Pending'
+                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                          : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                      }`}>
+                        {co.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ─── 5. BUDGET IMPORT STRIP (Dynamic based on logic) ─── */}
-      {project.budget.total > 0 ? (
-        <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wider">
-              <Coins className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Master CSI Budget</span>
-            </div>
-            <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-              Active
-            </span>
-          </div>
-          <div className="flex items-center justify-between gap-3 mt-0.5">
-            <p className="text-[11px] text-slate-400 leading-normal flex-1">
-              CSI 16-Division Master Ledger (${(project.budget.total / 1000000).toFixed(2)}M) is active.
-            </p>
-            <button 
-              onClick={() => handleTabChange('budget')}
-              className="text-xs font-bold text-slate-300 hover:text-white bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
-            >
-              View Ledger
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wider">
-              <Coins className="w-3.5 h-3.5 text-amber-400" />
-              <span>Project Budget</span>
-            </div>
-          </div>
-          <div className="flex items-center justify-between gap-3 mt-0.5">
-            <p className="text-[11px] text-slate-400 leading-normal flex-1">
-              No budget spreadsheet imported for this project yet.
-            </p>
-            <button 
-              onClick={() => handleTabChange('budget')}
-              className="text-xs font-bold text-blue-400 hover:text-blue-300 bg-blue-500/10 px-3 py-1.5 rounded-xl border border-blue-500/20 active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
-            >
-              Import Budget
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ─── 6. DETAILS & QUICK LINKS GRID (2 Columns Side-by-Side) ─── */}
-      <div className="grid grid-cols-2 gap-2.5">
-        {/* Project Details Column */}
-        <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-          <h3 className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Project Details</h3>
-          
-          <div className="flex flex-col gap-2 mt-0.5">
-            <div className="flex items-start gap-1.5 text-xs text-slate-300">
-              <MapPin className="w-3.5 h-3.5 text-blue-400 mt-0.5 flex-shrink-0" />
-              <div className="min-w-0">
-                <span className="text-[10px] text-slate-500 block leading-tight">Address</span>
-                <span className="font-medium text-white break-words text-[11px]">{project.location || '1235 Cordova Blvd NE'}</span>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-1.5 text-xs text-slate-300">
-              <User className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
-              <div className="min-w-0">
-                <span className="text-[10px] text-slate-500 block leading-tight">Lead PM</span>
-                <span className="font-medium text-white text-[11px]">{project.projectManager.name}</span>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-1.5 text-xs text-slate-300">
-              <Calendar className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
-              <div className="min-w-0">
-                <span className="text-[10px] text-slate-500 block leading-tight">Start Date</span>
-                <span className="font-medium text-white text-[11px]">{project.startDate || 'Jan 10, 2025'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Links Column */}
-        <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-          <h3 className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Quick Links</h3>
-          
-          <div className="flex flex-col gap-1.5 mt-0.5">
-            <button 
-              onClick={() => handleTabChange('photos')}
-              className="flex items-center justify-between p-1 py-1.5 rounded-lg hover:bg-[#070D1A] text-xs text-slate-300 cursor-pointer text-left transition-colors border border-transparent hover:border-[#142036]"
-            >
-              <div className="flex items-center gap-1.5">
-                <Camera className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-[11px]">Photos ({photos.length})</span>
-              </div>
-              <ChevronRight className="w-3 h-3 text-slate-500" />
-            </button>
-
-            <button 
-              onClick={() => handleTabChange('documents')}
-              className="flex items-center justify-between p-1 py-1.5 rounded-lg hover:bg-[#070D1A] text-xs text-slate-300 cursor-pointer text-left transition-colors border border-transparent hover:border-[#142036]"
-            >
-              <div className="flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-purple-400" />
-                <span className="text-[11px]">Documents ({documents.length})</span>
-              </div>
-              <ChevronRight className="w-3 h-3 text-slate-500" />
-            </button>
-
-            <button 
-              onClick={() => handleTabChange('punch')}
-              className="flex items-center justify-between p-1 py-1.5 rounded-lg hover:bg-[#070D1A] text-xs text-slate-300 cursor-pointer text-left transition-colors border border-transparent hover:border-[#142036]"
-            >
-              <div className="flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
-                <span className="text-[11px]">Punch List ({openPunchCount})</span>
-              </div>
-              <ChevronRight className="w-3 h-3 text-slate-500" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ─── 7. TASKS SECTION (Directly in Overview!) ─── */}
+      {/* ─── 6. TASKS SECTION (Directly in Overview!) ─── */}
       <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -446,39 +458,82 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ─── 8. CHANGE ORDERS SECTION ─── */}
+      {/* ─── 7. STATIC PROJECT DETAILS / SPECIFICATIONS ─── */}
       <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <FilePlus2 className="w-3.5 h-3.5 text-blue-400" />
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider">Change Orders</h3>
+        <h3 className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Project Specification</h3>
+        
+        <div className="grid grid-cols-2 gap-3.5 mt-0.5">
+          <div className="flex items-start gap-2 text-xs">
+            <MapPin className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Address</span>
+              <span className="font-medium text-white text-[11px] break-words">{project.location || '1235 Cordova Blvd NE'}</span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">{project.cityState}</span>
+            </div>
           </div>
-          <button className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-lg border border-blue-500/20 flex items-center gap-1 active:scale-95 transition-all">
-            <Plus className="w-2.5 h-2.5" />
-            <span>New</span>
-          </button>
-        </div>
 
-        {/* Change Order Stats Grid */}
-        <div className="grid grid-cols-3 gap-2 bg-[#070D1A] p-2 rounded-xl border border-[#142036] text-center text-xs">
-          <div>
-            <span className="text-[10px] text-slate-400 block font-medium">Pending</span>
-            <span className="font-bold text-white text-xs mt-0.5 block">$0</span>
+          <div className="flex items-start gap-2 text-xs">
+            <User className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Lead PM</span>
+              <span className="font-medium text-white text-[11px]">{project.projectManager.name}</span>
+              <span className="text-[9px] text-slate-400 block">GC Owner: Sazzad</span>
+            </div>
           </div>
-          <div className="border-x border-[#142036]">
-            <span className="text-[10px] text-slate-400 block font-medium">Approved</span>
-            <span className="font-bold text-emerald-400 text-xs mt-0.5 block">$0</span>
+
+          <div className="flex items-start gap-2 text-xs">
+            <Calendar className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Start Date</span>
+              <span className="font-medium text-white text-[11px]">{project.startDate || 'Jan 10, 2025'}</span>
+            </div>
           </div>
-          <div>
-            <span className="text-[10px] text-slate-400 block font-medium">Time Added</span>
-            <span className="font-bold text-blue-400 text-xs mt-0.5 block">0d</span>
+
+          <div className="flex items-start gap-2 text-xs">
+            <Calendar className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Target End</span>
+              <span className="font-medium text-white text-[11px]">{project.targetEndDate || 'Jun 30, 2026'}</span>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Empty State */}
-        <p className="text-center text-[11px] text-slate-500 py-1 font-medium italic">
-          No change orders yet.
-        </p>
+      {/* ─── 8. MOCK 3D/2D SITE CONSTRUCT VISUALIZER (Moved to bottom as aesthetic accent) ─── */}
+      <div className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
+        <div className="flex items-center justify-between text-xs font-bold text-slate-300 uppercase tracking-wider">
+          <span>Site Blueprint Viewport</span>
+          <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            7% built
+          </span>
+        </div>
+        
+        {/* Isometric Blueprint Grid */}
+        <div className="h-28 w-full bg-[#050811] rounded-xl border border-[#142036] relative overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 opacity-20" style={{
+            backgroundImage: `linear-gradient(#2563eb 1px, transparent 1px), linear-gradient(90deg, #2563eb 1px, transparent 1px)`,
+            backgroundSize: '16px 16px'
+          }} />
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050811] via-transparent to-transparent" />
+
+          {/* Blueprint Construction Mock Drawing */}
+          <svg className="w-24 h-24 text-blue-500/40 relative z-10" viewBox="0 0 100 100" fill="none">
+            <line x1="10" y1="80" x2="90" y2="80" stroke="currentColor" strokeWidth="1.5" />
+            <line x1="25" y1="80" x2="25" y2="30" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+            <line x1="75" y1="80" x2="75" y2="30" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+            <rect x="30" y="40" width="40" height="40" stroke="currentColor" strokeWidth="1.5" />
+            <line x1="30" y1="60" x2="70" y2="60" stroke="currentColor" strokeWidth="1" />
+            <line x1="50" y1="40" x2="50" y2="80" stroke="currentColor" strokeWidth="1" />
+            <path d="M75,80 L75,20 L65,15 M75,25 L90,25" stroke="currentColor" strokeWidth="1.2" />
+          </svg>
+
+          {/* Indicator text */}
+          <div className="absolute bottom-2 left-2 text-[10px] text-slate-400 font-mono">
+            Phase 1: Cleared Lot
+          </div>
+        </div>
       </div>
 
     </div>

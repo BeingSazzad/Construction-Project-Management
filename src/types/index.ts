@@ -66,6 +66,9 @@ export interface Project {
   thumbnail: string;
   coverImage?: string;
   description: string;
+  clientName?: string;
+  type?: 'Custom Home' | 'Remodel' | 'New Construction' | 'Commercial' | 'Design-Build';
+  masterCode?: string;
 }
 
 export type TaskStatus = 'Not Started' | 'In Progress' | 'Blocked' | 'Completed';
@@ -94,6 +97,19 @@ export interface Task {
   notesCount: number;
   photos?: string[];
   location?: string;
+}
+
+export interface ChangeOrder {
+  id: string;
+  projectId: string;
+  title: string;
+  description: string;
+  amount: number;
+  timeImpact: number;
+  category: string;
+  requestedBy: string;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  createdDate: string;
 }
 
 export interface GanttItem {

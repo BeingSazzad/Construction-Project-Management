@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Project } from '../../types';
 import { 
   Phone, Plus, UserPlus, HardHat, Shield, 
-  Crown, Search, X, Check, Mail, UserCheck
+  Crown, Search, X, Check, Mail, UserCheck, Trash2, MoreVertical
 } from 'lucide-react';
 
 interface ProjectTeamTabProps {
@@ -126,6 +126,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<'directory' | 'invite'>('directory');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
   // Invite new external form state
   const [inviteName, setInviteName] = useState('');
@@ -152,6 +153,30 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
   // Toggle on-site status
   const toggleOnSite = (staffId: string) => {
     setAssignedStaff(prev => prev.map(s => s.id === staffId ? { ...s, isOnSite: !s.isOnSite } : s));
+  };
+
+  // Remove staff from project
+  const handleRemoveStaff = (staffId: string) => {
+    if (window.confirm("Are you sure you want to remove this member from this project?")) {
+      setAssignedStaff(prev => prev.filter(s => s.id !== staffId));
+    }
+  };
+
+  // Set selected staff as Lead PM
+  const handleMakeLead = (newLead: ProjectStaff) => {
+    if (window.confirm(`Are you sure you want to make ${newLead.name} the Lead Project Manager for this project?`)) {
+      setAssignedStaff(prev => {
+        return prev.map(s => {
+          if (s.id === newLead.id) {
+            return { ...s, role: 'Lead Project Manager' };
+          }
+          if (s.role === 'Lead Project Manager') {
+            return { ...s, role: 'Project Manager' };
+          }
+          return s;
+        });
+      });
+    }
   };
 
   // Add from company directory with 1 click
@@ -247,8 +272,9 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
 
             <div className="min-w-0">
               <h3 className="text-sm font-bold text-white truncate">{leadPM.name}</h3>
-              <p className="text-xs text-blue-400 font-semibold truncate mt-0.5">{leadPM.role}</p>
-              <p className="text-[11px] text-slate-400 truncate">{leadPM.company}</p>
+              <p className="text-xs text-blue-400 font-semibold truncate mt-0.5">
+                {leadPM.role}
+              </p>
             </div>
           </div>
 
@@ -277,7 +303,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
           {otherStaff.map((staff) => (
             <div
               key={staff.id}
-              className="p-3 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-[#1E2E4A] flex items-center justify-between gap-3 shadow-sm transition-all"
+              className="p-3 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-[#1E2E4A] flex items-center justify-between gap-3 shadow-sm transition-all relative"
             >
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className="relative flex-shrink-0">
@@ -302,33 +328,83 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                       {staff.type === 'gc' ? 'GC' : 'Sub'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-300 font-medium mt-0.5 truncate">{staff.role}</p>
-                  <p className="text-[10px] text-slate-400 truncate">{staff.company}</p>
+                  <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">
+                    {staff.role}
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5 flex-shrink-0">
-                {/* On-Site Status Toggle */}
+                {/* 3-Dot More Action Button */}
                 <button
-                  onClick={() => toggleOnSite(staff.id)}
-                  className={`text-[10px] font-bold px-2 py-1 rounded-lg border cursor-pointer transition-colors ${
-                    staff.isOnSite
-                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                      : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
-                  }`}
-                  title="Click to toggle on-site status"
+                  type="button"
+                  onClick={() => setActiveMenuId(activeMenuId === staff.id ? null : staff.id)}
+                  className="w-8 h-8 rounded-lg bg-[#0E1A33] hover:bg-[#14264A] text-slate-400 border border-[#1E325A] flex items-center justify-center cursor-pointer transition-colors active:scale-95"
+                  title="More Actions"
                 >
-                  {staff.isOnSite ? 'On Site' : 'Off Site'}
+                  <MoreVertical className="w-4 h-4" />
                 </button>
 
-                {/* Direct Call Button */}
-                <a
-                  href={`tel:${staff.phone}`}
-                  className="w-8 h-8 rounded-lg bg-[#0E1A33] hover:bg-[#14264A] text-blue-400 border border-[#1E325A] flex items-center justify-center cursor-pointer transition-colors"
-                  title={`Call ${staff.name}`}
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                </a>
+                {/* Dropdown Menu Overlay */}
+                {activeMenuId === staff.id && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-20 cursor-default" 
+                      onClick={() => setActiveMenuId(null)} 
+                    />
+                    <div className="absolute right-3 top-12 w-44 bg-[#0A111F] border border-[#1E2D4A] rounded-xl shadow-xl p-1 z-30 flex flex-col gap-0.5 animate-fade-in">
+                      {/* Direct Call Option */}
+                      <a
+                        href={`tel:${staff.phone}`}
+                        onClick={() => setActiveMenuId(null)}
+                        className="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#142036] font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Call Staff</span>
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          toggleOnSite(staff.id);
+                          setActiveMenuId(null);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#142036] font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+                      >
+                        <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>{staff.isOnSite ? 'Mark Off Site' : 'Mark On Site'}</span>
+                      </button>
+
+                      {staff.type === 'gc' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleMakeLead(staff);
+                            setActiveMenuId(null);
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-lg text-amber-400 hover:text-amber-300 hover:bg-[#142036] font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+                        >
+                          <Crown className="w-3.5 h-3.5" />
+                          <span>Make Project Lead</span>
+                        </button>
+                      )}
+
+                      <div className="h-px bg-[#142036] my-1" />
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleRemoveStaff(staff.id);
+                          setActiveMenuId(null);
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove from Project</span>
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -467,39 +543,16 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                   />
                 </div>
 
+
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Company / Subcontractor</label>
+                  <label className="text-[11px] text-slate-400 block mb-1">Email</label>
                   <input
-                    type="text"
-                    placeholder="e.g. Apex Electrical LLC"
-                    value={inviteCompany}
-                    onChange={(e) => setInviteCompany(e.target.value)}
+                    type="email"
+                    placeholder="trade@company.com"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
                     className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Direct Phone</label>
-                    <input
-                      type="text"
-                      placeholder="+1 (555) 000-0000"
-                      value={invitePhone}
-                      onChange={(e) => setInvitePhone(e.target.value)}
-                      className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] text-slate-400 block mb-1">Email</label>
-                    <input
-                      type="email"
-                      placeholder="trade@company.com"
-                      value={inviteEmail}
-                      onChange={(e) => setInviteEmail(e.target.value)}
-                      className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
-                    />
-                  </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">

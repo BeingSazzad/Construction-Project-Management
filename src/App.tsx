@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { 
   UserRole, Project, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
-  NotificationItem, TaskStatus, PunchStatus, DailyLogItem, PlanGridPin, ProjectChatMessage,
-  FinancingDraw, LienWaiver, ProjectStatus
+  NotificationItem, TaskStatus, PunchStatus, PlanGridPin, ProjectChatMessage,
+  FinancingDraw, LienWaiver, ProjectStatus, ChangeOrder
 } from './types';
 import { 
   CURRENT_USERS, MOCK_PROJECTS, MOCK_TASKS, MOCK_GANTT, 
   MOCK_BUDGET_CATEGORIES, MOCK_PUNCH_ITEMS, MOCK_SUBCONTRACTORS, 
   MOCK_PHOTOS, MOCK_DOCUMENTS, MOCK_REPORTS, MOCK_NOTIFICATIONS,
-  MOCK_DAILY_LOGS, MOCK_PLAN_PINS, MOCK_PROJECT_CHATS,
-  MOCK_FINANCING_DRAWS, MOCK_LIEN_WAIVERS
+  MOCK_PLAN_PINS, MOCK_PROJECT_CHATS,
+  MOCK_FINANCING_DRAWS, MOCK_LIEN_WAIVERS, MOCK_CHANGE_ORDERS
 } from './data/mockData';
 
 // Common Components
@@ -71,6 +71,7 @@ import { ApprovePayAppModal } from './components/modals/ApprovePayAppModal';
 import { TaskCreationTypeModal } from './components/modals/TaskCreationTypeModal';
 import { ImportBudgetModal } from './components/modals/ImportBudgetModal';
 import { EditProjectModal } from './components/modals/EditProjectModal';
+import { CreateChangeOrderModal } from './components/modals/CreateChangeOrderModal';
 import { NotificationsView } from './components/notifications/NotificationsView';
 import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp } from 'lucide-react';
 
@@ -96,11 +97,11 @@ export function App() {
   const [documents, setDocuments] = useState<DocumentItem[]>(MOCK_DOCUMENTS);
   const [reports, setReports] = useState<ReportItem[]>(MOCK_REPORTS);
   const [notifications, setNotifications] = useState<NotificationItem[]>(MOCK_NOTIFICATIONS);
-  const [dailyLogs, setDailyLogs] = useState<DailyLogItem[]>(MOCK_DAILY_LOGS);
   const [planPins, setPlanPins] = useState<PlanGridPin[]>(MOCK_PLAN_PINS);
   const [chatMessages, setChatMessages] = useState<ProjectChatMessage[]>(MOCK_PROJECT_CHATS);
   const [draws, setDraws] = useState<FinancingDraw[]>(MOCK_FINANCING_DRAWS);
   const [lienWaivers, setLienWaivers] = useState<LienWaiver[]>(MOCK_LIEN_WAIVERS);
+  const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>(MOCK_CHANGE_ORDERS);
 
   // Modals state
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
@@ -117,6 +118,7 @@ export function App() {
   const [isCreateDrawOpen, setIsCreateDrawOpen] = useState(false);
   const [isRecordLienWaiverOpen, setIsRecordLienWaiverOpen] = useState(false);
   const [isApprovePayAppOpen, setIsApprovePayAppOpen] = useState(false);
+  const [isCreateChangeOrderOpen, setIsCreateChangeOrderOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<SitePhoto | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<DocumentItem | null>(null);
@@ -152,6 +154,24 @@ export function App() {
     }
     
     alert(`Successfully imported "${budgetName}" ($${(totalValue / 1000000).toFixed(2)}M) into Project Financial Ledger!`);
+  };
+
+  const handleCreateChangeOrder = (newCO: Partial<ChangeOrder>) => {
+    const fullCO: ChangeOrder = {
+      id: `co-${Date.now()}`,
+      projectId: newCO.projectId || (activeProject ? activeProject.id : 'proj-1'),
+      title: newCO.title || 'New Change Order',
+      description: newCO.description || '',
+      amount: newCO.amount || 0,
+      timeImpact: newCO.timeImpact || 0,
+      category: newCO.category || 'General',
+      requestedBy: newCO.requestedBy || 'Client',
+      status: 'Pending',
+      createdDate: newCO.createdDate || new Date().toISOString().split('T')[0]
+    };
+
+    setChangeOrders(prev => [fullCO, ...prev]);
+    setIsCreateChangeOrderOpen(false);
   };
 
   // Financial Handlers
@@ -440,33 +460,6 @@ export function App() {
     setPunchItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
   };
 
-  const handleAddDailyLog = (newLog: Partial<DailyLogItem>) => {
-    const fullLog: DailyLogItem = {
-      id: `log-${Date.now()}`,
-      projectId: activeProject ? activeProject.id : 'proj-1',
-      projectName: activeProject ? activeProject.name : 'Riverside Office Complex',
-      date: newLog.date || '2025-05-20',
-      weather: {
-        condition: 'Sunny',
-        temperature: '76°F',
-        windSpeed: '8 mph',
-        precipitation: '0%',
-        siteCondition: 'Dry'
-      },
-      totalHeadcount: 18,
-      crews: [
-        { trade: 'Concrete', subcontractor: 'Apex Concrete', workersCount: 12, hoursWorked: 8 },
-        { trade: 'MEP', subcontractor: 'Vanguard MEP', workersCount: 6, hoursWorked: 8 }
-      ],
-      workSummary: newLog.workSummary || 'Daily site progress log',
-      materialsReceived: ['Ready-mix concrete trucks'],
-      safetyIncidents: 'None reported',
-      safetyPassed: true,
-      author: currentUser.name
-    };
-    setDailyLogs(prev => [fullLog, ...prev]);
-  };
-
   const handleAddPin = (pin: Partial<PlanGridPin>) => {
     const fullPin: PlanGridPin = {
       id: `pin-${Date.now()}`,
@@ -489,6 +482,20 @@ export function App() {
 
   const handleSendMessage = (newMsg: ProjectChatMessage) => {
     setChatMessages(prev => [...prev, newMsg]);
+  };
+
+  const handleAddReport = (newReport: Partial<ReportItem>) => {
+    const fullReport: ReportItem = {
+      id: `rep-${Date.now()}`,
+      title: newReport.title || 'New Report Document',
+      type: newReport.type || 'Progress',
+      period: newReport.period || 'Current Period',
+      author: newReport.author || currentUser.name,
+      date: newReport.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      summary: newReport.summary || '',
+      fileSize: newReport.fileSize || '1.5 MB'
+    };
+    setReports(prev => [fullReport, ...prev]);
   };
 
   const handleSelectProject = (p: Project) => {
@@ -626,7 +633,6 @@ export function App() {
                 photos={photos}
                 documents={documents}
                 reports={reports}
-                dailyLogs={dailyLogs}
                 planPins={planPins}
                 chatMessages={chatMessages}
                 onOpenTask={(t) => setSelectedTask(t)}
@@ -640,13 +646,15 @@ export function App() {
                 onUploadDocument={() => alert('Upload Document...')}
                 onPreviewDocument={(d) => setSelectedDocument(d)}
                 onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
-                onAddDailyLog={handleAddDailyLog}
                 onAddPlanPin={handleAddPin}
                 onUpdatePinStatus={handleUpdatePinStatus}
                 onSendMessage={handleSendMessage}
                 onAddTasksFromTemplate={handleAddTasksFromTemplate}
                 onUpdateProjectStatus={handleUpdateProjectStatus}
                 onImportBudget={() => setIsImportBudgetOpen(true)}
+                changeOrders={changeOrders}
+                onCreateChangeOrder={() => setIsCreateChangeOrderOpen(true)}
+                onAddReport={handleAddReport}
               />
             ) : (
               /* Global Hub Views */
@@ -970,6 +978,14 @@ export function App() {
         onClose={() => setIsImportBudgetOpen(false)}
         projects={projects}
         onImportSuccess={handleImportBudgetSuccess}
+      />
+
+      {/* CREATE CHANGE ORDER MODAL */}
+      <CreateChangeOrderModal
+        isOpen={isCreateChangeOrderOpen}
+        onClose={() => setIsCreateChangeOrderOpen(false)}
+        projectId={activeProject ? activeProject.id : 'proj-1'}
+        onCreate={handleCreateChangeOrder}
       />
 
       {/* FINANCIAL WORKFLOW MODALS */}

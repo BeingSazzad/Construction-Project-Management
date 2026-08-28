@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Project, UserRole, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
-  PunchStatus, TaskStatus, DailyLogItem, PlanGridPin, ProjectChatMessage, User,
+  PunchStatus, TaskStatus, PlanGridPin, ProjectChatMessage, User,
   ProjectStatus
 } from '../../types';
 import { ProjectOverviewTab } from './ProjectOverviewTab';
@@ -13,7 +13,6 @@ import { ProjectPhotosTab } from './ProjectPhotosTab';
 import { ProjectDocumentsTab } from './ProjectDocumentsTab';
 import { ProjectTeamTab } from './ProjectTeamTab';
 import { ProjectReportsTab } from './ProjectReportsTab';
-import { ProjectDailyLogsTab } from './ProjectDailyLogsTab';
 import { LattiAssistant } from '../ai/LattiAssistant';
 import { 
   Layers, DollarSign, CheckSquare, 
@@ -35,7 +34,6 @@ interface ProjectWorkspaceProps {
   photos: SitePhoto[];
   documents: DocumentItem[];
   reports: ReportItem[];
-  dailyLogs: DailyLogItem[];
   planPins?: PlanGridPin[];
   chatMessages?: ProjectChatMessage[];
   onOpenTask: (task: Task) => void;
@@ -49,14 +47,16 @@ interface ProjectWorkspaceProps {
   onUploadDocument: () => void;
   onPreviewDocument: (doc: DocumentItem) => void;
   onExportReport: (report: ReportItem) => void;
-  onAddDailyLog?: (log: DailyLogItem) => void;
-  onAddPlanPin?: (pin: PlanGridPin) => void;
+  onAddPlanPin?: (planPin: PlanGridPin) => void;
   onUpdatePinStatus?: (pinId: string, status: 'open' | 'in-progress' | 'resolved') => void;
   onSendMessage?: (msg: ProjectChatMessage) => void;
   onAddTasksFromTemplate?: (tasks: Partial<Task>[]) => void;
   onUpdateProjectStatus?: (projectId: string, newStatus: ProjectStatus) => void;
   onOpenEditProject?: () => void;
   onImportBudget?: () => void;
+  changeOrders?: any[];
+  onCreateChangeOrder?: () => void;
+  onAddReport?: (newReport: Partial<ReportItem>) => void;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
@@ -73,7 +73,6 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   photos,
   documents,
   reports,
-  dailyLogs,
   onOpenTask,
   onCreateTask,
   onOpenPunch,
@@ -85,10 +84,12 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onUploadDocument,
   onPreviewDocument,
   onExportReport,
-  onAddDailyLog,
   onUpdateProjectStatus,
   onOpenEditProject,
-  onImportBudget
+  onImportBudget,
+  changeOrders,
+  onCreateChangeOrder,
+  onAddReport
 }) => {
   const [internalActiveTab, setInternalActiveTab] = useState<string>('overview');
   const activeTab = activeSubTab !== undefined ? activeSubTab : internalActiveTab;
@@ -104,7 +105,6 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   // Core project tabs according to Reference Web Specs (Drawings, Messages, Subcontractors belong in their respective hub/docs)
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
-    { id: 'daily-logs', label: 'Daily Logs', icon: Calendar },
     { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
     { id: 'team', label: 'Team', icon: Users2 },
     { id: 'reports', label: 'Reports', icon: BarChart3, hideFor: ['field'] },
@@ -177,14 +177,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             punchItems={punchItems}
             onSelectTab={(subTab) => setActiveTab(subTab)}
             onNavigate={(subTab) => setActiveTab(subTab)}
-          />
-        )}
-
-        {activeTab === 'daily-logs' && (
-          <ProjectDailyLogsTab
-            project={project}
-            dailyLogs={dailyLogs}
-            onAddDailyLog={onAddDailyLog}
+            changeOrders={changeOrders}
+            onCreateChangeOrder={onCreateChangeOrder}
           />
         )}
 
@@ -208,6 +202,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             project={project}
             reports={reports}
             onExportReport={onExportReport}
+            onAddReport={onAddReport}
           />
         )}
 
