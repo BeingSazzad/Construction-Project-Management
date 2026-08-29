@@ -867,15 +867,15 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
   // ─── STEP 4: QUANTITIES ───
   const renderQuantities = () => {
-    const trades = ['All trades', ...Array.from(new Set(quantities.map(q => q.trade)))];
-    const confs = ['All conf.', 'High', 'Moderate', 'Low', 'Allowance'];
+    const trades = ['All Trades', ...Array.from(new Set(quantities.map(q => q.trade)))];
+    const confs = ['All Conf.', 'High', 'Moderate', 'Low', 'Allowance'];
 
     const filteredQuantities = quantities.filter(q => {
       const matchSearch = q.name.toLowerCase().includes(qtySearch.toLowerCase()) ||
         q.trade.toLowerCase().includes(qtySearch.toLowerCase()) ||
         q.scope.toLowerCase().includes(qtySearch.toLowerCase());
-      const matchTrade = qtyTradeFilter === 'All trades' || q.trade === qtyTradeFilter;
-      const matchConf = qtyConfFilter === 'All conf.' || q.confidence === qtyConfFilter;
+      const matchTrade = qtyTradeFilter === 'All Trades' || q.trade === qtyTradeFilter;
+      const matchConf = qtyConfFilter === 'All Conf.' || q.confidence === qtyConfFilter;
       return matchSearch && matchTrade && matchConf;
     });
 
@@ -883,16 +883,16 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
       { label: 'Line Items', value: quantities.length.toString() },
       { label: 'Approved', value: quantities.filter(q => q.approved).length.toString() },
       { label: 'Trades', value: new Set(quantities.map(q => q.trade)).size.toString() },
-      { label: 'Low/Allow.', value: quantities.filter(q => q.confidence === 'Low' || q.confidence === 'Allowance').length.toString() },
+      { label: 'Low / Allow.', value: quantities.filter(q => q.confidence === 'Low' || q.confidence === 'Allowance').length.toString() },
     ];
 
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 animate-fade-in">
         {/* KPI Bar */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {kpis.map((kpi, i) => (
-            <div key={i} className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036]">
-              <p className="text-[10px] text-slate-500 font-medium">{kpi.label}</p>
+            <div key={i} className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
+              <p className="text-[10px] text-slate-400 font-semibold tracking-tight">{kpi.label}</p>
               <p className="text-sm font-black text-white mt-0.5">{kpi.value}</p>
             </div>
           ))}
@@ -1218,24 +1218,24 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
     const approvedCount = materialItems.filter(m => m.approved).length;
 
     return (
-      <div className="flex flex-col gap-4">
-        {/* KPI Row (4 top cards from screenshot) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036]">
-            <p className="text-[11px] text-slate-500 font-medium">Line items</p>
+      <div className="flex flex-col gap-4 animate-fade-in">
+        {/* KPI Row (4 top cards) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
+            <p className="text-[11px] text-slate-400 font-semibold tracking-tight">Line Items</p>
             <p className="text-xl font-black text-white mt-1">{materialItems.length}</p>
           </div>
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036]">
-            <p className="text-[11px] text-slate-500 font-medium">Approved</p>
+          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
+            <p className="text-[11px] text-slate-400 font-semibold tracking-tight">Approved</p>
             <p className="text-xl font-black text-white mt-1">{approvedCount}</p>
           </div>
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036]">
-            <p className="text-[11px] text-slate-500 font-medium">Expected total</p>
-            <p className="text-xl font-black text-emerald-400 mt-1">{fmt(calcTotal('expUnit'))}</p>
+          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between min-w-0">
+            <p className="text-[11px] text-slate-400 font-semibold tracking-tight truncate">Expected Total</p>
+            <p className="text-xl font-black text-emerald-400 mt-1 truncate">{fmt(calcTotal('expUnit'))}</p>
           </div>
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036]">
-            <p className="text-[11px] text-slate-500 font-medium">Range</p>
-            <p className="text-base font-black text-emerald-400 mt-1">
+          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between min-w-0">
+            <p className="text-[11px] text-slate-400 font-semibold tracking-tight">Price Range</p>
+            <p className="text-xs sm:text-sm font-black text-emerald-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
               {fmt(calcTotal('lowUnit'))} – {fmt(calcTotal('highUnit'))}
             </p>
           </div>
@@ -1253,22 +1253,22 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             />
           </div>
           <button className="h-10 px-4 bg-[#060B17] border border-[#142036] hover:border-blue-500/30 rounded-xl text-xs font-semibold text-slate-300 transition-colors cursor-pointer flex-shrink-0">
-            Re-price
+            Re-Price
           </button>
         </div>
 
         {/* Table in horizontal scrollable wrapper */}
         <div className="w-full overflow-x-auto rounded-2xl border border-[#142036] bg-[#060B17]/60">
-          <div className="min-w-[820px]">
+          <div className="min-w-[860px]">
             {/* Table Header */}
-            <div className="grid grid-cols-[240px_80px_80px_90px_80px_95px_1fr_65px] items-center px-4 py-3 border-b border-[#142036] text-[11px] font-semibold text-slate-500">
+            <div className="grid grid-cols-[210px_60px_75px_85px_75px_85px_200px_70px] items-center px-4 py-3 border-b border-[#142036] text-[11px] font-semibold text-slate-400">
               <div>Material / Scope</div>
               <div className="text-right">Qty</div>
-              <div className="text-right">Low unit</div>
-              <div className="text-center">Exp unit</div>
-              <div className="text-right">High unit</div>
-              <div className="text-right">Exp total</div>
-              <div className="pl-4">Source</div>
+              <div className="text-right">Low Unit</div>
+              <div className="text-center">Exp Unit</div>
+              <div className="text-right">High Unit</div>
+              <div className="text-right">Exp Total</div>
+              <div className="pl-4">Source &amp; Supplier</div>
               <div className="text-center">Approve</div>
             </div>
 
@@ -1283,16 +1283,16 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   return (
                     <div
                       key={item.id}
-                      className="grid grid-cols-[240px_80px_80px_90px_80px_95px_1fr_65px] items-center px-4 py-3.5 hover:bg-[#0A1328]/40 transition-colors"
+                      className="grid grid-cols-[210px_60px_75px_85px_75px_85px_200px_70px] items-center px-4 py-3 hover:bg-[#0A1328]/40 transition-colors"
                     >
                       {/* Name & Scope */}
-                      <div className="pr-3">
-                        <p className="text-xs font-bold text-white leading-tight">{item.name}</p>
-                        <p className="text-[10px] text-slate-500 mt-0.5">{item.scope}</p>
+                      <div className="pr-3 min-w-0">
+                        <p className="text-xs font-bold text-white leading-tight truncate">{item.name}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5 truncate">{item.scope}</p>
                       </div>
 
                       {/* Qty */}
-                      <div className="text-right text-xs text-slate-400 tabular-nums">
+                      <div className="text-right text-xs text-slate-300 font-semibold tabular-nums">
                         {item.qty}
                       </div>
 
@@ -1313,7 +1313,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                               )
                             )
                           }
-                          className="w-18 h-8 bg-[#060B17] border border-[#1A2E50] focus:border-blue-500 rounded-lg px-2 text-xs font-semibold text-white text-center outline-none tabular-nums"
+                          className="w-18 h-8 bg-[#060B17] border border-[#1A2E50] focus:border-blue-500 rounded-lg px-2 text-xs font-bold text-white text-center outline-none tabular-nums"
                         />
                       </div>
 
@@ -1323,33 +1323,34 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                       </div>
 
                       {/* Exp Total */}
-                      <div className="text-right text-xs font-bold text-emerald-400 tabular-nums">
+                      <div className="text-right text-xs font-black text-emerald-400 tabular-nums">
                         {fmt(rowTotal)}
                       </div>
 
                       {/* Source */}
-                      <div className="pl-4 pr-2">
+                      <div className="pl-4 pr-2 min-w-0">
                         {item.source.split('\n').map((line, idx) => (
-                          <p key={idx} className={`text-[10px] truncate ${idx === 0 ? 'text-slate-400 font-medium' : 'text-slate-500'}`}>
+                          <p key={idx} className={`text-[11px] truncate ${idx === 0 ? 'text-slate-300 font-semibold' : 'text-slate-500 font-medium'}`}>
                             {line}
                           </p>
                         ))}
                       </div>
 
                       {/* Approve Toggle */}
-                      <div className="flex justify-center">
+                      <div className="flex justify-center items-center">
                         <button
                           onClick={() =>
                             setMaterialItems(prev =>
                               prev.map(m => (m.id === item.id ? { ...m, approved: !m.approved } : m))
                             )
                           }
-                          className="cursor-pointer"
+                          className="p-1 rounded-lg hover:bg-blue-500/10 cursor-pointer transition-colors"
+                          title={item.approved ? "Approved" : "Approve item"}
                         >
                           {item.approved ? (
                             <ToggleRight className="w-5 h-5 text-blue-400" />
                           ) : (
-                            <ToggleLeft className="w-5 h-5 text-slate-600 hover:text-slate-500" />
+                            <ToggleLeft className="w-5 h-5 text-slate-500 hover:text-slate-400" />
                           )}
                         </button>
                       </div>
@@ -1364,19 +1365,19 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
         {/* Quality Level Selector at Bottom */}
         <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#060B17] border border-[#142036]">
           <div>
-            <p className="text-xs font-bold text-white">Quality level</p>
-            <p className="text-[10px] text-slate-500">Benchmark unit rates according to finish standard</p>
+            <p className="text-xs font-bold text-white">Quality Level</p>
+            <p className="text-[10px] text-slate-400 font-medium">Benchmark unit rates according to finish standard</p>
           </div>
           <div className="relative">
             <select
               value={materialQuality}
               onChange={e => setMaterialQuality(e.target.value)}
-              className="h-8.5 pl-3 pr-8 bg-[#0A1328] border border-[#1A2E50] rounded-xl text-xs font-medium text-white outline-none appearance-none cursor-pointer"
+              className="h-8.5 pl-3 pr-8 bg-[#0A1328] border border-[#1A2E50] focus:border-blue-500 rounded-xl text-xs font-semibold text-white outline-none appearance-none cursor-pointer"
             >
-              <option>standard</option>
-              <option>mid-range</option>
-              <option>high-end</option>
-              <option>ultra-luxury</option>
+              <option value="Standard">Standard</option>
+              <option value="Mid-Range">Mid-Range</option>
+              <option value="High-End">High-End</option>
+              <option value="Ultra-Luxury">Ultra-Luxury</option>
             </select>
             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
           </div>
@@ -1408,23 +1409,21 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
     const kpis = [
       { label: 'Line Items', value: laborItems.length.toString() },
       { label: 'Approved', value: laborItems.filter(l => l.approved).length.toString() },
-      { label: 'Expected total', value: `$${totalLaborVal.toLocaleString()}`, highlight: true },
-      { label: 'Range', value: `${formatKVal(lowRange)}-${formatKVal(highRange)}`, highlight: true },
+      { label: 'Expected Total', value: `$${totalLaborVal.toLocaleString()}`, highlight: true },
+      { label: 'Price Range', value: `${formatKVal(lowRange)} – ${formatKVal(highRange)}`, highlight: true },
     ];
 
     return (
-      <div className="flex flex-col gap-3">
-        {/* Info Banner */}
-        <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-500/5 border border-blue-500/15">
-          <Info className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
-          <p className="text-[11px] text-slate-300 leading-relaxed">
-            Labor pricing represents estimated <span className="font-bold text-white">direct subcontractor labor only</span>. General contractor overhead, profit, materials, permits, insurance, professional fees, and financing are not included.
-          </p>
+      <div className="flex flex-col gap-3 animate-fade-in">
+        {/* Compact Info Banner */}
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-blue-500/5 border border-blue-500/15 text-[11px] text-slate-300">
+          <Info className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+          <span>Direct subcontractor labor estimate (excludes GC markup, permits &amp; fees).</span>
         </div>
 
         {/* Complexity Factors */}
         <div className="p-3 rounded-xl bg-[#060B17] border border-[#142036]">
-          <h4 className="text-[11px] font-bold text-white mb-2">Project complexity factors</h4>
+          <h4 className="text-[11px] font-bold text-white mb-2">Project Complexity Factors</h4>
           <div className="flex flex-wrap gap-1.5">
             {complexityFactors.map((factor, i) => (
               <span key={i} className="px-2.5 py-1 rounded-full bg-[#0A1328] border border-[#1A2744] text-[10px] text-slate-300 font-medium">
@@ -1435,11 +1434,11 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
         </div>
 
         {/* KPI Bar */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {kpis.map((kpi, i) => (
-            <div key={i} className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036]">
-              <p className="text-[10px] text-slate-500 font-medium">{kpi.label}</p>
-              <p className={`text-sm font-black mt-0.5 ${kpi.highlight ? 'text-emerald-400' : 'text-white'}`}>{kpi.value}</p>
+            <div key={i} className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
+              <p className="text-[10px] text-slate-400 font-semibold tracking-tight">{kpi.label}</p>
+              <p className={`text-sm font-black mt-0.5 truncate ${kpi.highlight ? 'text-emerald-400' : 'text-white'}`}>{kpi.value}</p>
             </div>
           ))}
         </div>
@@ -1457,7 +1456,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
           </div>
           <button 
             onClick={handleAddMockLabor}
-            className="h-8 px-3 bg-[#060B17] border border-[#142036] rounded-xl text-[10px] font-bold text-slate-400 flex items-center gap-1.5 cursor-pointer hover:border-blue-500/30 transition-colors"
+            className="h-8 px-3 bg-[#060B17] border border-[#142036] rounded-xl text-[10px] font-bold text-slate-300 flex items-center gap-1.5 cursor-pointer hover:border-blue-500/30 transition-colors"
           >
             <Plus className="w-3 h-3" /> Add
           </button>
@@ -1473,7 +1472,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <p className="text-[11px] font-bold text-white">{item.name}</p>
-                    <p className="text-[10px] text-slate-500">{item.trade} · {item.confidence}</p>
+                    <p className="text-[10px] text-slate-400 font-medium">{item.trade} · {item.confidence}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-[11px] font-bold text-emerald-400 mr-1">{item.expTotal}</span>
@@ -1495,8 +1494,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   <span className="text-slate-500">High {item.highUnit}</span>
                 </div>
                 <div className="mt-1.5 text-[10px] text-slate-500 leading-relaxed flex flex-wrap gap-x-2 gap-y-0.5">
-                  {item.includes.map((inc, i) => <span key={i} className="text-emerald-500">&#10003; {inc}</span>)}
-                  {item.excludes.map((exc, i) => <span key={i} className="text-rose-500">&#10007; {exc}</span>)}
+                  {item.includes.map((inc, i) => <span key={i} className="text-emerald-400 font-medium">&#10003; {inc}</span>)}
+                  {item.excludes.map((exc, i) => <span key={i} className="text-rose-400 font-medium">&#10007; {exc}</span>)}
                 </div>
               </div>
             ))
@@ -1532,30 +1531,33 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
       </div>
 
       {/* Accuracy Standard Badge */}
-      <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#060B17] border border-[#142036]">
-        <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-[10px] font-bold text-emerald-400 whitespace-nowrap">Accuracy-First Standard</span>
-        <p className="text-[10px] text-slate-400">Accuracy, transparency & traceability take priority over speed.</p>
+      <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#060B17] border border-[#142036] text-[11px]">
+        <span className="font-semibold text-white flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          Accuracy-First Standard
+        </span>
+        <span className="text-[10px] text-slate-400">Audited &amp; Traceable Takeoff</span>
       </div>
 
       {/* Accuracy Scorecard */}
       <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036]">
-        <h3 className="text-xs font-bold text-white mb-3">Accuracy Scorecard</h3>
-        <div className="grid grid-cols-3 gap-2">
+        <h3 className="text-xs font-bold text-white mb-2.5">Accuracy Scorecard</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {[
-            { label: 'Plan quality score', value: '40/100' },
-            { label: 'Scale-verified sheets', value: '0 / 6' },
-            { label: 'Directly measured', value: '26%' },
-            { label: 'Schedule-derived', value: '0%' },
-            { label: 'Assumption-based', value: '100%' },
-            { label: 'Allowance-based', value: '33%' },
-            { label: 'Unresolved conflicts', value: '0' },
-            { label: 'Low-confidence qty', value: '14' },
-            { label: 'Independently audited', value: 'Pending' },
-            { label: 'Human review', value: '0%' },
+            { label: 'Plan Quality Score', value: '40/100' },
+            { label: 'Scale-Verified Sheets', value: '0 / 6' },
+            { label: 'Directly Measured', value: '26%' },
+            { label: 'Schedule-Derived', value: '0%' },
+            { label: 'Assumption-Based', value: '100%' },
+            { label: 'Allowance-Based', value: '33%' },
+            { label: 'Unresolved Conflicts', value: '0' },
+            { label: 'Low-Confidence Qty', value: '14' },
+            { label: 'Independently Audited', value: 'Pending' },
+            { label: 'Human Review', value: '0%' },
           ].map((item, i) => (
-            <div key={i} className="p-2 rounded-lg bg-[#0A1328] border border-[#1A2744]">
-              <p className="text-[9px] text-slate-500 font-medium">{item.label}</p>
-              <p className="text-[11px] font-bold text-white mt-0.5">{item.value}</p>
+            <div key={i} className="p-2 rounded-xl bg-[#0A1328] border border-[#1A2744]">
+              <p className="text-[9px] text-slate-400 font-semibold">{item.label}</p>
+              <p className="text-xs font-black text-white mt-0.5">{item.value}</p>
             </div>
           ))}
         </div>
