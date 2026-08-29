@@ -3,7 +3,7 @@ import { Project, User, Task } from '../../types';
 import { 
   FolderKanban, Activity, Calendar, CheckSquare,
   AlertTriangle, ChevronRight, FolderPlus, FileSpreadsheet,
-  Users, FileText, ArrowUpRight, TrendingUp, Sparkles
+  Users, FileText, ArrowUpRight, TrendingUp, Sparkles, MessageSquare
 } from 'lucide-react';
 import { StatusBadge } from '../common/StatusBadge';
 
@@ -15,6 +15,7 @@ interface SimpleHomeViewProps {
   onOpenLatti: () => void;
   onOpenNotifications?: () => void;
   onOpenMessages?: () => void;
+  onOpenCalendar?: () => void;
   onOpenTasks: () => void;
   onOpenProjects: () => void;
   onOpenBudgets: () => void;
@@ -30,6 +31,8 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   tasks = [],
   onSelectProject,
   onOpenLatti,
+  onOpenMessages,
+  onOpenCalendar,
   onOpenTasks,
   onOpenProjects,
   onOpenBudgets,
@@ -49,10 +52,8 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
     ? tasks.filter(t => t.status === 'Completed').length 
     : 6;
 
-  const companyName = currentUser?.company || 'Avery & Marsh Construction';
-
   return (
-    <div className="w-full flex flex-col gap-4 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
 
       {/* ── 1. Top Executive Overview Card (Reference Design with Original Content) ── */}
       <div className="p-4 sm:p-5 rounded-3xl bg-[#080E1C] border border-[#14223E] shadow-xl shadow-blue-950/20 flex flex-col gap-3.5 relative">
@@ -69,70 +70,78 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
           </button>
         </div>
 
-        {/* 4 Metric Tiles in Horizontal Grid (Original Content: Active Projects, In Progress, Due Today, Completed Today) */}
-        <div className="grid grid-cols-4 gap-2">
+        {/* 4 Compact, Clutter-Free Stat Cards in 2x2 Grid */}
+        <div className="grid grid-cols-2 gap-2.5">
           {/* Tile 1: Active Projects */}
           <div 
             onClick={onOpenProjects}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-blue-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-blue-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#0D223A] border border-[#173A60] text-[#38BDF8] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[#38BDF8] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <FolderKanban className="w-4 h-4" />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
-              {activeCount}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              Active
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                {activeCount}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Active Projects
+              </div>
+            </div>
           </div>
 
           {/* Tile 2: Tasks In Progress */}
           <div 
             onClick={onOpenTasks}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-purple-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-purple-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#231438] border border-[#3D2062] text-[#A855F7] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#C084FC] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <Activity className="w-4 h-4" />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
-              {inProgressTasks}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              In Progress
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                {inProgressTasks}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                In Progress
+              </div>
+            </div>
           </div>
 
           {/* Tile 3: Tasks Due Today */}
           <div 
             onClick={onOpenTasks}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-amber-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-amber-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#2A1D0E] border border-[#483015] text-[#F59E0B] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[#FBBF24] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <Calendar className="w-4 h-4" />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
-              {dueTodayTasks}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              Due Today
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                {dueTodayTasks}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Due Today
+              </div>
+            </div>
           </div>
 
           {/* Tile 4: Completed Today */}
           <div 
             onClick={onOpenTasks}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-emerald-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-emerald-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#0D281E] border border-[#154633] text-[#10B981] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[#34D399] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <CheckSquare className="w-4 h-4" />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-white leading-none tracking-tight">
-              {completedTasks}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              Completed
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                {completedTasks}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Completed
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -143,16 +152,31 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
         <div className="grid grid-cols-4 gap-2">
           {[
             {
-              label: 'New Project', icon: FolderPlus, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20',
-              action: () => onOpenNewProject ? onOpenNewProject() : onOpenProjects()
-            },
-            { label: 'Budgets', icon: FileSpreadsheet, color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20', action: onOpenBudgets },
-            {
-              label: 'Team', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20',
-              action: () => onOpenTeam ? onOpenTeam() : onOpenProjects()
+              label: 'BuildScope AI',
+              icon: Sparkles,
+              color: 'text-[#38BDF8]',
+              bg: 'bg-blue-500/10 border-blue-500/20',
+              action: onOpenLatti
             },
             {
-              label: 'Reports', icon: FileText, color: 'text-slate-400', bg: 'bg-slate-500/10 border-slate-500/20',
+              label: 'Messages',
+              icon: MessageSquare,
+              color: 'text-purple-400',
+              bg: 'bg-purple-500/10 border-purple-500/20',
+              action: () => onOpenMessages ? onOpenMessages() : onOpenProjects()
+            },
+            {
+              label: 'Calendar',
+              icon: Calendar,
+              color: 'text-amber-400',
+              bg: 'bg-amber-500/10 border-amber-500/20',
+              action: () => onOpenCalendar ? onOpenCalendar() : onOpenProjects()
+            },
+            {
+              label: 'Reports',
+              icon: FileText,
+              color: 'text-emerald-400',
+              bg: 'bg-emerald-500/10 border-emerald-500/20',
               action: () => onOpenReports ? onOpenReports() : onOpenProjects()
             },
           ].map(({ label, icon: Icon, color, bg, action }) => (
@@ -164,7 +188,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
               <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${color} ${bg} group-hover:scale-110 transition-transform`}>
                 <Icon className="w-4 h-4" />
               </div>
-              <span className="text-[12px] font-semibold text-slate-300 group-hover:text-white transition-colors text-center leading-tight">{label}</span>
+              <span className="text-[11px] font-semibold text-slate-300 group-hover:text-white transition-colors text-center leading-tight truncate w-full">{label}</span>
             </button>
           ))}
         </div>

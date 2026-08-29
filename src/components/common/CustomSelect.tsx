@@ -56,9 +56,9 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   const selectedOption = normalizedOptions.find(opt => opt.value === value);
 
   const sizeClasses = {
-    sm: 'h-8 px-2.5 text-[10px] rounded-xl',
+    sm: 'h-8 px-3 text-[11px] rounded-lg',
     md: 'h-10 px-3.5 text-xs rounded-xl',
-    lg: 'h-12 px-4 text-xs rounded-2xl'
+    lg: 'h-12 px-4 text-sm rounded-2xl'
   }[size];
 
   return (

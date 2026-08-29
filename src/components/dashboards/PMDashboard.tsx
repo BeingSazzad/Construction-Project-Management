@@ -47,7 +47,7 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
   ];
 
   return (
-    <div className="w-full flex flex-col gap-4 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
       {/* ── 1. Top PM Executive Command Card ── */}
       <div className="p-4 sm:p-5 rounded-3xl bg-[#080E1C] border border-[#14223E] shadow-xl shadow-blue-950/20 flex flex-col gap-3.5 relative">
@@ -67,70 +67,78 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
           </button>
         </div>
 
-        {/* 4 PM Metric Tiles Grid */}
-        <div className="grid grid-cols-4 gap-2">
+        {/* 4 PM Metric Tiles Compact Grid */}
+        <div className="grid grid-cols-2 gap-2.5">
           {/* Tile 1: Active Projects */}
           <div 
             onClick={onOpenSchedule}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-blue-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-blue-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#0D223A] border border-[#173A60] text-[#38BDF8] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[#38BDF8] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <FolderKanban className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-white leading-none tracking-tight">
-              {myProjects.length}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              Projects
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                {myProjects.length}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Active Projects
+              </div>
+            </div>
           </div>
 
           {/* Tile 2: Open Tasks */}
           <div 
             onClick={onCreateTask}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-purple-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-purple-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#231438] border border-[#3D2062] text-[#A855F7] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#C084FC] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <Activity className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-white leading-none tracking-tight">
-              {totalDueToday}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              Open Tasks
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                {totalDueToday}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Open Tasks
+              </div>
+            </div>
           </div>
 
           {/* Tile 3: Blocked / Overdue */}
           <div 
             onClick={onOpenSchedule}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-rose-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-rose-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#2A1118] border border-[#521C2B] text-rose-400 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <ShieldAlert className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-rose-400 leading-none tracking-tight">
-              {totalOverdue || 2}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              Blocked
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-rose-400 leading-none tracking-tight">
+                {totalOverdue || 2}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Blocked Issues
+              </div>
+            </div>
           </div>
 
           {/* Tile 4: Pending Milestones */}
           <div 
             onClick={onOpenSchedule}
-            className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-emerald-500/40 flex flex-col items-center justify-center text-center cursor-pointer transition-all active:scale-95 group shadow-inner"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-emerald-500/40 cursor-pointer transition-all active:scale-[0.98] group shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#0D281E] border border-[#154633] text-[#10B981] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[#34D399] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <CheckSquare className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-emerald-400 leading-none tracking-tight">
-              {totalMilestones || 8}
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight group-hover:text-slate-300 transition-colors truncate w-full">
-              Milestones
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-emerald-400 leading-none tracking-tight">
+                {totalMilestones || 8}
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Milestones
+              </div>
+            </div>
           </div>
         </div>
       </div>

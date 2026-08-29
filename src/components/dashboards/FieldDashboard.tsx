@@ -59,7 +59,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
   ];
 
   return (
-    <div className="w-full flex flex-col gap-4 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
       {/* ── 1. Top Executive Field Command Card ── */}
       <div className="p-4 sm:p-5 rounded-3xl bg-[#080E1C] border border-[#14223E] shadow-xl shadow-blue-950/20 flex flex-col gap-3.5 relative">
@@ -80,58 +80,66 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
           </button>
         </div>
 
-        {/* 4 Field KPI Tiles */}
-        <div className="grid grid-cols-4 gap-2">
+        {/* 4 Field KPI Tiles Compact Grid */}
+        <div className="grid grid-cols-2 gap-2.5">
           {/* Tile 1: Active Workers */}
-          <div className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] flex flex-col items-center justify-center text-center shadow-inner">
-            <div className="w-9 h-9 rounded-xl bg-[#0D223A] border border-[#173A60] text-[#38BDF8] flex items-center justify-center mb-2 flex-shrink-0">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-blue-500/40 transition-all shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[#38BDF8] flex items-center justify-center flex-shrink-0">
               <Users className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-white leading-none tracking-tight">
-              24
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight truncate w-full">
-              Workers
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                24
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Active Workers
+              </div>
+            </div>
           </div>
 
           {/* Tile 2: Field Tasks */}
-          <div className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] flex flex-col items-center justify-center text-center shadow-inner">
-            <div className="w-9 h-9 rounded-xl bg-[#231438] border border-[#3D2062] text-[#A855F7] flex items-center justify-center mb-2 flex-shrink-0">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-purple-500/40 transition-all shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#C084FC] flex items-center justify-center flex-shrink-0">
               <HardHat className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-white leading-none tracking-tight">
-              6
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight truncate w-full">
-              Field Tasks
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-white leading-none tracking-tight">
+                6
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Field Tasks
+              </div>
+            </div>
           </div>
 
           {/* Tile 3: Safety Passed */}
-          <div className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] flex flex-col items-center justify-center text-center shadow-inner">
-            <div className="w-9 h-9 rounded-xl bg-[#0D281E] border border-[#154633] text-[#10B981] flex items-center justify-center mb-2 flex-shrink-0">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-emerald-500/40 transition-all shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[#34D399] flex items-center justify-center flex-shrink-0">
               <ShieldCheck className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-emerald-400 leading-none tracking-tight">
-              100%
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight truncate w-full">
-              Safety
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-emerald-400 leading-none tracking-tight">
+                100%
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Safety Passed
+              </div>
+            </div>
           </div>
 
           {/* Tile 4: Weather & Site Condition */}
-          <div className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] flex flex-col items-center justify-center text-center shadow-inner">
-            <div className="w-9 h-9 rounded-xl bg-[#2A1D0E] border border-[#483015] text-[#F59E0B] flex items-center justify-center mb-2 flex-shrink-0">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#090F1E] border border-[#162238] hover:border-amber-500/40 transition-all shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[#FBBF24] flex items-center justify-center flex-shrink-0">
               <Sun className="w-4 h-4" />
             </div>
-            <span className="text-lg font-bold text-amber-400 leading-none tracking-tight">
-              74°F
-            </span>
-            <span className="text-[11px] font-medium text-slate-400 mt-1.5 leading-tight truncate w-full">
-              Clear · Dry
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-black text-amber-400 leading-none tracking-tight">
+                74°F
+              </div>
+              <div className="text-xs font-semibold text-slate-300 truncate mt-1">
+                Clear & Dry
+              </div>
+            </div>
           </div>
         </div>
       </div>

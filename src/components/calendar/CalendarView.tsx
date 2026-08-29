@@ -85,105 +85,80 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     calendarCells.push({ day, isCurrentMonth: false, dateStr });
   }
 
-  // Filter events
-  const filteredEvents = eventsList.filter(e => {
-    if (selectedTypeFilter === 'all') return true;
-    return e.type.toLowerCase() === selectedTypeFilter.toLowerCase();
-  });
+  // Selected date state for day-click agenda preview
+  const [selectedDateStr, setSelectedDateStr] = useState<string>('2026-08-28');
+
+  // Helper for dot colors based on event type
+  const getEventDotColor = (type: CalendarEventType) => {
+    switch (type) {
+      case 'Inspection': return 'bg-amber-400';
+      case 'Milestone': return 'bg-emerald-400';
+      case 'Start Date': return 'bg-cyan-400';
+      case 'Meeting': return 'bg-purple-400';
+      case 'Delivery': return 'bg-blue-400';
+      default: return 'bg-slate-400';
+    }
+  };
 
   const getEventBadgeColor = (type: CalendarEventType) => {
     switch (type) {
       case 'Inspection':
-        return 'bg-amber-500/20 text-amber-300 border-amber-500/30 hover:border-amber-400';
+        return 'bg-amber-500/15 text-amber-300 border-amber-500/30 hover:border-amber-400';
       case 'Milestone':
-        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 hover:border-emerald-400';
+        return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:border-emerald-400';
       case 'Start Date':
-        return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30 hover:border-cyan-400';
+        return 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30 hover:border-cyan-400';
       case 'Meeting':
-        return 'bg-purple-500/20 text-purple-300 border-purple-500/30 hover:border-purple-400';
+        return 'bg-purple-500/15 text-purple-300 border-purple-500/30 hover:border-purple-400';
       case 'Delivery':
-        return 'bg-blue-500/20 text-blue-300 border-blue-500/30 hover:border-blue-400';
+        return 'bg-blue-500/15 text-blue-300 border-blue-500/30 hover:border-blue-400';
       default:
-        return 'bg-slate-500/20 text-slate-300 border-slate-500/30 hover:border-slate-400';
+        return 'bg-slate-500/15 text-slate-300 border-slate-500/30 hover:border-slate-400';
     }
   };
 
-  const EVENT_FILTER_TABS = [
-    { id: 'all', label: 'All Events' },
-    { id: 'Inspection', label: 'Inspections' },
-    { id: 'Milestone', label: 'Milestones' },
-    { id: 'Start Date', label: 'Start Dates' },
-    { id: 'Delivery', label: 'Deliveries' },
-    { id: 'Meeting', label: 'Meetings' },
-  ];
+  // Selected date events for bottom agenda preview
+  const selectedDayEvents = eventsList.filter(e => e.date === selectedDateStr);
 
   return (
-    <div className="w-full flex flex-col gap-3 px-4 py-3 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-3 px-5 pt-2 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
-      {/* ─── 1. Top Calendar Control Bar ─── */}
-      <div className="p-3.5 rounded-2xl bg-[#080E1C] border border-[#14223E] flex flex-col gap-3 shadow-lg">
-        {/* Month, Nav & Add Button */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-white tracking-tight">
-              {currentMonthName} <span className="text-slate-400 font-normal">{year}</span>
-            </h2>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={prevMonth}
-                className="w-7 h-7 rounded-xl bg-[#0E1A33] border border-[#1E325A] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-                title="Previous Month"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={nextMonth}
-                className="w-7 h-7 rounded-xl bg-[#0E1A33] border border-[#1E325A] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-                title="Next Month"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5">
+      {/* ─── 1. Ultra-Clean Single Header Control Row ─── */}
+      <div className="flex items-center justify-between px-0.5 py-0.5">
+        {/* Month Title, Navigation & Today */}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <h2 className="text-base sm:text-lg font-black text-white tracking-tight truncate">
+            {currentMonthName} <span className="text-slate-400 font-normal">{year}</span>
+          </h2>
+          <div className="flex items-center gap-1">
             <button
-              onClick={goToToday}
-              className="px-2.5 py-1 rounded-xl bg-[#0E1A33] border border-[#1E325A] hover:bg-[#15274D] text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+              onClick={prevMonth}
+              className="w-7 h-7 rounded-xl bg-[#080E1C] border border-[#14223E] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+              title="Previous Month"
             >
-              Today
+              <ChevronLeft className="w-4 h-4" />
             </button>
             <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="px-2.5 py-1 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md shadow-blue-500/20 transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+              onClick={nextMonth}
+              className="w-7 h-7 rounded-xl bg-[#080E1C] border border-[#14223E] text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+              title="Next Month"
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Add</span>
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
+          <button
+            onClick={goToToday}
+            className="px-2 py-1 rounded-xl bg-[#080E1C] border border-[#14223E] hover:bg-[#0E1A33] text-slate-300 text-xs font-semibold transition-colors cursor-pointer"
+            title="Jump back to current date"
+          >
+            Today
+          </button>
         </div>
 
-        {/* View Mode & Filter Row */}
-        <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#142036]">
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-            {EVENT_FILTER_TABS.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedTypeFilter(tab.id)}
-                className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                  selectedTypeFilter === tab.id
-                    ? 'bg-[#2563EB] text-white shadow-sm'
-                    : 'bg-[#050A14] text-slate-400 hover:text-slate-200 border border-[#131D31]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Grid / Agenda Switcher */}
-          <div className="flex items-center bg-[#050A14] border border-[#131D31] rounded-xl p-0.5 flex-shrink-0">
+        {/* Right Controls: Grid/Agenda Switcher & Add Button */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* Grid / Agenda View Switcher */}
+          <div className="flex items-center bg-[#070D1A] border border-[#142036] rounded-xl p-0.5">
             <button
               onClick={() => setViewMode('month')}
               className={`p-1 rounded-lg transition-colors cursor-pointer ${
@@ -203,133 +178,160 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               <List className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="px-2.5 py-1 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md shadow-blue-500/20 transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+          >
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Add</span>
+          </button>
         </div>
       </div>
 
-      {/* ─── 2. Month Grid View ─── */}
+      {/* ─── 2. Month Grid View (Clutter-Free Dot Indicators) ─── */}
       {viewMode === 'month' ? (
-        <div className="rounded-2xl bg-[#080E1C] border border-[#14223E] overflow-hidden shadow-lg">
-          {/* Day of Week Headers */}
-          <div className="grid grid-cols-7 border-b border-[#142036] bg-[#050A14]">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
-              <div key={d} className="py-2 text-center text-[10px] font-bold text-slate-400">
-                {d}
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-col gap-3.5">
+          <div className="rounded-3xl bg-[#080E1C] border border-[#14223E] overflow-hidden shadow-lg">
+            {/* Day of Week Headers */}
+            <div className="grid grid-cols-7 border-b border-[#142036] bg-[#050A14]">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
+                <div key={d} className="py-2 text-center text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  {d}
+                </div>
+              ))}
+            </div>
 
-          {/* Calendar Day Cells */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-[#142036]">
-            {calendarCells.map((cell, idx) => {
-              const dayEvents = filteredEvents.filter(e => e.date === cell.dateStr);
-              const isToday = cell.dateStr === '2026-08-28'; // Today highlight
+            {/* Calendar Day Cells */}
+            <div className="grid grid-cols-7 divide-x divide-y divide-[#142036]">
+              {calendarCells.map((cell, idx) => {
+                const dayEvents = eventsList.filter(e => e.date === cell.dateStr);
+                const isToday = cell.dateStr === '2026-08-28';
+                const isSelected = cell.dateStr === selectedDateStr;
 
-              return (
-                <div
-                  key={`${cell.dateStr}-${idx}`}
-                  onClick={() => {
-                    if (dayEvents.length > 0) {
-                      setSelectedEvent(dayEvents[0]);
-                    }
-                  }}
-                  className={`min-h-[64px] p-1 flex flex-col justify-between transition-colors ${
-                    cell.isCurrentMonth ? 'bg-[#070D1A]' : 'bg-[#04070E] opacity-40'
-                  } ${isToday ? 'ring-1 ring-blue-500 bg-blue-950/20' : ''} hover:bg-[#0C152B] cursor-pointer`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-bold ${
-                      isToday 
-                        ? 'w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center' 
-                        : cell.isCurrentMonth ? 'text-slate-200' : 'text-slate-600'
-                    }`}>
-                      {cell.day}
-                    </span>
-                    {dayEvents.length > 1 && (
-                      <span className="text-[9px] font-bold text-blue-400">+{dayEvents.length}</span>
+                return (
+                  <div
+                    key={`${cell.dateStr}-${idx}`}
+                    onClick={() => setSelectedDateStr(cell.dateStr)}
+                    className={`min-h-[54px] p-1.5 flex flex-col justify-between transition-all ${
+                      cell.isCurrentMonth ? 'bg-[#070D1A]' : 'bg-[#04070E] opacity-30'
+                    } ${isSelected ? 'bg-blue-950/40 ring-2 ring-blue-500 z-10' : isToday ? 'bg-blue-950/20 ring-1 ring-blue-500/60' : ''} hover:bg-[#0C152B] cursor-pointer`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className={`text-[11px] font-bold ${
+                        isToday 
+                          ? 'w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center' 
+                          : isSelected ? 'text-blue-400' : cell.isCurrentMonth ? 'text-slate-200' : 'text-slate-600'
+                      }`}>
+                        {cell.day}
+                      </span>
+                    </div>
+
+                    {/* Mobile UX Best Practice: Sleek Event Indicator Dots (No Truncated Text Clutter!) */}
+                    {dayEvents.length > 0 && (
+                      <div className="flex items-center justify-center gap-1 mt-1 pb-0.5">
+                        {dayEvents.slice(0, 3).map(evt => (
+                          <span 
+                            key={evt.id}
+                            className={`w-1.5 h-1.5 rounded-full ${getEventDotColor(evt.type)}`}
+                            title={`${evt.title} (${evt.type})`}
+                          />
+                        ))}
+                        {dayEvents.length > 3 && (
+                          <span className="text-[9px] font-bold text-blue-400 leading-none">
+                            +{dayEvents.length - 3}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
+                );
+              })}
+            </div>
+          </div>
 
-                  {/* Day Events Pills */}
-                  <div className="flex flex-col gap-0.5 mt-1 overflow-hidden">
-                    {dayEvents.slice(0, 2).map(evt => (
-                      <div
-                        key={evt.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedEvent(evt);
-                        }}
-                        className={`px-1 py-0.5 rounded text-[9px] font-medium truncate border ${getEventBadgeColor(evt.type)}`}
-                        title={`${evt.title} (${evt.type})`}
-                      >
-                        {evt.title}
+          {/* ─── Selected Day Events Agenda Panel (Mobile Best Practice) ─── */}
+          <div className="p-3.5 rounded-3xl bg-[#080E1C] border border-[#14223E] flex flex-col gap-2.5 shadow-md">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                <CalendarIcon className="w-3.5 h-3.5 text-blue-400" />
+                <span>Events for {selectedDateStr}</span>
+              </h3>
+              <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full">
+                {selectedDayEvents.length} {selectedDayEvents.length === 1 ? 'Event' : 'Events'}
+              </span>
+            </div>
+
+            {selectedDayEvents.length === 0 ? (
+              <div className="p-3 text-center text-xs text-slate-400 font-medium">
+                No events scheduled on this date. Tap <strong className="text-blue-400">+ Add</strong> to create one.
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 mt-0.5">
+                {selectedDayEvents.map(evt => (
+                  <div
+                    key={evt.id}
+                    onClick={() => setSelectedEvent(evt)}
+                    className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] hover:border-blue-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group shadow-sm active:scale-[0.99]"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${getEventDotColor(evt.type)}`} />
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                          {evt.title}
+                        </h4>
+                        {evt.time && (
+                          <p className="text-[11px] text-slate-400 font-medium truncate mt-0.5">
+                            {evt.time}
+                          </p>
+                        )}
                       </div>
-                    ))}
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${getEventBadgeColor(evt.type)}`}>
+                      {evt.type}
+                    </span>
                   </div>
-                </div>
-              );
-            })}
+                ))}
+              </div>
+            )}
           </div>
         </div>
       ) : (
-        /* ─── 3. Agenda / List View ─── */
+        /* ─── 3. Full Agenda / List View (Date & Time Only, No Project Name) ─── */
         <div className="flex flex-col gap-2">
-          {filteredEvents.length === 0 ? (
-            <div className="p-8 text-center rounded-2xl bg-[#080E1C] border border-[#14223E] text-slate-400">
+          {eventsList.length === 0 ? (
+            <div className="p-8 text-center rounded-3xl bg-[#080E1C] border border-[#14223E] text-slate-400">
               <CalendarIcon className="w-8 h-8 mx-auto mb-2 text-slate-600" />
               <p className="text-xs font-semibold">No events found</p>
               <p className="text-[10px] text-slate-500 mt-0.5">Add an inspection or milestone to the calendar</p>
             </div>
           ) : (
-            filteredEvents.map(evt => (
+            eventsList.map(evt => (
               <div
                 key={evt.id}
                 onClick={() => setSelectedEvent(evt)}
-                className="p-3.5 rounded-2xl bg-[#080E1C] border border-[#14223E] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm flex items-center justify-between gap-3 active:scale-[0.99] group"
+                className="p-3 rounded-2xl bg-[#080E1C] border border-[#14223E] hover:border-blue-500/40 transition-all cursor-pointer shadow-sm flex items-center justify-between gap-3 active:scale-[0.99] group"
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-9 h-9 rounded-xl border flex items-center justify-center flex-shrink-0 ${getEventBadgeColor(evt.type)}`}>
-                    <CalendarIcon className="w-4 h-4" />
-                  </div>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${getEventDotColor(evt.type)}`} />
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">{evt.title}</h4>
-                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${getEventBadgeColor(evt.type)}`}>
-                        {evt.type}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium mt-1">
-                      <span>{evt.date}</span>
-                      {evt.time && <span>· {evt.time}</span>}
-                      {evt.projectName && <span className="text-slate-500 truncate">· {evt.projectName}</span>}
-                    </div>
+                    <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                      {evt.title}
+                    </h4>
+                    <p className="text-[11px] text-slate-400 font-medium truncate mt-0.5">
+                      <span className="text-slate-300 font-semibold">{evt.date}</span>
+                      {evt.time ? ` · ${evt.time}` : ''}
+                    </p>
                   </div>
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${getEventBadgeColor(evt.type)}`}>
+                  {evt.type}
+                </span>
               </div>
             ))
           )}
         </div>
       )}
-
-      {/* ─── 4. Quick Summary Metrics ─── */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="p-2.5 rounded-xl bg-[#080E1C] border border-[#14223E] flex flex-col items-center justify-center text-center">
-          <span className="text-[10px] font-medium text-slate-400">Total Events</span>
-          <span className="text-sm font-bold text-white mt-0.5">{eventsList.length}</span>
-        </div>
-        <div className="p-2.5 rounded-xl bg-[#080E1C] border border-[#14223E] flex flex-col items-center justify-center text-center">
-          <span className="text-[10px] font-medium text-slate-400">Inspections</span>
-          <span className="text-sm font-bold text-amber-400 mt-0.5">
-            {eventsList.filter(e => e.type === 'Inspection').length}
-          </span>
-        </div>
-        <div className="p-2.5 rounded-xl bg-[#080E1C] border border-[#14223E] flex flex-col items-center justify-center text-center">
-          <span className="text-[10px] font-medium text-slate-400">Milestones</span>
-          <span className="text-sm font-bold text-emerald-400 mt-0.5">
-            {eventsList.filter(e => e.type === 'Milestone').length}
-          </span>
-        </div>
-      </div>
 
       {/* ─── 5. Add Calendar Event Modal ─── */}
       <AddCalendarEventModal

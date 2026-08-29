@@ -95,7 +95,7 @@ body {
   font-weight: 700 !important;
   padding-left: 0.75rem !important;
   padding-right: 0.75rem !important;
-  border-radius: 0.625rem !important; /* rounded-lg */
+  border-radius: 0.5rem !important; /* rounded-lg (8px) */
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -103,6 +103,64 @@ body {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer !important;
   white-space: nowrap !important;
+}
+
+/* Global Standardized Input Box Architecture */
+/* 1. Large Input Box (Height: 48px, Radius: 16px) - Modal Forms, Main Search & Key Field Inputs */
+.input-lg {
+  height: 48px !important;
+  font-size: 0.875rem !important; /* 14px */
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  border-radius: 1rem !important; /* rounded-2xl (16px) */
+  background-color: #090E1A !important;
+  border: 1px solid #1E2E4A !important;
+  color: #F8FAFC !important;
+  width: 100% !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.input-lg:focus {
+  outline: none !important;
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) !important;
+}
+
+/* 2. Medium Input Box (Height: 40px, Radius: 12px) - Standard Form Inputs & Dropdowns */
+.input-md {
+  height: 40px !important;
+  font-size: 0.8125rem !important; /* 13px */
+  padding-left: 0.875rem !important;
+  padding-right: 0.875rem !important;
+  border-radius: 0.75rem !important; /* rounded-xl (12px) */
+  background-color: #090E1A !important;
+  border: 1px solid #1E2E4A !important;
+  color: #F8FAFC !important;
+  width: 100% !important;
+  transition: border-color 0.2s ease !important;
+}
+
+.input-md:focus {
+  outline: none !important;
+  border-color: #2563EB !important;
+}
+
+/* 3. Small Input Box (Height: 32px, Radius: 8px) - Micro Search & Table Inline Filters */
+.input-sm {
+  height: 32px !important;
+  font-size: 0.75rem !important; /* 12px */
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  border-radius: 0.5rem !important; /* rounded-lg (8px) */
+  background-color: #090E1A !important;
+  border: 1px solid #1E2E4A !important;
+  color: #F8FAFC !important;
+  transition: border-color 0.2s ease !important;
+}
+
+.input-sm:focus {
+  outline: none !important;
+  border-color: #2563EB !important;
 }
 
 /* Standard B2B Action Buttons */

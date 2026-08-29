@@ -6,6 +6,7 @@ interface ProjectScheduleTabProps {
   project: Project;
   ganttItems?: GanttItem[];
   onCreateTask?: () => void;
+  isMilestoneView?: boolean;
 }
 
 interface PhaseItem {
@@ -85,7 +86,8 @@ const PHASES_DATA: PhaseItem[] = [
 ];
 
 export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
-  project
+  project,
+  isMilestoneView = false
 }) => {
   const [activeFilter, setActiveFilter] = useState<'All' | 'In Progress' | 'Completed' | 'Upcoming'>('All');
 
@@ -104,7 +106,9 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
       {/* ─── 1. CLEAN HEADER ─── */}
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-bold text-white tracking-tight">Master Schedule</h2>
+          <h2 className="text-sm font-bold text-white tracking-tight">
+            {isMilestoneView ? 'Milestone Tracker' : 'Master Schedule'}
+          </h2>
           <span className="text-[12px] text-slate-400">
             ({completedCount} of {PHASES_DATA.length} complete)
           </span>

@@ -714,6 +714,7 @@ export function App() {
                       onSelectProject={handleSelectProject}
                       onOpenLatti={() => setActiveTab('latti')}
                       onOpenMessages={() => setActiveTab('messages')}
+                      onOpenCalendar={() => setActiveTab('calendar')}
                       onOpenTasks={() => {
                         handleSelectProject(projects[0]);
                       }}
@@ -852,6 +853,51 @@ export function App() {
                     }}
                   />
                 )}
+
+                {/* 10. GLOBAL SUBTAB HUB FALLBACKS (NEVER BLANK) */}
+                {activeTab === 'tasks' && (
+                  <ProjectTasksTab
+                    project={projects[0]}
+                    tasks={tasks}
+                    onOpenTask={(t) => setSelectedTask(t)}
+                    onCreateTask={() => setIsTaskTypeSelectOpen(true)}
+                    onUpdateStatus={handleUpdateTaskStatus}
+                  />
+                )}
+
+                {(activeTab === 'schedule' || activeTab === 'milestones') && (
+                  <ProjectScheduleTab
+                    project={projects[0]}
+                    ganttItems={ganttItems}
+                    onCreateTask={() => setIsTaskTypeSelectOpen(true)}
+                    isMilestoneView={activeTab === 'milestones'}
+                  />
+                )}
+
+                {activeTab === 'punch' && (
+                  <ProjectPunchListTab
+                    project={projects[0]}
+                    punchItems={punchItems}
+                    onCreatePunch={() => setIsCreatePunchOpen(true)}
+                    onOpenPunchDetails={(p) => setSelectedTask(null)}
+                    onUpdatePunchStatus={handleUpdatePunchStatus}
+                  />
+                )}
+
+                {activeTab === 'photos' && (
+                  <ProjectPhotosTab
+                    project={projects[0]}
+                    photos={photos}
+                    onUploadPhoto={() => setIsPhotoUploadOpen(true)}
+                    onPreviewPhoto={(p) => setSelectedPhoto(p)}
+                  />
+                )}
+
+                {activeTab === 'daily-logs' && (
+                  <ProjectDailyLogsTab
+                    project={projects[0]}
+                  />
+                )}
               </>
             )}
           </div>
@@ -864,7 +910,7 @@ export function App() {
               setActiveProject(null);
               setActiveTab(tab);
             }}
-            onQuickAction={handleOpenQuickAction}
+            onQuickAction={() => setIsTaskTypeSelectOpen(true)}
           />
 
           {/* SIDE DRAWER NAVIGATION */}
@@ -881,7 +927,7 @@ export function App() {
               } else if (tab === 'buildscope' || tab === 'intelligence-center') {
                 setActiveProject(null);
                 setActiveTab(tab);
-              } else if (['schedule', 'messages', 'photos', 'documents', 'punch', 'daily-logs', 'milestones'].includes(tab)) {
+              } else if (['tasks', 'schedule', 'messages', 'photos', 'documents', 'punch', 'daily-logs', 'milestones'].includes(tab)) {
                 if (!activeProject) {
                   setActiveProject(projects[0]);
                 }

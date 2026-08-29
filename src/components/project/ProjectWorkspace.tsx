@@ -287,6 +287,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             project={project}
             ganttItems={ganttItems}
             onCreateTask={onCreateTask}
+            isMilestoneView={activeTab === 'milestones'}
           />
         )}
       </div>

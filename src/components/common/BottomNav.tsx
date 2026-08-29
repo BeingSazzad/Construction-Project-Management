@@ -91,7 +91,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#060913]/97 backdrop-blur-xl border-t border-[#142036]/80">
-      <div className="max-w-[430px] mx-auto px-4 flex items-center justify-between" style={{ paddingBottom: 'env(safe-area-inset-bottom, 8px)', paddingTop: '8px' }}>
+      <div className="max-w-[430px] mx-auto px-5 flex items-center justify-between" style={{ paddingBottom: 'env(safe-area-inset-bottom, 8px)', paddingTop: '8px' }}>
 
         {/* Left Role-Specific Items */}
         <div className="flex items-center gap-0 flex-1 justify-around">
