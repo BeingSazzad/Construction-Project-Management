@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Project, GanttItem } from '../../types';
-import { Check } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
+import { MilestoneDetailsModal } from '../modals/MilestoneDetailsModal';
 
 interface ProjectScheduleTabProps {
   project: Project;
@@ -90,6 +91,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
   isMilestoneView = false
 }) => {
   const [activeFilter, setActiveFilter] = useState<'All' | 'In Progress' | 'Completed' | 'Upcoming'>('All');
+  const [selectedMilestone, setSelectedMilestone] = useState<PhaseItem | null>(null);
 
   const filtered = PHASES_DATA.filter(p => {
     if (activeFilter === 'In Progress') return p.status === 'In Progress';
@@ -148,13 +150,17 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
           return (
             <div
               key={phase.id}
-              className="p-3 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-[#1E325A] transition-colors flex flex-col gap-2 shadow-sm"
+              onClick={() => setSelectedMilestone(phase)}
+              className="p-3 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/50 cursor-pointer transition-all active:scale-[0.99] flex flex-col gap-2 shadow-sm group"
             >
               {/* Row 1: Phase Title + Status Pill */}
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-xs font-bold text-white truncate">
-                  {phase.name}
-                </h3>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <h3 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                    {phase.name}
+                  </h3>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 flex-shrink-0" />
+                </div>
 
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1 ${
                   isDone
@@ -191,6 +197,19 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
           );
         })}
       </div>
+
+      {/* Milestone Details Modal */}
+      {selectedMilestone && (
+        <MilestoneDetailsModal
+          milestone={selectedMilestone}
+          projectName={project.name}
+          onClose={() => setSelectedMilestone(null)}
+          onUpdateStatus={(id, status) => {
+            selectedMilestone.status = status;
+            if (status === 'Completed') selectedMilestone.progress = 100;
+          }}
+        />
+      )}
 
     </div>
   );

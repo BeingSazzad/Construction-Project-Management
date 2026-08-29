@@ -16,6 +16,11 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'breakdown' | 'forecast' | 'learning' | 'team' | 'activity' | 'reports'>('breakdown');
   const [status, setStatus] = useState<'in review' | 'draft' | 'approved'>('in review');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
 
   // Overview Tab Interactive States
   const [lotPrice, setLotPrice] = useState<number>(150000);
@@ -286,7 +291,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           </button>
 
           <button
-            onClick={() => alert("Budget saved successfully!")}
+            onClick={() => showToast("Budget saved successfully!")}
             className="h-8 px-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-md shadow-blue-600/30 transition-all active:scale-95"
           >
             <Save className="w-3.5 h-3.5" />
@@ -1338,41 +1343,53 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               <span>Reports & Exports</span>
             </h3>
 
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              {/* 1. Detailed Budget PDF (Global System Primary Blue Button) */}
+            <div className="flex flex-col gap-2.5 text-xs">
+              {/* 1. Detailed Budget PDF */}
               <button
                 onClick={() => alert("Downloading Detailed Budget PDF...")}
-                className="h-11 px-4 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-600/30 border border-blue-500/30 cursor-pointer active:scale-95"
+                className="w-full h-12 px-4 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold flex items-center justify-between transition-all shadow-md shadow-blue-600/20 cursor-pointer active:scale-[0.99]"
               >
-                <Download className="w-4 h-4 text-white" />
-                <span>Detailed Budget PDF</span>
+                <div className="flex items-center gap-2.5">
+                  <Download className="w-4 h-4 text-white" />
+                  <span>Detailed Budget PDF</span>
+                </div>
+                <span className="text-[9px] bg-blue-700 px-2 py-0.5 rounded-full font-bold uppercase">PDF</span>
               </button>
 
               {/* 2. Budget Summary CSV */}
               <button
                 onClick={() => alert("Exporting Budget Summary CSV...")}
-                className="h-11 px-4 rounded-2xl bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-slate-600 text-slate-200 font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95"
+                className="w-full h-12 px-4 rounded-2xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-slate-500 text-slate-200 font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
               >
-                <Download className="w-4 h-4 text-slate-400" />
-                <span>Budget Summary CSV</span>
+                <div className="flex items-center gap-2.5">
+                  <Download className="w-4 h-4 text-slate-400" />
+                  <span>Budget Summary CSV</span>
+                </div>
+                <span className="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">CSV</span>
               </button>
 
               {/* 3. Deal Analysis Report */}
               <button
                 onClick={() => alert("Generating Deal Analysis Report...")}
-                className="h-11 px-4 rounded-2xl bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-slate-600 text-slate-200 font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95"
+                className="w-full h-12 px-4 rounded-2xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-slate-500 text-slate-200 font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
               >
-                <FileText className="w-4 h-4 text-slate-400" />
-                <span>Deal Analysis Report</span>
+                <div className="flex items-center gap-2.5">
+                  <FileText className="w-4 h-4 text-slate-400" />
+                  <span>Deal Analysis Report</span>
+                </div>
+                <span className="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">Report</span>
               </button>
 
               {/* 4. Cash-Flow Forecast */}
               <button
                 onClick={() => alert("Exporting Cash-Flow Forecast...")}
-                className="h-11 px-4 rounded-2xl bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] hover:border-slate-600 text-slate-200 font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95"
+                className="w-full h-12 px-4 rounded-2xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-slate-500 text-slate-200 font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
               >
-                <TrendingUp className="w-4 h-4 text-slate-400" />
-                <span>Cash-Flow Forecast</span>
+                <div className="flex items-center gap-2.5">
+                  <TrendingUp className="w-4 h-4 text-slate-400" />
+                  <span>Cash-Flow Forecast</span>
+                </div>
+                <span className="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">Forecast</span>
               </button>
             </div>
           </div>
@@ -1380,13 +1397,20 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           {/* Bottom Save Budget Action Button (Global Design System Primary) */}
           <div className="flex justify-center pt-1">
             <button
-              onClick={() => alert("Budget saved successfully!")}
+              onClick={() => showToast("Budget saved successfully!")}
               className="h-11 px-8 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-blue-600/30 border border-blue-500/30 transition-all cursor-pointer active:scale-95"
             >
               <Save className="w-4 h-4 text-white" />
               <span>Save Budget</span>
             </button>
           </div>
+        </div>
+      )}
+
+      {toastMessage && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#091122]/95 border border-[#2563EB]/40 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold text-white animate-fade-in">
+          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <span>{toastMessage}</span>
         </div>
       )}
     </div>

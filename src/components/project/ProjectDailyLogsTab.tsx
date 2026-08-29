@@ -9,13 +9,13 @@ import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectDailyLogsTabProps {
   project: Project;
-  dailyLogs: DailyLogItem[];
+  dailyLogs?: DailyLogItem[];
   onAddDailyLog?: (log: DailyLogItem) => void;
 }
 
 export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
   project,
-  dailyLogs,
+  dailyLogs = project.dailyLogs || [],
   onAddDailyLog
 }) => {
   const [selectedLogId, setSelectedLogId] = useState<string>(dailyLogs[0]?.id || '');

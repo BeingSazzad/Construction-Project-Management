@@ -45,12 +45,13 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
   const atRiskProjects = projects.filter(p => p.status === 'On Hold' || p.status === 'At Risk' || p.status === 'Delayed');
   
   const inProgressTasks = tasks.length > 0 
-    ? tasks.filter(t => t.status === 'In Progress' || t.status === 'In Review').length 
+    ? tasks.filter(t => t.status === 'In Progress' || (t.status as string) === 'In Review').length 
     : 4;
   const dueTodayTasks = 2;
   const completedTasks = tasks.length > 0 
     ? tasks.filter(t => t.status === 'Completed').length 
     : 6;
+  const companyName = currentUser?.company || 'Avery & Marsh Construction';
 
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">

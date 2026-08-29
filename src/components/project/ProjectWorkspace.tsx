@@ -14,6 +14,7 @@ import { ProjectPhotosTab } from './ProjectPhotosTab';
 import { ProjectDocumentsTab } from './ProjectDocumentsTab';
 import { ProjectTeamTab } from './ProjectTeamTab';
 import { ProjectReportsTab } from './ProjectReportsTab';
+import { ProjectScheduleTab } from './ProjectScheduleTab';
 import { LattiAssistant } from '../ai/LattiAssistant';
 import { 
   Layers, DollarSign, CheckSquare, 
@@ -168,7 +169,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
       {/* Main Workspace Body Content */}
       <div className="flex-1 overflow-y-auto">
-        {activeTab === 'overview' && (
+        {(activeTab === 'overview' || !['daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule', 'milestones'].includes(activeTab)) && (
           <ProjectOverviewTab
             project={project}
             tasks={tasks}
@@ -197,7 +198,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
                   temperature: '78°F / 25°C',
                   windSpeed: '6 mph SW',
                   precipitation: '0%',
-                  siteCondition: 'Dry & Clear'
+                  siteCondition: 'Dry'
                 },
                 totalHeadcount: 24,
                 crews: [
@@ -219,7 +220,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {activeTab === 'budget' && (
+        {(activeTab === 'budget' || activeTab === 'budgets') && (
           <ProjectBudgetTab
             project={project}
             categories={categories}

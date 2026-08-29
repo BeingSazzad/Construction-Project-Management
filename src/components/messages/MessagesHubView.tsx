@@ -4,7 +4,7 @@ import {
   Hash, Search, ArrowLeft, Send, Plus, Sparkles, X, 
   Calendar, CheckCheck, Paperclip, Check, UserPlus,
   Users, ChevronRight, Clock, ShieldCheck, AlertTriangle,
-  MoreVertical, Bell, BellOff, Pin, Trash2
+  MoreVertical, Bell, BellOff, Pin, Trash2, FileText
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
@@ -146,9 +146,36 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
     );
   };
 
+  // File attachment state
+  const [pendingFile, setPendingFile] = useState<{
+    name: string;
+    url: string;
+    type: 'image' | 'document' | 'file';
+    size: string;
+  } | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isImage = file.type.startsWith('image/');
+    const fileUrl = URL.createObjectURL(file);
+    const fileSizeMb = (file.size / (1024 * 1024)).toFixed(1);
+    const sizeStr = fileSizeMb === '0.0' ? `${(file.size / 1024).toFixed(0)} KB` : `${fileSizeMb} MB`;
+
+    setPendingFile({
+      name: file.name,
+      url: fileUrl,
+      type: isImage ? 'image' : 'document',
+      size: sizeStr
+    });
+  };
+
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || !selectedDisc) return;
+    if ((!inputText.trim() && !pendingFile) || !selectedDisc) return;
 
     const newMsg: ProjectChatMessage = {
       id: `msg-${Date.now()}`,
@@ -158,17 +185,23 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
       senderName: currentUser.name,
       senderRole: currentUser.roleTitle || 'Owner',
       senderAvatar: currentUser.avatar,
-      text: inputText.trim(),
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      text: inputText.trim() || (pendingFile ? `Shared ${pendingFile.name}` : ''),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      attachmentUrl: pendingFile?.url,
+      attachmentName: pendingFile?.name,
+      attachmentType: pendingFile?.type,
+      attachmentSize: pendingFile?.size
     };
 
     onSendMessage(newMsg);
 
+    const summaryText = inputText.trim() || `📎 ${pendingFile?.name || 'Attachment'}`;
     setDiscussions(prev => prev.map(d => 
-      d.id === selectedDisc.id ? { ...d, lastMessage: inputText.trim(), timestamp: 'Just now' } : d
+      d.id === selectedDisc.id ? { ...d, lastMessage: summaryText, timestamp: 'Just now' } : d
     ));
 
     setInputText('');
+    setPendingFile(null);
   };
 
   const handleCreateDiscussion = (e: React.FormEvent) => {
@@ -607,15 +640,56 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                     <span className="text-[12px] font-bold text-slate-300">{isMe ? 'You' : m.senderName}</span>
                     <span className="text-[10px] text-slate-500">{m.timestamp}</span>
                   </div>
-                  <div
-                    className={`p-3 rounded-2xl text-xs leading-relaxed shadow-md ${
-                      isMe
-                        ? 'bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white rounded-tr-sm shadow-blue-900/30'
-                        : 'bg-[#0E172A] border border-[#1E2C48] text-slate-200 rounded-tl-sm'
-                    }`}
-                  >
-                    {m.text}
-                  </div>
+                  {m.text && (
+                    <div
+                      className={`p-3 rounded-2xl text-xs leading-relaxed shadow-md ${
+                        isMe
+                          ? 'bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white rounded-tr-sm shadow-blue-900/30'
+                          : 'bg-[#0E172A] border border-[#1E2C48] text-slate-200 rounded-tl-sm'
+                      }`}
+                    >
+                      {m.text}
+                    </div>
+                  )}
+
+                  {/* Attachment rendering */}
+                  {m.attachmentUrl && (
+                    <div className="mt-1">
+                      {m.attachmentType === 'image' ? (
+                        <div className="relative group overflow-hidden rounded-2xl border border-[#1E2E4A] max-w-[220px] shadow-lg">
+                          <img
+                            src={m.attachmentUrl}
+                            alt={m.attachmentName || 'Photo Attachment'}
+                            className="w-full max-h-[160px] object-cover transition-transform group-hover:scale-105"
+                          />
+                          <div className="p-2 bg-[#070D1A]/90 backdrop-blur-sm text-[10px] text-slate-300 font-medium truncate border-t border-[#1E2E4A] flex items-center justify-between">
+                            <span className="truncate">{m.attachmentName || 'Photo'}</span>
+                            {m.attachmentSize && <span className="text-slate-400 font-bold ml-1">{m.attachmentSize}</span>}
+                          </div>
+                        </div>
+                      ) : (
+                        <a
+                          href={m.attachmentUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-[#091122] border border-[#1E2E4A] hover:border-blue-500/50 text-xs text-white transition-all shadow-md active:scale-95 group max-w-[240px]"
+                        >
+                          <div className="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center flex-shrink-0">
+                            <FileText className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                              {m.attachmentName || 'Document'}
+                            </p>
+                            {m.attachmentSize && (
+                              <p className="text-[10px] text-slate-400 font-medium mt-0.5">{m.attachmentSize}</p>
+                            )}
+                          </div>
+                        </a>
+                      )}
+                    </div>
+                  )}
+
                   {isMe && (
                     <div className="flex items-center gap-1 pr-1">
                       <CheckCheck className="w-3.5 h-3.5 text-blue-400" />
@@ -632,10 +706,54 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
 
         {/* Sticky Message Input Composer */}
         <div className="sticky bottom-0 z-20 p-3 bg-[#070A12]/95 backdrop-blur-md border-t border-[#142036]">
+          {/* File Attachment Preview Bar */}
+          {pendingFile && (
+            <div className="flex items-center justify-between p-2 mb-2 bg-[#091122] border border-[#1E2E4A] rounded-2xl text-xs text-slate-200 animate-fade-in">
+              <div className="flex items-center gap-2.5 min-w-0">
+                {pendingFile.type === 'image' ? (
+                  <img src={pendingFile.url} alt="Preview" className="w-9 h-9 rounded-xl object-cover border border-[#1E2E4A] flex-shrink-0" />
+                ) : (
+                  <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-4.5 h-4.5" />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-white truncate">{pendingFile.name}</p>
+                  <p className="text-[10px] text-slate-400 font-semibold">{pendingFile.size}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPendingFile(null)}
+                className="w-7 h-7 rounded-xl bg-[#141F33] hover:bg-[#1E2E4A] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                title="Remove attachment"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
           <form onSubmit={handleSend} className="flex items-center gap-2">
             <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx,.xlsx,.dwg"
+            />
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-11 h-11 rounded-2xl bg-[#090E1A] border border-[#1E2E4A] hover:border-blue-500/60 text-blue-400 hover:text-blue-300 flex items-center justify-center cursor-pointer transition-all flex-shrink-0 active:scale-95 shadow-sm"
+              title="Attach File, Photo or Document"
+            >
+              <Paperclip className="w-4 h-4 stroke-[2.5]" />
+            </button>
+
+            <input
               type="text"
-              placeholder="Type message in project channel..."
+              placeholder={pendingFile ? "Add a caption or send file..." : "Type message in project channel..."}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               className="flex-1 h-11 bg-[#090E1A] border border-[#1E2E4A] focus:border-blue-500/70 rounded-2xl px-4 text-xs text-white outline-none placeholder-slate-500 transition-all"
@@ -643,7 +761,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
 
             <button
               type="submit"
-              disabled={!inputText.trim()}
+              disabled={!inputText.trim() && !pendingFile}
               className="w-11 h-11 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-30 disabled:hover:bg-[#2563EB] text-white flex items-center justify-center cursor-pointer shadow-lg shadow-blue-500/30 active:scale-95 transition-all flex-shrink-0"
             >
               <Send className="w-4 h-4" />

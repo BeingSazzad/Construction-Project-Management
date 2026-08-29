@@ -40,11 +40,11 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
   const [cityState, setCityState] = useState('');
   const [type, setType] = useState<string>(PROJECT_TYPES[0]);
   const [pmName, setPmName] = useState(AVAILABLE_PMS[0].name);
-  const [totalBudget, setTotalBudget] = useState('3500000');
-  const [targetEndDate, setTargetEndDate] = useState('2026-06-30');
+  const [totalBudget, setTotalBudget] = useState('');
+  const [targetEndDate, setTargetEndDate] = useState('');
   const [description, setDescription] = useState('');
-  const [masterCode, setMasterCode] = useState('1234');
-  const [thumbnail, setThumbnail] = useState<string>(DEFAULT_PRESET_PHOTOS[0].url);
+  const [masterCode, setMasterCode] = useState('');
+  const [thumbnail, setThumbnail] = useState<string>('');
 
   const isValid = name.trim().length > 0;
 
@@ -66,12 +66,12 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
     if (!isValid) return;
 
     const pmObj = AVAILABLE_PMS.find(p => p.name === pmName) || AVAILABLE_PMS[0];
-    const budgetNum = Number(totalBudget) || 3500000;
+    const budgetNum = Number(totalBudget) || 0;
 
     onCreate({
       name: name.trim(),
-      code: `PRJ-${Math.floor(1000 + Math.random() * 9000)}`,
-      location: address.trim() || '450 Waterfront Blvd',
+      code: masterCode.trim() ? `PRJ-${masterCode.trim()}` : `PRJ-${Math.floor(1000 + Math.random() * 9000)}`,
+      location: address.trim() || 'Site Address Pending',
       cityState: cityState.trim() || (address.includes(',') ? address.split(',')[1]?.trim() || 'Austin, TX' : 'Austin, TX'),
       status: 'Planning',
       progress: 0,
@@ -140,45 +140,75 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
               Project Cover Photo
             </label>
-            <div className="h-32 w-full relative rounded-2xl overflow-hidden border border-[#142036] bg-[#050811] group">
-              <img
-                src={thumbnail}
-                alt="Project Thumbnail"
-                className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center gap-2">
-                <label className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95">
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Upload Image</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </label>
+            {thumbnail ? (
+              <div className="h-32 w-full relative rounded-2xl overflow-hidden border border-[#142036] bg-[#050811] group">
+                <img
+                  src={thumbnail}
+                  alt="Project Thumbnail"
+                  className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center gap-2">
+                  <label className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Change Image</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setThumbnail('')}
+                    className="px-3 py-1.5 rounded-xl bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <label className="h-28 w-full rounded-2xl border-2 border-dashed border-[#1A2744] hover:border-blue-500/40 bg-[#060B17] flex flex-col items-center justify-center gap-2 cursor-pointer group transition-all">
+                <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Upload className="w-4 h-4" />
+                </div>
+                <div className="text-center">
+                  <span className="text-xs font-bold text-blue-400 group-hover:text-blue-300">
+                    Upload Cover Photo
+                  </span>
+                  <p className="text-[10px] text-slate-500 mt-0.5 font-medium">PNG, JPG or choose a preset below (Optional)</p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            )}
 
             {/* Quick Preset Selector */}
-            <div className="grid grid-cols-4 gap-1.5 mt-2">
-              {DEFAULT_PRESET_PHOTOS.map((p, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setThumbnail(p.url)}
-                  className={`relative h-11 rounded-lg overflow-hidden border transition-all cursor-pointer ${
-                    thumbnail === p.url ? 'border-blue-500 ring-2 ring-blue-500/30' : 'border-[#142036] opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <img src={p.url} alt={p.label} className="w-full h-full object-cover" />
-                  {thumbnail === p.url && (
-                    <div className="absolute inset-0 bg-blue-600/50 flex items-center justify-center">
-                      <Check className="w-3 h-3 text-white stroke-[3]" />
-                    </div>
-                  )}
-                </button>
-              ))}
+            <div className="mt-2">
+              <p className="text-[10px] text-slate-500 font-medium mb-1.5">Or select a preset:</p>
+              <div className="grid grid-cols-4 gap-1.5">
+                {DEFAULT_PRESET_PHOTOS.map((p, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setThumbnail(thumbnail === p.url ? '' : p.url)}
+                    className={`relative h-11 rounded-lg overflow-hidden border transition-all cursor-pointer ${
+                      thumbnail === p.url ? 'border-blue-500 ring-2 ring-blue-500/30' : 'border-[#142036] opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={p.url} alt={p.label} className="w-full h-full object-cover" />
+                    {thumbnail === p.url && (
+                      <div className="absolute inset-0 bg-blue-600/50 flex items-center justify-center">
+                        <Check className="w-3 h-3 text-white stroke-[3]" />
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -279,7 +309,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
                 type="number"
                 value={totalBudget}
                 onChange={(e) => setTotalBudget(e.target.value)}
-                placeholder="3500000"
+                placeholder="e.g. 2500000"
                 className={inputClass}
               />
             </div>
@@ -301,15 +331,14 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
 
             <div>
               <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
-                Master Code (4 digits) *
+                Master Code (Optional)
               </label>
               <input
                 type="text"
                 maxLength={4}
-                required
                 value={masterCode}
                 onChange={(e) => setMasterCode(e.target.value.replace(/\D/g, ''))}
-                placeholder="1234"
+                placeholder="e.g. 1042"
                 className={inputClass}
               />
             </div>

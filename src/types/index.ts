@@ -358,6 +358,9 @@ export interface ProjectChatMessage {
   text: string;
   timestamp: string;
   attachmentUrl?: string;
+  attachmentName?: string;
+  attachmentType?: 'image' | 'document' | 'file';
+  attachmentSize?: string;
 }
 
 export type CalendarEventType = 'Inspection' | 'Start Date' | 'Milestone' | 'Meeting' | 'Delivery' | 'Other';
