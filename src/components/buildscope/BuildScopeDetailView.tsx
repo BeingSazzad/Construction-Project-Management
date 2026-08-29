@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   ArrowLeft, ArrowRight, Save, Upload, FileText, CheckCircle2, AlertTriangle,
   Search, Plus, Trash2, ChevronDown, ToggleLeft, ToggleRight,
-  Download, Send, Info, Building2, Layers, ShieldCheck, Sparkles
+  Download, Send, Info, Building2, Layers, ShieldCheck, Sparkles, X, ChevronRight, Check
 } from 'lucide-react';
 import { BuildScopeAnalysisCard } from './BuildScopeView';
 
@@ -113,6 +113,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
   const [qtyTradeFilter, setQtyTradeFilter] = useState('All trades');
   const [qtyConfFilter, setQtyConfFilter] = useState('All conf.');
   const [laborSearch, setLaborSearch] = useState('');
+  const [selectedQtyItem, setSelectedQtyItem] = useState<QuantityItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -207,15 +208,30 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
   // ─── ACTION HANDLERS ───
   const handleToggleQuantity = (id: string) => {
-    setQuantities(prev => prev.map(item => item.id === id ? { ...item, approved: !item.approved } : item));
+    setQuantities(prev => prev.map(item => {
+      if (item.id === id) {
+        const updated = { ...item, approved: !item.approved };
+        setSelectedQtyItem(curr => (curr && curr.id === id ? updated : curr));
+        return updated;
+      }
+      return item;
+    }));
   };
 
   const handleDeleteQuantity = (id: string) => {
     setQuantities(prev => prev.filter(item => item.id !== id));
+    setSelectedQtyItem(curr => (curr && curr.id === id ? null : curr));
   };
 
   const handleUpdateQuantityField = (id: string, field: keyof QuantityItem, value: any) => {
-    setQuantities(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+    setQuantities(prev => prev.map(item => {
+      if (item.id === id) {
+        const updated = { ...item, [field]: value };
+        setSelectedQtyItem(curr => (curr && curr.id === id ? updated : curr));
+        return updated;
+      }
+      return item;
+    }));
   };
 
   const handleToggleLabor = (id: string) => {
@@ -921,22 +937,21 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
           </button>
         </div>
 
-        {/* Quantities Table in horizontal scrollable wrapper */}
+        {/* Quantities Table in sleek compact wrapper */}
         <div className="w-full overflow-x-auto rounded-2xl border border-[#142036] bg-[#060B17]/60">
-          <div className="min-w-[690px]">
-            {/* Table Header matching web screenshot (Compact) */}
-            <div className="grid grid-cols-[190px_52px_48px_52px_95px_65px_110px_78px] items-center px-3.5 py-2.5 border-b border-[#142036] text-[10px] font-semibold text-slate-500">
+          <div className="min-w-[560px]">
+            {/* Table Header */}
+            <div className="grid grid-cols-[190px_55px_48px_50px_90px_65px_62px] items-center px-3.5 py-2 border-b border-[#142036] text-[10px] font-semibold text-slate-500">
               <div>Trade / Scope</div>
               <div className="text-center">Qty</div>
               <div className="text-center">Unit</div>
-              <div className="text-center">Waste%</div>
-              <div className="text-left pl-1.5">Ref / Loc</div>
+              <div className="text-center">Waste</div>
+              <div className="text-left pl-1">Ref / Loc</div>
               <div className="text-center">Conf.</div>
-              <div className="text-left pl-1.5">Notes</div>
               <div className="text-center">Approve</div>
             </div>
 
-            {/* Table Rows */}
+            {/* Table Rows (High-Density & Clean) */}
             <div className="divide-y divide-[#142036]/60">
               {filteredQuantities.length === 0 ? (
                 <div className="p-8 text-center text-slate-500 text-xs font-semibold">No items match your search.</div>
@@ -944,52 +959,52 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                 filteredQuantities.map(item => (
                   <div
                     key={item.id}
-                    className="grid grid-cols-[190px_52px_48px_52px_95px_65px_110px_78px] items-center px-3.5 py-2.5 hover:bg-[#0A1328]/40 transition-colors"
+                    onClick={() => setSelectedQtyItem(item)}
+                    className="grid grid-cols-[190px_55px_48px_50px_90px_65px_62px] items-center px-3.5 py-2 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
                   >
-                    {/* Trade / Scope (1-line title, max 2-line description) */}
+                    {/* Trade / Scope (1-line title, clean subline) */}
                     <div className="pr-2 min-w-0">
-                      <p className="text-xs font-bold text-white truncate" title={item.name}>
+                      <p className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors" title={item.name}>
                         {item.name}
                       </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-2 leading-tight">
-                        <span className="text-slate-300 font-medium">{item.trade} · {item.scope}</span>
-                        {item.info ? ` — ${item.info}` : ''}
+                      <p className="text-[10px] text-slate-400 font-medium truncate mt-0.5">
+                        {item.trade} · {item.scope}
                       </p>
                     </div>
 
                     {/* Qty Input */}
-                    <div className="flex justify-center">
+                    <div className="flex justify-center" onClick={e => e.stopPropagation()}>
                       <input
                         type="number"
                         value={item.qty}
                         onChange={e => handleUpdateQuantityField(item.id, 'qty', parseFloat(e.target.value) || 0)}
-                        className="w-12 h-7 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
+                        className="w-12 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
                       />
                     </div>
 
                     {/* Unit Input */}
-                    <div className="flex justify-center">
+                    <div className="flex justify-center" onClick={e => e.stopPropagation()}>
                       <input
                         type="text"
                         value={item.unit}
                         onChange={e => handleUpdateQuantityField(item.id, 'unit', e.target.value)}
-                        className="w-11 h-7 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-1 text-[11px] font-bold text-slate-200 text-center outline-none"
+                        className="w-10 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-0.5 text-[11px] font-bold text-slate-200 text-center outline-none"
                       />
                     </div>
 
                     {/* Waste% Input */}
-                    <div className="flex justify-center">
+                    <div className="flex justify-center" onClick={e => e.stopPropagation()}>
                       <input
                         type="number"
                         value={item.waste}
                         onChange={e => handleUpdateQuantityField(item.id, 'waste', parseFloat(e.target.value) || 0)}
-                        className="w-12 h-7 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
+                        className="w-10 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-0.5 text-xs font-bold text-white text-center outline-none tabular-nums"
                       />
                     </div>
 
                     {/* Ref / Loc */}
-                    <div className="pl-1.5 pr-1.5 min-w-0">
-                      <p className="text-[10px] text-slate-300 font-medium truncate leading-tight">{item.refLoc.split('·')[0] || item.refLoc}</p>
+                    <div className="pl-1 pr-1 min-w-0">
+                      <p className="text-[10px] text-slate-300 font-medium truncate">{item.refLoc.split('·')[0] || item.refLoc}</p>
                       <p className="text-[9px] text-slate-500 truncate">{item.refLoc.split('·')[1] || ''}</p>
                     </div>
 
@@ -1005,19 +1020,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                       </span>
                     </div>
 
-                    {/* Notes Input */}
-                    <div className="pl-1.5 pr-1.5">
-                      <input
-                        type="text"
-                        value={item.notes || ''}
-                        onChange={e => handleUpdateQuantityField(item.id, 'notes', e.target.value)}
-                        placeholder="note"
-                        className="w-full h-7 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500/50 rounded-lg px-2 text-[10px] text-slate-200 placeholder-slate-600 outline-none"
-                      />
-                    </div>
-
-                    {/* Approve Toggle & Delete */}
-                    <div className="flex items-center justify-center gap-1.5">
+                    {/* Approve Status & Open Details */}
+                    <div className="flex items-center justify-center gap-1.5" onClick={e => e.stopPropagation()}>
                       <button 
                         onClick={() => handleToggleQuantity(item.id)} 
                         className="cursor-pointer"
@@ -1029,11 +1033,11 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                         }
                       </button>
                       <button 
-                        onClick={() => handleDeleteQuantity(item.id)} 
-                        className="text-slate-600 hover:text-rose-400 p-0.5 cursor-pointer transition-colors"
-                        title="Delete"
+                        onClick={() => setSelectedQtyItem(item)} 
+                        className="text-slate-600 hover:text-blue-400 p-0.5 cursor-pointer transition-colors"
+                        title="View details & notes"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 transition-colors" />
                       </button>
                     </div>
                   </div>
@@ -1042,6 +1046,162 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             </div>
           </div>
         </div>
+
+        {/* ─── TAKEOFF ITEM DETAIL & ACTION DRAWER (MODAL) ─── */}
+        {selectedQtyItem && (
+          <div 
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-fade-in"
+            onClick={() => setSelectedQtyItem(null)}
+          >
+            <div 
+              className="w-full max-w-[440px] bg-[#070C18] border border-[#142036] rounded-t-3xl sm:rounded-3xl p-5 flex flex-col gap-4 max-h-[88vh] overflow-y-auto shadow-2xl shadow-blue-950/40 text-slate-100 animate-in slide-in-from-bottom duration-200"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Mobile Grab Handle */}
+              <div className="w-10 h-1 rounded-full bg-slate-700 mx-auto -mt-1 sm:hidden" />
+
+              {/* Modal Header */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      {selectedQtyItem.trade} · {selectedQtyItem.scope}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                      selectedQtyItem.confidence === 'High' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                      selectedQtyItem.confidence === 'Moderate' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+                      selectedQtyItem.confidence === 'Allowance' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' :
+                      'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                    }`}>
+                      {selectedQtyItem.confidence} Confidence
+                    </span>
+                  </div>
+                  <h3 className="text-base font-extrabold text-white leading-tight">
+                    {selectedQtyItem.name}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setSelectedQtyItem(null)}
+                  className="w-8 h-8 rounded-full bg-[#0A1328] border border-[#1A2744] flex items-center justify-center text-slate-400 hover:text-white cursor-pointer flex-shrink-0 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* AI Reasoning & Heuristics Box */}
+              <div className="p-3.5 rounded-2xl bg-blue-950/20 border border-blue-500/25 flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                  <h4 className="text-[11px] font-bold text-blue-300">AI Takeoff Insight & Heuristics</h4>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {selectedQtyItem.info || "Derived directly from structural and foundation plan schedules with standard building code tolerances."}
+                </p>
+                <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-400">
+                  <span className="font-semibold text-slate-500">Plan Reference:</span>
+                  <span className="text-slate-300 font-medium">{selectedQtyItem.refLoc}</span>
+                </div>
+              </div>
+
+              {/* Editable Specs Grid */}
+              <div className="grid grid-cols-3 gap-2.5">
+                <div className="p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-slate-400">Quantity</label>
+                  <input
+                    type="number"
+                    value={selectedQtyItem.qty}
+                    onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'qty', parseFloat(e.target.value) || 0)}
+                    className="w-full bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2 py-1 text-sm font-black text-white outline-none tabular-nums"
+                  />
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-slate-400">Unit</label>
+                  <input
+                    type="text"
+                    value={selectedQtyItem.unit}
+                    onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'unit', e.target.value)}
+                    className="w-full bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2 py-1 text-sm font-black text-white outline-none"
+                  />
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-slate-400">Waste %</label>
+                  <input
+                    type="number"
+                    value={selectedQtyItem.waste}
+                    onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'waste', parseFloat(e.target.value) || 0)}
+                    className="w-full bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2 py-1 text-sm font-black text-white outline-none tabular-nums"
+                  />
+                </div>
+              </div>
+
+              {/* Reference & Location Field */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-semibold text-slate-400">Plan Ref / Sheet Location</label>
+                <input
+                  type="text"
+                  value={selectedQtyItem.refLoc}
+                  onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'refLoc', e.target.value)}
+                  className="w-full h-9 bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-xl px-3 text-xs text-white outline-none font-medium"
+                  placeholder="e.g. S1 · Main House Foundation"
+                />
+              </div>
+
+              {/* Estimator Notes Section */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-semibold text-slate-400">Estimator Notes & Comments</label>
+                <textarea
+                  value={selectedQtyItem.notes || ''}
+                  onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'notes', e.target.value)}
+                  rows={3}
+                  placeholder="Add sub-trade requirements, field conditions, or audit remarks..."
+                  className="w-full bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-600 outline-none resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Action Footer */}
+              <div className="flex items-center gap-2 pt-2 border-t border-[#142036]">
+                {/* Delete Button */}
+                <button
+                  onClick={() => {
+                    if (confirm('Are you sure you want to delete this scope item?')) {
+                      handleDeleteQuantity(selectedQtyItem.id);
+                    }
+                  }}
+                  className="h-10 px-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                  title="Delete item"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+
+                {/* Approve / Reject Toggle Button */}
+                <button
+                  onClick={() => {
+                    handleToggleQuantity(selectedQtyItem.id);
+                  }}
+                  className={`flex-1 h-10 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all shadow-lg ${
+                    selectedQtyItem.approved
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/20'
+                      : 'bg-[#0E1B30] hover:bg-[#152744] border border-[#1A2744] text-slate-200'
+                  }`}
+                >
+                  {selectedQtyItem.approved ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-white" />
+                      <span>Approved (Click to Unapprove)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-400" />
+                      <span>Approve Scope Item</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
