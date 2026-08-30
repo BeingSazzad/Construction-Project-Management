@@ -81,7 +81,7 @@ import { ImportBudgetModal } from './components/modals/ImportBudgetModal';
 import { EditProjectModal } from './components/modals/EditProjectModal';
 import { CreateChangeOrderModal } from './components/modals/CreateChangeOrderModal';
 import { NotificationsView } from './components/notifications/NotificationsView';
-import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp, Layers, Landmark, FileCheck, FileSpreadsheet } from 'lucide-react';
+import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp, Layers, Landmark, FileCheck, FileSpreadsheet, ChevronRight } from 'lucide-react';
 
 export function App() {
   // Navigation & View State
@@ -980,22 +980,18 @@ export function App() {
             <div className="w-10 h-1 rounded-full bg-slate-600/50 mx-auto -mt-1 mb-1" />
 
             {/* Header matching user's design */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
-              <div>
-                <h3 className="text-base font-bold text-white tracking-tight">Create New</h3>
-                <p className="text-xs text-slate-400 font-medium mt-0.5">Select an enterprise construction action</p>
-              </div>
+            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+              <h3 className="text-sm font-bold text-white tracking-tight">Create New</h3>
               <button
                 onClick={() => setIsQuickActionSheetOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#0E1A33] border border-[#1E293B] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all"
+                className="w-7 h-7 rounded-full bg-[#0E1A33] border border-[#1E293B] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all text-xs"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* Enterprise Construction Actions */}
             {/* Role-Tailored Quick Actions */}
-            <div className="flex flex-col gap-2.5 pt-1">
+            <div className="flex flex-col gap-2 pt-0.5">
               {currentRole === 'finance' ? (
                 <>
                   {/* F1. Request Lender Draw */}
@@ -1004,15 +1000,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsCreateDrawOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-blue-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Landmark className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Landmark className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-blue-400 transition-colors">Request Lender Draw (AIA G702)</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Package progress billing, retainage & inspection</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-blue-400 transition-colors">Request Lender Draw (AIA G702)</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* F2. Process Pay Application */}
@@ -1021,15 +1017,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsApprovePayAppOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-purple-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-purple-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <DollarSign className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <DollarSign className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-purple-400 transition-colors">Process Pay Application</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Audit subcontractor SOV billing & 10% retainage</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-purple-400 transition-colors">Process Pay Application</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* F3. Record Lien Waiver */}
@@ -1038,15 +1034,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsRecordLienWaiverOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-emerald-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-emerald-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <FileCheck className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <FileCheck className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Record Lien Waiver</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Verify conditional & unconditional legal release</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Record Lien Waiver</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* F4. Import / Master Budget */}
@@ -1055,15 +1051,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsImportBudgetOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-cyan-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-cyan-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <FileSpreadsheet className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <FileSpreadsheet className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-cyan-400 transition-colors">Import CSI Master Budget</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">CSV import with auto-reconciled cost codes</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-cyan-400 transition-colors">Import CSI Master Budget</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* F5. Latti Deal Analyzer */}
@@ -1072,15 +1068,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsDealAnalyzerOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-amber-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-amber-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Sparkles className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Sparkles className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">Underwrite Pro-Forma Deal</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Calculate IRR, construction cashflow & Deal Score</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">Underwrite Pro-Forma Deal</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors flex-shrink-0" />
                   </button>
                 </>
               ) : (
@@ -1091,15 +1087,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsCreateProjectOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-blue-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-blue-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <FolderKanban className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <FolderKanban className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-blue-400 transition-colors">New Construction Project</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Initialize commercial or custom home site</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-blue-400 transition-colors">New Construction Project</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* 2. Project Budget */}
@@ -1108,15 +1104,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsCreateBudgetOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-purple-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-purple-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <DollarSign className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <DollarSign className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-purple-400 transition-colors">Project Budget</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Master CSI ledger with vendor cost allocations</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-purple-400 transition-colors">Project Budget</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* 3. New Construction Task */}
@@ -1125,15 +1121,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsTaskTypeSelectOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-amber-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-amber-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <CheckSquare className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <CheckSquare className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">New Construction Task</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Assign milestones, due dates and subtasks</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">New Construction Task</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* 4. Latti Deal Analyzer™ */}
@@ -1142,15 +1138,15 @@ export function App() {
                       setIsQuickActionSheetOpen(false);
                       setIsDealAnalyzerOpen(true);
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-emerald-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-emerald-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Sparkles className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Sparkles className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Latti Deal Analyzer™</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Evaluate acquisition ARV, debt & Deal Score</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Latti Deal Analyzer™</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
                   </button>
 
                   {/* 5. BuildScope AI Takeoff */}
@@ -1160,15 +1156,15 @@ export function App() {
                       setActiveProject(null);
                       setActiveTab('buildscope');
                     }}
-                    className="p-3.5 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-sky-500/40 rounded-2xl flex items-center gap-3.5 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-sky-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Layers className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Layers className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-bold text-white leading-tight group-hover:text-sky-400 transition-colors">BuildScope AI Takeoff</h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-normal">Auto-extract bill of quantities & plan review</p>
+                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-sky-400 transition-colors">BuildScope AI Takeoff</h4>
                     </div>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 transition-colors flex-shrink-0" />
                   </button>
                 </>
               )}
