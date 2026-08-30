@@ -1335,16 +1335,11 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               placeholder="Search materials..."
             />
           </div>
-<<<<<<< HEAD
-          <button className="h-10 px-4 bg-[#060B17] border border-[#142036] hover:border-blue-500/30 rounded-xl text-xs font-semibold text-slate-300 transition-colors cursor-pointer flex-shrink-0">
-            Re-Price
-=======
           <button 
             onClick={() => showToast("Market prices refreshed from local supplier indexes!")}
             className="h-8 px-2.5 bg-[#060B17] border border-[#142036] hover:border-blue-500/30 rounded-xl text-[10px] font-bold text-slate-400 transition-colors cursor-pointer flex-shrink-0"
           >
             Re-price
->>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
           </button>
           <button 
             onClick={handleOpenAddMaterial}
@@ -1356,18 +1351,6 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
         {/* Materials Table in sleek compact wrapper */}
         <div className="w-full overflow-x-auto rounded-2xl border border-[#142036] bg-[#060B17]/60">
-<<<<<<< HEAD
-          <div className="min-w-[860px]">
-            {/* Table Header */}
-            <div className="grid grid-cols-[210px_60px_75px_85px_75px_85px_200px_70px] items-center px-4 py-3 border-b border-[#142036] text-[11px] font-semibold text-slate-400">
-              <div>Material / Scope</div>
-              <div className="text-right">Qty</div>
-              <div className="text-right">Low Unit</div>
-              <div className="text-center">Exp Unit</div>
-              <div className="text-right">High Unit</div>
-              <div className="text-right">Exp Total</div>
-              <div className="pl-4">Source &amp; Supplier</div>
-=======
           <div className="min-w-[480px]">
             {/* Table Header */}
             <div className="grid grid-cols-[180px_60px_70px_75px_55px_30px] items-center px-3.5 py-2 border-b border-[#142036] text-[10px] font-semibold text-slate-500">
@@ -1375,7 +1358,6 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <div className="text-center">Qty</div>
               <div className="text-center">Exp Unit</div>
               <div className="text-right pr-1">Total</div>
->>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
               <div className="text-center">Approve</div>
               <div className="text-center"></div>
             </div>
@@ -1391,18 +1373,6 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   return (
                     <div
                       key={item.id}
-<<<<<<< HEAD
-                      className="grid grid-cols-[210px_60px_75px_85px_75px_85px_200px_70px] items-center px-4 py-3 hover:bg-[#0A1328]/40 transition-colors"
-                    >
-                      {/* Name & Scope */}
-                      <div className="pr-3 min-w-0">
-                        <p className="text-xs font-bold text-white leading-tight truncate">{item.name}</p>
-                        <p className="text-[10px] text-slate-400 mt-0.5 truncate">{item.scope}</p>
-                      </div>
-
-                      {/* Qty */}
-                      <div className="text-right text-xs text-slate-300 font-semibold tabular-nums">
-=======
                       onClick={() => setSelectedMaterialItem(item)}
                       className="grid grid-cols-[180px_60px_70px_75px_55px_30px] items-center px-3.5 py-1.5 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
                     >
@@ -1418,7 +1388,6 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
                       {/* Qty */}
                       <div className="text-center text-xs text-slate-300 font-semibold tabular-nums">
->>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
                         {item.qty}
                       </div>
 
@@ -1427,48 +1396,12 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                         <input
                           type="number"
                           value={item.expUnit}
-<<<<<<< HEAD
-                          onChange={e =>
-                            setMaterialItems(prev =>
-                              prev.map(m =>
-                                m.id === item.id ? { ...m, expUnit: parseFloat(e.target.value) || 0 } : m
-                              )
-                            )
-                          }
-                          className="w-18 h-8 bg-[#060B17] border border-[#1A2E50] focus:border-blue-500 rounded-lg px-2 text-xs font-bold text-white text-center outline-none tabular-nums"
-=======
                           onChange={e => handleUpdateMaterialField(item.id, 'expUnit', parseFloat(e.target.value) || 0)}
                           className="w-13 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
->>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
                         />
                       </div>
 
                       {/* Exp Total */}
-<<<<<<< HEAD
-                      <div className="text-right text-xs font-black text-emerald-400 tabular-nums">
-                        {fmt(rowTotal)}
-                      </div>
-
-                      {/* Source */}
-                      <div className="pl-4 pr-2 min-w-0">
-                        {item.source.split('\n').map((line, idx) => (
-                          <p key={idx} className={`text-[11px] truncate ${idx === 0 ? 'text-slate-300 font-semibold' : 'text-slate-500 font-medium'}`}>
-                            {line}
-                          </p>
-                        ))}
-                      </div>
-
-                      {/* Approve Toggle */}
-                      <div className="flex justify-center items-center">
-                        <button
-                          onClick={() =>
-                            setMaterialItems(prev =>
-                              prev.map(m => (m.id === item.id ? { ...m, approved: !m.approved } : m))
-                            )
-                          }
-                          className="p-1 rounded-lg hover:bg-blue-500/10 cursor-pointer transition-colors"
-                          title={item.approved ? "Approved" : "Approve item"}
-=======
                       <div className="text-right pr-1 text-xs font-black text-emerald-400 tabular-nums">
                         {fmt(rowTotal)}
                       </div>
@@ -1479,7 +1412,6 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                           onClick={() => handleToggleMaterial(item.id)}
                           className="cursor-pointer"
                           title={item.approved ? 'Approved' : 'Click to approve'}
->>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
                         >
                           {item.approved ? (
                             <ToggleRight className="w-5 h-5 text-emerald-400" />
@@ -1511,11 +1443,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             <select
               value={materialQuality}
               onChange={e => setMaterialQuality(e.target.value)}
-<<<<<<< HEAD
-              className="h-8.5 pl-3 pr-8 bg-[#0A1328] border border-[#1A2E50] focus:border-blue-500 rounded-xl text-xs font-semibold text-white outline-none appearance-none cursor-pointer"
-=======
               className="h-8 pl-3 pr-7 bg-[#0A1328] border border-[#1A2E50] rounded-xl text-xs font-medium text-white outline-none appearance-none cursor-pointer"
->>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
             >
               <option value="Standard">Standard</option>
               <option value="Mid-Range">Mid-Range</option>
