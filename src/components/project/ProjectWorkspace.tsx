@@ -101,13 +101,13 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
     if (onSubTabChange) onSubTabChange(tab);
   };
 
-  // Quick Action / Navigation pages that have dedicated views and are accessed directly from Overview
-  const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents', 'daily-logs', 'schedule', 'milestones'].includes(activeTab);
+  // Quick Action / Field Capture pages that have dedicated views and are accessed directly from Overview Quick Actions
+  const isQuickActionPage = ['punch', 'photos', 'documents', 'daily-logs', 'schedule', 'milestones'].includes(activeTab);
 
-  // Core project tabs according to Reference Web Specs (Drawings, Messages, Subcontractors belong in their respective hub/docs)
+  // Core project tabs according to Reference Web Specs (Overview, Tasks, Budget, Team, Reports)
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
-    { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
     { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
     { id: 'team', label: 'Team', icon: Users2 },
     { id: 'reports', label: 'Reports', icon: BarChart3, hideFor: ['field'] },
