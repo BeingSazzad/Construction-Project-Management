@@ -114,6 +114,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
   const [qtyConfFilter, setQtyConfFilter] = useState('All conf.');
   const [laborSearch, setLaborSearch] = useState('');
   const [selectedQtyItem, setSelectedQtyItem] = useState<QuantityItem | null>(null);
+  const [selectedMaterialItem, setSelectedMaterialItem] = useState<MaterialItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -242,27 +243,67 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
     setLaborItems(prev => prev.filter(item => item.id !== id));
   };
 
-  const handleAddMockQuantity = () => {
-    const names = [
-      { name: 'Wood Floor Joists 2x10', trade: 'Framing', scope: 'Flooring', qty: 1500, unit: 'LF', confidence: 'Moderate' as const },
-      { name: 'Double Top Plates', trade: 'Framing', scope: 'Walls', qty: 450, unit: 'LF', confidence: 'High' as const },
-      { name: 'Subfloor Sheathing 3/4"', trade: 'Framing', scope: 'Flooring', qty: 2500, unit: 'SF', confidence: 'Moderate' as const },
-    ];
-    const picked = names[Math.floor(Math.random() * names.length)];
-    const newItem: QuantityItem = {
-      id: `q-${Date.now()}`,
-      name: picked.name,
-      trade: picked.trade,
-      scope: picked.scope,
-      info: 'AI-generated takeoff scope item added manually.',
-      qty: picked.qty,
-      unit: picked.unit,
-      waste: 10,
-      refLoc: 'S2 · Floor layout detail',
-      confidence: picked.confidence,
+  const handleToggleMaterial = (id: string) => {
+    setMaterialItems(prev => prev.map(m => {
+      if (m.id === id) {
+        const updated = { ...m, approved: !m.approved };
+        setSelectedMaterialItem(curr => (curr && curr.id === id ? updated : curr));
+        return updated;
+      }
+      return m;
+    }));
+  };
+
+  const handleDeleteMaterial = (id: string) => {
+    setMaterialItems(prev => prev.filter(m => m.id !== id));
+    setSelectedMaterialItem(curr => (curr && curr.id === id ? null : curr));
+  };
+
+  const handleUpdateMaterialField = (id: string, field: keyof MaterialItem, value: any) => {
+    setMaterialItems(prev => prev.map(m => {
+      if (m.id === id) {
+        const updated = { ...m, [field]: value };
+        setSelectedMaterialItem(curr => (curr && curr.id === id ? updated : curr));
+        return updated;
+      }
+      return m;
+    }));
+  };
+
+  const handleOpenAddMaterial = () => {
+    const newItem: MaterialItem = {
+      id: `m-${Date.now()}`,
+      name: '',
+      scope: 'General Materials',
+      confidence: 'High',
+      qty: '100 ea',
+      lowUnit: 10,
+      expUnit: 15,
+      highUnit: 25,
+      source: 'Builders FirstSource · Regional Supplier Catalog',
       approved: false
     };
-    setQuantities(prev => [...prev, newItem]);
+    setMaterialItems(prev => [newItem, ...prev]);
+    setSelectedMaterialItem(newItem);
+  };
+
+  const handleOpenAddQuantity = () => {
+    const newItem: QuantityItem = {
+      id: `q-${Date.now()}`,
+      name: '',
+      trade: 'Framing',
+      scope: 'General',
+      info: 'Manually added estimator takeoff item.',
+      qty: 100,
+      unit: 'LF',
+      waste: 10,
+      refLoc: 'A1 · Architectural Detail',
+      confidence: 'Moderate',
+      approved: false,
+      notes: ''
+    };
+    setQuantities(prev => [newItem, ...prev]);
+    setSelectedQtyItem(newItem);
   };
 
   const handleAddMockLabor = () => {
@@ -930,10 +971,10 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
           </div>
           <button 
-            onClick={handleAddMockQuantity}
-            className="h-8 px-3 bg-[#060B17] border border-[#142036] rounded-xl text-[10px] font-bold text-slate-400 flex items-center gap-1.5 cursor-pointer hover:border-blue-500/30 transition-colors flex-shrink-0"
+            onClick={handleOpenAddQuantity}
+            className="h-8 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-bold flex items-center gap-1.5 cursor-pointer shadow-sm shadow-blue-500/20 transition-all flex-shrink-0"
           >
-            <Plus className="w-3 h-3" /> Add
+            <Plus className="w-3 h-3" /> Add Scope
           </button>
         </div>
 
@@ -960,14 +1001,14 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   <div
                     key={item.id}
                     onClick={() => setSelectedQtyItem(item)}
-                    className="grid grid-cols-[190px_55px_48px_50px_90px_65px_62px] items-center px-3.5 py-2 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
+                    className="grid grid-cols-[190px_55px_48px_50px_90px_65px_62px] items-center px-3.5 py-1.5 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
                   >
-                    {/* Trade / Scope (1-line title, clean subline) */}
+                    {/* Trade / Scope (1-line title, clean subline with tight spacing) */}
                     <div className="pr-2 min-w-0">
-                      <p className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors" title={item.name}>
-                        {item.name}
+                      <p className="text-xs font-bold text-white truncate leading-none group-hover:text-blue-400 transition-colors" title={item.name || 'Untitled Scope Item'}>
+                        {item.name || <span className="text-slate-500 italic">Untitled Scope Item</span>}
                       </p>
-                      <p className="text-[10px] text-slate-400 font-medium truncate mt-0.5">
+                      <p className="text-[10px] text-slate-400 font-medium truncate leading-none mt-0.5">
                         {item.trade} · {item.scope}
                       </p>
                     </div>
@@ -1060,13 +1101,10 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               {/* Mobile Grab Handle */}
               <div className="w-10 h-1 rounded-full bg-slate-700 mx-auto -mt-1 sm:hidden" />
 
-              {/* Modal Header */}
+              {/* Modal Header with Editable Name & Badges */}
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-md uppercase tracking-wider">
-                      {selectedQtyItem.trade} · {selectedQtyItem.scope}
-                    </span>
+                <div className="min-w-0 flex-1 flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                       selectedQtyItem.confidence === 'High' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                       selectedQtyItem.confidence === 'Moderate' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
@@ -1075,14 +1113,51 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                     }`}>
                       {selectedQtyItem.confidence} Confidence
                     </span>
+                    <span className="text-[10px] font-bold text-slate-400 bg-[#0A1328] border border-[#1A2744] px-2 py-0.5 rounded-md">
+                      Ref: {selectedQtyItem.refLoc.split('·')[0] || 'Takeoff'}
+                    </span>
                   </div>
-                  <h3 className="text-base font-extrabold text-white leading-tight">
-                    {selectedQtyItem.name}
-                  </h3>
+
+                  {/* Editable Name Field */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-semibold text-slate-400">Scope Item Title</label>
+                    <input
+                      type="text"
+                      value={selectedQtyItem.name}
+                      onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'name', e.target.value)}
+                      placeholder="e.g. Continuous Wall Footings 24x12"
+                      className="w-full text-sm font-bold text-white bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-xl px-3 py-2 outline-none"
+                    />
+                  </div>
+
+                  {/* Editable Trade & Scope */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Trade</label>
+                      <input
+                        type="text"
+                        value={selectedQtyItem.trade}
+                        onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'trade', e.target.value)}
+                        placeholder="Trade (e.g. Concrete)"
+                        className="w-full text-xs font-semibold text-slate-200 bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2.5 py-1.5 outline-none"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Scope Category</label>
+                      <input
+                        type="text"
+                        value={selectedQtyItem.scope}
+                        onChange={e => handleUpdateQuantityField(selectedQtyItem.id, 'scope', e.target.value)}
+                        placeholder="Scope (e.g. Foundations)"
+                        className="w-full text-xs font-semibold text-slate-200 bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2.5 py-1.5 outline-none"
+                      />
+                    </div>
+                  </div>
                 </div>
+
                 <button
                   onClick={() => setSelectedQtyItem(null)}
-                  className="w-8 h-8 rounded-full bg-[#0A1328] border border-[#1A2744] flex items-center justify-center text-slate-400 hover:text-white cursor-pointer flex-shrink-0 transition-colors"
+                  className="w-8 h-8 rounded-full bg-[#0A1328] border border-[#1A2744] flex items-center justify-center text-slate-400 hover:text-white cursor-pointer flex-shrink-0 transition-colors mt-1"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1106,7 +1181,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               {/* Editable Specs Grid */}
               <div className="grid grid-cols-3 gap-2.5">
                 <div className="p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold text-slate-400">Quantity</label>
+                  <label className="text-[10px] font-semibold text-slate-400">Base Qty</label>
                   <input
                     type="number"
                     value={selectedQtyItem.qty}
@@ -1134,6 +1209,14 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                     className="w-full bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2 py-1 text-sm font-black text-white outline-none tabular-nums"
                   />
                 </div>
+              </div>
+
+              {/* Net Required Calculation KPI */}
+              <div className="p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-medium">Total Order Qty (incl. {selectedQtyItem.waste}% waste):</span>
+                <span className="font-extrabold text-emerald-400 tabular-nums">
+                  {Math.round(selectedQtyItem.qty * (1 + (selectedQtyItem.waste || 0) / 100)).toLocaleString()} {selectedQtyItem.unit}
+                </span>
               </div>
 
               {/* Reference & Location Field */}
@@ -1241,24 +1324,39 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
           </div>
         </div>
 
-        {/* Search Bar & Re-price Button */}
-        <div className="flex items-center gap-2.5">
+        {/* Search Bar, Re-price, and Add Material */}
+        <div className="flex items-center gap-2">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
             <input
               value={materialSearch}
               onChange={e => setMaterialSearch(e.target.value)}
-              className="w-full h-10 bg-[#060B17] border border-[#142036] rounded-xl pl-9 pr-3 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
+              className="w-full h-8 bg-[#060B17] border border-[#142036] rounded-xl pl-8 pr-3 text-[11px] text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
               placeholder="Search materials..."
             />
           </div>
+<<<<<<< HEAD
           <button className="h-10 px-4 bg-[#060B17] border border-[#142036] hover:border-blue-500/30 rounded-xl text-xs font-semibold text-slate-300 transition-colors cursor-pointer flex-shrink-0">
             Re-Price
+=======
+          <button 
+            onClick={() => showToast("Market prices refreshed from local supplier indexes!")}
+            className="h-8 px-2.5 bg-[#060B17] border border-[#142036] hover:border-blue-500/30 rounded-xl text-[10px] font-bold text-slate-400 transition-colors cursor-pointer flex-shrink-0"
+          >
+            Re-price
+>>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
+          </button>
+          <button 
+            onClick={handleOpenAddMaterial}
+            className="h-8 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-bold flex items-center gap-1.5 cursor-pointer shadow-sm shadow-blue-500/20 transition-all flex-shrink-0"
+          >
+            <Plus className="w-3 h-3" /> Add Material
           </button>
         </div>
 
-        {/* Table in horizontal scrollable wrapper */}
+        {/* Materials Table in sleek compact wrapper */}
         <div className="w-full overflow-x-auto rounded-2xl border border-[#142036] bg-[#060B17]/60">
+<<<<<<< HEAD
           <div className="min-w-[860px]">
             {/* Table Header */}
             <div className="grid grid-cols-[210px_60px_75px_85px_75px_85px_200px_70px] items-center px-4 py-3 border-b border-[#142036] text-[11px] font-semibold text-slate-400">
@@ -1269,13 +1367,23 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <div className="text-right">High Unit</div>
               <div className="text-right">Exp Total</div>
               <div className="pl-4">Source &amp; Supplier</div>
+=======
+          <div className="min-w-[480px]">
+            {/* Table Header */}
+            <div className="grid grid-cols-[180px_60px_70px_75px_55px_30px] items-center px-3.5 py-2 border-b border-[#142036] text-[10px] font-semibold text-slate-500">
+              <div>Material / Scope</div>
+              <div className="text-center">Qty</div>
+              <div className="text-center">Exp Unit</div>
+              <div className="text-right pr-1">Total</div>
+>>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
               <div className="text-center">Approve</div>
+              <div className="text-center"></div>
             </div>
 
-            {/* Table Rows */}
+            {/* Table Rows (High-Density & Clean, Matching Quantities) */}
             <div className="divide-y divide-[#142036]/60">
               {filtered.length === 0 ? (
-                <div className="p-8 text-center text-slate-500 text-xs font-medium">No materials match your search.</div>
+                <div className="p-8 text-center text-slate-500 text-xs font-semibold">No materials match your search.</div>
               ) : (
                 filtered.map(item => {
                   const qtyNum = parseFloat(item.qty) || 1;
@@ -1283,6 +1391,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   return (
                     <div
                       key={item.id}
+<<<<<<< HEAD
                       className="grid grid-cols-[210px_60px_75px_85px_75px_85px_200px_70px] items-center px-4 py-3 hover:bg-[#0A1328]/40 transition-colors"
                     >
                       {/* Name & Scope */}
@@ -1293,19 +1402,32 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
                       {/* Qty */}
                       <div className="text-right text-xs text-slate-300 font-semibold tabular-nums">
+=======
+                      onClick={() => setSelectedMaterialItem(item)}
+                      className="grid grid-cols-[180px_60px_70px_75px_55px_30px] items-center px-3.5 py-1.5 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
+                    >
+                      {/* Name & Scope (Tight spacing, 1-line each) */}
+                      <div className="pr-2 min-w-0">
+                        <p className="text-xs font-bold text-white truncate leading-none group-hover:text-blue-400 transition-colors" title={item.name || 'Untitled Material'}>
+                          {item.name || <span className="text-slate-500 italic">Untitled Material</span>}
+                        </p>
+                        <p className="text-[10px] text-slate-400 font-medium truncate leading-none mt-0.5">
+                          {item.scope}
+                        </p>
+                      </div>
+
+                      {/* Qty */}
+                      <div className="text-center text-xs text-slate-300 font-semibold tabular-nums">
+>>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
                         {item.qty}
                       </div>
 
-                      {/* Low Unit */}
-                      <div className="text-right text-xs text-slate-400 tabular-nums">
-                        ${item.lowUnit.toLocaleString()}
-                      </div>
-
                       {/* Exp Unit Input */}
-                      <div className="flex justify-center">
+                      <div className="flex justify-center" onClick={e => e.stopPropagation()}>
                         <input
                           type="number"
                           value={item.expUnit}
+<<<<<<< HEAD
                           onChange={e =>
                             setMaterialItems(prev =>
                               prev.map(m =>
@@ -1314,15 +1436,15 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                             )
                           }
                           className="w-18 h-8 bg-[#060B17] border border-[#1A2E50] focus:border-blue-500 rounded-lg px-2 text-xs font-bold text-white text-center outline-none tabular-nums"
+=======
+                          onChange={e => handleUpdateMaterialField(item.id, 'expUnit', parseFloat(e.target.value) || 0)}
+                          className="w-13 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
+>>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
                         />
                       </div>
 
-                      {/* High Unit */}
-                      <div className="text-right text-xs text-slate-400 tabular-nums">
-                        ${item.highUnit.toLocaleString()}
-                      </div>
-
                       {/* Exp Total */}
+<<<<<<< HEAD
                       <div className="text-right text-xs font-black text-emerald-400 tabular-nums">
                         {fmt(rowTotal)}
                       </div>
@@ -1346,13 +1468,30 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                           }
                           className="p-1 rounded-lg hover:bg-blue-500/10 cursor-pointer transition-colors"
                           title={item.approved ? "Approved" : "Approve item"}
+=======
+                      <div className="text-right pr-1 text-xs font-black text-emerald-400 tabular-nums">
+                        {fmt(rowTotal)}
+                      </div>
+
+                      {/* Approve Toggle */}
+                      <div className="flex justify-center" onClick={e => e.stopPropagation()}>
+                        <button
+                          onClick={() => handleToggleMaterial(item.id)}
+                          className="cursor-pointer"
+                          title={item.approved ? 'Approved' : 'Click to approve'}
+>>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
                         >
                           {item.approved ? (
-                            <ToggleRight className="w-5 h-5 text-blue-400" />
+                            <ToggleRight className="w-5 h-5 text-emerald-400" />
                           ) : (
                             <ToggleLeft className="w-5 h-5 text-slate-500 hover:text-slate-400" />
                           )}
                         </button>
+                      </div>
+
+                      {/* Details Chevron */}
+                      <div className="flex justify-center">
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 transition-colors" />
                       </div>
                     </div>
                   );
@@ -1363,7 +1502,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
         </div>
 
         {/* Quality Level Selector at Bottom */}
-        <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#060B17] border border-[#142036]">
+        <div className="flex items-center justify-between p-3 rounded-2xl bg-[#060B17] border border-[#142036]">
           <div>
             <p className="text-xs font-bold text-white">Quality Level</p>
             <p className="text-[10px] text-slate-400 font-medium">Benchmark unit rates according to finish standard</p>
@@ -1372,16 +1511,177 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             <select
               value={materialQuality}
               onChange={e => setMaterialQuality(e.target.value)}
+<<<<<<< HEAD
               className="h-8.5 pl-3 pr-8 bg-[#0A1328] border border-[#1A2E50] focus:border-blue-500 rounded-xl text-xs font-semibold text-white outline-none appearance-none cursor-pointer"
+=======
+              className="h-8 pl-3 pr-7 bg-[#0A1328] border border-[#1A2E50] rounded-xl text-xs font-medium text-white outline-none appearance-none cursor-pointer"
+>>>>>>> 3897b7b (feat(buildscope): add interactive material benchmarks drawer, editable pricing and approval actions)
             >
               <option value="Standard">Standard</option>
               <option value="Mid-Range">Mid-Range</option>
               <option value="High-End">High-End</option>
               <option value="Ultra-Luxury">Ultra-Luxury</option>
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
           </div>
         </div>
+
+        {/* ─── MATERIAL ITEM DETAIL & ACTION DRAWER (MODAL) ─── */}
+        {selectedMaterialItem && (
+          <div 
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-fade-in"
+            onClick={() => setSelectedMaterialItem(null)}
+          >
+            <div 
+              className="w-full max-w-[440px] bg-[#070C18] border border-[#142036] rounded-t-3xl sm:rounded-3xl p-5 flex flex-col gap-4 max-h-[88vh] overflow-y-auto shadow-2xl shadow-blue-950/40 text-slate-100 animate-in slide-in-from-bottom duration-200"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Mobile Grab Handle */}
+              <div className="w-10 h-1 rounded-full bg-slate-700 mx-auto -mt-1 sm:hidden" />
+
+              {/* Modal Header */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1 flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      {selectedMaterialItem.scope}
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md">
+                      {selectedMaterialItem.confidence} Confidence
+                    </span>
+                  </div>
+
+                  {/* Editable Material Name */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-semibold text-slate-400">Material Title</label>
+                    <input
+                      type="text"
+                      value={selectedMaterialItem.name}
+                      onChange={e => handleUpdateMaterialField(selectedMaterialItem.id, 'name', e.target.value)}
+                      placeholder="e.g. Ready-Mix Concrete 3000 PSI"
+                      className="w-full text-sm font-bold text-white bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-xl px-3 py-2 outline-none"
+                    />
+                  </div>
+
+                  {/* Editable Scope & Qty */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Scope Category</label>
+                      <input
+                        type="text"
+                        value={selectedMaterialItem.scope}
+                        onChange={e => handleUpdateMaterialField(selectedMaterialItem.id, 'scope', e.target.value)}
+                        placeholder="Scope (e.g. Foundations)"
+                        className="w-full text-xs font-semibold text-slate-200 bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2.5 py-1.5 outline-none"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Quantity (with Unit)</label>
+                      <input
+                        type="text"
+                        value={selectedMaterialItem.qty}
+                        onChange={e => handleUpdateMaterialField(selectedMaterialItem.id, 'qty', e.target.value)}
+                        className="w-full text-xs font-semibold text-slate-200 bg-[#0A1328] border border-[#1A2744] focus:border-blue-500 rounded-lg px-2.5 py-1.5 outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setSelectedMaterialItem(null)}
+                  className="w-8 h-8 rounded-full bg-[#0A1328] border border-[#1A2744] flex items-center justify-center text-slate-400 hover:text-white cursor-pointer flex-shrink-0 transition-colors mt-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Price Benchmarks Grid */}
+              <div className="p-3.5 rounded-2xl bg-[#0A1328] border border-[#1A2744] flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[11px] font-bold text-white">Unit Price Benchmarks</h4>
+                  <span className="text-[10px] text-slate-400">Current Market Index</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="p-2 rounded-xl bg-[#060B17] border border-[#142036]">
+                    <p className="text-[9px] text-slate-500 font-medium">Low Unit</p>
+                    <p className="text-xs font-bold text-slate-300 mt-0.5">${selectedMaterialItem.lowUnit}</p>
+                  </div>
+                  <div className="p-2 rounded-xl bg-[#0E1B30] border border-blue-500/30">
+                    <p className="text-[9px] text-blue-400 font-medium">Expected Unit</p>
+                    <input
+                      type="number"
+                      value={selectedMaterialItem.expUnit}
+                      onChange={e => handleUpdateMaterialField(selectedMaterialItem.id, 'expUnit', parseFloat(e.target.value) || 0)}
+                      className="w-full text-xs font-black text-white text-center bg-transparent outline-none mt-0.5 tabular-nums"
+                    />
+                  </div>
+                  <div className="p-2 rounded-xl bg-[#060B17] border border-[#142036]">
+                    <p className="text-[9px] text-slate-500 font-medium">High Unit</p>
+                    <p className="text-xs font-bold text-slate-300 mt-0.5">${selectedMaterialItem.highUnit}</p>
+                  </div>
+                </div>
+
+                {/* Computed Total */}
+                <div className="flex items-center justify-between pt-1 border-t border-[#142036]/80 text-xs">
+                  <span className="text-slate-400 font-medium">Expected Extended Total:</span>
+                  <span className="text-sm font-black text-emerald-400 tabular-nums">
+                    {fmt(selectedMaterialItem.expUnit * (parseFloat(selectedMaterialItem.qty) || 1))}
+                  </span>
+                </div>
+              </div>
+
+              {/* Sourcing & Supplier Card */}
+              <div className="p-3.5 rounded-2xl bg-blue-950/20 border border-blue-500/25 flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                  <h4 className="text-[11px] font-bold text-blue-300">Supplier Sourcing Index</h4>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                  {selectedMaterialItem.source}
+                </p>
+              </div>
+
+              {/* Action Footer */}
+              <div className="flex items-center gap-2 pt-2 border-t border-[#142036]">
+                {/* Delete Button */}
+                <button
+                  onClick={() => {
+                    if (confirm('Are you sure you want to delete this material item?')) {
+                      handleDeleteMaterial(selectedMaterialItem.id);
+                    }
+                  }}
+                  className="h-10 px-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                  title="Delete material"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+
+                {/* Approve / Unapprove Button */}
+                <button
+                  onClick={() => handleToggleMaterial(selectedMaterialItem.id)}
+                  className={`flex-1 h-10 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all shadow-lg ${
+                    selectedMaterialItem.approved
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/20'
+                      : 'bg-[#0E1B30] hover:bg-[#152744] border border-[#1A2744] text-slate-200'
+                  }`}
+                >
+                  {selectedMaterialItem.approved ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-white" />
+                      <span>Approved (Click to Unapprove)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-400" />
+                      <span>Approve Material Price</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
