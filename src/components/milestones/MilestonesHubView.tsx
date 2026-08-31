@@ -467,6 +467,19 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
         </div>
       )}
 
+      {/* ─── 6. MILESTONE DETAILS MODAL ─── */}
+      {selectedMilestone && (
+        <MilestoneDetailsModal
+          milestone={selectedMilestone}
+          projectName={selectedMilestone.projectName}
+          projectTasks={tasks}
+          onClose={() => setSelectedMilestone(null)}
+          onUpdateStatus={(id, st) => {
+            setMilestonesList(prev => prev.map(m => m.id === id ? { ...m, status: st, progress: st === 'Completed' ? 100 : m.progress } : m));
+          }}
+        />
+      )}
+
     </div>
   );
 };

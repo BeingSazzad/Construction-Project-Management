@@ -3,7 +3,7 @@ import { User } from '../../types';
 import { 
   X, Users, FileText, Sparkles, TrendingUp,
   Award, Settings, LogOut, Shield, ChevronRight,
-  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare, Ruler, Cpu
+  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare, Ruler, Cpu, Flag
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -50,6 +50,19 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     { id: 'field', title: 'Field Super', name: 'John Smith' },
   ];
 
+  const ORG_ITEMS: NavItem[] = [
+    {
+      id: 'team',
+      label: 'Team Staff & Directory',
+      icon: Users,
+    },
+    {
+      id: 'milestones',
+      label: 'Company Milestone Tracker',
+      icon: Flag,
+    },
+  ];
+
   const TOOLS_ITEMS: NavItem[] = [
     {
       id: 'calendar',
@@ -83,11 +96,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       label: 'Daily Logs',
       icon: Calendar,
     },
-    {
-      id: 'milestones',
-      label: 'Milestones',
-      icon: CheckSquare,
-    },
   ];
 
   const EXTRA_ITEMS: NavItem[] = [
@@ -118,11 +126,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       icon: TrendingUp,
       badge: '$3.77M',
       badgeStyle: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-    },
-    {
-      id: 'team',
-      label: 'Team Directory',
-      icon: Users,
     },
   ];
 
@@ -233,6 +236,15 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
         {/* ─── Compact Navigation Sections ─── */}
         <div className="flex-1 overflow-y-auto px-2 py-3 flex flex-col gap-3">
+
+          {/* SECTION: ORGANIZATION & HUBS */}
+          <div className="flex flex-col gap-0.5">
+            <SectionLabel label="ORGANIZATION & DIRECTORY" />
+            {ORG_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-[#142036] mx-3" />
 
           {/* SECTION: TOOLS */}
           <div className="flex flex-col gap-0.5">

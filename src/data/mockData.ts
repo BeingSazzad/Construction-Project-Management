@@ -90,7 +90,82 @@ export const MOCK_PROJECTS: Project[] = [
     description: '14-story Class A commercial office building featuring curtain wall facade, LEED Gold target, and multi-tenant high-efficiency HVAC.',
     clientName: 'Waterfront Development LLC',
     type: 'Commercial',
-    masterCode: '1234'
+    masterCode: '1234',
+    dailyLogs: [
+      {
+        id: 'dl-101',
+        projectId: 'proj-1',
+        projectName: 'Riverside Office Complex',
+        date: 'Aug 31, 2026',
+        weather: {
+          condition: 'Sunny',
+          temperature: '78°F / 25°C',
+          windSpeed: '6 mph SW',
+          precipitation: '0%',
+          siteCondition: 'Dry'
+        },
+        totalHeadcount: 24,
+        visitors: 'City Building Inspector (Electrical rough-in signoff)',
+        deliveries: ['Lumber framing packs (2 trucks)', '50 bundles conduit'],
+        equipment: '50-ton Mobile Crane, Forklift #2',
+        crews: [
+          {
+            trade: 'Concrete & Steel',
+            subcontractor: 'Apex Concrete LLC',
+            workersCount: 14,
+            hoursWorked: 8,
+            notes: 'Poured foundation slab section B'
+          },
+          {
+            trade: 'Electrical',
+            subcontractor: 'Volt Electrical Pro',
+            workersCount: 10,
+            hoursWorked: 8,
+            notes: 'Level 8 rough-in cabling completed'
+          }
+        ],
+        workSummary: 'Completed level 8 rough-in wiring, poured east foundation wall section B. City inspector signed off on electrical rough-in.',
+        materialsReceived: ['Lumber framing packs (2 trucks)', '50 bundles conduit', '2 pallets cement mix'],
+        safetyIncidents: '0 Incidents. PPE inspection completed 100% compliant.',
+        safetyPassed: true,
+        author: 'John Smith (Field Superintendent)',
+        photos: [
+          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=400&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&auto=format&fit=crop&q=80'
+        ]
+      },
+      {
+        id: 'dl-102',
+        projectId: 'proj-1',
+        projectName: 'Riverside Office Complex',
+        date: 'Aug 30, 2026',
+        weather: {
+          condition: 'Partly Cloudy',
+          temperature: '75°F / 24°C',
+          windSpeed: '9 mph W',
+          precipitation: '0%',
+          siteCondition: 'Dry'
+        },
+        totalHeadcount: 20,
+        visitors: 'Client Representative (Alex Chen walk-through)',
+        deliveries: ['Structural steel beams (1 flatbed)'],
+        equipment: 'Tower Crane #1',
+        crews: [
+          {
+            trade: 'Framing & Lumber',
+            subcontractor: 'Empire Steelworks',
+            workersCount: 20,
+            hoursWorked: 8,
+            notes: 'Erected framing grid on gridlines 4 to 8'
+          }
+        ],
+        workSummary: 'Erected level 7 steel frame grid and completed perimeter safety rails installation.',
+        materialsReceived: ['Structural steel beams (1 flatbed)'],
+        safetyIncidents: '0 Incidents. Daily morning safety briefing conducted.',
+        safetyPassed: true,
+        author: 'Elena Rossi (PM)'
+      }
+    ]
   },
   {
     id: 'proj-2',
@@ -129,7 +204,50 @@ export const MOCK_PROJECTS: Project[] = [
     description: 'High-density mixed retail & 28-floor steel frame commercial tower with integrated subterranean transit concourse.',
     clientName: 'Metropolitan Trust',
     type: 'Commercial',
-    masterCode: '5678'
+    masterCode: '5678',
+    dailyLogs: [
+      {
+        id: 'dl-201',
+        projectId: 'proj-2',
+        projectName: 'Downtown Commercial Tower',
+        date: 'Aug 31, 2026',
+        weather: {
+          condition: 'Sunny',
+          temperature: '82°F / 28°C',
+          windSpeed: '12 mph N',
+          precipitation: '0%',
+          siteCondition: 'Dry'
+        },
+        totalHeadcount: 32,
+        visitors: 'OSHA Safety Inspector (Routine audit - Passed)',
+        deliveries: ['Curtain wall glass crates (6 units)', 'Drywall gypsum packs'],
+        equipment: 'Tower Crane #2, Scissor Lifts (4)',
+        crews: [
+          {
+            trade: 'Glazing & Curtain Wall',
+            subcontractor: 'Apex Glazing Systems',
+            workersCount: 18,
+            hoursWorked: 8,
+            notes: 'Installed level 12 exterior curtain wall panels'
+          },
+          {
+            trade: 'HVAC & Mechanical',
+            subcontractor: 'AirTech Engineering',
+            workersCount: 14,
+            hoursWorked: 8,
+            notes: 'Ductwork installation on floor 10'
+          }
+        ],
+        workSummary: 'Installed level 12 exterior glass curtain wall units. HVAC mechanical rough-in progressing on schedule on floor 10.',
+        materialsReceived: ['Curtain wall glass crates (6 units)', 'Drywall gypsum packs'],
+        safetyIncidents: '0 Incidents. OSHA routine audit completed with 100% pass rate.',
+        safetyPassed: true,
+        author: 'Carlos Ortiz (Superintendent)',
+        photos: [
+          'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&auto=format&fit=crop&q=80'
+        ]
+      }
+    ]
   },
   {
     id: 'proj-3',
@@ -1485,6 +1603,78 @@ export const MOCK_CHANGE_ORDERS: ChangeOrder[] = [
     requestedBy: 'Lattice Engineering',
     status: 'Pending',
     createdDate: '2025-05-18'
+  },
+  {
+    id: 'co-3',
+    projectId: 'proj-2',
+    title: 'Curtain Wall Acoustic Glazing Upgrade',
+    description: 'Upgrade street-facing glazing on floors 2-6 to STC 42 acoustic laminated glass panels.',
+    amount: 68000,
+    timeImpact: 5,
+    category: 'Glazing',
+    requestedBy: 'Chicago Urban Dev',
+    status: 'Approved',
+    createdDate: '2025-06-02'
+  },
+  {
+    id: 'co-4',
+    projectId: 'proj-2',
+    title: 'Emergency Generator Fuel Line Reroute',
+    description: 'Reroute auxiliary diesel fuel lines to comply with revised city fire marshal setback codes.',
+    amount: 18400,
+    timeImpact: 0,
+    category: 'MEP',
+    requestedBy: 'AirTech Engineering',
+    status: 'Pending',
+    createdDate: '2025-06-15'
+  },
+  {
+    id: 'co-5',
+    projectId: 'proj-3',
+    title: 'Clubhouse Foundation Soil Remediation',
+    description: 'Import structural engineered fill and soil lime stabilization for the clubhouse pad.',
+    amount: 32000,
+    timeImpact: 2,
+    category: 'Civil',
+    requestedBy: 'Austin Land Holdings',
+    status: 'Approved',
+    createdDate: '2025-04-20'
+  },
+  {
+    id: 'co-6',
+    projectId: 'proj-4',
+    title: 'Rooftop Infinity Pool Structural Waterproofing',
+    description: 'Apply dual-membrane crystalline waterproofing system beneath the pool basin deck.',
+    amount: 54000,
+    timeImpact: 4,
+    category: 'Finishes',
+    requestedBy: 'Ocean Drive Partners',
+    status: 'Approved',
+    createdDate: '2025-03-12'
+  },
+  {
+    id: 'co-7',
+    projectId: 'proj-5',
+    title: 'North Atrium Skylight Glazing Upgrade',
+    description: 'Upgrade central mall atrium overhead skylights to high-efficiency Low-E laminated glass.',
+    amount: 38000,
+    timeImpact: 3,
+    category: 'Finishes',
+    requestedBy: 'Sazzad (GC Principal)',
+    status: 'Approved',
+    createdDate: '2025-05-14'
+  },
+  {
+    id: 'co-8',
+    projectId: 'proj-5',
+    title: 'Food Hall Grease Trap & Plumbing Rerouting',
+    description: 'Install high-capacity commercial grease interceptor and underground sanitary sewer line reroute.',
+    amount: 16500,
+    timeImpact: 0,
+    category: 'Plumbing',
+    requestedBy: 'City Environmental Services',
+    status: 'Pending',
+    createdDate: '2025-05-22'
   }
 ];
 

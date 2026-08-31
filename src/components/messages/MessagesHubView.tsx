@@ -4,7 +4,8 @@ import {
   Hash, Search, ArrowLeft, Send, Plus, Sparkles, X, 
   Calendar, CheckCheck, Paperclip, Check, UserPlus,
   Users, ChevronRight, Clock, ShieldCheck, AlertTriangle,
-  MoreVertical, Bell, BellOff, Pin, Trash2, FileText
+  MoreVertical, Bell, BellOff, Pin, Trash2, FileText,
+  UserMinus, MoreHorizontal, Shield, MessageSquare
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
@@ -36,12 +37,16 @@ interface ProjectDiscussion {
 }
 
 const ALL_COMPANY_MEMBERS: TeamMember[] = [
-  { id: 'm-1', name: 'Sarah Johnson', role: 'Lead Project Manager', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-2', name: 'Marcus Chen', role: 'Finance Controller', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-3', name: 'Jake Torres', role: 'Site Superintendent', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-4', name: 'Apex Concrete LLC', role: 'Concrete Trade Partner', avatar: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-5', name: 'Priya Nair', role: 'Project Engineer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-6', name: 'Titan Steel Works', role: 'Structural Subcontractor', avatar: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-1', name: 'John Smith', role: 'Lead Field Superintendent', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-2', name: 'Emily Brown', role: 'Site Safety Officer', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-3', name: 'Carlos Ortiz', role: 'Earthwork Site Foreman', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-4', name: 'Dave Miller', role: 'Structural Concrete Lead', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-5', name: 'Sarah Johnson', role: 'Lead Project Manager', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-6', name: 'Marcus Chen', role: 'Finance Controller', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-7', name: 'Apex Concrete LLC', role: 'Concrete Trade Partner', avatar: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-8', name: 'Priya Nair', role: 'Project Engineer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-9', name: 'Josh Spencer', role: 'Project Engineer', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-10', name: 'Titan Steel Works', role: 'Structural Subcontractor', avatar: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=150&auto=format&fit=crop&q=80' },
 ];
 
 const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
@@ -54,7 +59,7 @@ const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
     lastSender: 'Sazzad Chowdhury',
     timestamp: '10:15 AM',
     unreadCount: 0,
-    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[1], ALL_COMPANY_MEMBERS[2]],
+    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[1], ALL_COMPANY_MEMBERS[2], ALL_COMPANY_MEMBERS[3]],
   },
   {
     id: 'disc-2',
@@ -65,7 +70,7 @@ const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
     lastSender: 'Latti AI',
     timestamp: 'Yesterday',
     unreadCount: 0,
-    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[2]],
+    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[4], ALL_COMPANY_MEMBERS[5]],
   },
   {
     id: 'disc-3',
@@ -76,7 +81,7 @@ const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
     lastSender: 'Sarah Johnson',
     timestamp: '10:45 AM',
     unreadCount: 2,
-    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[2], ALL_COMPANY_MEMBERS[3]],
+    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[1], ALL_COMPANY_MEMBERS[4], ALL_COMPANY_MEMBERS[6]],
   },
   {
     id: 'disc-4',
@@ -87,7 +92,7 @@ const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
     lastSender: 'Sarah Johnson',
     timestamp: 'May 20',
     unreadCount: 0,
-    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[1]],
+    members: [ALL_COMPANY_MEMBERS[4], ALL_COMPANY_MEMBERS[5], ALL_COMPANY_MEMBERS[7]],
   }
 ];
 
@@ -114,6 +119,9 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
   const [isChannelMenuOpen, setIsChannelMenuOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);
+  const [memberSearchQuery, setMemberSearchQuery] = useState('');
+  const [addMemberSearchQuery, setAddMemberSearchQuery] = useState('');
+  const [memberOptionMenuId, setMemberOptionMenuId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleDeleteChannel = (discId: string) => {
@@ -144,6 +152,62 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
     setSelectedMemberIds(prev => 
       prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]
     );
+  };
+
+  const handleAddMemberToCurrent = (member: TeamMember) => {
+    if (!selectedDisc) return;
+    if (selectedDisc.members.some(m => m.id === member.id)) return;
+
+    const updatedMembers = [...selectedDisc.members, member];
+    const updatedDisc = { ...selectedDisc, members: updatedMembers };
+
+    setSelectedDisc(updatedDisc);
+    setDiscussions(prev => prev.map(d => d.id === selectedDisc.id ? updatedDisc : d));
+    setIsAddMemberModalOpen(false);
+
+    // Emits system notification in chat
+    const sysMsg: ProjectChatMessage = {
+      id: `msg-sys-${Date.now()}`,
+      projectId: selectedDisc.projectId,
+      channelId: selectedDisc.id,
+      senderId: 'system',
+      senderName: 'System',
+      senderRole: 'Lattice System',
+      senderAvatar: '',
+      text: `${member.name} was added to #${selectedDisc.channelName}.`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    onSendMessage(sysMsg);
+  };
+
+  const handleRemoveMemberFromCurrent = (memberId: string, memberName: string) => {
+    if (!selectedDisc) return;
+    if (selectedDisc.members.length <= 1) {
+      alert("A channel must have at least one active member.");
+      return;
+    }
+    if (window.confirm(`Are you sure you want to remove ${memberName} from #${selectedDisc.channelName}?`)) {
+      const updatedMembers = selectedDisc.members.filter(m => m.id !== memberId);
+      const updatedDisc = { ...selectedDisc, members: updatedMembers };
+
+      setSelectedDisc(updatedDisc);
+      setDiscussions(prev => prev.map(d => d.id === selectedDisc.id ? updatedDisc : d));
+      setMemberOptionMenuId(null);
+
+      // Emits system notification in chat
+      const sysMsg: ProjectChatMessage = {
+        id: `msg-sys-${Date.now()}`,
+        projectId: selectedDisc.projectId,
+        channelId: selectedDisc.id,
+        senderId: 'system',
+        senderName: 'System',
+        senderRole: 'Lattice System',
+        senderAvatar: '',
+        text: `${memberName} was removed from this channel by ${currentUser.name}.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      onSendMessage(sysMsg);
+    }
   };
 
   // File attachment state
@@ -233,18 +297,6 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
     setSelectedDisc(newD);
   };
 
-  const handleAddMemberToCurrent = (member: TeamMember) => {
-    if (!selectedDisc) return;
-    if (selectedDisc.members.some(m => m.id === member.id)) return;
-
-    const updatedMembers = [...selectedDisc.members, member];
-    const updatedDisc = { ...selectedDisc, members: updatedMembers };
-
-    setSelectedDisc(updatedDisc);
-    setDiscussions(prev => prev.map(d => d.id === selectedDisc.id ? updatedDisc : d));
-    setIsAddMemberModalOpen(false);
-  };
-
   // ─────────────────────────────────────────────────────────────
   // 1. Thread Chat View (Inside Discussion)
   // ─────────────────────────────────────────────────────────────
@@ -254,9 +306,9 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
     return (
       <div className="w-full min-h-[calc(100vh-140px)] flex flex-col font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in bg-[#070A12] relative">
         
-        {/* Sticky Chat Header */}
-        <div className="sticky top-0 z-20 px-4 py-3 bg-[#070A12]/95 backdrop-blur-md border-b border-[#142036] flex items-center justify-between gap-3 shadow-md">
-          <div className="flex items-center gap-2.5 min-w-0">
+        {/* Sticky Chat Header (Matching Wireframe Screen 3) */}
+        <div className="sticky top-0 z-20 px-4 py-3 bg-[#070A12]/95 backdrop-blur-md border-b border-[#142036] flex items-center justify-between gap-2 shadow-md">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
             <button
               onClick={() => setSelectedDisc(null)}
               className="w-8 h-8 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 flex-shrink-0"
@@ -265,156 +317,223 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
               <ArrowLeft className="w-4 h-4" />
             </button>
             
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
                 <Hash className="w-3.5 h-3.5 text-[#3875F6] flex-shrink-0" />
                 <h3 className="text-sm font-bold text-white truncate tracking-tight">
                   {selectedDisc.channelName}
                 </h3>
               </div>
-              <p className="text-[10px] text-slate-400 font-medium truncate flex items-center gap-1.5 mt-0.5">
+              <p 
+                onClick={() => {
+                  setMemberSearchQuery('');
+                  setIsRosterModalOpen(true);
+                }}
+                className="text-[10px] text-slate-400 font-medium truncate flex items-center gap-1.5 mt-0.5 cursor-pointer hover:text-blue-400 transition-colors"
+                title="Click to view & manage channel members"
+              >
                 <span>{selectedDisc.projectName}</span>
                 <span className="w-1 h-1 rounded-full bg-slate-600" />
-                <span className="text-emerald-400">{selectedDisc.members.length} members</span>
+                <span className="text-emerald-400 font-semibold underline decoration-emerald-500/40 underline-offset-2">
+                  {selectedDisc.members.length} members
+                </span>
               </p>
             </div>
           </div>
 
-          {/* 3-Dot Executive Action Menu Trigger */}
-          <div className="relative flex-shrink-0">
+          {/* Top Right Action Buttons: [+ Add Member] & [ ⋮ ] (Screen 3 & 4) */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
             <button
-              onClick={() => setIsChannelMenuOpen(prev => !prev)}
-              className="w-8 h-8 rounded-xl bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm"
-              title="Channel Options"
+              onClick={() => {
+                setAddMemberSearchQuery('');
+                setIsAddMemberModalOpen(true);
+              }}
+              className="h-7 px-2.5 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+              title="Add member to channel"
             >
-              <MoreVertical className="w-4 h-4 text-slate-300" />
+              <UserPlus className="w-3 h-3" />
+              <span>+ Add Member</span>
             </button>
 
-            {/* Dropdown Menu Popover */}
-            {isChannelMenuOpen && (
-              <>
-                <div 
-                  className="fixed inset-0 z-30" 
-                  onClick={() => setIsChannelMenuOpen(false)} 
-                />
-                <div className="absolute right-0 top-10 z-40 w-52 bg-[#091122] border border-[#1E2E4A] rounded-2xl shadow-2xl p-1.5 flex flex-col gap-0.5 animate-fade-in">
-                  {/* Option 1: Add Member */}
-                  <button
-                    onClick={() => {
-                      setIsChannelMenuOpen(false);
-                      setIsAddMemberModalOpen(true);
-                    }}
-                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
-                  >
-                    <UserPlus className="w-4 h-4 text-blue-400" />
-                    <span>+ Add Member</span>
-                  </button>
+            {/* 3-Dot Executive Action Menu Trigger */}
+            <div className="relative">
+              <button
+                onClick={() => setIsChannelMenuOpen(prev => !prev)}
+                className="w-7 h-7 rounded-lg bg-[#0D1424] hover:bg-[#141F33] border border-[#1A263E] text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm"
+                title="Channel Options"
+              >
+                <MoreVertical className="w-3.5 h-3.5 text-slate-300" />
+              </button>
 
-                  {/* Option 2: View Channel Members */}
-                  <button
-                    onClick={() => {
-                      setIsChannelMenuOpen(false);
-                      setIsRosterModalOpen(true);
-                    }}
-                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
-                  >
-                    <Users className="w-4 h-4 text-emerald-400" />
-                    <span>View Members ({selectedDisc.members.length})</span>
-                  </button>
+              {/* Dropdown Menu Popover (Matching Screen 4) */}
+              {isChannelMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-30" 
+                    onClick={() => setIsChannelMenuOpen(false)} 
+                  />
+                  <div className="absolute right-0 top-9 z-40 w-52 bg-[#091122] border border-[#1E2E4A] rounded-2xl shadow-2xl p-1.5 flex flex-col gap-0.5 animate-fade-in">
+                    {/* Option 1: Add Member */}
+                    <button
+                      onClick={() => {
+                        setIsChannelMenuOpen(false);
+                        setAddMemberSearchQuery('');
+                        setIsAddMemberModalOpen(true);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                    >
+                      <UserPlus className="w-4 h-4 text-blue-400" />
+                      <span>+ Add Member</span>
+                    </button>
 
-                  {/* Option 3: Mute Notifications */}
-                  <button
-                    onClick={() => {
-                      setIsMuted(!isMuted);
-                      setIsChannelMenuOpen(false);
-                    }}
-                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
-                  >
-                    {isMuted ? (
-                      <>
-                        <Bell className="w-4 h-4 text-amber-400" />
-                        <span>Unmute Notifications</span>
-                      </>
-                    ) : (
-                      <>
-                        <BellOff className="w-4 h-4 text-slate-400" />
-                        <span>Mute Channel</span>
-                      </>
-                    )}
-                  </button>
+                    {/* Option 2: View Channel Members */}
+                    <button
+                      onClick={() => {
+                        setIsChannelMenuOpen(false);
+                        setMemberSearchQuery('');
+                        setIsRosterModalOpen(true);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                    >
+                      <Users className="w-4 h-4 text-emerald-400" />
+                      <span>View Members ({selectedDisc.members.length})</span>
+                    </button>
 
-                  {/* Option 4: Pinned Files */}
-                  <button
-                    onClick={() => {
-                      setIsChannelMenuOpen(false);
-                      alert("Showing 3 Pinned Documents & Drawings for #" + selectedDisc.channelName);
-                    }}
-                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
-                  >
-                    <Pin className="w-4 h-4 text-cyan-400" />
-                    <span>Pinned Items (3)</span>
-                  </button>
+                    {/* Option 3: Mute Notifications */}
+                    <button
+                      onClick={() => {
+                        setIsMuted(!isMuted);
+                        setIsChannelMenuOpen(false);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                    >
+                      {isMuted ? (
+                        <>
+                          <Bell className="w-4 h-4 text-amber-400" />
+                          <span>Unmute Notifications</span>
+                        </>
+                      ) : (
+                        <>
+                          <BellOff className="w-4 h-4 text-slate-400" />
+                          <span>Mute Channel</span>
+                        </>
+                      )}
+                    </button>
 
-                  <div className="my-1 border-t border-[#142036]" />
+                    {/* Option 4: Pinned Files */}
+                    <button
+                      onClick={() => {
+                        setIsChannelMenuOpen(false);
+                        alert("Showing 3 Pinned Documents & Drawings for #" + selectedDisc.channelName);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl text-xs font-bold text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                    >
+                      <Pin className="w-4 h-4 text-cyan-400" />
+                      <span>Pinned Items (3)</span>
+                    </button>
 
-                  {/* Option 5: Delete Channel */}
-                  <button
-                    onClick={() => handleDeleteChannel(selectedDisc.id)}
-                    className="w-full px-3 py-2 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-2.5 transition-colors cursor-pointer text-left"
-                  >
-                    <Trash2 className="w-4 h-4 text-red-400" />
-                    <span>Delete Channel</span>
-                  </button>
-                </div>
-              </>
-            )}
+                    <div className="my-1 border-t border-[#142036]" />
+
+                    {/* Option 5: Delete Channel */}
+                    <button
+                      onClick={() => handleDeleteChannel(selectedDisc.id)}
+                      className="w-full px-3 py-2 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-2.5 transition-colors cursor-pointer text-left"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-400" />
+                      <span>Delete Channel</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Modal: In-Chat Add Member */}
+        {/* Modal: In-Chat Add Member (Matching Wireframe Screen 5) */}
         {isAddMemberModalOpen && (
-          <div className="absolute inset-0 z-30 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-            <div className="w-full max-w-[360px] bg-[#0A111F] border border-[#1E2E4A] rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
+          <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in font-sans">
+            <div className="w-full max-w-[370px] bg-[#0A111F] border border-[#1E2E4A] rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
               <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-                <span className="text-xs font-bold text-white">Add Member to #{selectedDisc.channelName}</span>
-                <button onClick={() => setIsAddMemberModalOpen(false)} className="text-slate-400 hover:text-white">
-                  <X className="w-4 h-4" />
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-4 h-4 text-blue-400" />
+                  <span className="text-xs font-bold text-white">Add Member</span>
+                </div>
+                <button 
+                  onClick={() => setIsAddMemberModalOpen(false)} 
+                  className="w-6 h-6 rounded-lg bg-[#0E1A33] border border-[#1E2E4A] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              <div className="flex flex-col gap-1.5 max-h-56 overflow-y-auto pr-1">
-                {ALL_COMPANY_MEMBERS.map(member => {
-                  const isAlreadyIn = selectedDisc.members.some(m => m.id === member.id);
-                  return (
-                    <div
-                      key={member.id}
-                      onClick={() => !isAlreadyIn && handleAddMemberToCurrent(member)}
-                      className={`p-2 rounded-xl border flex items-center justify-between gap-2 transition-all ${
-                        isAlreadyIn
-                          ? 'bg-[#070D1A] border-[#142036] opacity-50 cursor-not-allowed'
-                          : 'bg-[#0D172E] border-[#1E2E4A] hover:border-blue-500 cursor-pointer'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <img src={member.avatar} alt={member.name} className="w-7 h-7 rounded-full object-cover" />
-                        <div className="min-w-0">
-                          <p className="text-xs font-bold text-white truncate">{member.name}</p>
-                          <p className="text-[10px] text-slate-400 truncate">{member.role}</p>
+              {/* Search Bar inside Add Member */}
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                <input
+                  type="text"
+                  value={addMemberSearchQuery}
+                  onChange={e => setAddMemberSearchQuery(e.target.value)}
+                  placeholder="Search colleagues..."
+                  className="w-full h-8 pl-8 pr-2.5 bg-[#070D1A] border border-[#172540] rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500 transition-colors"
+                />
+              </div>
+
+              {/* Member List */}
+              <div className="flex flex-col gap-1.5 max-h-60 overflow-y-auto pr-1">
+                {ALL_COMPANY_MEMBERS
+                  .filter(m => !addMemberSearchQuery || m.name.toLowerCase().includes(addMemberSearchQuery.toLowerCase()) || m.role.toLowerCase().includes(addMemberSearchQuery.toLowerCase()))
+                  .map(member => {
+                    const isAlreadyIn = selectedDisc.members.some(m => m.id === member.id);
+                    return (
+                      <div
+                        key={member.id}
+                        onClick={() => !isAlreadyIn && handleAddMemberToCurrent(member)}
+                        className={`p-2 rounded-xl border flex items-center justify-between gap-2 transition-all ${
+                          isAlreadyIn
+                            ? 'bg-[#070D1A] border-[#142036] opacity-60'
+                            : 'bg-[#0D172E] border-[#1E2E4A] hover:border-blue-500/60 cursor-pointer active:scale-[0.99]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src={member.avatar} alt={member.name} className="w-7 h-7 rounded-full object-cover border border-[#1E2E4A] flex-shrink-0" />
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-white truncate">{member.name}</p>
+                            <p className="text-[10px] text-slate-400 truncate">{member.role}</p>
+                          </div>
                         </div>
+                        <button
+                          type="button"
+                          disabled={isAlreadyIn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isAlreadyIn) handleAddMemberToCurrent(member);
+                          }}
+                          className={`text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 transition-colors flex-shrink-0 ${
+                            isAlreadyIn 
+                              ? 'bg-[#142036] text-slate-400 border border-[#1E2E4A]' 
+                              : 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm cursor-pointer'
+                          }`}
+                        >
+                          {isAlreadyIn ? (
+                            <>
+                              <Check className="w-3 h-3 text-slate-400" />
+                              <span>Added</span>
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="w-3 h-3" />
+                              <span>+ Add</span>
+                            </>
+                          )}
+                        </button>
                       </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isAlreadyIn ? 'bg-[#142036] text-slate-400' : 'bg-blue-600 text-white'
-                      }`}>
-                        {isAlreadyIn ? 'Added' : '+ Add'}
-                      </span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
 
               <button
                 onClick={() => setIsAddMemberModalOpen(false)}
-                className="w-full py-2 rounded-xl bg-[#142036] text-slate-300 text-xs font-bold hover:bg-[#1E2E4A]"
+                className="w-full py-2 rounded-xl bg-[#142036] hover:bg-[#1E2E4A] text-slate-300 text-xs font-bold cursor-pointer transition-colors"
               >
                 Close
               </button>
@@ -422,43 +541,138 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
           </div>
         )}
 
-        {/* Modal: View Channel Members Roster */}
+        {/* Modal: View & Manage Channel Members Roster (Matching Wireframe Screen 6 - With Remove Member Option) */}
         {isRosterModalOpen && (
-          <div className="absolute inset-0 z-30 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-            <div className="w-full max-w-[360px] bg-[#0A111F] border border-[#1E2E4A] rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
-              <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+          <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in font-sans">
+            <div className="w-full max-w-[380px] bg-[#0A111F] border border-[#1E2E4A] rounded-2xl p-4 shadow-2xl flex flex-col gap-3 max-h-[85vh]">
+              {/* Header */}
+              <div className="flex items-center justify-between pb-2.5 border-b border-[#142036]">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-emerald-400" />
-                  <span className="text-xs font-bold text-white">Channel Roster ({selectedDisc.members.length})</span>
+                  <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <Users className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white leading-tight">Members</h4>
+                    <p className="text-[10px] text-slate-400 font-medium">#{selectedDisc.channelName} · {selectedDisc.members.length} members</p>
+                  </div>
                 </div>
-                <button onClick={() => setIsRosterModalOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
-                  <X className="w-4 h-4" />
+                <button 
+                  onClick={() => {
+                    setIsRosterModalOpen(false);
+                    setMemberOptionMenuId(null);
+                  }} 
+                  className="w-6 h-6 rounded-lg bg-[#0E1A33] border border-[#1E2E4A] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
-                {selectedDisc.members.map(member => (
-                  <div
-                    key={member.id}
-                    className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-2 shadow-sm"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <img src={member.avatar} alt={member.name} className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A]" />
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold text-white truncate">{member.name}</p>
-                        <p className="text-[10px] text-slate-400 font-medium truncate">{member.role}</p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex-shrink-0">
-                      Active
-                    </span>
-                  </div>
-                ))}
+              {/* Action Bar: Search & + Add Member button */}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                  <input
+                    type="text"
+                    value={memberSearchQuery}
+                    onChange={e => setMemberSearchQuery(e.target.value)}
+                    placeholder="Search members..."
+                    className="w-full h-8 pl-8 pr-2.5 bg-[#070D1A] border border-[#172540] rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <button
+                  onClick={() => {
+                    setIsRosterModalOpen(false);
+                    setAddMemberSearchQuery('');
+                    setIsAddMemberModalOpen(true);
+                  }}
+                  className="h-8 px-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-sm flex-shrink-0"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>+ Add</span>
+                </button>
               </div>
 
+              {/* Members List (Matching Screen 6) */}
+              <div className="flex flex-col gap-2 overflow-y-auto max-h-64 pr-1">
+                {selectedDisc.members
+                  .filter(m => !memberSearchQuery || m.name.toLowerCase().includes(memberSearchQuery.toLowerCase()) || m.role.toLowerCase().includes(memberSearchQuery.toLowerCase()))
+                  .map(member => (
+                    <div
+                      key={member.id}
+                      className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-2 shadow-sm relative group hover:border-[#1E2E4A] transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="relative flex-shrink-0">
+                          <img src={member.avatar} alt={member.name} className="w-8 h-8 rounded-full object-cover border border-[#1E2E4A]" />
+                          <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-[#0A111F]" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-white truncate">{member.name}</p>
+                          <p className="text-[10px] text-slate-400 font-medium truncate">{member.role}</p>
+                        </div>
+                      </div>
+
+                      {/* Right Action: [Remove] button & [⋮] menu */}
+                      <div className="relative flex items-center gap-1 flex-shrink-0">
+                        {/* Quick Remove Button */}
+                        <button
+                          onClick={() => handleRemoveMemberFromCurrent(member.id, member.name)}
+                          className="h-7 px-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-rose-400 text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+                          title={`Remove ${member.name} from channel`}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          <span>Remove</span>
+                        </button>
+
+                        {/* More Options Popover Trigger [⋮] (Screen 6) */}
+                        <button
+                          onClick={() => setMemberOptionMenuId(memberOptionMenuId === member.id ? null : member.id)}
+                          className="w-7 h-7 rounded-lg bg-[#0E172A] hover:bg-[#142036] border border-[#1E2E4A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                          title="Member actions"
+                        >
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+
+                        {/* Member More Actions Popover */}
+                        {memberOptionMenuId === member.id && (
+                          <>
+                            <div 
+                              className="fixed inset-0 z-40" 
+                              onClick={() => setMemberOptionMenuId(null)} 
+                            />
+                            <div className="absolute right-0 top-8 z-50 w-44 bg-[#091122] border border-[#1E2E4A] rounded-xl shadow-2xl p-1 flex flex-col gap-0.5 animate-fade-in text-xs">
+                              <button
+                                onClick={() => {
+                                  setMemberOptionMenuId(null);
+                                  alert(`Direct messaging ${member.name}...`);
+                                }}
+                                className="w-full px-2.5 py-1.5 rounded-lg text-slate-200 hover:text-white hover:bg-[#142036] flex items-center gap-2 text-left cursor-pointer font-medium"
+                              >
+                                <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
+                                <span>Direct Message</span>
+                              </button>
+                              <button
+                                onClick={() => handleRemoveMemberFromCurrent(member.id, member.name)}
+                                className="w-full px-2.5 py-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 flex items-center gap-2 text-left cursor-pointer font-bold"
+                              >
+                                <UserMinus className="w-3.5 h-3.5 text-rose-400" />
+                                <span>Remove Member</span>
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+
+              {/* Close Button */}
               <button
-                onClick={() => setIsRosterModalOpen(false)}
-                className="w-full py-2 rounded-xl bg-[#142036] text-slate-300 text-xs font-bold hover:bg-[#1E2E4A] cursor-pointer"
+                onClick={() => {
+                  setIsRosterModalOpen(false);
+                  setMemberOptionMenuId(null);
+                }}
+                className="w-full py-2 rounded-xl bg-[#142036] hover:bg-[#1E2E4A] text-slate-300 text-xs font-bold cursor-pointer transition-colors mt-1"
               >
                 Close
               </button>

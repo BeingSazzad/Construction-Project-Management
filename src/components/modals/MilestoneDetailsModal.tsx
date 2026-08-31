@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { Task, TaskStatus } from '../../types';
 import { 
   X, Calendar, CheckSquare, DollarSign, Clock, 
   ShieldCheck, AlertCircle, Users, Camera, FileText, 
@@ -23,54 +24,120 @@ export interface MilestoneItem {
 interface MilestoneDetailsModalProps {
   milestone: MilestoneItem | null;
   projectName?: string;
+  projectTasks?: Task[];
   onClose: () => void;
   onUpdateStatus?: (milestoneId: string, status: 'Completed' | 'In Progress' | 'Upcoming') => void;
+  onUpdateTaskStatus?: (taskId: string, status: TaskStatus) => void;
+  onAddTask?: (task: Partial<Task>) => void;
   onRequestDraw?: (milestone: MilestoneItem) => void;
 }
 
 export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
   milestone,
   projectName = 'Riverside Office Complex',
+  projectTasks = [],
   onClose,
   onUpdateStatus,
+  onUpdateTaskStatus,
+  onAddTask,
   onRequestDraw
 }) => {
   if (!milestone) return null;
 
-  // Mock sub-tasks state for this milestone
-  const [subtasks, setSubtasks] = useState([
-    { id: 'st-1', title: 'Site Inspection & Engineering Sign-off', completed: true, assignee: 'Elena Rossi' },
-    { id: 'st-2', title: 'Rebar Installation & Formwork Inspection', completed: true, assignee: 'Apex Concrete Masters' },
-    { id: 'st-3', title: 'Ready-mix Concrete Pour & Vibration', completed: milestone.progress > 50, assignee: 'Apex Concrete Masters' },
-    { id: 'st-4', title: '7-Day Compressive Compression Strength Test', completed: milestone.status === 'Completed', assignee: 'Field Testing Lab' },
-    { id: 'st-5', title: 'Municipal Inspector Final Green Card Approval', completed: milestone.status === 'Completed', assignee: 'City Building Dept' },
-  ]);
+  // Filter real project tasks matching this milestone, or use default template checklist
+  const linkedTasks = useMemo(() => {
+    const matching = projectTasks.filter(t => 
+      t.milestone === milestone.name || 
+      (milestone.code && t.milestone?.includes(milestone.code)) ||
+      (milestone.name.toLowerCase().includes('foundation') && t.milestone?.toLowerCase().includes('foundation')) ||
+      (milestone.name.toLowerCase().includes('framing') && t.milestone?.toLowerCase().includes('framing')) ||
+      (milestone.name.toLowerCase().includes('excavation') && t.milestone?.toLowerCase().includes('prep')) ||
+      (milestone.name.toLowerCase().includes('mep') && t.milestone?.toLowerCase().includes('mep'))
+    );
 
+    if (matching.length > 0) {
+      return matching.map(t => ({
+        id: t.id,
+        title: t.title,
+        completed: t.status === 'Completed',
+        assignee: t.assignee?.name || milestone.subcontractor,
+        isRealTask: true
+      }));
+    }
+
+    // Default template tasks for this milestone if no tasks tagged yet
+    return [
+      { id: `${milestone.id}-st-1`, title: 'Engineering Drawings & Subcontractor Sign-off', completed: milestone.progress >= 30, assignee: milestone.subcontractor, isRealTask: false },
+      { id: `${milestone.id}-st-2`, title: 'Material Delivery & On-Site Staging Inspection', completed: milestone.progress >= 50, assignee: 'Site Superintendent', isRealTask: false },
+      { id: `${milestone.id}-st-3`, title: 'Trade Execution & Construction Installation', completed: milestone.progress >= 75, assignee: milestone.subcontractor, isRealTask: false },
+      { id: `${milestone.id}-st-4`, title: 'Municipal QA / City Building Inspector Approval', completed: milestone.status === 'Completed', assignee: 'City Inspector', isRealTask: false },
+    ];
+  }, [projectTasks, milestone]);
+
+  const [localTasks, setLocalTasks] = useState(linkedTasks);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
 
-  const toggleSubtask = (id: string) => {
-    setSubtasks(prev => prev.map(st => st.id === id ? { ...st, completed: !st.completed } : st));
+  const toggleSubtask = (id: string, isRealTask: boolean, currentCompleted: boolean) => {
+    const nextCompleted = !currentCompleted;
+    
+    // Update local modal state
+    setLocalTasks(prev => prev.map(st => st.id === id ? { ...st, completed: nextCompleted } : st));
+
+    // If it's a real project task, update the app store
+    if (isRealTask && onUpdateTaskStatus) {
+      onUpdateTaskStatus(id, nextCompleted ? 'Completed' : 'In Progress');
+    }
   };
 
   const handleAddSubtask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSubtaskTitle.trim()) return;
-    setSubtasks(prev => [
+
+    const newTaskTitle = newSubtaskTitle.trim();
+    const newTaskId = `task-${Date.now()}`;
+
+    // Add to local state
+    setLocalTasks(prev => [
       ...prev,
-      { id: `st-${Date.now()}`, title: newSubtaskTitle.trim(), completed: false, assignee: 'Project Manager' }
+      { id: newTaskId, title: newTaskTitle, completed: false, assignee: milestone.subcontractor, isRealTask: true }
     ]);
+
+    // Dispatch to parent project task list
+    if (onAddTask) {
+      onAddTask({
+        id: newTaskId,
+        title: newTaskTitle,
+        description: `Milestone work package under ${milestone.name}`,
+        milestone: milestone.name,
+        status: 'Not Started',
+        priority: 'High',
+        startDate: new Date().toISOString().split('T')[0],
+        dueDate: milestone.dates.split('–')[1]?.trim() || new Date().toISOString().split('T')[0],
+        assignee: {
+          id: 'pm-1',
+          name: milestone.subcontractor,
+          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+          role: 'Trade Lead'
+        },
+        subtasks: [],
+        attachmentsCount: 0,
+        notesCount: 0
+      });
+    }
+
     setNewSubtaskTitle('');
     setIsAddingSubtask(false);
   };
 
-  const completedTasksCount = subtasks.filter(s => s.completed).length;
-  const computedProgress = Math.round((completedTasksCount / subtasks.length) * 100);
+  const completedTasksCount = localTasks.filter(s => s.completed).length;
+  const computedProgress = localTasks.length > 0 ? Math.round((completedTasksCount / localTasks.length) * 100) : milestone.progress;
+  const isFullyComplete = computedProgress === 100 || milestone.status === 'Completed';
 
-  const budgetValue = milestone.budgetAllocation || (milestone.id === 'ph-3' ? 850000 : milestone.id === 'ph-2' ? 620000 : 450000);
+  const budgetValue = milestone.budgetAllocation || 450000;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4 animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4 animate-fade-in font-sans">
       <div className="w-full max-w-[430px] bg-[#070A12] border border-[#142036] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
         
         {/* ─── 1. MODAL HEADER ─── */}
@@ -81,10 +148,10 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">
-                  {milestone.code || 'MILESTONE STAGE'}
+                <span className="text-[10px] font-bold text-blue-400 font-mono uppercase tracking-wider bg-blue-500/10 px-1.5 py-0.2 rounded">
+                  {milestone.code || 'MILESTONE GATE'}
                 </span>
-                <span className="text-[10px] text-slate-400">· {projectName}</span>
+                <span className="text-[10px] text-slate-400 truncate">· {projectName}</span>
               </div>
               <h2 className="text-sm font-black text-white truncate tracking-tight mt-0.5">
                 {milestone.name}
@@ -94,7 +161,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#121E36] text-slate-400 hover:text-white flex items-center justify-center transition-colors flex-shrink-0 active:scale-95"
+            className="w-8 h-8 rounded-full bg-[#121E36] text-slate-400 hover:text-white flex items-center justify-center transition-colors flex-shrink-0 active:scale-95 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -106,18 +173,24 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
           {/* Status & Progress Summary Card */}
           <div className="p-4 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <StatusBadge status={milestone.status} />
+              <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
+                isFullyComplete 
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+              }`}>
+                {isFullyComplete ? 'Completed Gate' : 'In Progress'}
+              </span>
               <div className="text-right">
-                <span className="text-xs font-bold text-white">{computedProgress}%</span>
-                <span className="text-[10px] text-slate-400 ml-1 font-semibold">Completed</span>
+                <span className="text-xs font-bold text-white tabular-nums">{computedProgress}%</span>
+                <span className="text-[10px] text-slate-400 ml-1 font-semibold">({completedTasksCount}/{localTasks.length} tasks done)</span>
               </div>
             </div>
 
-            {/* Progress Bar */}
+            {/* Live Progress Bar */}
             <div className="w-full h-2 rounded-full bg-[#121E36] overflow-hidden">
               <div 
                 className={`h-full transition-all duration-500 ${
-                  milestone.status === 'Completed'
+                  isFullyComplete
                     ? 'bg-emerald-500'
                     : 'bg-gradient-to-r from-[#2563EB] to-[#38BDF8]'
                 }`}
@@ -133,16 +206,16 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
           {/* Key Metrics Grid (2x2) */}
           <div className="grid grid-cols-2 gap-2.5">
-            {/* Draw Value */}
+            {/* Draw Allocation Value */}
             <div className="p-3 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-1">
               <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold">
                 <DollarSign className="w-3.5 h-3.5" />
                 <span>Draw Allocation</span>
               </div>
-              <div className="text-base font-black text-white tracking-tight mt-1">
+              <div className="text-base font-black text-white tracking-tight mt-1 tabular-nums">
                 ${(budgetValue / 1000).toFixed(0)}k
               </div>
-              <div className="text-[10px] text-slate-400 font-medium">Financing Draw Reserve</div>
+              <div className="text-[10px] text-slate-400 font-medium">Lender Draw Gate</div>
             </div>
 
             {/* Lead Subcontractor */}
@@ -163,33 +236,38 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>City Inspection</span>
               </div>
-              <div className="text-xs font-bold text-emerald-400 mt-1 flex items-center gap-1">
-                <Check className="w-3.5 h-3.5" />
-                <span>Passed & Signed</span>
+              <div className={`text-xs font-bold mt-1 flex items-center gap-1 ${
+                isFullyComplete ? 'text-emerald-400' : 'text-amber-400'
+              }`}>
+                {isFullyComplete ? <Check className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+                <span>{isFullyComplete ? 'Passed & Approved' : 'Pending Verification'}</span>
               </div>
-              <div className="text-[10px] text-slate-400 font-medium">Building Dept Permitting</div>
+              <div className="text-[10px] text-slate-400 font-medium">Building Dept Signoff</div>
             </div>
 
-            {/* Task Completion Count */}
+            {/* Connected Tasks Count */}
             <div className="p-3 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-1">
               <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold">
                 <CheckSquare className="w-3.5 h-3.5" />
-                <span>Sub-activities</span>
+                <span>Linked Tasks</span>
               </div>
-              <div className="text-base font-black text-white tracking-tight mt-1">
-                {completedTasksCount} / {subtasks.length}
+              <div className="text-base font-black text-white tracking-tight mt-1 tabular-nums">
+                {completedTasksCount} / {localTasks.length}
               </div>
-              <div className="text-[10px] text-slate-400 font-medium">Milestone Tasks Done</div>
+              <div className="text-[10px] text-slate-400 font-medium">Field Work Items</div>
             </div>
           </div>
 
-          {/* Sub-activities Interactive Checklist */}
+          {/* Sub-activities / Connected Tasks Interactive Checklist */}
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-white tracking-tight">Milestone Tasks & Checklists</h3>
+              <div>
+                <h3 className="text-xs font-bold text-white tracking-tight">Milestone Field Tasks ({localTasks.length})</h3>
+                <p className="text-[10px] text-slate-400">Complete all tasks to unlock bank draw</p>
+              </div>
               <button
                 onClick={() => setIsAddingSubtask(true)}
-                className="text-[11px] font-bold text-[#3875F6] hover:underline flex items-center gap-1"
+                className="text-[11px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20"
               >
                 <Plus className="w-3 h-3" />
                 <span>Add Task</span>
@@ -197,18 +275,18 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
             </div>
 
             {isAddingSubtask && (
-              <form onSubmit={handleAddSubtask} className="flex items-center gap-2 p-2 bg-[#090F1E] border border-[#162238] rounded-2xl">
+              <form onSubmit={handleAddSubtask} className="flex items-center gap-2 p-2 bg-[#090F1E] border border-[#162238] rounded-2xl animate-fade-in">
                 <input
                   type="text"
-                  placeholder="Enter milestone sub-task..."
+                  placeholder="Enter task name for this milestone..."
                   value={newSubtaskTitle}
                   onChange={(e) => setNewSubtaskTitle(e.target.value)}
-                  className="flex-1 h-9 bg-transparent px-3 text-xs text-white outline-none placeholder-slate-500"
+                  className="flex-1 h-9 bg-[#060B17] px-3 text-xs text-white outline-none rounded-xl border border-[#142036] placeholder-slate-500 focus:border-blue-500"
                   autoFocus
                 />
                 <button
                   type="submit"
-                  className="px-3 py-1.5 rounded-xl bg-[#2563EB] text-white text-xs font-bold"
+                  className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-sm"
                 >
                   Save
                 </button>
@@ -216,18 +294,18 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
             )}
 
             <div className="flex flex-col gap-2">
-              {subtasks.map((st) => (
+              {localTasks.map((st) => (
                 <div
                   key={st.id}
-                  onClick={() => toggleSubtask(st.id)}
-                  className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${
+                  onClick={() => toggleSubtask(st.id, st.isRealTask, st.completed)}
+                  className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer select-none active:scale-[0.99] ${
                     st.completed
                       ? 'bg-[#090F1E]/60 border-[#142036] opacity-80'
                       : 'bg-[#090F1E] border-[#162238] hover:border-blue-500/40'
                   }`}
                 >
                   <div className={`w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
-                    st.completed ? 'bg-emerald-500 text-white' : 'border border-[#263756] bg-[#0D1629]'
+                    st.completed ? 'bg-emerald-500 text-white shadow-sm' : 'border border-[#263756] bg-[#0D1629]'
                   }`}>
                     {st.completed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   </div>
@@ -238,6 +316,12 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                     </p>
                     <p className="text-[10px] text-slate-500 mt-0.5">Assigned to: {st.assignee}</p>
                   </div>
+
+                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${
+                    st.completed ? 'bg-emerald-500/10 text-emerald-400' : 'bg-[#121E36] text-slate-400'
+                  }`}>
+                    {st.completed ? 'Done' : 'To-Do'}
+                  </span>
                 </div>
               ))}
             </div>
@@ -245,7 +329,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
           {/* Photo Documentation Section */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-xs font-bold text-white tracking-tight">Milestone Photo Documentation</h3>
+            <h3 className="text-xs font-bold text-white tracking-tight">Milestone Inspection Proof</h3>
             <div className="grid grid-cols-2 gap-2">
               <div className="relative rounded-2xl overflow-hidden border border-[#162238] group h-24">
                 <img 
@@ -254,7 +338,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex items-end">
-                  <span className="text-[10px] font-bold text-white truncate">Rebar Pour Signoff</span>
+                  <span className="text-[10px] font-bold text-white truncate">Field QA Sign-off</span>
                 </div>
               </div>
               <div className="relative rounded-2xl overflow-hidden border border-[#162238] group h-24">
@@ -264,7 +348,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex items-end">
-                  <span className="text-[10px] font-bold text-white truncate">Green Card Permit</span>
+                  <span className="text-[10px] font-bold text-white truncate">Building Dept Permit</span>
                 </div>
               </div>
             </div>
@@ -274,16 +358,16 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
         {/* ─── 3. MODAL FOOTER ACTIONS ─── */}
         <div className="p-4 bg-[#09101F] border-t border-[#142036] flex items-center gap-2">
-          {milestone.status !== 'Completed' ? (
+          {!isFullyComplete ? (
             <button
               onClick={() => {
                 if (onUpdateStatus) onUpdateStatus(milestone.id, 'Completed');
                 onClose();
               }}
-              className="flex-1 h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 transition-all active:scale-95"
+              className="flex-1 h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 transition-all active:scale-95 cursor-pointer"
             >
               <Check className="w-4 h-4 stroke-[3]" />
-              <span>Mark Milestone Complete</span>
+              <span>Mark Gate Completed (100%)</span>
             </button>
           ) : (
             <button
@@ -291,16 +375,16 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                 if (onRequestDraw) onRequestDraw(milestone);
                 onClose();
               }}
-              className="flex-1 h-11 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30 transition-all active:scale-95"
+              className="flex-1 h-11 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30 transition-all active:scale-95 cursor-pointer"
             >
               <DollarSign className="w-4 h-4" />
-              <span>Request Draw for Milestone</span>
+              <span>Request Draw (${(budgetValue / 1000).toFixed(0)}k)</span>
             </button>
           )}
 
           <button
             onClick={onClose}
-            className="px-4 h-11 rounded-2xl bg-[#0F192E] hover:bg-[#162442] border border-[#1E2E4A] text-slate-300 text-xs font-bold transition-all active:scale-95"
+            className="px-4 h-11 rounded-2xl bg-[#0F192E] hover:bg-[#162442] border border-[#1E2E4A] text-slate-300 text-xs font-bold transition-all active:scale-95 cursor-pointer"
           >
             Close
           </button>

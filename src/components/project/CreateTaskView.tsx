@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Project, Task, Priority } from '../../types';
 import { ArrowLeft, CheckSquare, Calendar, User as UserIcon, Tag, MapPin, Check } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
+import { DEFAULT_PROJECT_MILESTONES } from '../../data/projectMilestones';
 
 interface CreateTaskViewProps {
   project?: Project | null;
@@ -14,11 +15,12 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
   onBack,
   onCreate
 }) => {
+  const milestoneOptions = DEFAULT_PROJECT_MILESTONES.map(m => `${m.code} ${m.name}`);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<Priority>('High');
   const [dueDate, setDueDate] = useState('2026-06-15');
-  const [milestone, setMilestone] = useState('Structural Framing');
+  const [milestone, setMilestone] = useState(milestoneOptions[2] || 'MS-03 Structural Framing & Concrete Slabs');
   const [location, setLocation] = useState('Level 12 Deck');
   const [assigneeName, setAssigneeName] = useState('John Smith (Superintendent)');
 
@@ -124,7 +126,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
               <CustomSelect
                 value={milestone}
                 onChange={setMilestone}
-                options={['Site Prep & Excavation', 'Foundations & Concrete', 'Structural Framing', 'MEP Rough-In', 'Finishes & Drywall']}
+                options={milestoneOptions}
                 size="md"
               />
             </div>

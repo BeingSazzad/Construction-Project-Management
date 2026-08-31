@@ -3,6 +3,7 @@ import { Project, Task, Priority } from '../../types';
 import { Button } from '../common/Button';
 import { X, CheckSquare, Calendar, User as UserIcon, Tag, MapPin } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
+import { DEFAULT_PROJECT_MILESTONES } from '../../data/projectMilestones';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -17,11 +18,12 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   onClose,
   onCreate
 }) => {
+  const milestoneOptions = DEFAULT_PROJECT_MILESTONES.map(m => `${m.code} ${m.name}`);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<Priority>('High');
   const [dueDate, setDueDate] = useState('2025-05-22');
-  const [milestone, setMilestone] = useState('Structural Framing');
+  const [milestone, setMilestone] = useState(milestoneOptions[2] || 'MS-03 Structural Framing & Concrete Slabs');
   const [location, setLocation] = useState('Level 12 Deck');
   const [assigneeName, setAssigneeName] = useState('John Smith');
 
@@ -127,12 +129,12 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Milestone</label>
-              <input
-                type="text"
+              <label className="font-bold text-slate-300 mb-1 block">Trade Milestone</label>
+              <CustomSelect
                 value={milestone}
-                onChange={(e) => setMilestone(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+                onChange={setMilestone}
+                options={milestoneOptions}
+                size="md"
               />
             </div>
             <div>

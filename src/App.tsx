@@ -48,6 +48,8 @@ import { CalendarView } from './components/calendar/CalendarView';
 import { ProjectPunchListTab } from './components/project/ProjectPunchListTab';
 import { ProjectPhotosTab } from './components/project/ProjectPhotosTab';
 import { ProjectDailyLogsTab } from './components/project/ProjectDailyLogsTab';
+import { DailyLogsHubView } from './components/dailylogs/DailyLogsHubView';
+import { DailyLogItem } from './types';
 
 // Opportunities & Budgets Hub
 import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
@@ -112,6 +114,9 @@ export function App() {
   const [lienWaivers, setLienWaivers] = useState<LienWaiver[]>(MOCK_LIEN_WAIVERS);
   const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>(MOCK_CHANGE_ORDERS);
   const [calendarEvents, setCalendarEvents] = useState<CalendarEventItem[]>(MOCK_CALENDAR_EVENTS);
+  const [dailyLogs, setDailyLogs] = useState<DailyLogItem[]>(() => 
+    MOCK_PROJECTS.flatMap(p => p.dailyLogs || [])
+  );
 
   // Modals state
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
@@ -294,6 +299,30 @@ export function App() {
     setProjects(prev => prev.filter(p => p.id !== projectId));
     setActiveProject(null);
     setActiveTab('projects');
+  };
+
+  const handleAddDailyLog = (newLog: DailyLogItem) => {
+    // 1. Update central dailyLogs feed
+    setDailyLogs(prev => [newLog, ...prev]);
+
+    // 2. Also update corresponding project's dailyLogs array
+    setProjects(prev => prev.map(p => {
+      if (p.id === newLog.projectId) {
+        return {
+          ...p,
+          dailyLogs: [newLog, ...(p.dailyLogs || [])]
+        };
+      }
+      return p;
+    }));
+
+    // 3. If activeProject is currently selected, update it
+    if (activeProject && activeProject.id === newLog.projectId) {
+      setActiveProject(prev => prev ? ({
+        ...prev,
+        dailyLogs: [newLog, ...(prev.dailyLogs || [])]
+      }) : null);
+    }
   };
 
   const handleCreateProject = (newProj: Partial<Project>) => {
@@ -669,6 +698,7 @@ export function App() {
                 changeOrders={changeOrders}
                 onCreateChangeOrder={() => setIsCreateChangeOrderOpen(true)}
                 onAddReport={handleAddReport}
+                onAddDailyLog={handleAddDailyLog}
               />
             ) : (
               /* Global Hub Views */
@@ -913,9 +943,17 @@ export function App() {
                 )}
 
                 {activeTab === 'daily-logs' && (
-                  <ProjectDailyLogsTab
-                    project={projects[0]}
-                    dailyLogs={projects[0]?.dailyLogs || []}
+                  <DailyLogsHubView
+                    projects={projects}
+                    dailyLogs={dailyLogs}
+                    onAddDailyLog={handleAddDailyLog}
+                    onNavigateToProject={(projId, subTab) => {
+                      const found = projects.find(p => p.id === projId);
+                      if (found) {
+                        setActiveProject(found);
+                        setProjectSubTab(subTab || 'overview');
+                      }
+                    }}
                   />
                 )}
               </>
@@ -941,13 +979,10 @@ export function App() {
             onNavigateTab={(tab) => {
               if (tab === 'trade-network') {
                 alert('Trade Network platform coming soon!');
-              } else if (tab === 'calendar') {
-                setActiveProject(null);
-                setActiveTab('calendar');
-              } else if (tab === 'buildscope' || tab === 'intelligence-center') {
+              } else if (['calendar', 'team', 'milestones', 'daily-logs', 'buildscope', 'intelligence-center', 'opportunities', 'budgets', 'more'].includes(tab)) {
                 setActiveProject(null);
                 setActiveTab(tab);
-              } else if (['tasks', 'schedule', 'messages', 'photos', 'documents', 'punch', 'daily-logs', 'milestones'].includes(tab)) {
+              } else if (['tasks', 'schedule', 'messages', 'photos', 'documents', 'punch'].includes(tab)) {
                 if (!activeProject) {
                   setActiveProject(projects[0]);
                 }

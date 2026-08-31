@@ -7,7 +7,8 @@ import {
   ChevronLeft, Sparkles, DollarSign, ArrowRight,
   HardHat, Award, Wrench, AlertOctagon, Smartphone,
   Wifi, Camera, Clock, MapPin, CheckCircle2, ShieldAlert,
-  RefreshCw, HardDrive, Database, Sliders, Image, Radio
+  RefreshCw, HardDrive, Database, Sliders, Image, Radio,
+  CreditCard, FlaskConical, Flag
 } from 'lucide-react';
 import { TermsAndConditions } from '../legal/TermsAndConditions';
 import { PrivacyPolicy } from '../legal/PrivacyPolicy';
@@ -18,6 +19,7 @@ import { HelpSupport } from './HelpSupport';
 import { EditProfileView } from './EditProfileView';
 import { CompanyProfileView } from './CompanyProfileView';
 import { SecurityPasswordView } from './SecurityPasswordView';
+import { LatticeVerifiedView } from './LatticeVerifiedView';
 
 export interface SettingsViewProps {
   currentUser: User;
@@ -35,7 +37,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     'main' | 'billing' | 'notifications' | 'company' | 'terms' | 
     'privacy' | 'support' | 'profile' | 'security' | 'ai-disclaimer' | 
     'subscription-terms' | 'beta' | 'certifications' | 'equipment' | 
-    'emergency' | 'sop' | 'field-sync'
+    'emergency' | 'sop' | 'field-sync' | 'verified'
   >('main');
   const [pushMasterEnabled, setPushMasterEnabled] = useState(true);
 
@@ -50,7 +52,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncSuccessMsg, setSyncSuccessMsg] = useState(false);
 
-  // 6 Notification Preferences
+  // Notification Preferences
   const [notifPreferences, setNotifPreferences] = useState({
     taskAssignments: true,
     dailyLogReminders: true,
@@ -104,6 +106,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     );
   }
 
+  if (subView === 'verified') {
+    return <LatticeVerifiedView currentUser={userData} onBack={() => setSubView('main')} />;
+  }
+
   if (subView === 'terms') {
     return <TermsAndConditions onBack={() => setSubView('main')} />;
   }
@@ -128,7 +134,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     return <BetaAgreement onBack={() => setSubView('main')} />;
   }
 
-  // ─── SUBVIEW: FIELD SYNC & OFFLINE STORAGE (Dedicated Config Page) ───
+  // ─── SUBVIEW: FIELD SYNC & OFFLINE STORAGE ───
   if (subView === 'field-sync') {
     return (
       <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
@@ -183,7 +189,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <div className="flex flex-col gap-1.5">
           <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Offline Basement Mode</p>
           <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">
-            {/* Master Offline Cache Toggle */}
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-white">Enable Basement Caching</h4>
@@ -206,7 +211,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </button>
             </div>
 
-            {/* Cellular vs WiFi Sync */}
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-white">Sync Over Cellular Data</h4>
@@ -235,7 +239,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <div className="flex flex-col gap-1.5">
           <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Camera & Evidence Watermarking</p>
           <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">
-            {/* GPS Watermark */}
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-white">Embed GPS Coordinates</h4>
@@ -258,7 +261,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </button>
             </div>
 
-            {/* Date/Time Watermark */}
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-white">Embed Date & Timestamp</h4>
@@ -281,7 +283,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </button>
             </div>
 
-            {/* Photo Quality Selector */}
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div>
                 <h4 className="text-xs font-semibold text-white">Upload Compression</h4>
@@ -336,7 +337,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
           </div>
         </div>
-
       </div>
     );
   }
@@ -644,7 +644,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     );
   }
 
-  // ─── MAIN SETTINGS & PROFILE SCREEN ───
+  // ─── MAIN SETTINGS & PROFILE SCREEN (Clean, Sleek, Zero-Fluff) ───
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in relative">
       
@@ -697,7 +697,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {userData.email}
             </p>
             <p className="text-xs text-blue-400 font-semibold truncate mt-0.5">
-              {userData.roleTitle || (isFieldStaff ? 'Lead Superintendent' : 'Company Owner')}
+              {userData.roleTitle || (isFieldStaff ? 'Lead Superintendent' : 'Company Owner & Principal')}
             </p>
           </div>
         </div>
@@ -708,156 +708,163 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          A. EMPLOYEE / FIELD STAFF SPECIFIC MODULES (Clean & Focused)
+          A. EMPLOYEE / FIELD STAFF SPECIFIC MODULES
          ══════════════════════════════════════════════════════════ */}
       {isFieldStaff ? (
-        <>
-          {/* Group 1: Safety & Compliance Credentials */}
-          <div className="flex flex-col gap-1.5">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Safety & Credentials</p>
-            <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
-              
-              {/* Safety Badges & Certs */}
-              <button
-                onClick={() => setSubView('certifications')}
-                className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Award className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Safety Badges & Certifications</span>
-                    <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                      OSHA 30, First Aid, MEWP Lift (4 Valid)
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                    Verified
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
-                </div>
-              </button>
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Field Operations & Safety</p>
+          <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+            
+            {/* Safety Badges & Certs */}
+            <button
+              onClick={() => setSubView('certifications')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Award className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Safety Badges & Certifications</span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  4 Valid
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </div>
+            </button>
 
-              {/* Assigned Hardware Gear */}
-              <button
-                onClick={() => setSubView('equipment')}
-                className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Wrench className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Assigned Equipment & Tools</span>
-                    <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                      Leica Laser, Rugged iPad Pro, Thermal Cam
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
-              </button>
+            {/* Assigned Hardware Gear */}
+            <button
+              onClick={() => setSubView('equipment')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Wrench className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Assigned Equipment & Tools</span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-[10px] font-bold text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                  4 Items
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </div>
+            </button>
 
-            </div>
+            {/* Field Sync & Storage */}
+            <button
+              onClick={() => setSubView('field-sync')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Wifi className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Field Sync & Offline Storage</span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20">
+                  Auto-Sync
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </div>
+            </button>
+
+            {/* Emergency Contacts */}
+            <button
+              onClick={() => setSubView('emergency')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <AlertOctagon className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Emergency Site Contacts</span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
+                  911 Active
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </div>
+            </button>
+
           </div>
-
-          {/* Group 2: Field Site Automation & Offline Sync (Dedicated Page) */}
-          <div className="flex flex-col gap-1.5">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Field Sync & Storage</p>
-            <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
-              
-              <button
-                onClick={() => setSubView('field-sync')}
-                className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Wifi className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Field Sync & Offline Storage</span>
-                    <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                      Basement cache, GPS watermark & 18 queued items
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20">
-                    Auto-Sync
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
-                </div>
-              </button>
-
-            </div>
-          </div>
-
-          {/* Group 3: Emergency Protocol */}
-          <div className="flex flex-col gap-1.5">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Safety & Emergency</p>
-            <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
-              
-              <button
-                onClick={() => setSubView('emergency')}
-                className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <AlertOctagon className="w-4 h-4 text-rose-400 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Emergency Site Contacts</span>
-                    <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                      Safety officer, 911, nearest hospital
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
-              </button>
-
-            </div>
-          </div>
-        </>
+        </div>
       ) : (
         /* ══════════════════════════════════════════════════════════
-            B. COMPANY OWNER / ADMIN SPECIFIC MODULES (Organization & Billing)
+            B. COMPANY OWNER / ADMIN SPECIFIC MODULES
            ══════════════════════════════════════════════════════════ */
-        <>
-          <div className="flex flex-col gap-1.5">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Workspace & Company</p>
-            <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
-              
-              {/* Company Profile (Organization First) */}
-              <button
-                onClick={() => setSubView('company')}
-                className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Building className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Company Profile</span>
-                    <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                      {userData.company || 'Lattice Construction'} • GC-12345
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
-              </button>
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Workspace & Company</p>
+          <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+            
+            {/* Company Profile */}
+            <button
+              onClick={() => setSubView('company')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Building className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Company Profile</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            </button>
 
-              {/* Subscription & Billing */}
-              <button
-                onClick={() => setSubView('billing')}
-                className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Crown className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Subscription & Plan</span>
-                    <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                      Trial (14-Day Free) • Professional $19/mo
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
-              </button>
+            {/* Subscription & Billing */}
+            <button
+              onClick={() => setSubView('billing')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Crown className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Subscription & Plan</span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  Trial (Active)
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </div>
+            </button>
 
-            </div>
+            {/* Lattice Verified Score */}
+            <button
+              onClick={() => setSubView('verified')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Award className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Lattice Verified™ Score</span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                  Score 33
+                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              </div>
+            </button>
+
+            {/* Team Directory Direct Hub */}
+            <button
+              onClick={() => onNavigateTab?.('team')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Users className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Team Staff & Directory</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            </button>
+
+            {/* Milestones Hub */}
+            <button
+              onClick={() => onNavigateTab?.('milestones')}
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Flag className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">Company Milestone Tracker</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            </button>
+
           </div>
-        </>
+        </div>
       )}
 
       {/* ─── COMMON GROUP: PREFERENCES & SECURITY ─── */}
@@ -872,12 +879,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           >
             <div className="flex items-center gap-3 min-w-0">
               <Bell className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <div className="min-w-0">
-                <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Push Notifications</span>
-                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                  {isFieldStaff ? 'Inspection, shift & daily log alerts' : 'Inspection, budget & schedule alerts'}
-                </span>
-              </div>
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">Push Notifications</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
@@ -894,12 +896,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           >
             <div className="flex items-center gap-3 min-w-0">
               <Lock className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <div className="min-w-0">
-                <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">Security & PIN</span>
-                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                  Field login PIN & password
-                </span>
-              </div>
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">
+                {isFieldStaff ? 'Security & PIN' : 'Security & Password'}
+              </span>
             </div>
             <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
           </button>
@@ -907,7 +906,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
-      {/* ─── COMMON GROUP: SUPPORT & HELP ─── */}
+      {/* ─── COMMON GROUP: SUPPORT & GUIDES ─── */}
       <div className="flex flex-col gap-1.5">
         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Support & Guides</p>
         <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
@@ -918,16 +917,79 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           >
             <div className="flex items-center gap-3 min-w-0">
               <HelpCircle className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <div className="min-w-0">
-                <span className="text-xs sm:text-sm font-semibold text-white block leading-tight">
-                  {isFieldStaff ? 'Field Guides & Help' : 'Help Center & Guides'}
-                </span>
-                <span className="text-[12px] text-slate-400 font-medium block mt-0.5 truncate">
-                  {isFieldStaff ? 'OSHA quick reference & app help' : 'FAQs, documentation & priority support'}
-                </span>
-              </div>
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">
+                {isFieldStaff ? 'Field Guides & Help' : 'Help Center & Guides'}
+              </span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+          </button>
+
+        </div>
+      </div>
+
+      {/* ─── LEGAL & COMPLIANCE (All 5 Pages Accessible) ─── */}
+      <div className="flex flex-col gap-1.5">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Legal & Compliance</p>
+        <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+          
+          {/* Privacy Policy */}
+          <button
+            onClick={() => setSubView('privacy')}
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <ShieldCheck className="w-4 h-4 text-blue-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">Privacy Policy</span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+          </button>
+
+          {/* Terms of Service */}
+          <button
+            onClick={() => setSubView('terms')}
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <FileText className="w-4 h-4 text-blue-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">Terms of Service</span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+          </button>
+
+          {/* AI Disclaimer */}
+          <button
+            onClick={() => setSubView('ai-disclaimer')}
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <Sparkles className="w-4 h-4 text-blue-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">AI Disclaimer</span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+          </button>
+
+          {/* Subscription Terms */}
+          <button
+            onClick={() => setSubView('subscription-terms')}
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <CreditCard className="w-4 h-4 text-blue-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">Subscription Terms</span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+          </button>
+
+          {/* Beta Agreement */}
+          <button
+            onClick={() => setSubView('beta')}
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <FlaskConical className="w-4 h-4 text-blue-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">Beta Agreement</span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
           </button>
 
         </div>

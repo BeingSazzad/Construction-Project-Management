@@ -3,7 +3,7 @@ import {
   Project, UserRole, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
   PunchStatus, TaskStatus, PlanGridPin, ProjectChatMessage, User,
-  ProjectStatus
+  ProjectStatus, DailyLogItem
 } from '../../types';
 import { ProjectOverviewTab } from './ProjectOverviewTab';
 import { ProjectDailyLogsTab } from './ProjectDailyLogsTab';
@@ -59,6 +59,7 @@ interface ProjectWorkspaceProps {
   changeOrders?: any[];
   onCreateChangeOrder?: () => void;
   onAddReport?: (newReport: Partial<ReportItem>) => void;
+  onAddDailyLog?: (newLog: DailyLogItem) => void;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
@@ -91,7 +92,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onImportBudget,
   changeOrders,
   onCreateChangeOrder,
-  onAddReport
+  onAddReport,
+  onAddDailyLog
 }) => {
   const [internalActiveTab, setInternalActiveTab] = useState<string>('overview');
   const activeTab = activeSubTab !== undefined ? activeSubTab : internalActiveTab;
@@ -102,12 +104,12 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   };
 
   // Quick Action / Field Capture pages that have dedicated views and are accessed directly from Overview Quick Actions
-  const isQuickActionPage = ['punch', 'photos', 'documents', 'daily-logs', 'schedule', 'milestones'].includes(activeTab);
+  const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents'].includes(activeTab);
 
-  // Core project tabs according to Reference Web Specs (Overview, Tasks, Budget, Team, Reports)
+  // Core project tabs according to Reference Web Specs (Overview, Schedule, Budget, Team, Reports)
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
-    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { id: 'schedule', label: 'Schedule', icon: Calendar },
     { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
     { id: 'team', label: 'Team', icon: Users2 },
     { id: 'reports', label: 'Reports', icon: BarChart3, hideFor: ['field'] },
@@ -187,36 +189,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
         {activeTab === 'daily-logs' && (
           <ProjectDailyLogsTab
             project={project}
-            dailyLogs={project.dailyLogs || [
-              {
-                id: 'dl-1',
-                projectId: project.id,
-                projectName: project.name,
-                date: 'Aug 27, 2026',
-                weather: {
-                  condition: 'Sunny',
-                  temperature: '78°F / 25°C',
-                  windSpeed: '6 mph SW',
-                  precipitation: '0%',
-                  siteCondition: 'Dry'
-                },
-                totalHeadcount: 24,
-                crews: [
-                  {
-                    trade: 'Concrete & Steel',
-                    subcontractor: 'Apex Concrete LLC',
-                    workersCount: 14,
-                    hoursWorked: 8,
-                    notes: 'Poured foundation slab section B'
-                  }
-                ],
-                workSummary: 'Completed level 4 slab pour and inspected rebar installation. Field Superintendent verified quality check.',
-                materialsReceived: ['3 ready-mix concrete trucks (24 cu yd)', '#4 Rebar 20ft bundles (10)'],
-                safetyIncidents: '0 Incidents. PPE inspection completed 100% compliant.',
-                safetyPassed: true,
-                author: 'Elena Rossi (PM)'
-              }
-            ]}
+            dailyLogs={project.dailyLogs || []}
+            onAddDailyLog={onAddDailyLog}
           />
         )}
 
@@ -286,8 +260,10 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
         {(activeTab === 'schedule' || activeTab === 'milestones') && (
           <ProjectScheduleTab
             project={project}
+            tasks={tasks}
             ganttItems={ganttItems}
             onCreateTask={onCreateTask}
+            onUpdateTaskStatus={onUpdateTaskStatus}
             isMilestoneView={activeTab === 'milestones'}
           />
         )}

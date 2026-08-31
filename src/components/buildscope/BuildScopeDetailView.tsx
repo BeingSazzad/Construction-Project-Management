@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
   ArrowLeft, ArrowRight, Save, Upload, FileText, CheckCircle2, AlertTriangle,
   Search, Plus, Trash2, ChevronDown, ToggleLeft, ToggleRight,
-  Download, Send, Info, Building2, Layers, ShieldCheck, Sparkles, X, ChevronRight, Check
+  Download, Send, Info, Building2, Layers, ShieldCheck, Sparkles, X, ChevronRight, Check,
+  DollarSign, TrendingUp
 } from 'lucide-react';
 import { BuildScopeAnalysisCard } from './BuildScopeView';
 
@@ -110,8 +111,8 @@ interface BuildScopeDetailViewProps {
 export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ analysis, onBack }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [qtySearch, setQtySearch] = useState('');
-  const [qtyTradeFilter, setQtyTradeFilter] = useState('All trades');
-  const [qtyConfFilter, setQtyConfFilter] = useState('All conf.');
+  const [qtyTradeFilter, setQtyTradeFilter] = useState('All Trades');
+  const [qtyConfFilter, setQtyConfFilter] = useState('All Conf.');
   const [laborSearch, setLaborSearch] = useState('');
   const [selectedQtyItem, setSelectedQtyItem] = useState<QuantityItem | null>(null);
   const [selectedMaterialItem, setSelectedMaterialItem] = useState<MaterialItem | null>(null);
@@ -173,38 +174,147 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
     { id: 'f6', name: 'Plumbing.pdf', type: 'PDF', size: '7069 KB', classification: 'Plumbing' },
   ]);
 
-  // ─── STEP 4: Quantities State ───
+  // ─── STEP 4: Quantities State (Rich Realistic Takeoff) ───
   const [quantities, setQuantities] = useState<QuantityItem[]>([
-    { id: 'q1', name: 'Continuous Wall Footings', trade: 'Concrete', scope: 'Foundations', info: 'Architectural plans missing; perimeter estimated from foundation layout.', qty: 600, unit: 'CF', waste: 5, refLoc: 'S1 · Main House & ADU Perimeter', confidence: 'Low', approved: false },
-    { id: 'q2', name: 'Column Footings', trade: 'Concrete', scope: 'Foundations', info: 'Counted bearing footings shown on foundation plan.', qty: 45, unit: 'CF', waste: 5, refLoc: 'S1 · Main House interior and porches', confidence: 'Moderate', approved: false },
-    { id: 'q3', name: '4" Concrete Slab', trade: 'Concrete', scope: 'Slab on Grade', info: 'Ground floor footprint estimated at 2500 SF derived from total 5220 SF under roof over 2 stories.', qty: 833, unit: 'CF', waste: 5, refLoc: 'S1 · Main House & ADU Level 1', confidence: 'Moderate', approved: false },
-    { id: 'q4', name: '8" CMU Exterior Walls', trade: 'Masonry', scope: 'Block', info: 'Assumes first floor is full CMU construction per typical Florida details and S3 wall section.', qty: 3000, unit: 'SF', waste: 10, refLoc: 'S1, S3 · Exterior Walls Level 1', confidence: 'Low', approved: false },
-    { id: 'q5', name: 'Interior Wood Framing', trade: 'Framing', scope: 'Walls', info: 'Used residential allowance heuristic: Interior wall LF = 0.30 LF per SF of conditioned floor area.', qty: 1230, unit: 'LF', waste: 10, refLoc: 'n/a · Whole House Interior', confidence: 'Allowance', approved: false },
-    { id: 'q6', name: 'Standing Seam Metal Roof', trade: 'Roofing', scope: 'Metal Roofing', info: 'Applied a 1.15 slope/overhang factor to the provided 5220 SF total under-roof area.', qty: 6003, unit: 'SF', waste: 10, refLoc: 'S4 · Main House and ADU Roof', confidence: 'Moderate', approved: false },
-    { id: 'q7', name: '3 Coat Stucco', trade: 'Stucco', scope: 'Cladding', info: 'Elevations missing. Assumed 20ft average wall height across 2 stories.', qty: 7990, unit: 'SF', waste: 5, refLoc: 'n/a · Main House & ADU Exterior', confidence: 'Allowance', approved: false },
-    { id: 'q8', name: 'Spray Foam Insulation', trade: 'Insulation', scope: 'Thermal', info: 'Foam covers all exterior walls and roof underside.', qty: 13900, unit: 'SF', waste: 5, refLoc: 'n/a · Exterior Envelope (Walls & Roof)', confidence: 'Low', approved: false },
+    { id: 'q1', name: 'Continuous Wall Footings 24"x12"', trade: 'Concrete', scope: 'Foundations', info: 'Architectural plans missing; perimeter estimated from foundation layout.', qty: 600, unit: 'CF', waste: 5, refLoc: 'S1 · Main House & ADU Perimeter', confidence: 'Moderate', approved: true },
+    { id: 'q2', name: 'Column Footings 36"x36"', trade: 'Concrete', scope: 'Foundations', info: 'Counted 12 interior point bearing footings shown on foundation plan.', qty: 45, unit: 'CF', waste: 5, refLoc: 'S1 · Main House interior and porches', confidence: 'High', approved: true },
+    { id: 'q3', name: '4" Concrete Slab on Grade 3500 PSI', trade: 'Concrete', scope: 'Slab on Grade', info: 'Ground floor footprint estimated at 2500 SF derived from total 5220 SF under roof over 2 stories.', qty: 833, unit: 'CF', waste: 5, refLoc: 'S1 · Main House & ADU Level 1', confidence: 'High', approved: true },
+    { id: 'q4', name: 'Post-Tension Slab Cable Tendons', trade: 'Concrete', scope: 'Reinforcement', info: 'Engineered post-tension unbonded tendon layout with live-end anchorages.', qty: 1450, unit: 'LF', waste: 5, refLoc: 'S2 · Structural Foundation Details', confidence: 'Moderate', approved: false },
+    { id: 'q5', name: '8" CMU Exterior Masonry Walls', trade: 'Masonry', scope: 'Block', info: 'Assumes first floor is full CMU construction per typical Florida details and S3 wall section.', qty: 3000, unit: 'SF', waste: 10, refLoc: 'S1, S3 · Exterior Walls Level 1', confidence: 'Moderate', approved: true },
+    { id: 'q6', name: 'Exterior 2x6 Wood Stud Framing', trade: 'Framing', scope: 'Exterior Walls', info: '2x6 exterior wood framing spaced 16" O.C. with double top plates and continuous tie-downs.', qty: 4200, unit: 'SF', waste: 10, refLoc: 'S3 · Upper Level Exterior Framing', confidence: 'High', approved: false },
+    { id: 'q7', name: 'Interior 2x4 Wood Wall Framing', trade: 'Framing', scope: 'Interior Partitions', info: 'Interior partition framing based on 0.30 LF per SF conditioned area with acoustic blocking.', qty: 1230, unit: 'LF', waste: 10, refLoc: 'A2 · Whole House Partition Plan', confidence: 'Allowance', approved: false },
+    { id: 'q8', name: 'Prefab Engineered Roof Trusses', trade: 'Framing', scope: 'Roof Structure', info: 'Engineered scissor & common attic trusses engineered for 150 mph hurricane wind rating.', qty: 5800, unit: 'SF', waste: 8, refLoc: 'S4 · Roof Framing Plan', confidence: 'High', approved: true },
+    { id: 'q9', name: 'Standing Seam Metal Roofing (24ga)', trade: 'Roofing', scope: 'Metal Roofing', info: 'Applied a 1.15 slope/overhang factor to the provided 5220 SF total under-roof area.', qty: 6003, unit: 'SF', waste: 10, refLoc: 'S4 · Main House and ADU Roof', confidence: 'High', approved: true },
+    { id: 'q10', name: '3-Coat Stucco System (Synthetic Finish)', trade: 'Stucco', scope: 'Cladding', info: 'Elevations missing. Assumed 20ft average wall height across 2 stories.', qty: 7990, unit: 'SF', waste: 5, refLoc: 'A3 · Exterior Building Elevation', confidence: 'Allowance', approved: false },
+    { id: 'q11', name: 'Closed-Cell Spray Foam Insulation (R-38)', trade: 'Insulation', scope: 'Thermal Envelope', info: 'Foam covers all exterior envelope walls and conditioned roof deck underside.', qty: 13900, unit: 'SF', waste: 5, refLoc: 'M1 · Building Envelope Thermal Specs', confidence: 'Moderate', approved: true },
+    { id: 'q12', name: '5/8" Type-X Firecode Drywall (Level 5)', trade: 'Drywall', scope: 'Interior Surfaces', info: 'Smooth Level 5 finish across all ceilings and living areas with sound-dampening resilient channel.', qty: 18500, unit: 'SF', waste: 8, refLoc: 'A4 · Interior Finish Schedule', confidence: 'Moderate', approved: false },
+    { id: 'q13', name: 'Luxury Vinyl Plank (LVP) Flooring', trade: 'Finishes', scope: 'Flooring', info: 'Waterproof rigid-core LVP for main living, kitchen, hallway and bedrooms.', qty: 3200, unit: 'SF', waste: 10, refLoc: 'A4 · Floor Finish Legend', confidence: 'High', approved: true },
+    { id: 'q14', name: 'Porcelain Bathroom Floor & Wall Tile', trade: 'Finishes', scope: 'Tile', info: 'Large format 24x48 rectified porcelain tile for master suite and guest baths.', qty: 900, unit: 'SF', waste: 12, refLoc: 'A5 · Wet Area Interior Elevations', confidence: 'Moderate', approved: false },
+    { id: 'q15', name: 'Milgard Dual-Pane Low-E Windows', trade: 'Openings', scope: 'Windows', info: 'Impact-rated aluminum-clad wood windows with solar-control argon fill.', qty: 28, unit: 'EA', waste: 0, refLoc: 'A6 · Window Schedule', confidence: 'High', approved: true },
+    { id: 'q16', name: '200A Electrical Service & Rough-In', trade: 'Electrical', scope: 'Power & Lighting', info: '200A dual breaker distribution panels, EV charger prep, and 120 recessed LED pots.', qty: 1, unit: 'LS', waste: 0, refLoc: 'E1 · Electrical One-Line & Lighting', confidence: 'High', approved: true },
+    { id: 'q17', name: 'PEX-A Plumbing Rough-In & Fixtures', trade: 'Plumbing', scope: 'Supply & Waste', info: 'Uponor PEX-A potable manifold, tankless gas water heater, and 4 full bath groups.', qty: 1, unit: 'LS', waste: 0, refLoc: 'P1 · Plumbing Sanitary & Supply', confidence: 'High', approved: true },
+    { id: 'q18', name: '4-Ton High-Efficiency Heat Pump HVAC', trade: 'Mechanical', scope: 'HVAC', info: 'Variable-capacity multi-zone heat pump system with smart communicating thermostats.', qty: 2, unit: 'EA', waste: 0, refLoc: 'M1 · Mechanical Equipment Schedule', confidence: 'Moderate', approved: true },
   ]);
 
   // ─── STEP 5: Materials State ───
   const [materialSearch, setMaterialSearch] = useState('');
   const [materialQuality, setMaterialQuality] = useState('Standard');
   const [materialItems, setMaterialItems] = useState<MaterialItem[]>([
-    { id: 'm1', name: 'Dumpster Rental (10-day)', scope: 'General Conditions · Moderate', confidence: 'Moderate', qty: '1 ea', lowUnit: 450, expUnit: 600, highUnit: 850, source: 'Metro market\nSite waste services', approved: false },
-    { id: 'm2', name: '2×6 Studs (8ft)', scope: 'Framing · High', confidence: 'High', qty: '200 ea', lowUnit: 6, expUnit: 6.75, highUnit: 8, source: 'Metro market\nBuilders FirstSource', approved: false },
-    { id: 'm3', name: 'Composite Trim Boards (1×6×16)', scope: 'Exterior Finishes · Moderate', confidence: 'Moderate', qty: '40 ea', lowUnit: 35, expUnit: 48, highUnit: 65, source: 'Metro market\nUniversal Forest', approved: false },
-    { id: 'm4', name: 'Architectural Shingles (Bundle)', scope: 'Roofing · High', confidence: 'High', qty: '60 bundle', lowUnit: 38, expUnit: 45, highUnit: 55, source: 'Metro market\nABC Supply Co.', approved: false },
-    { id: 'm5', name: '1/2 inch Drywall Sheet (4×8)', scope: 'Drywall · High', confidence: 'High', qty: '120 sheet', lowUnit: 14, expUnit: 18, highUnit: 24, source: 'Metro market\nUSG Distribution', approved: false },
-    { id: 'm6', name: 'Premium Interior Paint (Gallon)', scope: 'Paint · Moderate', confidence: 'Moderate', qty: '25 gal', lowUnit: 35, expUnit: 50, highUnit: 75, source: 'Metro market\nSherwin-Williams', approved: false },
-    { id: 'm7', name: 'LVP Flooring (sq ft)', scope: 'Flooring · Moderate', confidence: 'Moderate', qty: '1000 sq ft', lowUnit: 3, expUnit: 4, highUnit: 7, source: 'Metro market\nShaw Contract', approved: false },
+    { id: 'm1', name: 'Dumpster Rental (30-Yard, 10-day)', scope: 'General Conditions', confidence: 'High', qty: '2 ea', lowUnit: 450, expUnit: 600, highUnit: 850, source: 'Metro Market · Site Waste Services', approved: true },
+    { id: 'm2', name: '2×6 SPF Premium Studs (8ft & 10ft)', scope: 'Framing & Lumber', confidence: 'High', qty: '450 ea', lowUnit: 6, expUnit: 7.25, highUnit: 9.5, source: 'Builders FirstSource · Regional Stock', approved: true },
+    { id: 'm3', name: '2×4 KD Framing Lumber (16ft)', scope: 'Framing & Lumber', confidence: 'High', qty: '280 ea', lowUnit: 7, expUnit: 8.5, highUnit: 11, source: '84 Lumber · Local Yard', approved: false },
+    { id: 'm4', name: '3/4" CDX Plywood Subfloor Tongue & Groove', scope: 'Framing & Sheathing', confidence: 'High', qty: '95 sheet', lowUnit: 32, expUnit: 39.5, highUnit: 52, source: 'Builders FirstSource · Direct Mill', approved: true },
+    { id: 'm5', name: 'Standing Seam Metal Roof Panels (24ga Kynar)', scope: 'Roofing Materials', confidence: 'High', qty: '6000 sq ft', lowUnit: 4.2, expUnit: 5.85, highUnit: 8.5, source: 'ABC Supply Co. · Architectural Metals', approved: true },
+    { id: 'm6', name: 'High-Temp Ice & Water Underlayment', scope: 'Roofing Materials', confidence: 'High', qty: '32 roll', lowUnit: 85, expUnit: 110, highUnit: 145, source: 'Beacon Roofing Supply', approved: true },
+    { id: 'm7', name: '5/8" Type-X Firecode Gypsum Board (4×12)', scope: 'Drywall & Wallboard', confidence: 'High', qty: '380 sheet', lowUnit: 16, expUnit: 21.5, highUnit: 28, source: 'USG Distribution · Building Supply', approved: false },
+    { id: 'm8', name: 'Sherwin-Williams SuperPaint Interior (5-Gal)', scope: 'Paint & Finishes', confidence: 'Moderate', qty: '18 pails', lowUnit: 160, expUnit: 210, highUnit: 275, source: 'Sherwin-Williams Commercial Store #4102', approved: true },
+    { id: 'm9', name: 'Waterproof Rigid-Core LVP Flooring (20mil)', scope: 'Flooring Finishes', confidence: 'High', qty: '3200 sq ft', lowUnit: 3.25, expUnit: 4.65, highUnit: 6.8, source: 'Shaw Contract · Commercial Flooring', approved: true },
+    { id: 'm10', name: '24×48 Rectified Porcelain Tile', scope: 'Tile & Wet Areas', confidence: 'Moderate', qty: '900 sq ft', lowUnit: 4.5, expUnit: 6.75, highUnit: 11.5, source: 'Daltile Ceramic Wholesale Center', approved: false },
+    { id: 'm11', name: 'Closed-Cell Spray Foam Kit (600 BF)', scope: 'Insulation', confidence: 'Moderate', qty: '24 kit', lowUnit: 750, expUnit: 890, highUnit: 1150, source: 'IDP Insulation Supply', approved: true },
+    { id: 'm12', name: '200A Main Service Panel & AFCI Breakers', scope: 'Electrical Materials', confidence: 'High', qty: '2 pkg', lowUnit: 1200, expUnit: 1650, highUnit: 2200, source: 'City Electric Supply Co.', approved: true },
+    { id: 'm13', name: 'Uponor PEX-A Potable Pipe & Brass Manifold', scope: 'Plumbing Materials', confidence: 'High', qty: '1 lot', lowUnit: 2800, expUnit: 3450, highUnit: 4600, source: 'Ferguson Enterprises Plumbing Hub', approved: true },
   ]);
 
   // ─── STEP 6: Labor State ───
   const [laborItems, setLaborItems] = useState<LaborItem[]>([
-    { id: 'l1', name: 'Site Clearing and Existing Structure Removal', trade: 'Demolition', confidence: 'Moderate', qty: '1 LS', lowUnit: '$6,500', expUnit: 8500, highUnit: '$12,000', expTotal: '$8,500', includes: ['Labor to clear vegetation, remove existing debris'], excludes: ['Disposal fees, equipment rentals'], approved: false },
-    { id: 'l2', name: 'Mass Grading and Compaction', trade: 'Sitework', confidence: 'High', qty: '2500 SF', lowUnit: '$2', expUnit: 2.25, highUnit: '$4', expTotal: '$5,625', includes: ['Labor for fine grading, soil compaction'], excludes: ['Fill dirt materials, compaction testing fees'], approved: false },
-    { id: 'l3', name: 'Continuous Wall Footings', trade: 'Concrete', confidence: 'High', qty: '600 CF', lowUnit: '$5', expUnit: 6, highUnit: '$8', expTotal: '$3,600', includes: ['Labor to form, place rebar, and pour concrete'], excludes: ['Concrete material, rebar material'], approved: false },
-    { id: 'l4', name: 'Column Footings', trade: 'Concrete', confidence: 'Moderate', qty: '45 CF', lowUnit: '$8', expUnit: 10, highUnit: '$14', expTotal: '$450', includes: ['Form, set rebar cage, pour concrete'], excludes: ['Concrete and rebar material'], approved: false },
-    { id: 'l5', name: '4" Concrete Slab on Grade', trade: 'Concrete', confidence: 'Moderate', qty: '833 CF', lowUnit: '$4', expUnit: 5, highUnit: '$7', expTotal: '$4,165', includes: ['Form, pour, finish, and cure concrete slab'], excludes: ['Vapor barrier, rebar/mesh, concrete material'], approved: false },
+    {
+      id: 'l1',
+      name: 'Concrete Slab and Footings',
+      trade: 'Concrete',
+      confidence: 'High',
+      qty: '66 CY',
+      lowUnit: '$115',
+      expUnit: 145,
+      highUnit: '$185',
+      expTotal: '$9,570',
+      includes: ['Labor for digging footings, setting forms, rebar placement, vapor barrier, pouring, and hand-trowel finish.'],
+      excludes: ['Concrete material, pump rental, rebar material, mesh, termite treatment.'],
+      approved: false
+    },
+    {
+      id: 'l2',
+      name: 'Standing Seam Roofing',
+      trade: 'Roofing',
+      confidence: 'High',
+      qty: '4500 SF',
+      lowUnit: '$4',
+      expUnit: 4.5,
+      highUnit: '$6',
+      expTotal: '$20,250',
+      includes: ['Labor for underlayment install, metal panel clipping, seaming, flashing, and ridge vent labor.'],
+      excludes: ['Metal panels, clips, underlayment, fasteners, scaffolding, tear-off of existing roof.'],
+      approved: false
+    },
+    {
+      id: 'l3',
+      name: 'Level 5 Drywall and Tray Ceilings',
+      trade: 'Drywall',
+      confidence: 'High',
+      qty: '27200 SF',
+      lowUnit: '$2',
+      expUnit: 2.45,
+      highUnit: '$3',
+      expTotal: '$66,640',
+      includes: ['Labor for hanging 5/8 inch boards, taping, sanding, and full-surface skim coat for Level 5 finish; tray ceiling framing labor.'],
+      excludes: ['Drywall boards, joint compound, tape, corner beads, LED lighting hardware.'],
+      approved: false
+    },
+    {
+      id: 'l4',
+      name: '3-Coat Stucco System & Sand Float Finish',
+      trade: 'Stucco',
+      confidence: 'High',
+      qty: '7990 SF',
+      lowUnit: '$4',
+      expUnit: 5.25,
+      highUnit: '$7.50',
+      expTotal: '$41,948',
+      includes: ['Labor for lath attachment, scratch coat, brown coat, and decorative sand float finish texture.'],
+      excludes: ['Stucco mix, metal lath, scaffolding rental, waterproof barrier.'],
+      approved: true
+    },
+    {
+      id: 'l5',
+      name: 'Rough Carpentry Framing (Walls, Floors & Trusses)',
+      trade: 'Framing',
+      confidence: 'High',
+      qty: '5220 SF',
+      lowUnit: '$8',
+      expUnit: 10.50,
+      highUnit: '$14.50',
+      expTotal: '$54,810',
+      includes: ['Wall layout, stud assembly, structural header install, crane truss erection, roof sheathing.'],
+      excludes: ['Framing hardware, fasteners, crane rental fees.'],
+      approved: true
+    },
+    {
+      id: 'l6',
+      name: 'Electrical Rough-in & Distribution Wiring',
+      trade: 'Electrical',
+      confidence: 'High',
+      qty: '1 LS',
+      lowUnit: '$14,000',
+      expUnit: 18500,
+      highUnit: '$24,000',
+      expTotal: '$18,500',
+      includes: ['Labor for conduit rough-in, Romex wiring pull, main distribution panel hookup, and switch box rough-ins.'],
+      excludes: ['Lighting fixtures, switchgear, Romex wire materials, electrical permit fees.'],
+      approved: true
+    },
+    {
+      id: 'l7',
+      name: 'Plumbing DWV & Potable Water Rough-in',
+      trade: 'Plumbing',
+      confidence: 'High',
+      qty: '1 LS',
+      lowUnit: '$12,500',
+      expUnit: 16200,
+      highUnit: '$21,000',
+      expTotal: '$16,200',
+      includes: ['Drain-waste-vent piping, PEX manifold install, test air pressure.'],
+      excludes: ['Plumbing fixtures, water heater unit, municipal tap fees.'],
+      approved: true
+    }
   ]);
 
   // ─── ACTION HANDLERS ───
@@ -912,29 +1022,32 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
     const confs = ['All Conf.', 'High', 'Moderate', 'Low', 'Allowance'];
 
     const filteredQuantities = quantities.filter(q => {
-      const matchSearch = q.name.toLowerCase().includes(qtySearch.toLowerCase()) ||
-        q.trade.toLowerCase().includes(qtySearch.toLowerCase()) ||
-        q.scope.toLowerCase().includes(qtySearch.toLowerCase());
-      const matchTrade = qtyTradeFilter === 'All Trades' || q.trade === qtyTradeFilter;
-      const matchConf = qtyConfFilter === 'All Conf.' || q.confidence === qtyConfFilter;
+      const qSearch = qtySearch.trim().toLowerCase();
+      const matchSearch = !qSearch ||
+        q.name.toLowerCase().includes(qSearch) ||
+        q.trade.toLowerCase().includes(qSearch) ||
+        q.scope.toLowerCase().includes(qSearch) ||
+        q.refLoc.toLowerCase().includes(qSearch);
+      const matchTrade = qtyTradeFilter.toLowerCase() === 'all trades' || q.trade.toLowerCase() === qtyTradeFilter.toLowerCase();
+      const matchConf = qtyConfFilter.toLowerCase() === 'all conf.' || q.confidence.toLowerCase() === qtyConfFilter.toLowerCase();
       return matchSearch && matchTrade && matchConf;
     });
 
     const kpis = [
       { label: 'Line Items', value: quantities.length.toString() },
-      { label: 'Approved', value: quantities.filter(q => q.approved).length.toString() },
+      { label: 'Approved', value: `${quantities.filter(q => q.approved).length} / ${quantities.length}` },
       { label: 'Trades', value: new Set(quantities.map(q => q.trade)).size.toString() },
       { label: 'Low / Allow.', value: quantities.filter(q => q.confidence === 'Low' || q.confidence === 'Allowance').length.toString() },
     ];
 
     return (
       <div className="flex flex-col gap-3 animate-fade-in">
-        {/* KPI Bar */}
+        {/* KPI Bar (Consistent Height & Clean Typography) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {kpis.map((kpi, i) => (
-            <div key={i} className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
-              <p className="text-[10px] text-slate-400 font-semibold tracking-tight">{kpi.label}</p>
-              <p className="text-sm font-black text-white mt-0.5">{kpi.value}</p>
+            <div key={i} className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[72px]">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">{kpi.label}</p>
+              <p className="text-sm sm:text-base font-black text-white mt-1 tabular-nums truncate">{kpi.value}</p>
             </div>
           ))}
         </div>
@@ -980,9 +1093,9 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
         {/* Quantities Table in sleek compact wrapper */}
         <div className="w-full overflow-x-auto rounded-2xl border border-[#142036] bg-[#060B17]/60">
-          <div className="min-w-[560px]">
+          <div className="min-w-[535px]">
             {/* Table Header */}
-            <div className="grid grid-cols-[190px_55px_48px_50px_90px_65px_62px] items-center px-3.5 py-2 border-b border-[#142036] text-[10px] font-semibold text-slate-500">
+            <div className="grid grid-cols-[175px_52px_44px_48px_85px_62px_45px_24px] items-center px-3.5 py-2 border-b border-[#142036] text-[10px] font-semibold text-slate-500">
               <div>Trade / Scope</div>
               <div className="text-center">Qty</div>
               <div className="text-center">Unit</div>
@@ -990,6 +1103,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <div className="text-left pl-1">Ref / Loc</div>
               <div className="text-center">Conf.</div>
               <div className="text-center">Approve</div>
+              <div></div>
             </div>
 
             {/* Table Rows (High-Density & Clean) */}
@@ -1001,14 +1115,14 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   <div
                     key={item.id}
                     onClick={() => setSelectedQtyItem(item)}
-                    className="grid grid-cols-[190px_55px_48px_50px_90px_65px_62px] items-center px-3.5 py-1.5 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
+                    className="grid grid-cols-[175px_52px_44px_48px_85px_62px_45px_24px] items-center px-3.5 py-1.5 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
                   >
                     {/* Trade / Scope (1-line title, clean subline with tight spacing) */}
                     <div className="pr-2 min-w-0">
                       <p className="text-xs font-bold text-white truncate leading-none group-hover:text-blue-400 transition-colors" title={item.name || 'Untitled Scope Item'}>
                         {item.name || <span className="text-slate-500 italic">Untitled Scope Item</span>}
                       </p>
-                      <p className="text-[10px] text-slate-400 font-medium truncate leading-none mt-0.5">
+                      <p className="text-[10px] text-slate-400 font-medium truncate leading-none mt-1">
                         {item.trade} · {item.scope}
                       </p>
                     </div>
@@ -1019,7 +1133,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                         type="number"
                         value={item.qty}
                         onChange={e => handleUpdateQuantityField(item.id, 'qty', parseFloat(e.target.value) || 0)}
-                        className="w-12 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
+                        className="w-11 h-6 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
                       />
                     </div>
 
@@ -1029,7 +1143,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                         type="text"
                         value={item.unit}
                         onChange={e => handleUpdateQuantityField(item.id, 'unit', e.target.value)}
-                        className="w-10 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-0.5 text-[11px] font-bold text-slate-200 text-center outline-none"
+                        className="w-9 h-6 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-0.5 text-[10px] font-bold text-slate-200 text-center outline-none"
                       />
                     </div>
 
@@ -1039,7 +1153,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                         type="number"
                         value={item.waste}
                         onChange={e => handleUpdateQuantityField(item.id, 'waste', parseFloat(e.target.value) || 0)}
-                        className="w-10 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-0.5 text-xs font-bold text-white text-center outline-none tabular-nums"
+                        className="w-10 h-6 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-lg px-0.5 text-xs font-bold text-white text-center outline-none tabular-nums"
                       />
                     </div>
 
@@ -1061,8 +1175,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                       </span>
                     </div>
 
-                    {/* Approve Status & Open Details */}
-                    <div className="flex items-center justify-center gap-1.5" onClick={e => e.stopPropagation()}>
+                    {/* Approve Status */}
+                    <div className="flex items-center justify-center" onClick={e => e.stopPropagation()}>
                       <button 
                         onClick={() => handleToggleQuantity(item.id)} 
                         className="cursor-pointer"
@@ -1073,13 +1187,11 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                           : <ToggleLeft className="w-5 h-5 text-slate-600 hover:text-slate-500" />
                         }
                       </button>
-                      <button 
-                        onClick={() => setSelectedQtyItem(item)} 
-                        className="text-slate-600 hover:text-blue-400 p-0.5 cursor-pointer transition-colors"
-                        title="View details & notes"
-                      >
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 transition-colors" />
-                      </button>
+                    </div>
+
+                    {/* Open Details Chevron */}
+                    <div className="flex items-center justify-center">
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 transition-colors" />
                     </div>
                   </div>
                 ))
@@ -1253,7 +1365,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                     }
                   }}
                   className="h-10 px-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-                  title="Delete item"
+                  title="Delete scope item"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -1277,7 +1389,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   ) : (
                     <>
                       <Check className="w-4 h-4 text-emerald-400" />
-                      <span>Approve Scope Item</span>
+                      <span>Approve Scope & Quantity</span>
                     </>
                   )}
                 </button>
@@ -1291,36 +1403,73 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
   // ─── STEP 5: MATERIALS ───
   const renderMaterials = () => {
+    const mSearch = materialSearch.trim().toLowerCase();
     const filtered = materialItems.filter(m =>
-      m.name.toLowerCase().includes(materialSearch.toLowerCase()) ||
-      m.scope.toLowerCase().includes(materialSearch.toLowerCase())
+      !mSearch ||
+      m.name.toLowerCase().includes(mSearch) ||
+      m.scope.toLowerCase().includes(mSearch) ||
+      m.source.toLowerCase().includes(mSearch)
     );
     const calcTotal = (key: 'expUnit' | 'lowUnit' | 'highUnit') =>
       materialItems.reduce((acc, m) => acc + (m[key] * (parseFloat(m.qty) || 1)), 0);
-    const fmt = (n: number) => `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+    const fmt = (n: number) => `$${Math.round(n).toLocaleString()}`;
     const approvedCount = materialItems.filter(m => m.approved).length;
 
     return (
       <div className="flex flex-col gap-4 animate-fade-in">
-        {/* KPI Row (4 top cards) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
-            <p className="text-[11px] text-slate-400 font-semibold tracking-tight">Line Items</p>
-            <p className="text-xl font-black text-white mt-1">{materialItems.length}</p>
+        {/* KPI Row (2x2 Grid - Guaranteed 180px+ per card, zero overflow, clean visual hierarchy) */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {/* 1. Line Items */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Line Items</p>
+              <p className="text-lg font-black text-white tabular-nums mt-0.5">{materialItems.length} <span className="text-xs font-normal text-slate-400">items</span></p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0">
+              <Layers className="w-4 h-4" />
+            </div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
-            <p className="text-[11px] text-slate-400 font-semibold tracking-tight">Approved</p>
-            <p className="text-xl font-black text-white mt-1">{approvedCount}</p>
+
+          {/* 2. Approved */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Approved</p>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
+              </div>
+              <p className="text-lg font-black text-white tabular-nums mt-0.5">
+                {approvedCount} <span className="text-xs font-semibold text-slate-500">/ {materialItems.length}</span>
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between min-w-0">
-            <p className="text-[11px] text-slate-400 font-semibold tracking-tight truncate">Expected Total</p>
-            <p className="text-xl font-black text-emerald-400 mt-1 truncate">{fmt(calcTotal('expUnit'))}</p>
+
+          {/* 3. Expected Total */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Expected Total</p>
+              <p className="text-lg font-black text-emerald-400 tabular-nums mt-0.5 truncate">
+                {fmt(calcTotal('expUnit'))}
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+              <DollarSign className="w-4 h-4" />
+            </div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col justify-between min-w-0">
-            <p className="text-[11px] text-slate-400 font-semibold tracking-tight">Price Range</p>
-            <p className="text-xs sm:text-sm font-black text-emerald-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
-              {fmt(calcTotal('lowUnit'))} – {fmt(calcTotal('highUnit'))}
-            </p>
+
+          {/* 4. Price Range */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Price Range</p>
+              <p className="text-sm sm:text-base font-black text-emerald-400 tabular-nums mt-0.5 truncate">
+                ${Math.round(calcTotal('lowUnit') / 1000)}k – ${Math.round(calcTotal('highUnit') / 1000)}k
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 flex-shrink-0">
+              <TrendingUp className="w-4 h-4" />
+            </div>
           </div>
         </div>
 
@@ -1349,20 +1498,20 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
           </button>
         </div>
 
-        {/* Materials Table in sleek compact wrapper */}
-        <div className="w-full overflow-x-auto rounded-2xl border border-[#142036] bg-[#060B17]/60">
-          <div className="min-w-[480px]">
+        {/* Materials Table in sleek spacious wrapper (Generous row spacing, zero truncation, clean inputs) */}
+        <div className="w-full overflow-x-auto rounded-2xl border border-[#142036] bg-[#060B17] shadow-sm">
+          <div className="min-w-[560px]">
             {/* Table Header */}
-            <div className="grid grid-cols-[180px_60px_70px_75px_55px_30px] items-center px-3.5 py-2 border-b border-[#142036] text-[10px] font-semibold text-slate-500">
+            <div className="grid grid-cols-[200px_60px_84px_80px_50px_30px] items-center px-4 py-3 border-b border-[#142036] text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-[#070D1A]">
               <div>Material / Scope</div>
               <div className="text-center">Qty</div>
               <div className="text-center">Exp Unit</div>
-              <div className="text-right pr-1">Total</div>
+              <div className="text-right pr-2">Total</div>
               <div className="text-center">Approve</div>
-              <div className="text-center"></div>
+              <div></div>
             </div>
 
-            {/* Table Rows (High-Density & Clean, Matching Quantities) */}
+            {/* Table Rows (Spacious, Clean Spacing, Zero Clipping) */}
             <div className="divide-y divide-[#142036]/60">
               {filtered.length === 0 ? (
                 <div className="p-8 text-center text-slate-500 text-xs font-semibold">No materials match your search.</div>
@@ -1374,14 +1523,14 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                     <div
                       key={item.id}
                       onClick={() => setSelectedMaterialItem(item)}
-                      className="grid grid-cols-[180px_60px_70px_75px_55px_30px] items-center px-3.5 py-1.5 hover:bg-[#0A1328] active:bg-[#0E1A36] transition-colors cursor-pointer group"
+                      className="grid grid-cols-[200px_60px_84px_80px_50px_30px] items-center px-4 py-3.5 hover:bg-white/[0.02] active:bg-[#0E1A36] transition-colors cursor-pointer group"
                     >
-                      {/* Name & Scope (Tight spacing, 1-line each) */}
-                      <div className="pr-2 min-w-0">
-                        <p className="text-xs font-bold text-white truncate leading-none group-hover:text-blue-400 transition-colors" title={item.name || 'Untitled Material'}>
+                      {/* Name & Scope (Clean line-clamp-2, generous width) */}
+                      <div className="pr-3 min-w-0">
+                        <p className="text-xs font-bold text-white leading-tight line-clamp-2 group-hover:text-blue-400 transition-colors" title={item.name || 'Untitled Material'}>
                           {item.name || <span className="text-slate-500 italic">Untitled Material</span>}
                         </p>
-                        <p className="text-[10px] text-slate-400 font-medium truncate leading-none mt-0.5">
+                        <p className="text-[10px] text-slate-400 font-medium truncate mt-1">
                           {item.scope}
                         </p>
                       </div>
@@ -1391,18 +1540,22 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                         {item.qty}
                       </div>
 
-                      {/* Exp Unit Input */}
-                      <div className="flex justify-center" onClick={e => e.stopPropagation()}>
-                        <input
-                          type="number"
-                          value={item.expUnit}
-                          onChange={e => handleUpdateMaterialField(item.id, 'expUnit', parseFloat(e.target.value) || 0)}
-                          className="w-13 h-6.5 bg-[#0E1B30] border border-[#1A2744] focus:border-blue-500 rounded-md px-1 text-xs font-bold text-white text-center outline-none tabular-nums"
-                        />
+                      {/* Exp Unit Input (Spacious fitting input with full decimal visibility) */}
+                      <div className="flex items-center justify-center" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center bg-[#0A1328] border border-[#1A2E50] focus-within:border-blue-500 rounded-xl px-2 py-1 w-[68px] shadow-inner transition-colors">
+                          <span className="text-[10px] font-bold text-slate-400 mr-0.5">$</span>
+                          <input
+                            type="number"
+                            step="any"
+                            value={item.expUnit}
+                            onChange={e => handleUpdateMaterialField(item.id, 'expUnit', parseFloat(e.target.value) || 0)}
+                            className="w-full text-xs font-bold text-white text-right bg-transparent outline-none tabular-nums"
+                          />
+                        </div>
                       </div>
 
                       {/* Exp Total */}
-                      <div className="text-right pr-1 text-xs font-black text-emerald-400 tabular-nums">
+                      <div className="text-right pr-2 text-xs font-black text-emerald-400 tabular-nums whitespace-nowrap">
                         {fmt(rowTotal)}
                       </div>
 
@@ -1410,13 +1563,13 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                       <div className="flex justify-center" onClick={e => e.stopPropagation()}>
                         <button
                           onClick={() => handleToggleMaterial(item.id)}
-                          className="cursor-pointer"
+                          className="cursor-pointer transition-all active:scale-90"
                           title={item.approved ? 'Approved' : 'Click to approve'}
                         >
                           {item.approved ? (
-                            <ToggleRight className="w-5 h-5 text-emerald-400" />
+                            <ToggleRight className="w-6 h-6 text-blue-500 hover:text-blue-400" />
                           ) : (
-                            <ToggleLeft className="w-5 h-5 text-slate-500 hover:text-slate-400" />
+                            <ToggleLeft className="w-6 h-6 text-slate-600 hover:text-slate-500" />
                           )}
                         </button>
                       </div>
@@ -1616,13 +1769,16 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
   // ─── STEP 6: LABOR ───
   const renderLabor = () => {
+    const lSearch = laborSearch.trim().toLowerCase();
     const filteredLabor = laborItems.filter(l =>
-      l.name.toLowerCase().includes(laborSearch.toLowerCase()) ||
-      l.trade.toLowerCase().includes(laborSearch.toLowerCase())
+      !lSearch ||
+      l.name.toLowerCase().includes(lSearch) ||
+      l.trade.toLowerCase().includes(lSearch) ||
+      l.includes.some(inc => inc.toLowerCase().includes(lSearch)) ||
+      l.excludes.some(exc => exc.toLowerCase().includes(lSearch))
     );
 
     const totalLaborVal = laborItems.reduce((acc, curr) => {
-      // expTotal is e.g. "$8,500"
       const val = parseFloat(curr.expTotal.replace(/[^0-9.-]+/g, '')) || 0;
       return acc + val;
     }, 0);
@@ -1636,98 +1792,205 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
     const kpis = [
       { label: 'Line Items', value: laborItems.length.toString() },
-      { label: 'Approved', value: laborItems.filter(l => l.approved).length.toString() },
+      { label: 'Approved', value: `${laborItems.filter(l => l.approved).length} / ${laborItems.length}` },
       { label: 'Expected Total', value: `$${totalLaborVal.toLocaleString()}`, highlight: true },
-      { label: 'Price Range', value: `${formatKVal(lowRange)} – ${formatKVal(highRange)}`, highlight: true },
+      { label: 'Price Range', value: `${formatKVal(lowRange)} – ${formatKVal(highRange)}`, highlight: true, fullRange: `$${lowRange.toLocaleString()} – $${highRange.toLocaleString()}` },
     ];
 
+    const handleUpdateLaborExpUnit = (id: string, val: number) => {
+      setLaborItems(prev => prev.map(item => {
+        if (item.id === id) {
+          const qtyNum = parseFloat(item.qty.replace(/[^0-9.-]+/g, '')) || 1;
+          const totalNum = Math.round(val * qtyNum);
+          return {
+            ...item,
+            expUnit: val,
+            expTotal: `$${totalNum.toLocaleString()}`
+          };
+        }
+        return item;
+      }));
+    };
+
     return (
-      <div className="flex flex-col gap-3 animate-fade-in">
-        {/* Compact Info Banner */}
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-blue-500/5 border border-blue-500/15 text-[11px] text-slate-300">
-          <Info className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-          <span>Direct subcontractor labor estimate (excludes GC markup, permits &amp; fees).</span>
-        </div>
-
-        {/* Complexity Factors */}
-        <div className="p-3 rounded-xl bg-[#060B17] border border-[#142036]">
-          <h4 className="text-[11px] font-bold text-white mb-2">Project Complexity Factors</h4>
-          <div className="flex flex-wrap gap-1.5">
-            {complexityFactors.map((factor, i) => (
-              <span key={i} className="px-2.5 py-1 rounded-full bg-[#0A1328] border border-[#1A2744] text-[10px] text-slate-300 font-medium">
-                {factor}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* KPI Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {kpis.map((kpi, i) => (
-            <div key={i} className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between">
-              <p className="text-[10px] text-slate-400 font-semibold tracking-tight">{kpi.label}</p>
-              <p className={`text-sm font-black mt-0.5 truncate ${kpi.highlight ? 'text-emerald-400' : 'text-white'}`}>{kpi.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Search + Add */}
+      <div className="flex flex-col gap-3 animate-fade-in font-sans">
+        {/* Search Bar */}
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <input 
               value={laborSearch}
               onChange={e => setLaborSearch(e.target.value)}
-              className="w-full h-8 bg-[#060B17] border border-[#142036] rounded-xl pl-8 pr-3 text-[11px] text-white placeholder-slate-500 outline-none" 
-              placeholder="Search labor scope..." 
+              className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500 rounded-xl pl-9 pr-3 text-xs text-white placeholder-slate-500 outline-none transition-colors" 
+              placeholder="Search labor items..." 
             />
           </div>
           <button 
             onClick={handleAddMockLabor}
-            className="h-8 px-3 bg-[#060B17] border border-[#142036] rounded-xl text-[10px] font-bold text-slate-300 flex items-center gap-1.5 cursor-pointer hover:border-blue-500/30 transition-colors"
+            className="h-10 px-4 bg-[#060B17] border border-[#142036] hover:border-blue-500/40 rounded-xl text-xs font-bold text-slate-300 flex items-center gap-1.5 cursor-pointer transition-colors active:scale-95 flex-shrink-0"
           >
-            <Plus className="w-3 h-3" /> Add
+            <Plus className="w-3.5 h-3.5" /> Add
           </button>
         </div>
 
-        {/* Labor Items */}
-        <div className="flex flex-col gap-1.5">
-          {filteredLabor.length === 0 ? (
-            <div className="p-8 text-center text-slate-500 text-xs font-semibold">No items match your search.</div>
-          ) : (
-            filteredLabor.map(item => (
-              <div key={item.id} className="p-3 rounded-xl bg-[#060B17] border border-[#142036]">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-bold text-white">{item.name}</p>
-                    <p className="text-[10px] text-slate-400 font-medium">{item.trade} · {item.confidence}</p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[11px] font-bold text-emerald-400 mr-1">{item.expTotal}</span>
-                    <button onClick={() => handleToggleLabor(item.id)} className="cursor-pointer">
-                      {item.approved
-                        ? <ToggleRight className="w-5 h-5 text-blue-400" />
-                        : <ToggleLeft className="w-5 h-5 text-slate-500" />
-                      }
-                    </button>
-                    <button onClick={() => handleDeleteLabor(item.id)} className="text-slate-500 hover:text-red-400 p-1 cursor-pointer transition-colors">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mt-2 pt-2 border-t border-[#142036] text-[10px]">
-                  <span className="text-slate-400 font-medium">Qty: {item.qty}</span>
-                  <span className="text-slate-500">Low {item.lowUnit}</span>
-                  <span className="text-white font-bold">Exp ${item.expUnit}/unit</span>
-                  <span className="text-slate-500">High {item.highUnit}</span>
-                </div>
-                <div className="mt-1.5 text-[10px] text-slate-500 leading-relaxed flex flex-wrap gap-x-2 gap-y-0.5">
-                  {item.includes.map((inc, i) => <span key={i} className="text-emerald-400 font-medium">&#10003; {inc}</span>)}
-                  {item.excludes.map((exc, i) => <span key={i} className="text-rose-400 font-medium">&#10007; {exc}</span>)}
-                </div>
+        {/* Top 4 KPI Metrics (2x2 Grid - Guaranteed 180px+ per card, zero overflow, clean hierarchy) */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {/* 1. Line Items */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Line Items</p>
+              <p className="text-lg font-black text-white tabular-nums mt-0.5">{laborItems.length} <span className="text-xs font-normal text-slate-400">trades</span></p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0">
+              <Layers className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* 2. Approved */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Approved</p>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
               </div>
-            ))
-          )}
+              <p className="text-lg font-black text-white tabular-nums mt-0.5">
+                {laborItems.filter(l => l.approved).length} <span className="text-xs font-semibold text-slate-500">/ {laborItems.length}</span>
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* 3. Expected Total */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Expected Total</p>
+              <p className="text-lg font-black text-emerald-400 tabular-nums mt-0.5 truncate">
+                ${totalLaborVal.toLocaleString()}
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+              <DollarSign className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* 4. Price Range */}
+          <div className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between shadow-sm min-h-[62px]">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Price Range</p>
+              <p className="text-sm sm:text-base font-black text-emerald-400 tabular-nums mt-0.5 truncate">
+                {formatKVal(lowRange)} – {formatKVal(highRange)}
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 flex-shrink-0">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* ─── SPREADSHEET TABLE (Exact Reference Screenshot Layout) ─── */}
+        <div className="w-full overflow-x-auto scrollbar-none rounded-2xl bg-[#060B17] border border-[#142036] shadow-sm">
+          <div className="min-w-[850px]">
+            {/* Table Header */}
+            <div className="grid grid-cols-[135px_60px_60px_74px_75px_75px_minmax(280px,1fr)_60px] items-center px-4 py-3 border-b border-[#142036] text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-[#070D1A]">
+              <div>Trade / Scope</div>
+              <div>Qty</div>
+              <div>Low unit</div>
+              <div className="text-center pr-1">Exp unit</div>
+              <div className="pl-3.5">High unit</div>
+              <div className="text-right pr-2">Exp total</div>
+              <div className="pl-3">Includes / Excludes</div>
+              <div className="text-center">Approve</div>
+            </div>
+
+            {/* Table Rows */}
+            <div className="divide-y divide-[#142036]/60">
+              {filteredLabor.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 text-xs font-semibold">
+                  No labor items match your search.
+                </div>
+              ) : (
+                filteredLabor.map((item) => (
+                  <div 
+                    key={item.id} 
+                    className="grid grid-cols-[135px_60px_60px_74px_75px_75px_minmax(280px,1fr)_60px] items-start px-4 py-3.5 hover:bg-white/[0.02] transition-colors text-xs"
+                  >
+                    {/* 1. Trade / Scope */}
+                    <div className="pr-2 min-w-0">
+                      <h4 className="font-bold text-white leading-tight line-clamp-2">{item.name}</h4>
+                      <span className="text-[10px] text-slate-400 font-medium block mt-0.5 truncate">
+                        {item.trade} · {item.confidence}
+                      </span>
+                    </div>
+
+                    {/* 2. Qty */}
+                    <div className="text-xs text-slate-300 font-medium whitespace-nowrap pt-1">
+                      {item.qty}
+                    </div>
+
+                    {/* 3. Low unit */}
+                    <div className="text-xs text-slate-400 font-medium whitespace-nowrap pt-1">
+                      {item.lowUnit}
+                    </div>
+
+                    {/* 4. Exp unit Input Box */}
+                    <div className="flex justify-center pr-1 pt-0.5">
+                      <input
+                        type="number"
+                        step="any"
+                        value={item.expUnit}
+                        onChange={e => handleUpdateLaborExpUnit(item.id, parseFloat(e.target.value) || 0)}
+                        className="w-[56px] h-8 bg-[#0A1328] border border-[#1A2E50] focus:border-blue-500 rounded-xl text-xs font-bold text-white text-center outline-none tabular-nums transition-colors shadow-inner"
+                      />
+                    </div>
+
+                    {/* 5. High unit */}
+                    <div className="text-xs text-slate-400 font-medium whitespace-nowrap pl-3.5 pt-1">
+                      {item.highUnit}
+                    </div>
+
+                    {/* 6. Exp total */}
+                    <div className="text-right pr-2 text-xs font-black text-white tabular-nums whitespace-nowrap pt-1">
+                      {item.expTotal}
+                    </div>
+
+                    {/* 7. Includes / Excludes */}
+                    <div className="pl-3 pr-2 text-[10px] leading-relaxed flex flex-col gap-1 text-slate-400">
+                      {item.includes.length > 0 && (
+                        <div className="flex items-start gap-1 text-slate-300">
+                          <span className="text-emerald-400 font-bold">✓</span>
+                          <span>{item.includes.join(', ')}</span>
+                        </div>
+                      )}
+                      {item.excludes.length > 0 && (
+                        <div className="flex items-start gap-1 text-slate-500">
+                          <span className="text-slate-500 font-bold">✗</span>
+                          <span>{item.excludes.join(', ')}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 8. Approve Switch */}
+                    <div className="flex justify-center pt-0.5">
+                      <button
+                        onClick={() => handleToggleLabor(item.id)}
+                        className="cursor-pointer transition-all active:scale-90"
+                        title={item.approved ? 'Approved' : 'Unapproved'}
+                      >
+                        {item.approved ? (
+                          <ToggleRight className="w-6 h-6 text-blue-500 hover:text-blue-400" />
+                        ) : (
+                          <ToggleLeft className="w-6 h-6 text-slate-600 hover:text-slate-500" />
+                        )}
+                      </button>
+                    </div>
+
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );

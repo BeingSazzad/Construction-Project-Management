@@ -270,13 +270,16 @@ export interface DailyLogItem {
   projectName: string;
   date: string;
   weather: {
-    condition: 'Sunny' | 'Partly Cloudy' | 'Rainy' | 'Windy' | 'Clear';
+    condition: 'Sunny' | 'Partly Cloudy' | 'Rainy' | 'Windy' | 'Clear' | string;
     temperature: string;
-    windSpeed: string;
-    precipitation: string;
-    siteCondition: 'Dry' | 'Muddy' | 'Normal';
+    windSpeed?: string;
+    precipitation?: string;
+    siteCondition?: 'Dry' | 'Muddy' | 'Normal' | string;
   };
   totalHeadcount: number;
+  visitors?: string;
+  deliveries?: string[];
+  equipment?: string;
   crews: {
     trade: string;
     subcontractor: string;

@@ -1,32 +1,33 @@
-import React, { useState, useMemo } from 'react';
-import { Project, Task, SitePhoto, DocumentItem, PunchItem, ProjectStatus, ChangeOrder } from '../../types';
+import React, { useMemo } from 'react';
+import { Project, Task, SitePhoto, DocumentItem, PunchItem, ProjectStatus, ChangeOrder, TaskStatus } from '../../types';
 import { 
-  MapPin, Calendar, CheckSquare, Camera, FileText, 
-  AlertCircle, Check, ChevronDown, ChevronRight, Plus, 
-  Coins, Activity, FilePlus2, User, ClipboardList 
+  MapPin, Calendar, Camera, FileText, 
+  AlertCircle, Check, Plus, Coins, 
+  Activity, FilePlus2, User, ClipboardList,
+  Building2, ShieldCheck, FileCheck, Compass, Clock, ArrowUpRight,
+  CheckSquare
 } from 'lucide-react';
 import { StatusBadge } from '../common/StatusBadge';
 
 interface ProjectOverviewTabProps {
   project: Project;
-  tasks: Task[];
+  tasks?: Task[];
   photos?: SitePhoto[];
   documents?: DocumentItem[];
   punchItems: PunchItem[];
   dailyLogs?: any[];
   onSelectTab?: (tab: string) => void;
   onNavigate?: (tab: string) => void;
-  onCreateTask?: () => void;
   onCreatePunch?: () => void;
   onUpdateStatus?: (newStatus: ProjectStatus) => void;
   changeOrders?: ChangeOrder[];
   onCreateChangeOrder?: () => void;
-  onUpdateTaskStatus?: (taskId: string, status: any) => void;
+  onUpdateTaskStatus?: (taskId: string, status: TaskStatus) => void;
 }
 
 export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   project,
-  tasks,
+  tasks = [],
   photos = [],
   documents = [],
   punchItems = [],
@@ -34,8 +35,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   onSelectTab,
   onNavigate,
   changeOrders = [],
-  onCreateChangeOrder,
-  onUpdateTaskStatus
+  onCreateChangeOrder
 }) => {
   const projectCOs = useMemo(() => {
     return (changeOrders || []).filter(co => co.projectId === project.id);
@@ -60,54 +60,13 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   };
 
   const openPunchCount = punchItems.filter(p => p.status === 'Open').length;
-  const completedTasksCount = tasks.filter(t => t.status === 'Completed').length;
-
-  // Track expanded state for Task Phases
-  const [expandedPhases, setExpandedPhases] = useState<Record<string, boolean>>({
-    'Structural Framing': true,
-    'MEP Rough-in': false,
-    'Site Logistics & Safety': false
-  });
-
-  const handleToggleTask = (task: Task) => {
-    if (onUpdateTaskStatus) {
-      const nextStatus = task.status === 'Completed' ? 'In Progress' : 'Completed';
-      onUpdateTaskStatus(task.id, nextStatus);
-    }
-  };
-
-  const togglePhase = (phaseName: string) => {
-    setExpandedPhases(prev => ({
-      ...prev,
-      [phaseName]: !prev[phaseName]
-    }));
-  };
-
-  // Group tasks by Phase/Category
-  const tasksByPhase = tasks.reduce<Record<string, Task[]>>((acc, task) => {
-    const phase = task.milestone || 'Pre-Construction';
-    if (!acc[phase]) acc[phase] = [];
-    acc[phase].push(task);
-    return acc;
-  }, {});
-
-  // Project Stage Index mapping
-  const stageOrder: Partial<Record<ProjectStatus, number>> = {
-    'Planning': 0,
-    'Pre-Construction': 1,
-    'In Progress': 2,
-    'Completed': 3
-  };
-  
-  const currentIdx = stageOrder[project.status] !== undefined ? stageOrder[project.status]! : 0;
-  const stages: ProjectStatus[] = ['Planning', 'Pre-Construction', 'In Progress', 'Completed'];
+  const projectDailyLogsCount = dailyLogs.length || (project.dailyLogs ? project.dailyLogs.length : 0);
 
   return (
-    <div className="w-full flex flex-col gap-3 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
       
       {/* ─── 1. HERO PROJECT BANNER CARD ─── */}
       <div className="relative rounded-2xl overflow-hidden border border-[#1A263E] bg-[#070D1A] shadow-md group">
-        {/* Cover Image with gradient overlay */}
         <div className="h-44 w-full relative">
           <img
             src={project.coverImage || project.thumbnail || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80'}
@@ -117,7 +76,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070D1A] via-[#070D1A]/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070D1A] via-[#070D1A]/55 to-transparent" />
           
           {/* Top Status & Code Badge */}
           <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
@@ -142,120 +101,63 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
 
         {/* Project Meta Info Sub-header */}
-        <div className="px-3 py-2 bg-[#070D1A] border-t border-[#142036] flex items-center justify-between text-[12px] text-slate-400">
+        <div className="px-3.5 py-2.5 bg-[#070D1A] border-t border-[#142036] flex items-center justify-between text-xs text-slate-400">
           <span>GC Owner: <strong className="text-white font-bold">Sazzad</strong></span>
-          <span className="text-slate-500">•</span>
+          <span className="text-slate-600">•</span>
           <span>Target End: <strong className="text-white font-bold">{project.targetEndDate || 'Jun 2026'}</strong></span>
         </div>
       </div>
 
-      {/* ─── 2. TOP 3 KPI METRIC CARDS ─── */}
+      {/* ─── 2. EXECUTIVE 3-KPI METRIC CARDS ─── */}
       <div className="grid grid-cols-3 gap-2">
         {/* Progress Card */}
-        <div className="p-2.5 rounded-xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
+        <div className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-1 text-slate-400">
-            <Activity className="w-3 h-3 text-blue-400" />
+            <Activity className="w-3.5 h-3.5 text-blue-400" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Progress</span>
           </div>
-          <div className="mt-1">
+          <div className="mt-2">
             <span className="text-base font-black text-white">{project.progress}%</span>
-            <div className="w-full bg-[#050811] h-1 rounded-full overflow-hidden mt-1">
-              <div className="bg-blue-500 h-full rounded-full" style={{ width: `${project.progress}%` }} />
+            <div className="w-full bg-[#050811] h-1.5 rounded-full overflow-hidden mt-1.5">
+              <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: `${project.progress}%` }} />
             </div>
           </div>
         </div>
 
-        {/* Tasks Card */}
-        <div className="p-2.5 rounded-xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
+        {/* Budget Card */}
+        <div className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-1 text-slate-400">
-            <CheckSquare className="w-3 h-3 text-emerald-400" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Tasks</span>
+            <Coins className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Budget</span>
           </div>
-          <div className="mt-1 flex flex-col">
-            <span className="text-base font-black text-white">{completedTasksCount}/{tasks.length || 71}</span>
-            <span className="text-[10px] text-slate-400 font-medium">completed</span>
+          <div className="mt-2 flex flex-col">
+            <span className="text-base font-black text-white">${(project.budget.total / 1000000).toFixed(2)}M</span>
+            <span className="text-[10px] text-emerald-400 font-semibold">Active Ledger</span>
           </div>
         </div>
 
         {/* Timeline Card */}
-        <div className="p-2.5 rounded-xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
+        <div className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col justify-between shadow-sm">
           <div className="flex items-center gap-1 text-slate-400">
-            <Calendar className="w-3 h-3 text-amber-400" />
+            <Calendar className="w-3.5 h-3.5 text-amber-400" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Timeline</span>
           </div>
-          <div className="mt-1 flex flex-col leading-tight">
-            <span className="text-xs font-bold text-white truncate">Oct 15</span>
-            <span className="text-[10px] text-slate-400 truncate">→ Apr 2027</span>
+          <div className="mt-2 flex flex-col leading-tight">
+            <span className="text-xs font-bold text-white truncate">{project.startDate?.split('-')[0] || '2025'}</span>
+            <span className="text-[10px] text-slate-400 truncate">→ {project.targetEndDate?.split('-')[0] || '2026'}</span>
           </div>
         </div>
       </div>
 
-      {/* ─── 3. PROJECT STAGE (LIFECYCLE STEPPER) ─── */}
-      <div className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
-            Project Stage
-          </span>
-          <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
-            Stage {currentIdx + 1} of 4
-          </span>
-        </div>
-
-        <div className="relative flex items-center justify-between pt-1 pb-0.5 px-2">
-          {/* Track Bar Background */}
-          <div className="absolute top-[16px] left-6 right-6 h-0.5 bg-[#142036] z-0" />
-          
-          {/* Active Fill Track */}
-          <div 
-            className="absolute top-[16px] left-6 h-0.5 bg-gradient-to-r from-blue-500 to-emerald-400 z-0 transition-all duration-500" 
-            style={{ 
-              width: currentIdx === 0 ? '0%' : currentIdx === 1 ? '33%' : currentIdx === 2 ? '66%' : '100%' 
-            }}
-          />
-
-          {stages.map((stage, idx) => {
-            const isCompleted = idx < currentIdx;
-            const isActive = idx === currentIdx;
-
-            return (
-              <div
-                key={stage}
-                className="flex flex-col items-center gap-1 z-10 select-none"
-              >
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                  isCompleted
-                    ? 'bg-emerald-500 text-white shadow-sm ring-3 ring-[#0A111F]'
-                    : isActive
-                    ? 'bg-blue-600 text-white ring-3 ring-blue-500/30 shadow-md font-bold'
-                    : 'bg-[#070D1A] border border-[#142036] text-slate-500 ring-3 ring-[#0A111F]'
-                }`}>
-                  {isCompleted ? (
-                    <Check className="w-3 h-3 stroke-[3]" />
-                  ) : (
-                    <span className="text-xs font-bold">{idx + 1}</span>
-                  )}
-                </div>
-
-                <span className={`text-[12px] font-bold leading-tight ${
-                  isActive ? 'text-white' : isCompleted ? 'text-emerald-400' : 'text-slate-500'
-                }`}>
-                  {stage === 'Pre-Construction' ? 'Pre-Con' : stage}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ─── 4. QUICK LINKS / NAVIGATION SHORTCUTS (4 Quick Action Buttons: Daily Logs, Photos, Documents, Punch List) ─── */}
+      {/* ─── 3. QUICK FIELD ACCESS BUTTONS (Tasks, Photos, Documents, Punch List) ─── */}
       <div className="grid grid-cols-4 gap-2 bg-[#0A111F] p-3 rounded-2xl border border-[#142036] shadow-sm">
         <button 
-          onClick={() => handleTabChange('daily-logs')}
-          className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-amber-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer group"
+          onClick={() => handleTabChange('tasks')}
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#070D1A] border border-[#142036] hover:border-emerald-500/30 text-center gap-1.5 transition-all active:scale-[0.97] cursor-pointer group"
         >
-          <ClipboardList className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
-          <span className="text-[10px] font-bold text-white leading-tight">Daily Logs</span>
-          <span className="text-[10px] text-slate-500 font-medium">(Log)</span>
+          <CheckSquare className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+          <span className="text-[10px] font-bold text-white leading-tight">Tasks</span>
+          <span className="text-[10px] text-slate-500 font-medium">({tasks.length})</span>
         </button>
 
         <button 
@@ -283,60 +185,92 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           <AlertCircle className="w-5 h-5 text-rose-400 group-hover:scale-110 transition-transform" />
           <span className="text-[10px] font-bold text-white leading-tight">Punch List</span>
           <span className="text-[10px] text-rose-400 font-extrabold bg-rose-500/10 px-1.5 py-0.2 rounded-full">
-            {punchItems.filter(p => p.status === 'Open').length}
+            {openPunchCount}
           </span>
         </button>
       </div>
 
-      {/* ─── 5. FINANCIAL CONTROL BLOCK (Budget + Change Orders Grouped) ─── */}
-      <div className="flex flex-col gap-2.5">
-        {/* Budget Strip */}
-        {project.budget.total > 0 ? (
-          <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wider">
-                <Coins className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Master CSI Budget</span>
-              </div>
-              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                Active
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-3 mt-0.5">
-              <p className="text-[12px] text-slate-400 leading-normal flex-1">
-                CSI 16-Division Master Ledger (${(project.budget.total / 1000000).toFixed(2)}M) is active.
-              </p>
-              <button 
-                onClick={() => handleTabChange('budget')}
-                className="text-xs font-bold text-slate-300 hover:text-white bg-[#070D1A] border border-[#142036] px-3.5 py-1.5 rounded-xl hover:border-slate-600 active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
-              >
-                View Ledger
-              </button>
-            </div>
+      {/* ─── 5. FULL PROJECT SPECIFICATIONS & DETAILS (BENTO GRID) ─── */}
+      <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-3">
+        <div className="flex items-center justify-between border-b border-[#142036] pb-2.5">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-4 h-4 text-blue-400" />
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider">Project Details</h3>
           </div>
-        ) : (
-          <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wider">
-                <Coins className="w-3.5 h-3.5 text-amber-400" />
-                <span>Project Budget</span>
-              </div>
+          <span className="text-[10px] text-slate-400 font-mono bg-[#070D1A] px-2 py-0.5 rounded border border-[#142036]">
+            {project.code}
+          </span>
+        </div>
+        
+        {/* Specifications Grid */}
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          {/* Location & Coordinates */}
+          <div className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <MapPin className="w-3 h-3 text-blue-400" />
+              <span>Jobsite Location</span>
             </div>
-            <div className="flex items-center justify-between gap-3 mt-0.5">
-              <p className="text-[12px] text-slate-400 leading-normal flex-1">
-                No budget spreadsheet imported for this project yet.
-              </p>
-              <button 
-                onClick={() => handleTabChange('budget')}
-                className="text-xs font-bold text-blue-400 hover:text-blue-300 bg-blue-500/10 px-3.5 py-1.5 rounded-xl border border-blue-500/20 active:scale-[0.98] transition-all cursor-pointer flex-shrink-0"
-              >
-                Import Budget
-              </button>
-            </div>
+            <p className="font-semibold text-white text-xs leading-snug break-words">
+              {project.location || '400 Lakeview Blvd'}
+            </p>
+            <p className="text-[10px] text-slate-400">{project.cityState || 'Orlando, FL'}</p>
           </div>
-        )}
 
-        {/* Change Orders Card */}
+          {/* Project Manager & GC */}
+          <div className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <User className="w-3 h-3 text-emerald-400" />
+              <span>Project Leadership</span>
+            </div>
+            <p className="font-semibold text-white text-xs leading-snug">
+              {project.projectManager.name}
+            </p>
+            <p className="text-[10px] text-slate-400">GC Owner: Sazzad</p>
+          </div>
+
+          {/* Start Date */}
+          <div className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <Calendar className="w-3 h-3 text-amber-400" />
+              <span>Start Date</span>
+            </div>
+            <p className="font-semibold text-white text-xs leading-snug">
+              {project.startDate || '2024-11-01'}
+            </p>
+            <p className="text-[10px] text-slate-400">Notice to Proceed</p>
+          </div>
+
+          {/* Target Completion */}
+          <div className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex flex-col gap-1">
+            <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <Clock className="w-3 h-3 text-purple-400" />
+              <span>Target End</span>
+            </div>
+            <p className="font-semibold text-white text-xs leading-snug">
+              {project.targetEndDate || '2026-05-30'}
+            </p>
+            <p className="text-[10px] text-slate-400">Substantial Handover</p>
+          </div>
+        </div>
+
+        {/* Compliance & Permit Info Row */}
+        <div className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div>
+              <p className="text-[11px] font-bold text-white">City Building Permit</p>
+              <p className="text-[10px] text-slate-400 font-mono">Permit #BP-2025-8841 · Approved</p>
+            </div>
+          </div>
+          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">
+            100% Compliant
+          </span>
+        </div>
+      </div>
+
+      {/* ─── 5. CHANGE ORDERS ─── */}
+      <div className="flex flex-col gap-2.5">
+        {/* Change Orders Summary */}
         <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
@@ -370,13 +304,13 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
 
           {/* Change Order List */}
           {projectCOs.length === 0 ? (
-            <p className="text-center text-[12px] text-slate-500 py-1 font-medium italic">
+            <p className="text-center text-xs text-slate-500 py-1 font-medium italic">
               No change orders yet.
             </p>
           ) : (
             <div className="flex flex-col gap-2 mt-1">
               {projectCOs.map((co) => (
-                <div key={co.id} className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between text-xs transition-colors animate-fade-in">
+                <div key={co.id} className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex items-center justify-between text-xs transition-colors">
                   <div className="flex flex-col gap-1 min-w-0">
                     <h4 className="font-bold text-white leading-tight truncate max-w-[200px]">{co.title}</h4>
                     <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold">
@@ -409,124 +343,13 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ─── 6. TASKS SECTION (Directly in Overview!) ─── */}
+      {/* ─── 7. SITE BLUEPRINT & FLOOR PLAN VIEWPORT ─── */}
       <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider">Tasks & Checklists</h3>
-            <span className="text-[10px] text-slate-400 font-medium">({completedTasksCount} done)</span>
-          </div>
-          <button 
-            onClick={() => handleTabChange('tasks')}
-            className="text-[12px] text-blue-400 font-bold hover:underline cursor-pointer"
-          >
-            View All
-          </button>
-        </div>
-
-        {/* Phase Accordions */}
-        <div className="flex flex-col gap-2">
-          {Object.entries(tasksByPhase).slice(0, 3).map(([phaseName, phaseTasks]) => {
-            const isExpanded = !!expandedPhases[phaseName];
-            const phaseDone = phaseTasks.filter(t => t.status === 'Completed').length;
-
-            return (
-              <div key={phaseName} className="border border-[#142036] rounded-xl overflow-hidden bg-[#070D1A]">
-                {/* Header click */}
-                <button 
-                  onClick={() => togglePhase(phaseName)}
-                  className="w-full px-3 py-2 bg-[#09101E] hover:bg-[#0E1A32] flex items-center justify-between text-xs text-slate-200 font-bold border-b border-[#142036] transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                    <span>{phaseName}</span>
-                    <span className="text-[10px] text-slate-400 font-medium ml-1">({phaseDone}/{phaseTasks.length})</span>
-                  </div>
-                  {isExpanded ? <ChevronDown className="w-3.5 h-3.5 text-slate-400" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
-                </button>
-
-                {/* Task Checklist Rows */}
-                {isExpanded && (
-                  <div className="p-1.5 flex flex-col gap-1">
-                    {phaseTasks.map((task) => {
-                      const isTaskDone = task.status === 'Completed';
-                      return (
-                        <div key={task.id} className="flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-white/5 text-xs text-slate-300 transition-colors">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div 
-                              onClick={() => handleToggleTask(task)}
-                              className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 cursor-pointer transition-all active:scale-[0.88] ${
-                                isTaskDone ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#2D3E5D] hover:border-blue-400'
-                              }`}
-                            >
-                              {isTaskDone && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                            </div>
-                            <span className={`truncate font-medium ${isTaskDone ? 'line-through text-slate-500' : 'text-slate-300'}`}>
-                              {task.title}
-                            </span>
-                          </div>
-                          
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            isTaskDone ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
-                          }`}>
-                            {isTaskDone ? 'Done' : 'To Do'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ─── 7. STATIC PROJECT DETAILS / SPECIFICATIONS ─── */}
-      <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2.5">
-        <h3 className="text-[12px] font-bold text-slate-300 uppercase tracking-wider">Project Specification</h3>
-        
-        <div className="grid grid-cols-2 gap-3.5 mt-0.5">
-          <div className="flex items-start gap-2 text-xs">
-            <MapPin className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Address</span>
-              <span className="font-medium text-white text-[12px] break-words">{project.location || '1235 Cordova Blvd NE'}</span>
-              <span className="text-[10px] text-slate-400 block mt-0.5">{project.cityState}</span>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2 text-xs">
-            <User className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Lead PM</span>
-              <span className="font-medium text-white text-[12px]">{project.projectManager.name}</span>
-              <span className="text-[10px] text-slate-400 block">GC Owner: Sazzad</span>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2 text-xs">
-            <Calendar className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Start Date</span>
-              <span className="font-medium text-white text-[12px]">{project.startDate || 'Jan 10, 2025'}</span>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2 text-xs">
-            <Calendar className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Target End</span>
-              <span className="font-medium text-white text-[12px]">{project.targetEndDate || 'Jun 30, 2026'}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ─── 8. MOCK 3D/2D SITE CONSTRUCT VISUALIZER (Moved to bottom as aesthetic accent) ─── */}
-      <div className="p-3 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-2">
         <div className="flex items-center justify-between text-xs font-bold text-slate-300 uppercase tracking-wider">
-          <span>Site Blueprint Viewport</span>
+          <div className="flex items-center gap-1.5">
+            <Compass className="w-3.5 h-3.5 text-blue-400" />
+            <span>Site Blueprint Viewport</span>
+          </div>
           <span className="text-[10px] text-emerald-400 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             7% built
@@ -534,7 +357,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
         
         {/* Isometric Blueprint Grid */}
-        <div className="h-28 w-full bg-[#050811] rounded-xl border border-[#142036] relative overflow-hidden flex items-center justify-center">
+        <div className="h-32 w-full bg-[#050811] rounded-xl border border-[#142036] relative overflow-hidden flex items-center justify-center">
           <div className="absolute inset-0 opacity-20" style={{
             backgroundImage: `linear-gradient(#2563eb 1px, transparent 1px), linear-gradient(90deg, #2563eb 1px, transparent 1px)`,
             backgroundSize: '16px 16px'
@@ -554,8 +377,9 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           </svg>
 
           {/* Indicator text */}
-          <div className="absolute bottom-2 left-2 text-[10px] text-slate-400 font-mono">
-            Phase 1: Cleared Lot
+          <div className="absolute bottom-2.5 left-2.5 text-[10px] text-slate-400 font-mono flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <span>Phase 1: Cleared Lot</span>
           </div>
         </div>
       </div>
