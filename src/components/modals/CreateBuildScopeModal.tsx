@@ -32,32 +32,32 @@ export const CreateBuildScopeModal: React.FC<CreateBuildScopeModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      {/* Dark Overlay */}
+      {/* Light Backdrop Overlay */}
       <div 
         onClick={onClose}
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
       />
 
       {/* Modal Card Box */}
-      <div className="relative w-full max-w-[400px] bg-[#091122] border border-[#172540] rounded-3xl p-5 shadow-2xl z-10 flex flex-col gap-4 text-slate-100">
+      <div className="relative w-full max-w-[400px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl z-10 flex flex-col gap-4 text-[#171A1F]">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#172540] pb-3">
+        <div className="flex items-center justify-between border-b border-[#EAEDF1] pb-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#131C2E] border border-[#1E293B] flex items-center justify-center text-[#60A5FA]">
+            <div className="w-9 h-9 rounded-full bg-[#EAF3FF] border border-blue-200 flex items-center justify-center text-[#1677FF]">
               <LayoutGrid className="w-4.5 h-4.5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight">
+              <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">
                 New BuildScope Takeoff
               </h3>
-              <p className="text-[11px] text-slate-400 font-medium">Plan takeoff & scope analysis</p>
+              <p className="text-[11px] text-[#68707C] font-medium">Plan takeoff & scope analysis</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#131C2E] border border-[#1E293B] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -66,9 +66,9 @@ export const CreateBuildScopeModal: React.FC<CreateBuildScopeModalProps> = ({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 mt-1">
           <div>
-            <label className="text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1">
+            <label className="text-xs font-semibold text-[#68707C] mb-1.5 flex items-center gap-1">
               <span>Project Name</span>
-              <span className="text-blue-400">*</span>
+              <span className="text-[#1677FF]">*</span>
             </label>
             <input
               type="text"
@@ -77,12 +77,12 @@ export const CreateBuildScopeModal: React.FC<CreateBuildScopeModalProps> = ({
               placeholder="e.g. Maple Ridge Residence"
               required
               autoFocus
-              className="w-full h-10 bg-[#060B17] border border-[#172540] focus:border-[#2563EB] rounded-xl px-3.5 text-xs text-white placeholder-slate-500 outline-none transition-all font-medium"
+              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-all font-medium"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-xs font-semibold text-[#68707C] mb-1.5 block">
               Property Address
             </label>
             <input
@@ -90,19 +90,18 @@ export const CreateBuildScopeModal: React.FC<CreateBuildScopeModalProps> = ({
               value={propertyAddress}
               onChange={(e) => setPropertyAddress(e.target.value)}
               placeholder="123 Builder Way"
-              className="w-full h-10 bg-[#060B17] border border-[#172540] focus:border-[#2563EB] rounded-xl px-3.5 text-xs text-white placeholder-slate-500 outline-none transition-all font-medium"
+              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-all font-medium"
             />
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full btn-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-md shadow-blue-500/20 active:scale-[0.98] mt-2"
+            className="w-full h-11 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs active:scale-[0.98] mt-2 cursor-pointer transition-all"
           >
-            <span>Create & Open Takeoff</span>
+            Create Takeoff
           </button>
         </form>
-
       </div>
     </div>
   );

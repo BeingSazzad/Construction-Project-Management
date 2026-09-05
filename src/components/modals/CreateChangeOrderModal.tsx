@@ -53,27 +53,27 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
   };
 
   const inputClass =
-    'w-full h-10 bg-[#050811] border border-[#142036] focus:border-[#2563EB] rounded-xl px-3.5 text-xs text-white placeholder-slate-500 outline-none transition-colors font-medium';
+    'w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors font-medium';
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[420px] bg-[#070D1A] border border-[#1E2E4A] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-[#171A1F] max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-2.5 border-b border-[#142036]">
+        <div className="flex items-center justify-between pb-2.5 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-400">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]">
               <FilePlus2 className="w-4.5 h-4.5 stroke-[2.5]" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight">New Change Order</h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">Record client scope or site directive</p>
+              <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">New Change Order</h3>
+              <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Record client scope or site directive</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+            className="w-7 h-7 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -84,7 +84,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
           
           {/* Title */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
               Title *
             </label>
             <input
@@ -99,7 +99,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
 
           {/* Description */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
               Description
             </label>
             <textarea
@@ -107,14 +107,14 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Scope of change..."
-              className="w-full bg-[#050811] border border-[#142036] rounded-xl p-3 text-white text-xs outline-none focus:border-blue-500 resize-none font-medium placeholder-slate-500"
+              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl p-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] resize-none font-medium placeholder-[#9DA5B1] leading-relaxed"
             />
           </div>
 
           {/* Amount & Time Impact */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
                 Amount ($)
               </label>
               <input
@@ -127,7 +127,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
                 Time Impact (days)
               </label>
               <input
@@ -143,7 +143,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
           {/* Category & Requested By */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
                 Category
               </label>
               <input
@@ -156,7 +156,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
                 Requested By
               </label>
               <input
@@ -170,21 +170,21 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
           </div>
 
           {/* Submit Action */}
-          <div className="pt-2 border-t border-[#142036] flex items-center justify-end gap-2 mt-1">
+          <div className="pt-2 border-t border-[#EAEDF1] flex items-center justify-end gap-2 mt-1">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] text-xs font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!isValid}
-              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 ${
+              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 ${
                 isValid
-                  ? 'bg-blue-600 hover:bg-blue-500 text-white cursor-pointer shadow-blue-600/30 active:scale-95'
-                  : 'bg-[#0E1524] text-slate-500 cursor-not-allowed border border-[#142036]'
+                  ? 'bg-[#1677FF] hover:bg-[#0958D9] text-white cursor-pointer active:scale-95'
+                  : 'bg-[#F2F2F7] text-[#9DA5B1] cursor-not-allowed border border-[#DDE1E7]'
               }`}
             >
               <Check className="w-3.5 h-3.5" />

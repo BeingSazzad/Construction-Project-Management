@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, DailyLogItem } from '../../types';
-import { X, Calendar, Camera, Sun, CloudRain, Users, Truck, Wrench, ShieldCheck, Check, Trash2, Building2 } from 'lucide-react';
+import { X, Camera, Trash2 } from 'lucide-react';
 
 interface CreateDailyLogModalProps {
   isOpen: boolean;
@@ -17,7 +17,6 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
   preselectedProjectId,
   onSaveLog
 }) => {
-  // Format today's date as YYYY-MM-DD for input and MM/DD/YYYY for display
   const todayIso = new Date().toISOString().split('T')[0];
   
   const [selectedProjectId, setSelectedProjectId] = useState<string>(
@@ -58,43 +57,30 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
 
     setIsSubmitting(true);
 
-    const formattedDate = new Date(logDate + 'T00:00:00').toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-
     const newDailyLog: DailyLogItem = {
-      id: `dl-${Date.now()}`,
+      id: `log-${Date.now()}`,
       projectId: selectedProjectId,
-      projectName: currentProject?.name || 'Commercial Project',
-      date: formattedDate,
+      projectName: currentProject?.name || 'Snell Isle Residence',
+      date: new Date(logDate + 'T12:00:00').toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }),
       weather: {
-        condition: (weather as any) || 'Sunny',
-        temperature: temperature || '78°F',
-        windSpeed: '8 mph SW',
-        precipitation: weather.toLowerCase().includes('rain') ? '60%' : '0%',
-        siteCondition: weather.toLowerCase().includes('rain') ? 'Muddy' : 'Dry'
+        condition: weather || 'Sunny',
+        temperature: temperature || '78°F'
       },
-      totalHeadcount: Number(crewCount) || 1,
-      visitors: visitors.trim() || undefined,
-      deliveries: deliveries ? deliveries.split(',').map(s => s.trim()).filter(Boolean) : undefined,
-      equipment: equipment.trim() || undefined,
-      crews: [
-        {
-          trade: 'General Trades & Subcontractors',
-          subcontractor: 'On-site Workforce',
-          workersCount: Number(crewCount) || 1,
-          hoursWorked: 8,
-          notes: notes
-        }
-      ],
-      workSummary: notes.trim() || 'Daily site progress logged according to schedule.',
-      materialsReceived: deliveries ? deliveries.split(',').map(s => s.trim()).filter(Boolean) : ['Standard site consumables'],
-      safetyIncidents: '0 Incidents. 100% OSHA & Site Safety Compliant.',
+      totalHeadcount: Number(crewCount) || 0,
+      workSummary: notes || 'General on-site progress, material handling, trade contractor inspections completed.',
+      safetyIncidents: 'Zero accidents recorded',
+      author: 'Avery Scott (Owner)',
+      crews: [],
       safetyPassed: true,
-      author: 'Current User (Field Superintendent)',
-      photos: photos.length > 0 ? photos : undefined
+      deliveries: deliveries ? deliveries.split(',').map(s => s.trim()).filter(Boolean) : [],
+      equipment: equipment || undefined,
+      visitors: visitors || undefined,
+      materialsReceived: [],
+      photos: photos
     };
 
     setTimeout(() => {
@@ -105,17 +91,17 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
       <div 
-        className="w-full max-w-[440px] max-h-[92vh] overflow-y-auto bg-[#070D1A] border border-[#142036] rounded-3xl shadow-2xl flex flex-col scrollbar-none"
+        className="w-full max-w-[460px] max-h-[92vh] overflow-y-auto bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl flex flex-col scrollbar-none text-[#171A1F]"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#142036] sticky top-0 bg-[#070D1A]/95 backdrop-blur-md z-10">
-          <h2 className="text-base font-bold text-white tracking-tight">New Daily Log</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAEDF1] sticky top-0 bg-white/95 backdrop-blur-md z-10">
+          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">New Daily Log</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#0E172A] hover:bg-[#1A263E] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -124,160 +110,143 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4">
           
-          {/* Row 1: Date * & Project * */}
+          {/* Row 1: Date & Project */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Date * */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1">
-                Date <span className="text-red-400">*</span>
+              <label className="text-xs font-semibold text-[#68707C] flex items-center gap-1">
+                Date <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  required
-                  value={logDate}
-                  onChange={e => setLogDate(e.target.value)}
-                  className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white outline-none transition-colors shadow-inner"
-                />
-              </div>
+              <input
+                type="date"
+                required
+                value={logDate}
+                onChange={e => setLogDate(e.target.value)}
+                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none transition-colors"
+              />
             </div>
 
-            {/* Project * */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300 flex items-center gap-1">
-                Project <span className="text-red-400">*</span>
+              <label className="text-xs font-semibold text-[#68707C] flex items-center gap-1">
+                Project <span className="text-red-500">*</span>
               </label>
               {preselectedProjectId ? (
-                // Inside project: Locked/preselected badge
-                <div className="h-10 px-3 bg-[#040813] border border-blue-500/40 rounded-xl flex items-center justify-between text-xs font-bold text-white shadow-inner">
+                <div className="h-10 px-3 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl flex items-center justify-between text-xs font-bold text-[#171A1F]">
                   <span className="truncate">{currentProject?.name || 'Active Project'}</span>
-                  <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">Active</span>
+                  <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.5 rounded">Active</span>
                 </div>
               ) : (
-                // From global hub: Project dropdown selector
-                <div className="relative">
-                  <select
-                    value={selectedProjectId}
-                    onChange={e => setSelectedProjectId(e.target.value)}
-                    required
-                    className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl pl-3 pr-8 text-xs font-semibold text-white outline-none appearance-none cursor-pointer shadow-inner transition-colors"
-                  >
-                    {projects.map(p => (
-                      <option key={p.id} value={p.id} className="bg-[#070D1A] text-white">
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">
-                    ⌄
-                  </div>
-                </div>
+                <select
+                  value={selectedProjectId}
+                  onChange={e => setSelectedProjectId(e.target.value)}
+                  required
+                  className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs font-semibold text-[#171A1F] outline-none cursor-pointer"
+                >
+                  {projects.map(p => (
+                    <option key={p.id} value={p.id} className="text-[#171A1F]">
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
               )}
             </div>
           </div>
 
           {/* Row 2: Weather & Temperature */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Weather */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">Weather</label>
+              <label className="text-xs font-semibold text-[#68707C]">Weather</label>
               <input
                 type="text"
                 value={weather}
                 onChange={e => setWeather(e.target.value)}
                 placeholder="Sunny / Rain"
-                className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none transition-colors shadow-inner"
+                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
 
-            {/* Temperature */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">Temperature</label>
+              <label className="text-xs font-semibold text-[#68707C]">Temperature</label>
               <input
                 type="text"
                 value={temperature}
                 onChange={e => setTemperature(e.target.value)}
                 placeholder="78°F"
-                className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none transition-colors shadow-inner"
+                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Row 3: Crew Count & Visitors */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Crew Count */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">Crew Count</label>
+              <label className="text-xs font-semibold text-[#68707C]">Crew Count</label>
               <input
                 type="number"
                 min={0}
                 value={crewCount}
                 onChange={e => setCrewCount(e.target.value === '' ? '' : Number(e.target.value))}
                 placeholder="0"
-                className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white outline-none transition-colors shadow-inner tabular-nums"
+                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none transition-colors tabular-nums"
               />
             </div>
 
-            {/* Visitors */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">Visitors</label>
+              <label className="text-xs font-semibold text-[#68707C]">Visitors</label>
               <input
                 type="text"
                 value={visitors}
                 onChange={e => setVisitors(e.target.value)}
                 placeholder="Inspector, client..."
-                className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none transition-colors shadow-inner"
+                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Row 4: Deliveries & Equipment */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Deliveries */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">Deliveries</label>
+              <label className="text-xs font-semibold text-[#68707C]">Deliveries</label>
               <input
                 type="text"
                 value={deliveries}
                 onChange={e => setDeliveries(e.target.value)}
                 placeholder="Lumber, trusses..."
-                className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none transition-colors shadow-inner"
+                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
 
-            {/* Equipment */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300">Equipment</label>
+              <label className="text-xs font-semibold text-[#68707C]">Equipment</label>
               <input
                 type="text"
                 value={equipment}
                 onChange={e => setEquipment(e.target.value)}
                 placeholder="Crane, forklift..."
-                className="w-full h-10 bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none transition-colors shadow-inner"
+                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Row 5: Notes */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-300">Notes</label>
+            <label className="text-xs font-semibold text-[#68707C]">Work Notes</label>
             <textarea
               rows={4}
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              placeholder="Work performed, progress, issues..."
-              className="w-full bg-[#040813] border border-[#142036] focus:border-blue-500 rounded-xl p-3 text-xs text-white placeholder-slate-500 outline-none resize-none transition-colors shadow-inner leading-relaxed"
+              placeholder="Work performed, site progress, safety checks..."
+              className="w-full bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl p-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none resize-none transition-colors leading-relaxed"
             />
           </div>
 
           {/* Row 6: Photos */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-300">Photos</label>
+            <label className="text-xs font-semibold text-[#68707C]">Photos</label>
             
             {photos.length > 0 && (
               <div className="grid grid-cols-3 gap-2 mb-1.5">
                 {photos.map((url, idx) => (
-                  <div key={idx} className="relative aspect-video rounded-xl overflow-hidden border border-[#142036] group">
+                  <div key={idx} className="relative aspect-video rounded-xl overflow-hidden border border-[#DDE1E7] group">
                     <img src={url} alt="Site" className="w-full h-full object-cover" />
                     <button
                       type="button"
@@ -294,11 +263,11 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
             <button
               type="button"
               onClick={handleAddSamplePhoto}
-              className="w-full h-16 rounded-xl border border-[#142036] hover:border-blue-500/40 bg-[#040813] flex flex-col items-center justify-center gap-1 cursor-pointer transition-all hover:bg-[#070E1E] group"
+              className="w-full h-16 rounded-xl border border-dashed border-[#DDE1E7] hover:border-[#1677FF] bg-[#F7F8FA] hover:bg-[#EAF3FF] flex flex-col items-center justify-center gap-1 cursor-pointer transition-all group"
             >
-              <Camera className="w-5 h-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
-              <span className="text-xs font-medium text-slate-400 group-hover:text-slate-200 transition-colors">
-                {photos.length > 0 ? '+ Add more photos' : 'Add site photos'}
+              <Camera className="w-5 h-5 text-[#68707C] group-hover:text-[#1677FF] transition-colors" />
+              <span className="text-xs font-medium text-[#68707C] group-hover:text-[#1677FF] transition-colors">
+                {photos.length > 0 ? '+ Add more photos' : 'Attach site photos'}
               </span>
             </button>
           </div>
@@ -307,7 +276,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-11 mt-1 rounded-xl bg-gradient-to-r from-[#1D4ED8] to-[#0D9488] hover:from-[#2563EB] hover:to-[#14B8A6] text-white text-xs font-bold shadow-lg shadow-blue-900/30 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] transition-all disabled:opacity-50"
+            className="w-full h-11 mt-1 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] transition-all disabled:opacity-50"
           >
             {isSubmitting ? (
               <span>Saving Daily Log...</span>

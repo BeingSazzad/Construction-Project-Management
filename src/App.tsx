@@ -631,7 +631,7 @@ export function App() {
           />
 
           {/* Body Content Area */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden bg-[#F2F2F7]">
             {/* FULL-SCREEN DEDICATED CREATION & ANALYZER PAGES */}
             {isCreateProjectOpen ? (
               <CreateProjectView
@@ -772,7 +772,7 @@ export function App() {
 
                 {/* 5. TEAM DIRECTORY FALLBACK */}
                 {activeTab === 'team' && (
-                  <TeamHubView currentUser={currentUser} />
+                  <TeamHubView />
                 )}
 
                 {/* 9. NOTIFICATIONS DRAWER */}

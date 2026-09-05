@@ -76,20 +76,20 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="card-dark w-full max-w-[390px] bg-[#070D1A] border border-[#142036] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-slate-100 scrollbar-none">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[390px] bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F] scrollbar-none">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-[#142036] mb-4">
+        <div className="flex items-center justify-between pb-3.5 border-b border-[#EAEDF1] mb-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0">
               <Camera className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-base font-bold text-white tracking-tight leading-tight truncate">
+              <h3 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight truncate">
                 Upload Site Photo
               </h3>
-              <p className="text-xs text-slate-400 font-medium mt-0.5 truncate">
+              <p className="text-xs text-[#68707C] font-medium mt-0.5 truncate">
                 {project?.name || 'Active Project'}
               </p>
             </div>
@@ -97,7 +97,7 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -115,7 +115,7 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
         {/* Interactive Photo Upload Dropzone Box */}
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="relative h-48 rounded-2xl overflow-hidden mb-4 border border-dashed border-[#1A263E] hover:border-blue-500/80 bg-[#050811] shadow-inner cursor-pointer group transition-all flex flex-col items-center justify-center"
+          className="relative h-48 rounded-2xl overflow-hidden mb-4 border-2 border-dashed border-[#DDE1E7] hover:border-[#1677FF] bg-[#F7F8FA] cursor-pointer group transition-all flex flex-col items-center justify-center"
           title="Click to select photo file from your device"
         >
           {selectedImg ? (
@@ -126,7 +126,7 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               {/* Change Photo Hover Overlay Pill */}
-              <div className="absolute top-2.5 right-2.5 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-blue-400 border border-blue-500/30 flex items-center gap-1.5 shadow-md group-hover:bg-blue-600 group-hover:text-white transition-all">
+              <div className="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#1677FF] border border-[#DDE1E7] flex items-center gap-1.5 shadow-md group-hover:bg-[#1677FF] group-hover:text-white transition-all">
                 <RefreshCw className="w-3 h-3 group-hover:rotate-180 transition-transform" />
                 <span>Change Photo</span>
               </div>
@@ -134,14 +134,14 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
           ) : (
             /* Centered Clean Dropzone Placeholder */
             <div className="flex flex-col items-center justify-center gap-2.5 p-5 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Upload className="w-6 h-6 stroke-[2.5]" />
               </div>
               <div>
-                <span className="text-xs font-bold text-white block group-hover:text-blue-400 transition-colors">
+                <span className="text-xs font-bold text-[#171A1F] block group-hover:text-[#1677FF] transition-colors">
                   Tap or Drag to Upload Photo
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium block mt-0.5">
+                <span className="text-[11px] text-[#68707C] font-medium block mt-0.5">
                   Supports JPG, PNG, WEBP image files
                 </span>
               </div>
@@ -154,38 +154,38 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
           
           {/* Inspection Note Input */}
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-slate-300">Inspection Note *</label>
+            <label className="font-bold text-[#171A1F]">Inspection Note *</label>
             <input
               type="text"
               required
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               placeholder="Enter inspection note (e.g. Deck rebar rough-in check)"
-              className="w-full h-11 bg-[#050811] border border-[#142036] rounded-xl px-3.5 text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500"
+              className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#9DA5B1]"
             />
           </div>
 
           {/* Location & Category Inputs */}
           <div className="grid grid-cols-2 gap-2.5">
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-slate-300">Location</label>
+              <label className="font-bold text-[#171A1F]">Location</label>
 
               <div className="relative flex items-center">
-                <LocateFixed className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
+                <LocateFixed className="w-4 h-4 text-[#68707C] absolute left-3 pointer-events-none" />
 
                 <input
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="e.g. Level 12 Deck - Grid B3"
-                  className="w-full h-11 bg-[#050811] border border-[#142036] rounded-xl pl-9 pr-9 text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500"
+                  className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-9 pr-9 text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#9DA5B1]"
                 />
 
                 <button
                   type="button"
                   onClick={handleTrackLocation}
-                  className={`absolute right-2.5 p-1 text-blue-400 hover:text-cyan-300 transition-colors cursor-pointer ${
-                    isTracking ? 'animate-spin text-cyan-400' : ''
+                  className={`absolute right-2.5 p-1 text-[#1677FF] hover:text-[#0958D9] transition-colors cursor-pointer ${
+                    isTracking ? 'animate-spin' : ''
                   }`}
                   title="Auto-detect current GPS location"
                 >
@@ -195,7 +195,7 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-slate-300">Category</label>
+              <label className="font-bold text-[#171A1F]">Category</label>
               <CustomSelect
                 value={category}
                 onChange={(v) => setCategory(v as any)}
@@ -210,13 +210,13 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full btn-lg bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-300 font-bold transition-all cursor-pointer"
+              className="w-full btn-lg bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] font-bold transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-full btn-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold shadow-md shadow-blue-600/30 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full btn-lg bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Upload className="w-4 h-4 stroke-[2.5]" />
               <span>Upload</span>

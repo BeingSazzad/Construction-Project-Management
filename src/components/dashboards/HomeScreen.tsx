@@ -64,7 +64,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const todayTasks = tasks.filter(t => t.projectId === snellProject.id).slice(0, 2);
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       
       {/* ── 1. Greeting Headline ── */}
       <div className="pt-1">

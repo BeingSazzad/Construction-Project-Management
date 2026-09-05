@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Project, DailyLogItem } from '../../types';
 import { 
   Plus, Search, Calendar, Users, Sun, CloudRain, 
-  ShieldCheck, Wrench, Building2, Truck, HardHat, ArrowUpRight,
-  SlidersHorizontal
+  Building2, ArrowUpRight
 } from 'lucide-react';
 import { CreateDailyLogModal } from '../modals/CreateDailyLogModal';
 
@@ -39,44 +38,43 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
   });
 
   return (
-    <div className="w-full flex flex-col gap-3.5 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between pt-0.5">
         <div>
-          <h1 className="text-[15px] font-bold text-white tracking-tight leading-none">Daily Logs</h1>
-          <p className="text-[11px] text-slate-500 font-medium mt-0.5">Jobsite field progress & crew activity</p>
+          <h1 className="text-base font-bold text-[#171A1F] tracking-tight leading-none">Daily Logs</h1>
+          <p className="text-xs text-[#68707C] font-medium mt-0.5">Jobsite field progress & crew activity</p>
         </div>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="h-8 px-3.5 rounded-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-[11px] font-bold transition-all shadow-lg shadow-blue-600/20 cursor-pointer flex items-center gap-1.5 flex-shrink-0"
+          className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] active:scale-95 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 flex-shrink-0"
         >
-          <Plus className="w-3 h-3" />
-          New Log
+          <Plus className="w-3.5 h-3.5" />
+          <span>New Log</span>
         </button>
       </div>
 
       {/* ── Search ── */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-600 pointer-events-none" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#68707C] pointer-events-none" />
         <input
           type="text"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder="Search logs, notes, visitors…"
-          className="w-full h-9 bg-[#080D19] border border-[#111A2E] hover:border-[#1A2640] focus:border-blue-600/60 rounded-xl pl-8.5 pr-3 text-[12px] text-white placeholder-slate-600 outline-none transition-colors"
-          style={{ paddingLeft: '2.25rem' }}
+          className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl pl-9 pr-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors shadow-xs"
         />
       </div>
 
       {/* ── Project Filter Pills ── */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
         <button
           onClick={() => setSelectedProjectFilter('all')}
-          className={`px-3 h-7 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
+          className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 border ${
             selectedProjectFilter === 'all'
-              ? 'bg-blue-600 text-white'
-              : 'bg-[#0A0F1E] text-slate-500 hover:text-slate-300 border border-[#131D35]'
+              ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-xs'
+              : 'bg-white text-[#68707C] hover:text-[#171A1F] hover:bg-[#F2F2F7] border-[#DDE1E7]'
           }`}
         >
           All · {dailyLogs.length}
@@ -88,15 +86,15 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
             <button
               key={p.id}
               onClick={() => setSelectedProjectFilter(p.id)}
-              className={`px-3 h-7 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 flex items-center gap-1.5 border ${
                 isSelected
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-[#0A0F1E] text-slate-500 hover:text-slate-300 border border-[#131D35]'
+                  ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-xs'
+                  : 'bg-white text-[#68707C] hover:text-[#171A1F] hover:bg-[#F2F2F7] border-[#DDE1E7]'
               }`}
             >
-              <span className="truncate max-w-[90px]">{p.name}</span>
+              <span className="truncate max-w-[100px]">{p.name}</span>
               {count > 0 && (
-                <span className={`text-[9px] font-bold ${isSelected ? 'opacity-70' : 'text-slate-600'}`}>
+                <span className={`text-[10px] font-bold ${isSelected ? 'text-white' : 'text-[#68707C]'}`}>
                   {count}
                 </span>
               )}
@@ -106,12 +104,12 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
       </div>
 
       {/* ── Log Cards ── */}
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         {filteredLogs.length === 0 ? (
-          <div className="py-12 flex flex-col items-center gap-2 text-center">
-            <Calendar className="w-8 h-8 text-slate-800" />
-            <p className="text-[13px] font-semibold text-slate-400">No logs found</p>
-            <p className="text-[11px] text-slate-600 max-w-[220px]">
+          <div className="py-12 flex flex-col items-center gap-2 text-center bg-white border border-[#DDE1E7] rounded-3xl p-8 shadow-xs">
+            <Calendar className="w-8 h-8 text-[#9DA5B1]" />
+            <p className="text-xs font-semibold text-[#171A1F]">No logs found</p>
+            <p className="text-[11px] text-[#68707C] max-w-[220px]">
               No logs recorded for this filter. Tap "New Log" to create one.
             </p>
           </div>
@@ -119,111 +117,77 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
           filteredLogs.map(log => (
             <article
               key={log.id}
-              className="relative rounded-2xl bg-[#080D19] border border-[#111A2E] hover:border-[#1A2940] transition-all overflow-hidden group"
+              className="relative rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 transition-all overflow-hidden group shadow-xs p-4 flex flex-col gap-3"
             >
-              {/* Gradient top accent line */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-blue-500/50 via-cyan-400/25 to-transparent" />
-
-              <div className="p-4 flex flex-col gap-3">
-
-                {/* Row 1: Identity + status badge */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-7 h-7 rounded-lg bg-blue-500/8 border border-blue-500/15 flex items-center justify-center text-blue-400/80 flex-shrink-0">
-                      <Building2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="text-[12.5px] font-bold text-white truncate leading-tight">
-                        {log.projectName}
-                      </h3>
-                      <p className="text-[10px] text-slate-600 font-medium leading-tight mt-0.5">
-                        {log.date}
-                      </p>
-                    </div>
+              {/* Row 1: Identity + status badge */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF] flex-shrink-0">
+                    <Building2 className="w-4 h-4" />
                   </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xs sm:text-sm font-bold text-[#171A1F] truncate leading-tight">
+                      {log.projectName}
+                    </h3>
+                    <p className="text-[11px] text-[#68707C] font-medium leading-tight mt-0.5">
+                      {log.date}
+                    </p>
+                  </div>
+                </div>
 
-                  <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-400/8 px-2 py-1 rounded-full flex-shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                    0 Incidents
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    {log.totalHeadcount} on-site
                   </span>
-                </div>
-
-                {/* Row 2: Flat inline meta — no pill boxes */}
-                <div className="flex items-center gap-2.5 text-[11px]">
-                  {log.weather.condition.toLowerCase().includes('rain') ? (
-                    <CloudRain className="w-3 h-3 text-blue-400/70 flex-shrink-0" />
-                  ) : (
-                    <Sun className="w-3 h-3 text-amber-400/70 flex-shrink-0" />
+                  {onNavigateToProject && (
+                    <button
+                      onClick={() => onNavigateToProject(log.projectId, 'dailylogs')}
+                      className="w-7 h-7 rounded-lg bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7] flex items-center justify-center transition-colors cursor-pointer"
+                      title="Open project logs"
+                    >
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
                   )}
-                  <span className="font-semibold text-slate-300">{log.weather.temperature}</span>
-                  <span className="text-slate-600">·</span>
-                  <span className="text-slate-500">{log.weather.condition}</span>
-                  <span className="text-slate-700 mx-0.5">|</span>
-                  <Users className="w-3 h-3 text-slate-600 flex-shrink-0" />
-                  <span className="font-semibold text-slate-300">{log.totalHeadcount}</span>
-                  <span className="text-slate-500">workers</span>
                 </div>
-
-                {/* Row 3: Work summary — plain text, no inner box */}
-                <p className="text-[12px] text-slate-400 leading-[1.65] line-clamp-3">
-                  {log.workSummary}
-                </p>
-
-                {/* Row 4: Compact tags */}
-                {(log.deliveries || log.equipment || log.visitors) && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {log.deliveries && log.deliveries.length > 0 && (
-                      <span className="flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-[#0C1220] px-2 py-1 rounded-md">
-                        <Truck className="w-2.5 h-2.5 text-amber-500/60 flex-shrink-0" />
-                        <span className="truncate max-w-[130px]">
-                          {log.deliveries[0]}{log.deliveries.length > 1 ? ` +${log.deliveries.length - 1}` : ''}
-                        </span>
-                      </span>
-                    )}
-                    {log.equipment && (
-                      <span className="flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-[#0C1220] px-2 py-1 rounded-md">
-                        <Wrench className="w-2.5 h-2.5 text-blue-500/60 flex-shrink-0" />
-                        <span className="truncate max-w-[130px]">{log.equipment}</span>
-                      </span>
-                    )}
-                    {log.visitors && (
-                      <span className="flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-[#0C1220] px-2 py-1 rounded-md">
-                        <HardHat className="w-2.5 h-2.5 text-violet-500/60 flex-shrink-0" />
-                        <span className="truncate max-w-[130px]">{log.visitors}</span>
-                      </span>
-                    )}
-                  </div>
-                )}
               </div>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#0E1625]">
-                <span className="text-[10px] text-slate-600">
-                  By <span className="text-slate-400 font-semibold">{log.author}</span>
-                </span>
-                {onNavigateToProject && (
-                  <button
-                    onClick={() => onNavigateToProject(log.projectId, 'daily-logs')}
-                    className="text-[10px] text-blue-500 hover:text-blue-400 font-semibold flex items-center gap-0.5 transition-colors cursor-pointer"
-                  >
-                    Open Project <ArrowUpRight className="w-3 h-3" />
-                  </button>
-                )}
+              {/* Row 2: Weather & Quick Tags */}
+              <div className="flex items-center gap-2 text-[11px] text-[#68707C]">
+                <div className="flex items-center gap-1 bg-[#F7F8FA] px-2 py-0.5 rounded-lg border border-[#EAEDF1]">
+                  {log.weather.condition.toLowerCase().includes('rain') ? (
+                    <CloudRain className="w-3 h-3 text-[#1677FF]" />
+                  ) : (
+                    <Sun className="w-3 h-3 text-amber-500" />
+                  )}
+                  <span>{log.weather.temperature} · {log.weather.condition}</span>
+                </div>
+                <div className="flex items-center gap-1 bg-[#F7F8FA] px-2 py-0.5 rounded-lg border border-[#EAEDF1]">
+                  <Users className="w-3 h-3 text-[#1677FF]" />
+                  <span>{log.totalHeadcount} workers</span>
+                </div>
+              </div>
+
+              {/* Row 3: Summary Text */}
+              <p className="text-xs text-[#171A1F] bg-[#F7F8FA] p-3 rounded-xl border border-[#EAEDF1] leading-relaxed">
+                {log.workSummary}
+              </p>
+
+              {/* Row 4: Author Footer */}
+              <div className="flex items-center justify-between text-[11px] text-[#68707C] pt-1 border-t border-[#EAEDF1]">
+                <span>By: {log.author}</span>
+                <span className="text-emerald-700 font-semibold">{log.safetyIncidents}</span>
               </div>
             </article>
           ))
         )}
       </div>
 
-      {/* Modal */}
+      {/* Create Daily Log Modal */}
       <CreateDailyLogModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         projects={projects}
-        onSaveLog={(newLog) => {
-          onAddDailyLog(newLog);
-          setIsCreateModalOpen(false);
-        }}
+        onSaveLog={onAddDailyLog}
       />
     </div>
   );

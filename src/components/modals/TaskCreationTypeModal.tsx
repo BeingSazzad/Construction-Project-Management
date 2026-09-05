@@ -1,6 +1,6 @@
 import React from 'react';
 import { Task, Project } from '../../types';
-import { X, CheckSquare, Sparkles, Sliders, ChevronRight, ShieldCheck, FileSpreadsheet, Layers } from 'lucide-react';
+import { X, CheckSquare, Sliders, ChevronRight } from 'lucide-react';
 
 interface TaskCreationTypeModalProps {
   isOpen: boolean;
@@ -75,29 +75,29 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-sm animate-fade-in font-sans"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs animate-fade-in font-sans"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[430px] bg-[#070D1A] border-t border-x border-[#142036] rounded-t-[28px] p-5 pb-8 shadow-2xl flex flex-col gap-3 text-slate-100 animate-slide-up max-h-[85vh] overflow-y-auto"
+        className="w-full max-w-[430px] bg-white border-t border-x border-[#DDE1E7] rounded-t-[28px] p-5 pb-8 shadow-2xl flex flex-col gap-3 text-[#171A1F] animate-slide-up max-h-[85vh] overflow-y-auto"
       >
         {/* Pull Bar */}
-        <div className="w-10 h-1.5 rounded-full bg-slate-600/60 mx-auto -mt-1 mb-1" />
+        <div className="w-10 h-1.5 rounded-full bg-[#DDE1E7] mx-auto -mt-1 mb-1" />
 
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center">
               <CheckSquare className="w-4.5 h-4.5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight">Create Task Mode</h3>
-              <p className="text-[10px] text-slate-400 font-medium mt-0.5">Select a template preset or custom form</p>
+              <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">Create Task Mode</h3>
+              <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Select a template preset or custom form</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-[#0E1A33] border border-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -109,30 +109,30 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
             onClose();
             onSelectCustom();
           }}
-          className="p-3.5 bg-[#0D1424] hover:bg-[#141F33] border border-blue-500/30 hover:border-blue-500/60 rounded-2xl flex items-center justify-between gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
+          className="p-3.5 bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/50 rounded-2xl flex items-center justify-between gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-xs"
         >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
               <Sliders className="w-4.5 h-4.5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
+              <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
                 Custom Task Form
               </h4>
-              <p className="text-[10px] text-slate-400 mt-0.5 font-medium">
+              <p className="text-[11px] text-[#68707C] mt-0.5 font-medium">
                 Create task from scratch with custom scope & assignees
               </p>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white flex-shrink-0" />
+          <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] flex-shrink-0" />
         </button>
 
         {/* Section Divider */}
         <div className="flex items-center justify-between pt-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-            Or Pick a Pre-Con Task Template (1-Tap Creation)
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">
+            Or Pick a Pre-Con Task Template
           </span>
-          <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+          <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
             Instant Presets
           </span>
         </div>
@@ -143,27 +143,27 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
             <div
               key={idx}
               onClick={() => handlePresetClick(preset)}
-              className="p-3 rounded-2xl bg-[#090E1A] border border-[#141F33] hover:border-emerald-500/40 cursor-pointer flex flex-col gap-1.5 transition-all group active:scale-[0.99]"
+              className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 cursor-pointer flex flex-col gap-1.5 transition-all group active:scale-[0.99]"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors truncate">
+                <span className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">
                   {preset.title}
                 </span>
                 <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${preset.priority === 'Critical'
-                    ? 'text-rose-400 bg-rose-500/10 border-rose-500/20'
+                    ? 'text-rose-700 bg-rose-50 border-rose-200'
                     : preset.priority === 'High'
-                      ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
-                      : 'text-blue-400 bg-blue-500/10 border-blue-500/20'
+                      ? 'text-amber-700 bg-amber-50 border-amber-200'
+                      : 'text-[#1677FF] bg-[#EAF3FF] border-[#1677FF]/20'
                   }`}>
                   {preset.priority}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">
+              <p className="text-[11px] text-[#68707C] line-clamp-2 leading-relaxed">
                 {preset.desc}
               </p>
-              <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-[#142036]">
-                <span>Code: <strong className="text-slate-300">{preset.costCode}</strong></span>
-                <span>Subtasks: <strong className="text-emerald-400">{preset.subtasks.length} items</strong></span>
+              <div className="flex items-center justify-between text-[11px] text-[#68707C] pt-1 border-t border-[#EAEDF1]">
+                <span>Code: <strong className="text-[#171A1F]">{preset.costCode}</strong></span>
+                <span>Subtasks: <strong className="text-emerald-700">{preset.subtasks.length} items</strong></span>
               </div>
             </div>
           ))}

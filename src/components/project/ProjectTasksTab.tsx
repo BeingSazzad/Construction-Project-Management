@@ -3,7 +3,7 @@ import { Project, Task } from '../../types';
 import { 
   Plus, Download, Trash2, Check, 
   ChevronDown, ChevronUp, X,
-  Layers, Hammer, Boxes, FileCheck2, CheckSquare, Sliders, ChevronRight
+  Layers, Hammer, Boxes, Sliders, ChevronRight
 } from 'lucide-react';
 
 interface ProjectTasksTabProps {
@@ -75,7 +75,6 @@ const INITIAL_STAGE_GROUPS: StageTaskGroup[] = [
   }
 ];
 
-// Full Template Checklist Categories (from the 71-task reference template)
 const TEMPLATE_PHASES = [
   {
     id: 'tp-drywall',
@@ -101,59 +100,53 @@ const TEMPLATE_PHASES = [
   },
   {
     id: 'tp-mep',
-    name: '10. MEP Final Trim & Inspections',
+    name: '10. MEP Trims & Fixtures',
     tasks: [
-      'Electrical trim & fixture install',
-      'Plumbing trim & faucet testing',
-      'HVAC condenser startup & air balance',
-      'Final building municipal inspection'
+      'Plumbing fixtures set (faucets, sinks, toilets, showers)',
+      'HVAC condenser set & duct trim',
+      'Electrical device trims (receptacles, switches, lighting)',
+      'Low voltage & security trim-out'
     ]
   }
 ];
 
-export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => {
+export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
+  project: _project,
+  tasks: _tasks,
+  onCreateTask,
+}) => {
   const [stageGroups, setStageGroups] = useState<StageTaskGroup[]>(INITIAL_STAGE_GROUPS);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
-  const [isViewAll, setIsViewAll] = useState(false);
+  const [isViewAll, setIsViewAll] = useState(true);
 
-  // Modals & Bottom Sheet States
+  // Modals state
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [isCustomTaskModalOpen, setIsCustomTaskModalOpen] = useState(false);
+
+  // Custom task form state
+  const [selectedGroupForNewTask, setSelectedGroupForNewTask] = useState('grp-precon');
+  const [newTaskTitle, setNewTaskTitle] = useState('');
 
   // Template selection state
   const [selectedTemplateTasks, setSelectedTemplateTasks] = useState<Record<string, boolean>>({
     'Insulation (walls & attic to R-13 walls / R-38 attic)': true,
     'Hang drywall': true,
-    'Drywall finish & texture': true,
-    'Prime walls': true,
     'Interior doors & trim': true,
     'Cabinetry install': true,
-    'Countertop template & install': true,
-    'Hardwood & tile flooring': true,
-    'Interior paint topcoat': true,
-    'Hardware & fixture installation': true,
-    'Electrical trim & fixture install': true,
-    'Plumbing trim & faucet testing': true,
-    'HVAC condenser startup & air balance': true,
-    'Final building municipal inspection': true
+    'Plumbing fixtures set (faucets, sinks, toilets, showers)': true
   });
 
-  // Custom Task Form state
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [selectedGroupForNewTask, setSelectedGroupForNewTask] = useState('grp-precon');
-
-  const getStageIcon = (type: string) => {
-    switch (type) {
-      case 'eng': return <Layers className="w-4 h-4 text-blue-400" />;
-      case 'precon': return <FileCheck2 className="w-4 h-4 text-amber-400" />;
-      case 'foundation': return <Hammer className="w-4 h-4 text-emerald-400" />;
-      case 'framing': return <Boxes className="w-4 h-4 text-purple-400" />;
-      default: return <Layers className="w-4 h-4 text-blue-400" />;
+  const getStageIcon = (iconType: string) => {
+    switch (iconType) {
+      case 'eng': return <Layers className="w-4 h-4 text-[#1677FF]" />;
+      case 'precon': return <Sliders className="w-4 h-4 text-amber-600" />;
+      case 'foundation': return <Hammer className="w-4 h-4 text-emerald-600" />;
+      case 'framing': return <Boxes className="w-4 h-4 text-purple-600" />;
+      default: return <Layers className="w-4 h-4 text-[#1677FF]" />;
     }
   };
 
-  // Toggle stage accordion
   const toggleGroup = (groupId: string) => {
     setCollapsedGroups(prev => ({
       ...prev,
@@ -161,8 +154,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
     }));
   };
 
-  // Toggle task status (Done vs To Do)
-  // Toggle task status seamlessly: todo -> in-progress -> done -> todo
   const toggleTaskStatus = (groupId: string, taskId: string) => {
     setStageGroups(prev => prev.map(grp => {
       if (grp.id !== groupId) return grp;
@@ -180,7 +171,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
     }));
   };
 
-  // Delete task
   const deleteTask = (groupId: string, taskId: string) => {
     setStageGroups(prev => prev.map(grp => {
       if (grp.id !== groupId) return grp;
@@ -191,12 +181,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
     }));
   };
 
-  // Import from Budget action
   const handleImportBudget = () => {
     alert("Imported line items from Project Master Budget into Pre-Construction and Foundation checklists!");
   };
 
-  // Custom single task submit
   const handleAddCustomTaskSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
@@ -216,7 +204,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
     setIsCustomTaskModalOpen(false);
   };
 
-  // Template select all / deselect all
   const handleSelectAllTemplates = (select: boolean) => {
     const next: Record<string, boolean> = {};
     TEMPLATE_PHASES.forEach(p => {
@@ -227,7 +214,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
     setSelectedTemplateTasks(next);
   };
 
-  // Add Template tasks to project
   const handleApplyTemplateTasks = () => {
     TEMPLATE_PHASES.forEach(tp => {
       const addedTasks = tp.tasks
@@ -255,42 +241,45 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
   const selectedTemplateCount = Object.values(selectedTemplateTasks).filter(Boolean).length;
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       
       {/* ─── 1. TASKS HEADER & PRIMARY ACTION ─── */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-bold text-white tracking-tight">Project Tasks</h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Project Tasks</h2>
+          <p className="text-xs text-[#68707C] mt-0.5 font-medium">
             {doneTasksCount} of {totalTasksCount} tasks completed
           </p>
         </div>
 
-        {/* Primary CTA: Opens Bottom Sheet */}
+        {/* Primary CTA */}
         <button
-          onClick={() => setIsBottomSheetOpen(true)}
-          className="h-9 px-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md shadow-blue-600/30 active:scale-95 transition-all"
+          onClick={() => {
+            if (onCreateTask) onCreateTask();
+            else setIsBottomSheetOpen(true);
+          }}
+          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>Add Task</span>
         </button>
       </div>
 
-      {/* ─── 2. SECONDARY TOOLBAR (Ultra Clean & Minimal) ─── */}
-      <div className="flex items-center justify-between gap-2 p-1.5 bg-[#070D1A] rounded-2xl border border-[#142036] shadow-sm">
+      {/* ─── 2. SECONDARY TOOLBAR ─── */}
+      <div className="flex items-center justify-between gap-2 p-1.5 bg-white rounded-2xl border border-[#DDE1E7] shadow-xs">
         <button
           onClick={() => setIsViewAll(!isViewAll)}
-          className="px-3 py-1.5 rounded-xl text-xs font-bold text-blue-400 hover:text-white hover:bg-[#0E1A33] transition-colors cursor-pointer"
+          className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#1677FF] hover:bg-[#EAF3FF] transition-colors cursor-pointer"
         >
           {isViewAll ? 'Collapse All' : 'Expand All'}
         </button>
 
         <button
           onClick={handleImportBudget}
-          className="px-3 py-1.5 rounded-xl bg-[#0D1424] hover:bg-[#142036] text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 border border-[#1A263E] cursor-pointer transition-colors"
+          className="px-3 py-1.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#171A1F] text-xs font-semibold flex items-center gap-1.5 border border-[#DDE1E7] cursor-pointer transition-colors"
           title="Import line items from project budget"
         >
-          <Download className="w-3.5 h-3.5 text-blue-400" />
+          <Download className="w-3.5 h-3.5 text-[#1677FF]" />
           <span>Import Budget</span>
         </button>
       </div>
@@ -306,50 +295,50 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
           return (
             <div
               key={group.id}
-              className="rounded-2xl bg-[#070D1A] border border-[#142036] overflow-hidden shadow-sm transition-all"
+              className="rounded-2xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs transition-all"
             >
               {/* Accordion Group Header */}
               <button
                 type="button"
                 onClick={() => toggleGroup(group.id)}
-                className="w-full p-3.5 flex items-center justify-between bg-[#070D1A] hover:bg-[#0E1A33] transition-colors cursor-pointer"
+                className="w-full p-3.5 flex items-center justify-between bg-white hover:bg-[#F2F2F7] transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-[#0D1424] border border-[#1A263E] flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
                     {getStageIcon(group.iconType)}
                   </div>
                   <div className="text-left">
-                    <h3 className="text-xs font-bold text-white tracking-tight">{group.name}</h3>
-                    <p className="text-[12px] text-slate-400 mt-0.5">{totalCount} items in phase</p>
+                    <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">{group.name}</h3>
+                    <p className="text-[12px] text-[#68707C] font-medium mt-0.5">{totalCount} items in phase</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2.5">
                   <span className={`text-[12px] font-bold px-2 py-0.5 rounded-full border ${
                     isAllDone
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                      : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30'
                   }`}>
                     {doneCount}/{totalCount}
                   </span>
                   {isCollapsed ? (
-                    <ChevronDown className="w-4 h-4 text-slate-400" />
+                    <ChevronDown className="w-4 h-4 text-[#68707C]" />
                   ) : (
-                    <ChevronUp className="w-4 h-4 text-slate-400" />
+                    <ChevronUp className="w-4 h-4 text-[#68707C]" />
                   )}
                 </div>
               </button>
 
               {/* Task Items List */}
               {!isCollapsed && (
-                <div className="flex flex-col gap-1.5 p-3 pt-0 border-t border-[#142036]/60">
+                <div className="flex flex-col gap-1.5 p-3 pt-0 border-t border-[#EAEDF1]">
                   {group.tasks.length === 0 ? (
-                    <p className="text-xs text-slate-500 py-3 text-center">No tasks in this stage.</p>
+                    <p className="text-xs text-[#68707C] py-3 text-center">No tasks in this stage.</p>
                   ) : (
                     group.tasks.map((task) => (
                       <div
                         key={task.id}
-                        className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] hover:border-blue-500/30 flex items-center justify-between gap-2.5 transition-colors group"
+                        className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 flex items-center justify-between gap-2.5 transition-colors group"
                       >
                         <div 
                           onClick={() => toggleTaskStatus(group.id, task.id)}
@@ -357,12 +346,12 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                         >
                           <span 
                             className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                              task.status === 'done' ? 'bg-emerald-400 ring-2 ring-emerald-500/20' : 'bg-amber-400'
+                              task.status === 'done' ? 'bg-emerald-500 ring-2 ring-emerald-500/20' : 'bg-amber-400'
                             }`} 
                           />
                           <span 
                             className={`text-xs font-medium truncate ${
-                              task.status === 'done' ? 'text-slate-400 line-through' : 'text-slate-200 hover:text-white'
+                              task.status === 'done' ? 'text-[#68707C] line-through' : 'text-[#171A1F] group-hover:text-[#1677FF]'
                             }`}
                           >
                             {task.title}
@@ -376,10 +365,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                             onClick={() => toggleTaskStatus(group.id, task.id)}
                             className={`px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1.5 ${
                               task.status === 'done'
-                                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-xs'
                                 : task.status === 'in-progress'
-                                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 shadow-sm'
-                                : 'bg-[#0E1526] text-amber-300 border border-amber-500/20 hover:bg-amber-500/10'
+                                ? 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30 shadow-xs'
+                                : 'bg-white text-amber-700 border border-amber-300 hover:bg-amber-50'
                             }`}
                           >
                             {task.status === 'done' ? (
@@ -389,7 +378,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                               </>
                             ) : task.status === 'in-progress' ? (
                               <>
-                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
                                 <span>In Progress</span>
                               </>
                             ) : (
@@ -400,7 +389,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                           {/* Delete Task */}
                           <button
                             onClick={() => deleteTask(group.id, task.id)}
-                            className="w-7 h-7 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center cursor-pointer transition-colors"
+                            className="w-7 h-7 rounded-lg text-[#68707C] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors"
                             title="Delete task"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -420,23 +409,23 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
       {isBottomSheetOpen && (
         <div 
           onClick={() => setIsBottomSheetOpen(false)}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/80 backdrop-blur-sm animate-fade-in font-sans"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs animate-fade-in font-sans"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-[430px] bg-[#070D1A] border-t border-x border-[#142036] rounded-t-[28px] p-5 pb-8 shadow-2xl flex flex-col gap-3.5 text-slate-100 animate-slide-up"
+            className="w-full max-w-[430px] bg-white border-t border-x border-[#DDE1E7] rounded-t-[28px] p-5 pb-8 shadow-2xl flex flex-col gap-3.5 text-[#171A1F] animate-slide-up"
           >
             {/* Pull Indicator */}
-            <div className="w-10 h-1 rounded-full bg-slate-600/60 mx-auto -mt-1 mb-1" />
+            <div className="w-10 h-1 rounded-full bg-[#DDE1E7] mx-auto -mt-1 mb-1" />
 
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
               <div>
-                <h3 className="text-sm font-bold text-white tracking-tight">Select Task Creation Mode</h3>
-                <p className="text-[12px] text-slate-400 mt-0.5">Pick standard build phases or create a single task</p>
+                <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">Select Task Creation Mode</h3>
+                <p className="text-[12px] text-[#68707C] mt-0.5">Pick standard build phases or create a single task</p>
               </div>
               <button
                 onClick={() => setIsBottomSheetOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer"
+                className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -448,22 +437,22 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                 setIsBottomSheetOpen(false);
                 setIsTemplateModalOpen(true);
               }}
-              className="p-4 rounded-2xl bg-[#0D1424] hover:bg-[#142036] border border-blue-500/30 hover:border-blue-500/60 flex items-center justify-between gap-3 text-left transition-all cursor-pointer group shadow-sm active:scale-[0.99]"
+              className="p-4 rounded-2xl bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 flex items-center justify-between gap-3 text-left transition-all cursor-pointer group shadow-xs active:scale-[0.99]"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
                   <Layers className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
+                  <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
                     Construction Phase Template
                   </h4>
-                  <p className="text-[12px] text-slate-400 mt-0.5">
-                    Pre-loaded build order: Pre-Con, Drywall, Finishes & MEP (71 Tasks)
+                  <p className="text-[12px] text-[#68707C] mt-0.5 font-medium">
+                    Pre-loaded build order: Pre-Con, Drywall, Finishes & MEP
                   </p>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] flex-shrink-0" />
             </button>
 
             {/* Option 2: Custom Single Task */}
@@ -472,46 +461,46 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                 setIsBottomSheetOpen(false);
                 setIsCustomTaskModalOpen(true);
               }}
-              className="p-4 rounded-2xl bg-[#0D1424] hover:bg-[#142036] border border-[#1E2E4A] hover:border-blue-500/40 flex items-center justify-between gap-3 text-left transition-all cursor-pointer group shadow-sm active:scale-[0.99]"
+              className="p-4 rounded-2xl bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 flex items-center justify-between gap-3 text-left transition-all cursor-pointer group shadow-xs active:scale-[0.99]"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-[#0E1A33] border border-[#1E325A] text-slate-300 flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
                   <Sliders className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
+                  <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
                     Custom Single Task
                   </h4>
-                  <p className="text-[12px] text-slate-400 mt-0.5">
+                  <p className="text-[12px] text-[#68707C] mt-0.5 font-medium">
                     Create an individual task or inspection from scratch
                   </p>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] flex-shrink-0" />
             </button>
 
           </div>
         </div>
       )}
 
-      {/* ─── 5. FULL TEMPLATE CHECKLIST MODAL (Website Reference 71 Tasks) ─── */}
+      {/* ─── 5. FULL TEMPLATE CHECKLIST MODAL ─── */}
       {isTemplateModalOpen && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[420px] bg-[#070D1A] border border-[#1E2E4A] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-[#171A1F] max-h-[90vh] overflow-y-auto">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
               <div>
                 <div className="flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-emerald-400" />
-                  <h3 className="text-sm font-bold text-white tracking-tight">Add Tasks — Construction Template</h3>
+                  <Layers className="w-4 h-4 text-[#1677FF]" />
+                  <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">Add Tasks — Construction Template</h3>
                 </div>
-                <p className="text-[12px] text-slate-400 mt-0.5">Select tasks in sequential build order</p>
+                <p className="text-[12px] text-[#68707C] mt-0.5">Select tasks in sequential build order</p>
               </div>
 
               <button
                 onClick={() => setIsTemplateModalOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+                className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -519,7 +508,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
 
             {/* Select / Deselect All Controls */}
             <div className="flex items-center justify-between px-1 py-1 text-xs">
-              <span className="text-[12px] text-slate-400 font-semibold">
+              <span className="text-[12px] text-[#68707C] font-semibold">
                 {selectedTemplateCount} tasks selected
               </span>
 
@@ -527,7 +516,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                 <button
                   type="button"
                   onClick={() => handleSelectAllTemplates(true)}
-                  className="text-[12px] font-bold text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-[12px] font-bold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <Check className="w-3 h-3" />
                   <span>Select all</span>
@@ -535,7 +524,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                 <button
                   type="button"
                   onClick={() => handleSelectAllTemplates(false)}
-                  className="text-[12px] font-bold text-slate-400 hover:text-white cursor-pointer"
+                  className="text-[12px] font-bold text-[#68707C] hover:text-[#171A1F] cursor-pointer"
                 >
                   Deselect all
                 </button>
@@ -545,10 +534,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
             {/* Checklist Phases */}
             <div className="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-1">
               {TEMPLATE_PHASES.map((tp) => (
-                <div key={tp.id} className="p-3 rounded-2xl bg-[#050811] border border-[#142036] flex flex-col gap-2">
-                  <div className="flex items-center justify-between pb-1 border-b border-[#142036]">
-                    <span className="text-xs font-bold text-white">{tp.name}</span>
-                    <span className="text-[10px] font-bold text-slate-400">
+                <div key={tp.id} className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-2">
+                  <div className="flex items-center justify-between pb-1 border-b border-[#EAEDF1]">
+                    <span className="text-xs font-bold text-[#171A1F]">{tp.name}</span>
+                    <span className="text-[10px] font-bold text-[#68707C]">
                       {tp.tasks.filter(t => selectedTemplateTasks[t]).length}/{tp.tasks.length}
                     </span>
                   </div>
@@ -560,14 +549,14 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
                         <div
                           key={tName}
                           onClick={() => setSelectedTemplateTasks(prev => ({ ...prev, [tName]: !prev[tName] }))}
-                          className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-[#0E1A33] cursor-pointer transition-colors"
+                          className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-white cursor-pointer transition-colors"
                         >
                           <div className={`w-4 h-4 rounded-md flex items-center justify-center transition-colors ${
-                            isChecked ? 'bg-emerald-500 text-black' : 'border border-slate-600 bg-slate-900'
+                            isChecked ? 'bg-[#1677FF] text-white' : 'border border-[#DDE1E7] bg-white'
                           }`}>
                             {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                           </div>
-                          <span className="text-xs text-slate-200">{tName}</span>
+                          <span className="text-xs text-[#171A1F]">{tName}</span>
                         </div>
                       );
                     })}
@@ -577,18 +566,18 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
             </div>
 
             {/* Bottom Actions */}
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#142036] mt-1">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#EAEDF1] mt-1">
               <button
                 type="button"
                 onClick={() => setIsTemplateModalOpen(false)}
-                className="px-3.5 py-2 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
+                className="px-3.5 py-2 rounded-xl bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] text-xs font-semibold cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleApplyTemplateTasks}
-                className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md shadow-blue-600/30 cursor-pointer active:scale-95 transition-all"
+                className="px-4 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer active:scale-95 transition-all"
               >
                 Add {selectedTemplateCount} Tasks
               </button>
@@ -600,13 +589,13 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
 
       {/* ─── 6. CUSTOM SINGLE TASK MODAL ─── */}
       {isCustomTaskModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[380px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-slate-100">
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-              <h3 className="text-xs font-bold text-white">Create Custom Task</h3>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[380px] bg-white border border-[#DDE1E7] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-[#171A1F]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
+              <h3 className="text-xs font-bold text-[#171A1F]">Create Custom Task</h3>
               <button
                 onClick={() => setIsCustomTaskModalOpen(false)}
-                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+                className="w-6 h-6 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -614,11 +603,11 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
 
             <form onSubmit={handleAddCustomTaskSubmit} className="flex flex-col gap-2.5 text-xs">
               <div>
-                <label className="text-[12px] text-slate-400 block mb-1">Target Phase / Category</label>
+                <label className="text-[12px] text-[#68707C] block mb-1 font-medium">Target Phase / Category</label>
                 <select
                   value={selectedGroupForNewTask}
                   onChange={(e) => setSelectedGroupForNewTask(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                  className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
                 >
                   {stageGroups.map(g => (
                     <option key={g.id} value={g.id}>{g.name}</option>
@@ -627,28 +616,28 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({ project }) => 
               </div>
 
               <div>
-                <label className="text-[12px] text-slate-400 block mb-1">Task Title *</label>
+                <label className="text-[12px] text-[#68707C] block mb-1 font-medium">Task Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Hydrostatic pressure test on pipe"
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                  className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#EAEDF1] mt-1">
                 <button
                   type="button"
                   onClick={() => setIsCustomTaskModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg bg-[#0E1A33] text-slate-300 text-xs font-semibold cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] text-xs font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="px-4 py-1.5 rounded-lg bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer"
                 >
                   Add Task
                 </button>

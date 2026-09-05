@@ -63,10 +63,10 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
   ];
 
   const UNLOCKED = [
-    { title: 'First Started', desc: 'Started your first project', Icon: Flag, dot: 'bg-blue-400', ring: 'bg-blue-500/10 border-blue-500/20 text-blue-400' },
-    { title: '10 Tasks', desc: 'Completed 10 tasks', Icon: CheckSquare, dot: 'bg-blue-400', ring: 'bg-blue-500/10 border-blue-500/20 text-blue-400' },
-    { title: '100 Tasks', desc: 'Completed 100 tasks', Icon: Trophy, dot: 'bg-amber-400', ring: 'bg-amber-500/10 border-amber-500/20 text-amber-400' },
-    { title: 'First Completed', desc: 'Completed your first project', Icon: Building, dot: 'bg-emerald-400', ring: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' },
+    { title: 'First Started', desc: 'Started your first project', Icon: Flag, dot: 'bg-blue-600', ring: 'bg-blue-50 border-blue-200 text-[#1677FF]' },
+    { title: '10 Tasks', desc: 'Completed 10 tasks', Icon: CheckSquare, dot: 'bg-blue-600', ring: 'bg-blue-50 border-blue-200 text-[#1677FF]' },
+    { title: '100 Tasks', desc: 'Completed 100 tasks', Icon: Trophy, dot: 'bg-amber-600', ring: 'bg-amber-50 border-amber-200 text-amber-700' },
+    { title: 'First Completed', desc: 'Completed your first project', Icon: Building, dot: 'bg-emerald-600', ring: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
   ];
 
   const LOCKED = [
@@ -75,46 +75,46 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
   ];
 
   function barColor(v: number) {
-    if (v >= 70) return 'bg-emerald-400';
-    if (v >= 40) return 'bg-amber-400';
-    return 'bg-rose-400';
+    if (v >= 70) return 'bg-emerald-500';
+    if (v >= 40) return 'bg-amber-500';
+    return 'bg-rose-500';
   }
   function textColor(v: number) {
-    if (v >= 70) return 'text-emerald-400';
-    if (v >= 40) return 'text-amber-400';
-    return 'text-rose-400';
+    if (v >= 70) return 'text-emerald-600';
+    if (v >= 40) return 'text-amber-600';
+    return 'text-rose-600';
   }
 
   const strokePct = (SCORE / 100) * CIRCUMFERENCE;
 
   return (
-    <div className="w-full flex flex-col gap-3 px-4 py-4 pb-32 font-sans max-w-[430px] mx-auto" style={{ background: '#070B14', minHeight: '100vh' }}>
+    <div className="w-full flex flex-col gap-3 px-4 py-4 pb-32 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
 
       {/* ─── Header ─── */}
-      <div className="flex items-center justify-between pb-2 border-b border-[#1A263E]">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer">
+      <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer">
           <ChevronLeft className="w-4 h-4" />
           Account
         </button>
-        <span className="text-sm font-bold text-white flex items-center gap-1.5">
-          <Award className="w-4 h-4 text-blue-400" />
+        <span className="text-sm font-bold text-[#171A1F] flex items-center gap-1.5">
+          <Award className="w-4 h-4 text-[#1677FF]" />
           Lattice Verified™
         </span>
         <div className="w-16" />
       </div>
 
       {/* ─── Hero Card ─── */}
-      <div className="rounded-3xl overflow-hidden border border-[#1A263E]" style={{ background: 'linear-gradient(160deg, #0F1E3A 0%, #090E1A 60%, #07101E 100%)' }}>
+      <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs">
 
         {/* Identity + Gauge row */}
         <div className="px-4 pt-4 pb-0 flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className="w-12 h-12 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex items-center justify-center text-blue-400 flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF3FF] border border-blue-200 flex items-center justify-center text-[#1677FF] flex-shrink-0">
               <Award className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-[15px] font-black text-white leading-tight truncate">{currentUser.name}</p>
-              <p className="text-[11px] text-slate-400 font-medium mt-0.5">Foundation III · 1,250 XP</p>
+              <p className="text-[15px] font-black text-[#171A1F] leading-tight truncate">{currentUser.name}</p>
+              <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Foundation III · 1,250 XP</p>
             </div>
           </div>
 
@@ -122,7 +122,7 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
           <div className="flex flex-col items-center flex-shrink-0 -mt-1">
             <div className="relative w-[68px] h-[68px]">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#1A263E" strokeWidth="2.8" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#EAEDF1" strokeWidth="2.8" />
                 <circle
                   cx="18" cy="18" r="15.5" fill="none"
                   stroke="#EF4444" strokeWidth="2.8"
@@ -132,48 +132,48 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[17px] font-black text-white leading-none">{SCORE}</span>
-                <span className="text-[9px] text-slate-400 font-semibold">/100</span>
+                <span className="text-[17px] font-black text-[#171A1F] leading-none">{SCORE}</span>
+                <span className="text-[9px] text-[#68707C] font-semibold">/100</span>
               </div>
             </div>
-            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 mt-1">Verified Score</span>
+            <span className="text-[9px] font-black uppercase tracking-widest text-[#68707C] mt-1">Verified Score</span>
           </div>
         </div>
 
         {/* Risk Banner */}
-        <div className="mx-3 mt-3 px-3 py-2 rounded-2xl flex items-center gap-2"
-          style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
-          <ShieldAlert className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
-          <span className="text-[11px] font-bold text-rose-400">High Risk · 52 points needed for Verified™</span>
+        <div className="mx-3 mt-3 px-3 py-2 rounded-2xl flex items-center gap-2 bg-rose-50 border border-rose-200">
+          <ShieldAlert className="w-3.5 h-3.5 text-rose-600 flex-shrink-0" />
+          <span className="text-[11px] font-bold text-rose-700">High Risk · 52 points needed for Verified™</span>
         </div>
 
         {/* KPI Strip */}
-        <div className="grid grid-cols-4 mt-3 border-t border-[#141F33] divide-x divide-[#141F33]">
+        <div className="grid grid-cols-4 mt-3 border-t border-[#EAEDF1] divide-x divide-[#EAEDF1]">
           {[
-            { Icon: FolderKanban, value: '11', label: 'Projects', color: 'text-blue-400' },
-            { Icon: Building, value: '6', label: 'Completed', color: 'text-emerald-400' },
-            { Icon: CheckSquare, value: '122', label: 'Tasks', color: 'text-blue-400' },
-            { Icon: DollarSign, value: '$1.8M', label: 'Volume', color: 'text-amber-400' },
+            { Icon: FolderKanban, value: '11', label: 'Projects', color: 'text-[#1677FF]' },
+            { Icon: Building, value: '6', label: 'Completed', color: 'text-emerald-600' },
+            { Icon: CheckSquare, value: '122', label: 'Tasks', color: 'text-[#1677FF]' },
+            { Icon: DollarSign, value: '$1.8M', label: 'Volume', color: 'text-amber-600' },
           ].map(({ Icon, value, label, color }) => (
             <div key={label} className="flex flex-col items-center py-3 gap-0.5">
               <Icon className={`w-3.5 h-3.5 mb-1 ${color}`} />
-              <span className="text-[13px] font-black text-white leading-none">{value}</span>
-              <span className="text-[10px] text-slate-500 font-medium">{label}</span>
+              <span className="text-[13px] font-black text-[#171A1F] leading-none">{value}</span>
+              <span className="text-[10px] text-[#68707C] font-medium">{label}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* ─── Tabs ─── */}
-      <div className="grid grid-cols-4 gap-0.5 p-1 rounded-2xl border border-[#1A263E]" style={{ background: '#0D1424' }}>
+      <div className="grid grid-cols-4 gap-0.5 p-1 rounded-2xl border border-[#DDE1E7] bg-[#F2F2F7]">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`py-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer truncate px-1 ${activeTab === tab.id
-                ? 'bg-[#2563EB] text-white shadow-sm'
-                : 'text-slate-500 hover:text-slate-300'
-              }`}
+            className={`py-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer truncate px-1 ${
+              activeTab === tab.id
+                ? 'bg-white text-[#171A1F] shadow-xs'
+                : 'text-[#68707C] hover:text-[#171A1F]'
+            }`}
           >
             {tab.label}
           </button>
@@ -182,15 +182,15 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
 
       {/* ══════ TAB 1: PERFORMANCE ══════ */}
       {activeTab === 'performance' && (
-        <div className="rounded-3xl overflow-hidden border border-[#1A263E]" style={{ background: '#0D1424' }}>
-          <div className="px-4 py-3 border-b border-[#141F33] flex items-center gap-2">
-            <TrendingUp className="w-3.5 h-3.5 text-slate-500" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Performance Metrics</span>
+        <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs divide-y divide-[#EAEDF1]">
+          <div className="px-4 py-3 flex items-center gap-2">
+            <TrendingUp className="w-3.5 h-3.5 text-[#68707C]" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Performance Metrics</span>
           </div>
-          {METRICS.map((m, i) => (
-            <div key={m.label} className={`px-4 py-3 flex items-center justify-between ${i < METRICS.length - 1 ? 'border-b border-[#141F33]' : ''}`}>
-              <span className="text-[13px] text-slate-300 font-medium">{m.label}</span>
-              <span className={`text-[13px] font-black ${m.good ? 'text-emerald-400' : 'text-rose-400'}`}>{m.raw}</span>
+          {METRICS.map((m) => (
+            <div key={m.label} className="px-4 py-3 flex items-center justify-between">
+              <span className="text-[13px] text-[#171A1F] font-medium">{m.label}</span>
+              <span className={`text-[13px] font-black ${m.good ? 'text-emerald-600' : 'text-rose-600'}`}>{m.raw}</span>
             </div>
           ))}
         </div>
@@ -198,22 +198,22 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
 
       {/* ══════ TAB 2: SCORE BREAKDOWN ══════ */}
       {activeTab === 'breakdown' && (
-        <div className="rounded-3xl overflow-hidden border border-[#1A263E]" style={{ background: '#0D1424' }}>
-          <div className="px-4 py-3 border-b border-[#141F33] flex items-center gap-2">
-            <ShieldCheck className="w-3.5 h-3.5 text-slate-500" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Score Breakdown</span>
+        <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs">
+          <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center gap-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#68707C]" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Score Breakdown</span>
           </div>
           <div className="px-4 py-4 flex flex-col gap-4">
             {BREAKDOWN.map(item => (
               <div key={item.label}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[13px] text-slate-300 font-medium">
+                  <span className="text-[13px] text-[#171A1F] font-medium">
                     {item.label}
-                    <span className="text-slate-600 ml-1.5 text-[11px]">{item.weight}</span>
+                    <span className="text-[#68707C] ml-1.5 text-[11px]">{item.weight}</span>
                   </span>
                   <span className={`text-[13px] font-black ${textColor(item.value)}`}>{item.value}%</span>
                 </div>
-                <div className="h-2 rounded-full bg-[#0A1020] overflow-hidden">
+                <div className="h-2 rounded-full bg-[#E5E7EB] overflow-hidden">
                   <div className={`h-full rounded-full ${barColor(item.value)} transition-all duration-700`} style={{ width: `${item.value}%` }} />
                 </div>
               </div>
@@ -226,10 +226,10 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
       {activeTab === 'path' && (
         <div className="flex flex-col gap-3">
 
-          <div className="rounded-3xl overflow-hidden border border-[#1A263E]" style={{ background: '#0D1424' }}>
-            <div className="px-4 py-3 border-b border-[#141F33] flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-slate-500" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Current vs Target</span>
+          <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs">
+            <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-[#68707C]" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Current vs Target</span>
             </div>
             <div className="px-4 py-4 flex flex-col gap-3.5">
               {PATH.map(item => {
@@ -237,17 +237,17 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
                 return (
                   <div key={item.label}>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[13px] text-slate-300 font-medium">
+                      <span className="text-[13px] text-[#171A1F] font-medium">
                         {item.label}
-                        <span className="text-slate-600 ml-1.5 text-[11px]">{item.weight}</span>
+                        <span className="text-[#68707C] ml-1.5 text-[11px]">{item.weight}</span>
                       </span>
-                      <span className="text-[13px] font-bold text-white">
-                        {item.current}<span className="text-slate-500 font-normal text-[11px]">/{item.target}</span>
+                      <span className="text-[13px] font-bold text-[#171A1F]">
+                        {item.current}<span className="text-[#68707C] font-normal text-[11px]">/{item.target}</span>
                       </span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-[#0A1020] overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all duration-700 ${pct >= 90 ? 'bg-emerald-400' : pct >= 55 ? 'bg-blue-500' : 'bg-rose-400'}`}
+                        className={`h-full rounded-full transition-all duration-700 ${pct >= 90 ? 'bg-emerald-500' : pct >= 55 ? 'bg-[#1677FF]' : 'bg-rose-500'}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -257,17 +257,17 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
             </div>
           </div>
 
-          <div className="rounded-3xl overflow-hidden border border-[#1A263E]" style={{ background: '#0D1424' }}>
-            <div className="px-4 py-3 border-b border-[#141F33]">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Biggest Gains Available</span>
+          <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs divide-y divide-[#EAEDF1]">
+            <div className="px-4 py-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Biggest Gains Available</span>
             </div>
-            {GAINS.map((g, i) => (
-              <div key={g.title} className={`px-4 py-3 flex items-start gap-3 justify-between ${i < GAINS.length - 1 ? 'border-b border-[#141F33]' : ''}`}>
+            {GAINS.map((g) => (
+              <div key={g.title} className="px-4 py-3 flex items-start gap-3 justify-between">
                 <div className="min-w-0">
-                  <p className="text-[13px] font-bold text-white">{g.title}</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{g.desc}</p>
+                  <p className="text-[13px] font-bold text-[#171A1F]">{g.title}</p>
+                  <p className="text-[11px] text-[#68707C] mt-0.5 leading-relaxed">{g.desc}</p>
                 </div>
-                <span className="flex-shrink-0 text-[11px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+                <span className="flex-shrink-0 text-[11px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
                   {g.pts}
                 </span>
               </div>
@@ -281,43 +281,40 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
         <div className="flex flex-col gap-3">
 
           {/* Unlocked grid */}
-          <div className="rounded-3xl overflow-hidden border border-[#1A263E]" style={{ background: '#0D1424' }}>
-            <div className="px-4 py-3 border-b border-[#141F33] flex items-center gap-2">
-              <Trophy className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Unlocked</span>
-              <span className="ml-auto text-[11px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">4</span>
+          <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs">
+            <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center gap-2">
+              <Trophy className="w-3.5 h-3.5 text-amber-600" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Unlocked</span>
+              <span className="ml-auto text-[11px] font-black text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">4</span>
             </div>
-            <div className="grid grid-cols-2 gap-px bg-[#141F33]">
-              {UNLOCKED.map(({ title, desc, Icon, ring }) => {
-                const [bg, border, text] = ring.split(' ');
-                return (
-                  <div key={title} className="bg-[#0D1424] px-3 py-4 flex flex-col items-center text-center gap-2">
-                    <div className={`w-10 h-10 rounded-2xl border flex items-center justify-center ${bg} ${border} ${text}`}>
-                      <Icon className="w-4.5 h-4.5" />
-                    </div>
-                    <div>
-                      <p className="text-[12px] font-bold text-white">{title}</p>
-                      <p className="text-[10px] text-slate-500 mt-0.5">{desc}</p>
-                    </div>
+            <div className="grid grid-cols-2 gap-px bg-[#EAEDF1]">
+              {UNLOCKED.map(({ title, desc, Icon, ring }) => (
+                <div key={title} className="bg-white px-3 py-4 flex flex-col items-center text-center gap-2">
+                  <div className={`w-10 h-10 rounded-2xl border flex items-center justify-center ${ring}`}>
+                    <Icon className="w-4.5 h-4.5" />
                   </div>
-                );
-              })}
+                  <div>
+                    <p className="text-[12px] font-bold text-[#171A1F]">{title}</p>
+                    <p className="text-[10px] text-[#68707C] mt-0.5">{desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Locked list */}
-          <div className="rounded-3xl overflow-hidden border border-[#1A263E]" style={{ background: '#0D1424' }}>
-            <div className="px-4 py-3 border-b border-[#141F33] flex items-center gap-2">
-              <Lock className="w-3.5 h-3.5 text-slate-600" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Locked</span>
-              <span className="ml-auto text-[11px] font-bold text-slate-500 bg-[#090E1A] border border-[#1A263E] px-2 py-0.5 rounded-full">{LOCKED.length}</span>
+          <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs divide-y divide-[#EAEDF1]">
+            <div className="px-4 py-3 flex items-center gap-2">
+              <Lock className="w-3.5 h-3.5 text-[#68707C]" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Locked</span>
+              <span className="ml-auto text-[11px] font-bold text-[#68707C] bg-[#F2F2F7] border border-[#DDE1E7] px-2 py-0.5 rounded-full">{LOCKED.length}</span>
             </div>
-            {LOCKED.map((name, i) => (
-              <div key={name} className={`px-4 py-2.5 flex items-center gap-3 opacity-40 ${i < LOCKED.length - 1 ? 'border-b border-[#141F33]' : ''}`}>
-                <div className="w-7 h-7 rounded-xl bg-[#090E1A] border border-[#1A263E] flex items-center justify-center flex-shrink-0">
-                  <Lock className="w-3 h-3 text-slate-500" />
+            {LOCKED.map((name) => (
+              <div key={name} className="px-4 py-2.5 flex items-center gap-3 opacity-60">
+                <div className="w-7 h-7 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex items-center justify-center flex-shrink-0">
+                  <Lock className="w-3 h-3 text-[#9DA5B1]" />
                 </div>
-                <span className="text-[13px] text-slate-400 font-medium">{name}</span>
+                <span className="text-[13px] text-[#68707C] font-medium">{name}</span>
               </div>
             ))}
           </div>

@@ -34,12 +34,12 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const variantStyles = {
-    primary: 'bg-gradient-to-r from-[#0066FF] to-[#00F0FF] text-white hover:brightness-110 shadow-[0_4px_16px_-2px_rgba(0,102,255,0.45)] hover:shadow-[0_6px_20px_-2px_rgba(0,210,255,0.55)]',
-    gradient: 'bg-gradient-to-r from-[#0052CC] via-[#0088FF] to-[#00E5FF] text-white hover:brightness-110 shadow-[0_4px_18px_rgba(0,136,255,0.4)]',
-    secondary: 'bg-[#172238] text-slate-100 hover:bg-[#1E2E4B] border border-[#23334F] hover:border-[#384F75]',
-    outline: 'bg-transparent text-cyan-400 border-[1.5px] border-cyan-500/50 hover:bg-cyan-500/10 hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(0,240,255,0.25)]',
-    ghost: 'bg-transparent text-slate-300 hover:bg-navy-800/80 hover:text-white',
-    danger: 'bg-red-600/90 text-white hover:bg-red-600 shadow-[0_4px_14px_rgba(239,68,68,0.4)]'
+    primary: 'bg-[#1677FF] hover:bg-[#0958D9] text-white shadow-xs',
+    gradient: 'bg-[#1677FF] hover:bg-[#0958D9] text-white shadow-xs',
+    secondary: 'bg-[#F2F2F7] text-[#171A1F] hover:bg-[#EAEDF1] border border-[#DDE1E7]',
+    outline: 'bg-white text-[#1677FF] border border-[#1677FF] hover:bg-[#EAF3FF]',
+    ghost: 'bg-transparent text-[#68707C] hover:bg-[#F2F2F7] hover:text-[#171A1F]',
+    danger: 'bg-rose-600 text-white hover:bg-rose-700 shadow-xs'
   };
 
   const widthStyle = fullWidth && size !== 'icon' ? 'w-full' : '';

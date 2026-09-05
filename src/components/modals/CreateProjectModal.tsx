@@ -100,37 +100,35 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         completedTasks: 0,
         overdueTasks: 0,
         openPunchItems: 0,
-        totalMilestones: 4,
+        totalMilestones: 0,
         completedMilestones: 0
       },
       thumbnail: thumbnail || DEFAULT_PRESET_PHOTOS[0].url,
-      coverImage: thumbnail || DEFAULT_PRESET_PHOTOS[0].url,
-      description: description.trim() || `${type} development for ${clientName.trim() || 'Client'}.`,
-      clientName: clientName.trim(),
-      type: type as any,
-      masterCode: masterCode.trim()
+      description: description.trim() || undefined,
+      clientName: clientName.trim() || undefined,
+      masterCode: masterCode.trim() || undefined
     });
 
     onClose();
   };
 
   const inputClass =
-    'w-full h-10 bg-[#050811] border border-[#142036] focus:border-[#2563EB] rounded-xl px-3.5 text-xs text-white placeholder-slate-500 outline-none transition-colors font-medium';
+    'w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors font-medium';
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[420px] bg-[#070D1A] border border-[#1E2E4A] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[440px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-[#171A1F] max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-2.5 border-b border-[#142036]">
+        <div className="flex items-center justify-between pb-2.5 border-b border-[#EAEDF1]">
           <div>
-            <h3 className="text-sm font-bold text-white tracking-tight">Create New Project</h3>
-            <p className="text-[12px] text-slate-400 mt-0.5">Initialize a new project workspace</p>
+            <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Create New Project</h2>
+            <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Initialize a new project workspace</p>
           </div>
 
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer"
+            className="w-7 h-7 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -140,18 +138,18 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           
           {/* Cover Photo Upload Box */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
               Project Cover Photo
             </label>
             {thumbnail ? (
-              <div className="h-28 w-full relative rounded-2xl overflow-hidden border border-[#142036] bg-[#050811] group">
+              <div className="h-28 w-full relative rounded-2xl overflow-hidden border border-[#DDE1E7] bg-[#F7F8FA] group">
                 <img
                   src={thumbnail}
                   alt="Project Thumbnail"
                   className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center gap-2">
-                  <label className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95">
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2">
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95">
                     <Upload className="w-3.5 h-3.5" />
                     <span>Change Image</span>
                     <input
@@ -164,22 +162,22 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setThumbnail('')}
-                    className="px-3 py-1.5 rounded-xl bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
                   >
                     Remove
                   </button>
                 </div>
               </div>
             ) : (
-              <label className="h-24 w-full rounded-2xl border-2 border-dashed border-[#1A2744] hover:border-blue-500/40 bg-[#060B17] flex flex-col items-center justify-center gap-1.5 cursor-pointer group transition-all">
-                <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <label className="h-24 w-full rounded-2xl border-2 border-dashed border-[#DDE1E7] hover:border-[#1677FF] bg-[#F7F8FA] hover:bg-[#EAF3FF]/40 flex flex-col items-center justify-center gap-1.5 cursor-pointer group transition-all">
+                <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Upload className="w-3.5 h-3.5" />
                 </div>
                 <div className="text-center">
-                  <span className="text-xs font-bold text-blue-400 group-hover:text-blue-300">
+                  <span className="text-xs font-bold text-[#1677FF]">
                     Upload Cover Photo
                   </span>
-                  <p className="text-[10px] text-slate-500 font-medium">PNG, JPG or choose preset (Optional)</p>
+                  <p className="text-[10px] text-[#68707C] font-medium">PNG, JPG or choose preset (Optional)</p>
                 </div>
                 <input
                   type="file"
@@ -192,7 +190,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
             {/* Quick Preset Selector */}
             <div className="mt-2">
-              <p className="text-[10px] text-slate-500 font-medium mb-1">Or select a preset:</p>
+              <p className="text-[10px] text-[#68707C] font-medium mb-1">Or select a preset:</p>
               <div className="grid grid-cols-4 gap-1.5">
                 {DEFAULT_PRESET_PHOTOS.map((p, idx) => (
                   <button
@@ -200,12 +198,12 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                     type="button"
                     onClick={() => setThumbnail(thumbnail === p.url ? '' : p.url)}
                     className={`relative h-10 rounded-lg overflow-hidden border transition-all cursor-pointer ${
-                      thumbnail === p.url ? 'border-blue-500 ring-2 ring-blue-500/30' : 'border-[#142036] opacity-60 hover:opacity-100'
+                      thumbnail === p.url ? 'border-[#1677FF] ring-2 ring-[#1677FF]/30' : 'border-[#DDE1E7] opacity-60 hover:opacity-100'
                     }`}
                   >
                     <img src={p.url} alt={p.label} className="w-full h-full object-cover" />
                     {thumbnail === p.url && (
-                      <div className="absolute inset-0 bg-blue-600/50 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-[#1677FF]/50 flex items-center justify-center">
                         <Check className="w-3 h-3 text-white stroke-[3]" />
                       </div>
                     )}
@@ -217,7 +215,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
           {/* Project Title */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
               Project Title *
             </label>
             <input
@@ -233,7 +231,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Client / Owner & Project Type */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 Client / Owner
               </label>
               <input
@@ -246,7 +244,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 Project Type
               </label>
               <CustomSelect
@@ -261,7 +259,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Site Address & City/State */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 Site Address
               </label>
               <input
@@ -274,7 +272,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 City / State
               </label>
               <input
@@ -290,13 +288,13 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Lead PM & Total Estimated Budget */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 Lead Project Manager
               </label>
               <select
                 value={pmName}
                 onChange={(e) => setPmName(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer font-medium"
               >
                 {AVAILABLE_PMS.map(p => (
                   <option key={p.name} value={p.name}>{p.name}</option>
@@ -305,7 +303,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 Total Budget ($ USD)
               </label>
               <input
@@ -321,7 +319,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
           {/* Target Completion Date & Master Code */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 Target Completion Date
               </label>
               <input
@@ -333,7 +331,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
                 Master Code (Optional)
               </label>
               <input
@@ -349,7 +347,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
           {/* Project Scope & Description */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-xs font-semibold text-[#171A1F] mb-1 block">
               Project Scope & Notes
             </label>
             <textarea
@@ -357,26 +355,26 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Detailed description of structure, LEED requirements, architectural notes..."
-              className="w-full bg-[#050811] border border-[#142036] rounded-xl p-3 text-white text-xs outline-none focus:border-blue-500 resize-none font-medium placeholder-slate-500"
+              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl p-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] resize-none font-medium placeholder-[#9DA5B1] leading-relaxed"
             />
           </div>
 
           {/* Submit Action */}
-          <div className="pt-2 border-t border-[#142036] flex items-center justify-end gap-2 mt-1">
+          <div className="pt-2 border-t border-[#EAEDF1] flex items-center justify-end gap-2 mt-1">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] text-xs font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!isValid}
-              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 ${
+              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 ${
                 isValid
-                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer shadow-blue-600/30 active:scale-95'
-                  : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-[#1677FF] hover:bg-[#0958D9] text-white cursor-pointer active:scale-95'
+                  : 'bg-[#F2F2F7] text-[#9DA5B1] cursor-not-allowed border border-[#DDE1E7]'
               }`}
             >
               <Check className="w-3.5 h-3.5" />

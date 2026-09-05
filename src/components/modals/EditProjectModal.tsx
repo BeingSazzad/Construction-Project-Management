@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, ProjectStatus } from '../../types';
-import { X, Check, Building, MapPin, DollarSign, Calendar, UserCheck, FileText } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface EditProjectModalProps {
@@ -79,19 +79,19 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[420px] bg-[#070D1A] border border-[#1E2E4A] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-slate-100 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F] max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div>
-            <h2 className="text-sm font-bold text-white tracking-tight">Edit Project Info</h2>
-            <p className="text-[12px] text-slate-400 mt-0.5">Code: {project.code}</p>
+            <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Project Info</h2>
+            <p className="text-[11px] text-[#68707C] mt-0.5 font-medium">Code: {project.code}</p>
           </div>
 
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+            className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -100,36 +100,36 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         {/* Edit Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Project Title *</label>
+            <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Project Title *</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Site Address</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Site Address</label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="450 Waterfront Blvd"
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">City / State</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">City / State</label>
               <input
                 type="text"
                 value={cityState}
                 onChange={(e) => setCityState(e.target.value)}
                 placeholder="New York, NY"
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
           </div>
@@ -137,7 +137,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           {/* Status & Progress % */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Lifecycle Status</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Lifecycle Status</label>
               <CustomSelect
                 value={status}
                 onChange={(v) => setStatus(v as ProjectStatus)}
@@ -154,7 +154,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Progress %</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Progress %</label>
               <input
                 type="number"
                 min={0}
@@ -162,7 +162,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 required
                 value={progress}
                 onChange={(e) => setProgress(Number(e.target.value))}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
           </div>
@@ -170,23 +170,23 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           {/* Budget & Client Name */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Total Budget ($ USD)</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Total Budget ($ USD)</label>
               <input
                 type="number"
                 value={totalBudget}
                 onChange={(e) => setTotalBudget(Number(e.target.value))}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Client Name</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Client Name</label>
               <input
                 type="text"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="e.g. Texas Commercial LLC"
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
           </div>
@@ -194,11 +194,11 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           {/* Master Code & Project Manager */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Lead Project Manager</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Lead Project Manager</label>
               <select
                 value={selectedPM}
                 onChange={(e) => setSelectedPM(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer font-medium"
               >
                 {AVAILABLE_PMS.map(pm => (
                   <option key={pm.name} value={pm.name}>{pm.name}</option>
@@ -207,7 +207,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Master Code (4 digits)</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Master Code (4 digits)</label>
               <input
                 type="text"
                 maxLength={4}
@@ -215,56 +215,56 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 value={masterCode}
                 onChange={(e) => setMasterCode(e.target.value.replace(/\D/g, ''))}
                 placeholder="1234"
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Start Date</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Start Date</label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Target Completion Date</label>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Target Completion Date</label>
               <input
                 type="date"
                 value={targetEndDate}
                 onChange={(e) => setTargetEndDate(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Project Scope & Notes</label>
+            <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Project Scope & Notes</label>
             <textarea
               rows={2}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Detailed description of scope and structure..."
-              className="w-full bg-[#050811] border border-[#142036] rounded-xl p-3 text-white text-xs outline-none focus:border-blue-500 resize-none"
+              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl p-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] resize-none font-medium leading-relaxed"
             />
           </div>
 
           {/* Bottom Actions: Cancel & Save */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#142036] mt-2">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#EAEDF1] mt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7] text-xs font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-600/30 cursor-pointer active:scale-95 transition-all"
+              className="px-5 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all"
             >
               <Check className="w-3.5 h-3.5" />
               <span>Save Changes</span>

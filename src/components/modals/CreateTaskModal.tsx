@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Project, Task, Priority } from '../../types';
-import { Button } from '../common/Button';
-import { X, CheckSquare, Calendar, User as UserIcon, Tag, MapPin } from 'lucide-react';
+import { X, CheckSquare } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 import { DEFAULT_PROJECT_MILESTONES } from '../../data/projectMilestones';
 
@@ -43,7 +42,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       milestone,
       location,
       projectId: project?.id || 'proj-1',
-      projectName: project?.name || 'Riverside Office Complex',
+      projectName: project?.name || 'Snell Isle Residence',
       assignee: {
         id: 'usr_field',
         name: assigneeName,
@@ -61,22 +60,22 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="card-dark w-full max-w-[390px] bg-[#0E1524] border-cyan-500/40 p-5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
-        <div className="flex items-center justify-between pb-3 border-b border-[#1C2A44] mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center">
-              <CheckSquare className="w-4 h-4" />
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F]">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1] mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20 flex items-center justify-center">
+              <CheckSquare className="w-4.5 h-4.5" />
             </div>
             <div>
-              <h3 className="text-sm font-extrabold text-white">Create Task</h3>
-              <p className="text-[10px] text-cyan-400 truncate">{project?.name || 'Active Project'}</p>
+              <h3 className="text-sm font-bold text-[#171A1F]">Create Task</h3>
+              <p className="text-[11px] text-[#68707C] truncate">{project?.name || 'Snell Isle Residence'}</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-[#162033] text-slate-400 hover:text-white flex items-center justify-center"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -84,31 +83,31 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
           <div>
-            <label className="font-bold text-slate-300 mb-1 block">Task Title</label>
+            <label className="font-bold text-[#68707C] mb-1 block">Task Title *</label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Formwork Stripping Bay 4"
-              className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+              className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] placeholder-[#9DA5B1] focus:outline-none focus:border-[#1677FF]"
             />
           </div>
 
           <div>
-            <label className="font-bold text-slate-300 mb-1 block">Description & Scope</label>
+            <label className="font-bold text-[#68707C] mb-1 block">Description & Scope</label>
             <textarea
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Detail required procedures, specifications, and safety precautions..."
-              className="w-full bg-[#111827] border border-[#23334F] rounded-xl p-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 resize-none"
+              className="w-full bg-white border border-[#DDE1E7] rounded-xl p-3 text-[#171A1F] placeholder-[#9DA5B1] focus:outline-none focus:border-[#1677FF] resize-none leading-relaxed"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Priority</label>
+              <label className="font-bold text-[#68707C] mb-1 block">Priority</label>
               <CustomSelect
                 value={priority}
                 onChange={(v) => setPriority(v as Priority)}
@@ -117,19 +116,19 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               />
             </div>
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Due Date</label>
+              <label className="font-bold text-[#68707C] mb-1 block">Due Date</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] focus:outline-none focus:border-[#1677FF]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Trade Milestone</label>
+              <label className="font-bold text-[#68707C] mb-1 block">Milestone</label>
               <CustomSelect
                 value={milestone}
                 onChange={setMilestone}
@@ -138,18 +137,18 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               />
             </div>
             <div>
-              <label className="font-bold text-slate-300 mb-1 block">Location</label>
+              <label className="font-bold text-[#68707C] mb-1 block">Location</label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full h-11 bg-[#111827] border border-[#23334F] rounded-xl px-3 text-white focus:outline-none focus:border-cyan-400"
+                className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] focus:outline-none focus:border-[#1677FF]"
               />
             </div>
           </div>
 
           <div>
-            <label className="font-bold text-slate-300 mb-1 block">Assignee</label>
+            <label className="font-bold text-[#68707C] mb-1 block">Assignee</label>
             <CustomSelect
               value={assigneeName}
               onChange={setAssigneeName}
@@ -163,9 +162,12 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           </div>
 
           <div className="pt-2">
-            <Button type="submit" variant="primary">
+            <button
+              type="submit"
+              className="w-full py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
+            >
               Assign & Create Task
-            </Button>
+            </button>
           </div>
         </form>
       </div>

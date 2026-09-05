@@ -79,34 +79,34 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
   ];
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
       
       {/* ─── 1. PAGE TITLE & SUBTITLE ─── */}
-      <div className="flex flex-col gap-1 border-b border-[#142036] pb-3">
+      <div className="flex flex-col gap-1 border-b border-[#EAEDF1] pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#2563EB]/15 border border-[#3875F6]/30 flex items-center justify-center text-[#3875F6] shadow-sm">
-            <Sparkles className="w-4 h-4" />
+          <div className="w-9 h-9 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF] shadow-xs">
+            <Sparkles className="w-4.5 h-4.5" />
           </div>
           <div>
-            <h1 className="text-base font-black text-white tracking-tight">Latti Intelligence Center</h1>
-            <p className="text-[11px] text-slate-400 font-medium">Lattice AI-Powered Construction Cost Baseline & Knowledge Engine</p>
+            <h1 className="text-base font-extrabold text-[#171A1F] tracking-tight">Latti Intelligence Center</h1>
+            <p className="text-[11px] text-[#68707C] font-medium">Lattice AI-Powered Construction Cost Baseline & Knowledge Engine</p>
           </div>
         </div>
       </div>
 
-      {/* ─── 2. 9 TABS SCROLLABLE BAR (Exact Design System Token Sync) ─── */}
+      {/* ─── 2. 9 TABS SCROLLABLE BAR ─── */}
       <div className="w-full overflow-x-auto scrollbar-none py-1">
-        <div className="flex items-center gap-1 min-w-max">
+        <div className="flex items-center gap-1.5 min-w-max">
           {TABS.map(tab => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
                   isActive
-                    ? 'bg-[#2563EB] text-white shadow-md shadow-blue-500/25 ring-1 ring-blue-400'
-                    : 'bg-[#070D1A] text-slate-400 hover:text-slate-200 border border-[#142036]'
+                    ? 'bg-[#1677FF] text-white shadow-xs'
+                    : 'bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7]'
                 }`}
               >
                 {tab.label}
@@ -120,92 +120,88 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {activeTab === 'overview' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
           
-          {/* Hero Banner (Exact Dark Sapphire & Blue Glow) */}
-          <div className="p-4 rounded-3xl bg-gradient-to-br from-[#0E1A33] via-[#070D1A] to-[#050811] border border-[#1E325A] shadow-lg flex flex-col gap-2.5 relative overflow-hidden">
-            {/* Glow effects */}
-            <div className="absolute -top-10 -right-10 w-36 h-36 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-8 left-4 w-32 h-32 bg-cyan-600/15 rounded-full blur-2xl pointer-events-none" />
-
+          {/* Hero Banner */}
+          <div className="p-4.5 rounded-3xl bg-[#EAF3FF] border border-[#1677FF]/20 shadow-xs flex flex-col gap-2.5 relative overflow-hidden">
             <div className="relative z-10 flex flex-col gap-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#3875F6]">System Baseline</span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30">Monthly Cycle</span>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1677FF]">System Baseline</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-[#1677FF] border border-[#1677FF]/30">Monthly Cycle</span>
               </div>
-              <h2 className="text-sm font-black text-white">Latti Cost Baseline — August 2026</h2>
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1E325A] text-[11px]">
-                <div className="p-2 rounded-xl bg-[#050811] border border-[#142036]">
-                  <span className="text-slate-400 text-[10px] font-bold block uppercase">Last Refresh</span>
-                  <span className="font-extrabold text-white mt-0.5 block">7/16/2026</span>
+              <h2 className="text-sm font-black text-[#171A1F]">Latti Cost Baseline — August 2026</h2>
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1677FF]/15 text-[11px]">
+                <div className="p-2.5 rounded-xl bg-white border border-[#DDE1E7] shadow-xs">
+                  <span className="text-[#68707C] text-[10px] font-bold block uppercase">Last Refresh</span>
+                  <span className="font-extrabold text-[#171A1F] mt-0.5 block">7/16/2026</span>
                 </div>
-                <div className="p-2 rounded-xl bg-[#050811] border border-[#142036]">
-                  <span className="text-slate-400 text-[10px] font-bold block uppercase">Next Refresh</span>
-                  <span className="font-extrabold text-[#3875F6] mt-0.5 block">9/1/2026</span>
+                <div className="p-2.5 rounded-xl bg-white border border-[#DDE1E7] shadow-xs">
+                  <span className="text-[#68707C] text-[10px] font-bold block uppercase">Next Refresh</span>
+                  <span className="font-extrabold text-[#1677FF] mt-0.5 block">9/1/2026</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Cost Library Composition */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5 text-[#3875F6]" />
+          <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3">
+            <h3 className="text-xs font-bold text-[#171A1F] uppercase tracking-wider flex items-center gap-1.5">
+              <Database className="w-3.5 h-3.5 text-[#1677FF]" />
               <span>Cost Library Composition</span>
             </h3>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Distinct Trades</span>
-                <span className="text-xs font-black text-white block mt-0.5">9 Trades</span>
+              <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
+                <span className="text-[10px] text-[#68707C] font-bold block uppercase">Distinct Trades</span>
+                <span className="text-xs font-black text-[#171A1F] block mt-0.5">9 Trades</span>
               </div>
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Assemblies</span>
-                <span className="text-xs font-black text-blue-400 block mt-0.5">9 Assemblies</span>
+              <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
+                <span className="text-[10px] text-[#68707C] font-bold block uppercase">Assemblies</span>
+                <span className="text-xs font-black text-[#1677FF] block mt-0.5">9 Assemblies</span>
               </div>
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Labor Records</span>
-                <span className="text-xs font-black text-cyan-400 block mt-0.5">10 Records</span>
+              <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
+                <span className="text-[10px] text-[#68707C] font-bold block uppercase">Labor Records</span>
+                <span className="text-xs font-black text-[#1677FF] block mt-0.5">10 Records</span>
               </div>
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Approved Records</span>
-                <span className="text-xs font-black text-emerald-400 block mt-0.5">59 Approved</span>
+              <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
+                <span className="text-[10px] text-[#68707C] font-bold block uppercase">Approved Records</span>
+                <span className="text-xs font-black text-[#389E0D] block mt-0.5">59 Approved</span>
               </div>
             </div>
           </div>
 
           {/* Estimating Accuracy */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <BarChart3 className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3">
+            <h3 className="text-xs font-bold text-[#171A1F] uppercase tracking-wider flex items-center gap-1.5">
+              <BarChart3 className="w-3.5 h-3.5 text-[#1677FF]" />
               <span>Estimating Accuracy</span>
             </h3>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Overall Accuracy</span>
-                <span className="text-xs font-bold text-slate-400 mt-0.5 block">— (No actuals yet)</span>
+              <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
+                <span className="text-[10px] text-[#68707C] font-bold block uppercase">Overall Accuracy</span>
+                <span className="text-xs font-bold text-[#68707C] mt-0.5 block">— (No actuals yet)</span>
               </div>
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Labor Accuracy</span>
-                <span className="text-xs font-bold text-slate-400 mt-0.5 block">— (No actuals yet)</span>
+              <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
+                <span className="text-[10px] text-[#68707C] font-bold block uppercase">Labor Accuracy</span>
+                <span className="text-xs font-bold text-[#68707C] mt-0.5 block">— (No actuals yet)</span>
               </div>
             </div>
           </div>
 
           {/* Recent Approved Learning */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3">
+            <h3 className="text-xs font-bold text-[#171A1F] uppercase tracking-wider flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#389E0D]" />
               <span>Recent Approved Learning</span>
             </h3>
 
             <div className="flex flex-col gap-2">
               {APPROVED_LEARNING_ITEMS.map(item => (
-                <div key={item.id} className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex items-center justify-between text-xs">
+                <div key={item.id} className="p-3 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] flex items-center justify-between text-xs">
                   <div>
-                    <h4 className="font-extrabold text-white">{item.title}</h4>
-                    <span className="text-[10px] text-slate-400 font-medium">{item.category}</span>
+                    <h4 className="font-extrabold text-[#171A1F]">{item.title}</h4>
+                    <span className="text-[10px] text-[#68707C] font-medium">{item.category}</span>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#E6F7ED] text-[#389E0D] border border-[#B7EB8F]">
                     {item.status}
                   </span>
                 </div>
@@ -214,10 +210,10 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
           </div>
 
           {/* Recommended Administrator Actions */}
-          <div className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex items-center justify-between text-xs">
+          <div className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span className="font-bold text-slate-300">All caught up — no admin actions required</span>
+              <ShieldCheck className="w-4 h-4 text-[#389E0D]" />
+              <span className="font-bold text-[#68707C]">All caught up — no admin actions required</span>
             </div>
           </div>
 
@@ -227,11 +223,11 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {/* ─── TAB 2: REVIEW ─── */}
       {activeTab === 'review' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
-          <div className="flex items-center gap-1 p-1 bg-[#050811] rounded-2xl border border-[#142036]">
+          <div className="flex items-center gap-1 p-1 bg-[#F2F2F7] rounded-2xl border border-[#DDE1E7]">
             <button
               onClick={() => setReviewSubTab('market')}
               className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                reviewSubTab === 'market' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                reviewSubTab === 'market' ? 'bg-[#1677FF] text-white shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
               }`}
             >
               Market Refresh
@@ -239,7 +235,7 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
             <button
               onClick={() => setReviewSubTab('calculations')}
               className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                reviewSubTab === 'calculations' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                reviewSubTab === 'calculations' ? 'bg-[#1677FF] text-white shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
               }`}
             >
               Calculations
@@ -247,18 +243,22 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
           </div>
 
           {reviewSubTab === 'market' ? (
-            <div className="p-6 rounded-2xl bg-[#070D1A] border border-[#142036] text-center flex flex-col items-center gap-2">
-              <CheckCircle2 className="w-8 h-8 text-emerald-400 opacity-80" />
-              <h3 className="text-xs font-bold text-white">No Market Refresh Items Pending</h3>
-              <p className="text-[11px] text-slate-400 max-w-xs">
+            <div className="p-8 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs text-center flex flex-col items-center gap-2.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#E6F7ED] border border-[#B7EB8F] flex items-center justify-center text-[#389E0D]">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-sm font-bold text-[#171A1F]">No Market Refresh Items Pending</h3>
+              <p className="text-xs text-[#68707C] max-w-xs leading-relaxed">
                 No market-refreshed costs are waiting for review. Run a refresh in the Market tab to queue re-priced items here.
               </p>
             </div>
           ) : (
-            <div className="p-6 rounded-2xl bg-[#070D1A] border border-[#142036] text-center flex flex-col items-center gap-2">
-              <Layers className="w-8 h-8 text-blue-400 opacity-80" />
-              <h3 className="text-xs font-bold text-white">No Calculation Flags Pending</h3>
-              <p className="text-[11px] text-slate-400 max-w-xs">
+            <div className="p-8 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs text-center flex flex-col items-center gap-2.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]">
+                <Layers className="w-6 h-6" />
+              </div>
+              <h3 className="text-sm font-bold text-[#171A1F]">No Calculation Flags Pending</h3>
+              <p className="text-xs text-[#68707C] max-w-xs leading-relaxed">
                 No budget line calculations are waiting for review. Flagged calculations appear here with formula, inputs, and results.
               </p>
             </div>
@@ -270,20 +270,20 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {activeTab === 'library' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Baseline Records</h3>
-            <span className="text-[10px] text-blue-400 font-extrabold">{LIBRARY_RECORDS.length} Active Records</span>
+            <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider">Baseline Records</h3>
+            <span className="text-[10px] text-[#1677FF] font-extrabold">{LIBRARY_RECORDS.length} Active Records</span>
           </div>
 
           <div className="flex flex-col gap-2">
             {LIBRARY_RECORDS.map(rec => (
-              <div key={rec.id} className="p-3 rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col gap-1.5 shadow-sm">
+              <div key={rec.id} className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black text-white">{rec.name}</h4>
-                  <span className="text-xs font-black text-[#3875F6]">{rec.rate}</span>
+                  <h4 className="text-xs font-extrabold text-[#171A1F]">{rec.name}</h4>
+                  <span className="text-xs font-black text-[#1677FF]">{rec.rate}</span>
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-slate-400">
+                <div className="flex items-center justify-between text-[11px] text-[#68707C]">
                   <span>{rec.trade}</span>
-                  <span className="font-bold text-emerald-400">Conf: {rec.confidence}</span>
+                  <span className="font-bold text-[#389E0D]">Conf: {rec.confidence}</span>
                 </div>
               </div>
             ))}
@@ -295,20 +295,22 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {activeTab === 'approvals' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">User Corrections</h3>
+            <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider">User Corrections</h3>
             <button
               onClick={() => setIsCorrectionModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md shadow-blue-500/20 active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>New Correction</span>
             </button>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#070D1A] border border-[#142036] text-center flex flex-col items-center gap-2">
-            <FileCheck className="w-8 h-8 text-blue-400 opacity-80" />
-            <h3 className="text-xs font-bold text-white">No Corrections Pending Review</h3>
-            <p className="text-[11px] text-slate-400 max-w-xs">
+          <div className="p-8 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs text-center flex flex-col items-center gap-2.5">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]">
+              <FileCheck className="w-6 h-6" />
+            </div>
+            <h3 className="text-sm font-bold text-[#171A1F]">No Corrections Pending Review</h3>
+            <p className="text-xs text-[#68707C] max-w-xs leading-relaxed">
               All submitted user baseline corrections have been approved or merged into the baseline model.
             </p>
           </div>
@@ -318,16 +320,16 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {/* ─── TAB 5: CONTINGENCY ─── */}
       {activeTab === 'contingency' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Recommended Contingency Rules</h3>
+          <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3">
+            <h3 className="text-xs font-bold text-[#171A1F] uppercase tracking-wider">Recommended Contingency Rules</h3>
             <div className="flex flex-col gap-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex justify-between">
-                <span className="text-slate-400">Custom Single-Family Base:</span>
-                <span className="font-bold text-blue-400">7.5% – 10.0%</span>
+              <div className="p-3 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] flex justify-between items-center">
+                <span className="text-[#68707C] font-medium">Custom Single-Family Base:</span>
+                <span className="font-bold text-[#1677FF]">7.5% – 10.0%</span>
               </div>
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex justify-between">
-                <span className="text-slate-400">Complex Hillside / Foundations:</span>
-                <span className="font-bold text-amber-400">12.0% – 15.0%</span>
+              <div className="p-3 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] flex justify-between items-center">
+                <span className="text-[#68707C] font-medium">Complex Hillside / Foundations:</span>
+                <span className="font-bold text-[#D46B08]">12.0% – 15.0%</span>
               </div>
             </div>
           </div>
@@ -337,16 +339,16 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {/* ─── TAB 6: MARKET ─── */}
       {activeTab === 'market' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xs font-bold text-white">Market Refresh Engine</h3>
-                <span className="text-[10px] text-slate-400 block">Cost Baseline v1 · August 2026</span>
+                <h3 className="text-xs font-bold text-[#171A1F]">Market Refresh Engine</h3>
+                <span className="text-[11px] text-[#68707C] block mt-0.5">Cost Baseline v1 · August 2026</span>
               </div>
               <button
                 onClick={handleRunMarketRefresh}
                 disabled={isRefreshingMarket}
-                className="px-3.5 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 disabled:opacity-50 shadow-md shadow-blue-500/20"
+                className="px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 disabled:opacity-50 shadow-xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingMarket ? 'animate-spin' : ''}`} />
                 <span>{isRefreshingMarket ? 'Refreshing...' : 'Run Refresh'}</span>
@@ -359,16 +361,16 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {/* ─── TAB 7: AUDIT ─── */}
       {activeTab === 'audit' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
-          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">System Audit Trail</h3>
+          <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider">System Audit Trail</h3>
           <div className="flex flex-col gap-2">
             {AUDIT_LOGS.map(log => (
-              <div key={log.id} className="p-3 rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col gap-1 text-xs">
+              <div key={log.id} className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-1 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-white">{log.action}</span>
-                  <span className="text-[10px] text-slate-400">{log.time}</span>
+                  <span className="font-extrabold text-[#171A1F]">{log.action}</span>
+                  <span className="text-[10px] text-[#9DA5B1]">{log.time}</span>
                 </div>
-                <span className="text-[10px] text-[#3875F6] font-bold">{log.user}</span>
-                <p className="text-[11px] text-slate-300 mt-0.5">{log.detail}</p>
+                <span className="text-[11px] text-[#1677FF] font-bold">{log.user}</span>
+                <p className="text-xs text-[#68707C] mt-0.5 leading-relaxed">{log.detail}</p>
               </div>
             ))}
           </div>
@@ -378,15 +380,15 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {/* ─── TAB 8: METRICS ─── */}
       {activeTab === 'metrics' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
-          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Module Breakdown Metrics</h3>
+          <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider">Module Breakdown Metrics</h3>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-3 rounded-2xl bg-[#070D1A] border border-[#142036]">
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Labor Productivity</span>
-              <span className="text-sm font-black text-blue-400 block mt-1">10 Records</span>
+            <div className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs">
+              <span className="text-[10px] text-[#68707C] uppercase font-bold block">Labor Productivity</span>
+              <span className="text-sm font-black text-[#1677FF] block mt-1">10 Records</span>
             </div>
-            <div className="p-3 rounded-2xl bg-[#070D1A] border border-[#142036]">
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Coverage & Conversions</span>
-              <span className="text-sm font-black text-cyan-400 block mt-1">12 Records</span>
+            <div className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs">
+              <span className="text-[10px] text-[#68707C] uppercase font-bold block">Coverage & Conversions</span>
+              <span className="text-sm font-black text-[#1677FF] block mt-1">12 Records</span>
             </div>
           </div>
         </div>
@@ -395,13 +397,15 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
       {/* ─── TAB 9: GOVERNANCE ─── */}
       {activeTab === 'governance' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
-          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Active Governance Rules</h3>
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] flex flex-col gap-2.5 text-xs">
+          <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider">Active Governance Rules</h3>
+          <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-2.5 text-xs">
             <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-blue-400" />
-              <span className="font-bold text-white">Role-Based Approval Workflow</span>
+              <div className="w-7 h-7 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center">
+                <Lock className="w-3.5 h-3.5" />
+              </div>
+              <span className="font-bold text-[#171A1F]">Role-Based Approval Workflow</span>
             </div>
-            <p className="text-[11px] text-slate-300 leading-relaxed">
+            <p className="text-xs text-[#68707C] leading-relaxed">
               All baseline adjustments and user corrections require Owner or Finance Director sign-off before being merged into Cost Baseline v1.
             </p>
           </div>
@@ -410,34 +414,37 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
 
       {/* ─── MODAL: NEW CORRECTION ─── */}
       {isCorrectionModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-sans">
-          <div className="w-full max-w-sm bg-[#070D1A] border border-[#142036] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-slate-100">
-            <div className="flex items-center justify-between border-b border-[#142036] pb-3">
-              <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">Submit User Correction</h3>
-              <button onClick={() => setIsCorrectionModalOpen(false)} className="p-1 rounded-lg bg-[#050811] text-slate-400 hover:text-white cursor-pointer">
-                <X className="w-4 h-4" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
+          <div className="w-full max-w-sm bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F]">
+            <div className="flex items-center justify-between border-b border-[#EAEDF1] pb-3">
+              <h3 className="text-xs font-extrabold text-[#171A1F] uppercase tracking-wider">Submit User Correction</h3>
+              <button 
+                onClick={() => setIsCorrectionModalOpen(false)} 
+                className="w-7 h-7 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
             <form onSubmit={handleCreateCorrection} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-[10px] text-slate-400 font-bold block mb-1">Topic / Item Name</label>
+                <label className="text-[10px] text-[#68707C] font-bold block mb-1">Topic / Item Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Drywall Finishing Labor Rate"
                   value={correctionTopic}
                   onChange={(e) => setCorrectionTopic(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white focus:outline-none focus:border-blue-500"
+                  className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-[#171A1F] outline-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] text-slate-400 font-bold block mb-1">Category</label>
+                <label className="text-[10px] text-[#68707C] font-bold block mb-1">Category</label>
                 <select
                   value={correctionCategory}
                   onChange={(e) => setCorrectionCategory(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white focus:outline-none focus:border-blue-500"
+                  className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-[#171A1F] font-semibold outline-none cursor-pointer"
                 >
                   <option value="Labor Productivity">Labor Productivity</option>
                   <option value="Assemblies">Assemblies</option>
@@ -447,28 +454,28 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
               </div>
 
               <div>
-                <label className="text-[10px] text-slate-400 font-bold block mb-1">Correction Notes & Empirical Evidence</label>
+                <label className="text-[10px] text-[#68707C] font-bold block mb-1">Correction Notes & Empirical Evidence</label>
                 <textarea
                   rows={3}
                   required
                   placeholder="Explain why this baseline figure needs adjustment..."
                   value={correctionNotes}
                   onChange={(e) => setCorrectionNotes(e.target.value)}
-                  className="w-full bg-[#050811] border border-[#142036] rounded-xl p-3 text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl p-3 text-[#171A1F] outline-none resize-none transition-colors"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#EAEDF1]">
                 <button
                   type="button"
                   onClick={() => setIsCorrectionModalOpen(false)}
-                  className="px-3 py-1.5 rounded-xl bg-[#050811] text-slate-400 hover:text-white font-bold cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] font-bold cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold cursor-pointer shadow-md shadow-blue-500/20 active:scale-95"
+                  className="px-4 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold cursor-pointer shadow-xs active:scale-95 transition-all"
                 >
                   Submit Correction
                 </button>

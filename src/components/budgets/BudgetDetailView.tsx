@@ -14,7 +14,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
   budgetId = 'b-1',
   onBack
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'breakdown' | 'forecast' | 'learning' | 'team' | 'activity' | 'reports'>('breakdown');
+  const [activeTab, setActiveTab] = useState<'overview' | 'breakdown' | 'forecast' | 'team' | 'activity' | 'reports'>('breakdown');
   const [status, setStatus] = useState<'in review' | 'draft' | 'approved'>('in review');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const showToast = (msg: string) => {
@@ -244,15 +244,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-3 px-4 py-4 pb-32 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-3 px-4 py-4 pb-32 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
       
       {/* ─── 1. SINGLE UNIFIED EXECUTIVE TOP TOOLBAR ─── */}
-      <div className="flex items-center justify-between gap-2 bg-[#070D1A] p-2 px-3 rounded-2xl border border-[#142036] shadow-sm">
+      <div className="flex items-center justify-between gap-2 bg-white p-2 px-3 rounded-2xl border border-[#DDE1E7] shadow-sm">
         {/* Left: Back Arrow + BDG-3200 Badge + Line Items Count */}
         <div className="flex items-center gap-2 min-w-0">
           <button
             onClick={onBack}
-            className="w-8 h-8 rounded-xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] flex items-center justify-center text-slate-300 hover:text-white transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-sm"
+            className="w-8 h-8 rounded-xl bg-[#F2F2F7] hover:bg-[#EAF3FF] border border-[#DDE1E7] flex items-center justify-center text-[#68707C] hover:text-white transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-sm"
             title="Back to Budgets"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -262,7 +262,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
             BDG-3200
           </span>
 
-          <span className="text-[11px] font-bold text-slate-400 truncate">
+          <span className="text-[11px] font-bold text-[#68707C] truncate">
             {totalItemsCount} items
           </span>
         </div>
@@ -284,7 +284,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
           <button
             onClick={() => alert("Exporting Budget to PDF/CSV...")}
-            className="w-8 h-8 rounded-xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] text-slate-300 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+            className="w-8 h-8 rounded-xl bg-[#F2F2F7] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white flex items-center justify-center cursor-pointer transition-colors"
             title="Export"
           >
             <Download className="w-3.5 h-3.5" />
@@ -292,7 +292,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
           <button
             onClick={() => showToast("Budget saved successfully!")}
-            className="h-8 px-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-md shadow-blue-600/30 transition-all active:scale-95"
+            className="h-8 px-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-[#171A1F] text-xs font-bold flex items-center gap-1 cursor-pointer shadow-md shadow-blue-600/30 transition-all active:scale-95"
           >
             <Save className="w-3.5 h-3.5" />
             <span>Save</span>
@@ -302,7 +302,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
       {/* ─── 2. FINANCIAL SUMMARY HEADER WITH LATTICE DEAL SCORE & MARGIN BADGES ─── */}
       <div className="flex items-center justify-between pb-0.5 pt-1">
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <span className="text-xs font-bold text-[#68707C] uppercase tracking-wider">
           Financial Summary
         </span>
         <div className="flex items-center gap-1.5">
@@ -317,7 +317,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
       </div>
 
       {/* UNIFIED NON-DUPLICATE FINANCIAL PIE & KPI MASTER CARD */}
-      <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3.5 animate-fade-in">
+      <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3.5 animate-fade-in">
         
         {/* Top: SVG Solid Pie Chart (Left) + 4 Non-Duplicate Financial Cards (Right) */}
         <div className="flex items-center gap-3.5">
@@ -352,58 +352,58 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
             {/* Total Est Label below Pie Chart */}
             <div className="flex flex-col items-center justify-center mt-1 text-center">
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total Est.</span>
-              <span className="text-xs font-black text-white">$78.5k</span>
+              <span className="text-[9px] font-bold text-[#68707C] uppercase tracking-wider">Total Est.</span>
+              <span className="text-xs font-black text-[#171A1F]">$78.5k</span>
             </div>
           </div>
 
           {/* Right Side: 4 Core Non-Duplicate Executive Financial Cards */}
           <div className="flex-1 grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-slate-400 uppercase flex items-center gap-1 truncate">
+            <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
+              <span className="text-[9px] font-bold text-[#68707C] uppercase flex items-center gap-1 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                 Spent
               </span>
-              <span className="text-xs font-black text-blue-400 mt-1 block">$18.4k <span className="text-[9px] text-slate-400 font-normal">(23.5%)</span></span>
+              <span className="text-xs font-black text-blue-400 mt-1 block">$18.4k <span className="text-[9px] text-[#68707C] font-normal">(23.5%)</span></span>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-slate-400 uppercase flex items-center gap-1 truncate">
+            <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
+              <span className="text-[9px] font-bold text-[#68707C] uppercase flex items-center gap-1 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 Remaining
               </span>
-              <span className="text-xs font-black text-emerald-400 mt-1 block">$60.1k <span className="text-[9px] text-slate-400 font-normal">(76.5%)</span></span>
+              <span className="text-xs font-black text-emerald-400 mt-1 block">$60.1k <span className="text-[9px] text-[#68707C] font-normal">(76.5%)</span></span>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-slate-400 uppercase block truncate">Net Profit</span>
-              <span className="text-xs font-black text-emerald-400 mt-1 block">+$22.0k <span className="text-[9px] text-slate-400 font-normal">(28.0%)</span></span>
+            <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
+              <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Net Profit</span>
+              <span className="text-xs font-black text-emerald-400 mt-1 block">+$22.0k <span className="text-[9px] text-[#68707C] font-normal">(28.0%)</span></span>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-slate-400 uppercase block truncate">Revenue / ARV</span>
-              <span className="text-xs font-black text-white mt-1 block">$100.4k</span>
+            <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
+              <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Revenue / ARV</span>
+              <span className="text-xs font-black text-[#171A1F] mt-1 block">$100.4k</span>
             </div>
           </div>
         </div>
 
         {/* Bottom Executive Secondary Strip (4 Essential Metrics) */}
-        <div className="grid grid-cols-4 gap-1.5 pt-3 border-t border-[#142036] text-center text-xs">
+        <div className="grid grid-cols-4 gap-1.5 pt-3 border-t border-[#DDE1E7] text-center text-xs">
           <div>
-            <span className="text-[9px] font-bold text-slate-400 uppercase block truncate">Cost / SF</span>
+            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Cost / SF</span>
             <span className="text-xs font-bold text-blue-400 block mt-0.5">$185.40</span>
           </div>
           <div>
-            <span className="text-[9px] font-bold text-slate-400 uppercase block truncate">Sale / SF</span>
+            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Sale / SF</span>
             <span className="text-xs font-bold text-blue-400 block mt-0.5">$245.00</span>
           </div>
           <div>
-            <span className="text-[9px] font-bold text-slate-400 uppercase block truncate">Revised</span>
-            <span className="text-xs font-bold text-white block mt-0.5">$82.4k</span>
+            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Revised</span>
+            <span className="text-xs font-bold text-[#171A1F] block mt-0.5">$82.4k</span>
           </div>
           <div>
-            <span className="text-[9px] font-bold text-slate-400 uppercase block truncate">Contingency</span>
-            <span className="text-xs font-bold text-white block mt-0.5">$12.5k</span>
+            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Contingency</span>
+            <span className="text-xs font-bold text-[#171A1F] block mt-0.5">$12.5k</span>
           </div>
         </div>
       </div>
@@ -414,7 +414,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           { id: 'overview', label: 'Overview', icon: Layers },
           { id: 'breakdown', label: 'Breakdown', icon: DollarSign },
           { id: 'forecast', label: 'Forecast', icon: TrendingUp },
-          { id: 'learning', label: 'Learning', icon: Sparkles },
+          
           { id: 'team', label: 'Team', icon: Users },
           { id: 'activity', label: 'Activity', icon: Clock },
           { id: 'reports', label: 'Reports', icon: FileText },
@@ -427,11 +427,11 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-3.5 py-2 rounded-full transition-all whitespace-nowrap cursor-pointer flex-shrink-0 flex items-center gap-1.5 font-bold ${
                 isActive
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 border border-blue-500'
-                  : 'bg-[#091122]/90 text-slate-300 hover:text-white border border-[#172540] hover:border-slate-600'
+                  ? 'bg-[#1677FF] text-white shadow-xs'
+                  : 'bg-[#F2F2F7] text-[#68707C] hover:text-white border border-[#DDE1E7] hover:border-slate-600'
               }`}
             >
-              <IconComp className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+              <IconComp className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-[#68707C]'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -448,20 +448,20 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
             return (
               <div 
                 key={sec.id}
-                className="bg-[#070D1A] border border-[#142036] rounded-2xl overflow-hidden shadow-sm"
+                className="bg-white border border-[#DDE1E7] rounded-2xl overflow-hidden shadow-sm"
               >
                 {/* Section Accordion Header */}
                 <button
                   onClick={() => toggleSection(sec.id)}
-                  className="w-full px-3.5 py-2.5 flex items-center justify-between hover:bg-[#0E1A33] transition-colors cursor-pointer text-left border-l-4 border-l-blue-500"
+                  className="w-full px-3.5 py-2.5 flex items-center justify-between hover:bg-[#EAF3FF] transition-colors cursor-pointer text-left border-l-4 border-l-blue-500"
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <ChevronDown className={`w-4 h-4 text-blue-400 transition-transform ${isExpanded ? '' : '-rotate-90'}`} />
-                    <span className="text-xs font-bold text-white truncate">{sec.name}</span>
+                    <span className="text-xs font-bold text-[#171A1F] truncate">{sec.name}</span>
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[11px] text-slate-400 font-medium">
+                    <span className="text-[11px] text-[#68707C] font-medium">
                       {sec.items.length} items
                     </span>
                     <span className="text-xs font-bold text-blue-400">
@@ -472,11 +472,11 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
                 {/* Line Items List */}
                 {isExpanded && (
-                  <div className="p-2.5 border-t border-[#142036] flex flex-col gap-2 bg-[#050811]">
+                  <div className="p-2.5 border-t border-[#DDE1E7] flex flex-col gap-2 bg-[#F7F8FA]">
                     {sec.items.map((item) => (
                       <div
                         key={item.id}
-                        className="p-2.5 rounded-xl bg-[#070D1A] border border-[#142036] flex flex-col gap-2 shadow-sm hover:border-[#1F335C] transition-colors"
+                        className="p-2.5 rounded-xl bg-white border border-[#DDE1E7] flex flex-col gap-2 shadow-sm hover:border-[#1677FF] transition-colors"
                       >
                         {/* Title & Category */}
                         <div className="flex items-start justify-between gap-2">
@@ -484,32 +484,32 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                             type="text"
                             value={item.name}
                             onChange={(e) => handleItemFieldChange(sec.id, item.id, 'name', e.target.value)}
-                            className="bg-transparent border-b border-transparent hover:border-[#142036] focus:border-blue-500 text-xs font-bold text-white leading-snug outline-none w-full transition-colors"
+                            className="bg-transparent border-b border-transparent hover:border-[#DDE1E7] focus:border-blue-500 text-xs font-bold text-white leading-snug outline-none w-full transition-colors"
                           />
-                          <span className="text-[10px] font-bold text-slate-400 bg-[#0E1A33] px-2 py-0.5 rounded border border-[#182846] uppercase flex-shrink-0">
+                          <span className="text-[10px] font-bold text-[#68707C] bg-[#EAF3FF] px-2 py-0.5 rounded border border-[#DDE1E7] uppercase flex-shrink-0">
                             {sec.category}
                           </span>
                         </div>
 
                         {/* Interactive Metrics Row: Qty, Unit, Rate, Total */}
-                        <div className="grid grid-cols-4 gap-2 pt-2 border-t border-[#142036]/60 text-xs">
+                        <div className="grid grid-cols-4 gap-2 pt-2 border-t border-[#DDE1E7] text-xs">
                           <div>
-                            <span className="text-[10px] text-slate-400 font-bold block">Qty</span>
+                            <span className="text-[10px] text-[#68707C] font-bold block">Qty</span>
                             <input
                               type="number"
                               min="0"
                               value={item.qty}
                               onChange={(e) => handleItemFieldChange(sec.id, item.id, 'qty', Number(e.target.value))}
-                              className="w-full bg-[#050811] border border-[#142036] rounded-lg px-2 py-0.5 text-xs text-white font-bold outline-none focus:border-blue-500 mt-0.5"
+                              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-lg px-2 py-0.5 text-xs text-[#171A1F] font-bold outline-none focus:border-blue-500 mt-0.5"
                             />
                           </div>
 
                           <div>
-                            <span className="text-[10px] text-slate-400 font-bold block">Unit</span>
+                            <span className="text-[10px] text-[#68707C] font-bold block">Unit</span>
                             <select
                               value={item.unit}
                               onChange={(e) => handleItemFieldChange(sec.id, item.id, 'unit', e.target.value)}
-                              className="w-full bg-[#050811] border border-[#142036] rounded-lg px-1.5 py-0.5 text-xs text-slate-300 font-bold outline-none focus:border-blue-500 mt-0.5 cursor-pointer"
+                              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-lg px-1.5 py-0.5 text-xs text-[#68707C] font-bold outline-none focus:border-blue-500 mt-0.5 cursor-pointer"
                             >
                               <option value="EA">EA</option>
                               <option value="LS">LS</option>
@@ -523,18 +523,18 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                           </div>
 
                           <div>
-                            <span className="text-[10px] text-slate-400 font-bold block">Rate ($)</span>
+                            <span className="text-[10px] text-[#68707C] font-bold block">Rate ($)</span>
                             <input
                               type="number"
                               min="0"
                               value={item.unitCost}
                               onChange={(e) => handleItemFieldChange(sec.id, item.id, 'unitCost', Number(e.target.value))}
-                              className="w-full bg-[#050811] border border-[#142036] rounded-lg px-2 py-0.5 text-xs text-blue-400 font-bold outline-none focus:border-blue-500 mt-0.5"
+                              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-lg px-2 py-0.5 text-xs text-blue-400 font-bold outline-none focus:border-blue-500 mt-0.5"
                             />
                           </div>
 
                           <div className="text-right flex flex-col justify-between">
-                            <span className="text-[10px] text-slate-400 font-bold block">Total ($)</span>
+                            <span className="text-[10px] text-[#68707C] font-bold block">Total ($)</span>
                             <span className="font-extrabold text-emerald-400 text-xs mt-0.5 block truncate">
                               ${item.total.toLocaleString()}
                             </span>
@@ -554,15 +554,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
       {activeTab === 'overview' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
           {/* Section 1: Budget & Commercial Overview */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5 text-blue-400" />
                 <span>Budget & Project Overview</span>
               </h3>
               <button
                 onClick={() => toggleCardCollapse('budgetOverview')}
-                className="p-1 rounded-lg bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white transition-colors cursor-pointer"
                 title={collapsedCards['budgetOverview'] ? 'Maximize Card' : 'Minimize Card'}
               >
                 {collapsedCards['budgetOverview'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -571,45 +571,45 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
             {!collapsedCards['budgetOverview'] && (
               <div className="grid grid-cols-2 gap-2 text-xs animate-fade-in">
-                <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Budget Name</span>
-                  <span className="font-extrabold text-white mt-1 block truncate">
+                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                  <span className="text-[10px] font-bold text-[#68707C] uppercase">Budget Name</span>
+                  <span className="font-extrabold text-[#171A1F] mt-1 block truncate">
                     {budgetId === 'b-1' ? 'Riverside Office Complex' : budgetId === 'b-2' ? 'Downtown Commercial Highrise' : 'Riverside Office Complex'}
                   </span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Budget Code</span>
+                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                  <span className="text-[10px] font-bold text-[#68707C] uppercase">Budget Code</span>
                   <span className="font-extrabold text-blue-400 mt-1 block">BDG-3200</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Project Type</span>
+                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                  <span className="text-[10px] font-bold text-[#68707C] uppercase">Project Type</span>
                   <span className="font-extrabold text-cyan-400 mt-1 block">Commercial Office</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Site Location</span>
-                  <span className="font-extrabold text-white mt-1 block truncate">Austin, TX</span>
+                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                  <span className="text-[10px] font-bold text-[#68707C] uppercase">Site Location</span>
+                  <span className="font-extrabold text-[#171A1F] mt-1 block truncate">Austin, TX</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Prepared By</span>
-                  <span className="font-extrabold text-slate-300 mt-1 block">Alex Chen (PM)</span>
+                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                  <span className="text-[10px] font-bold text-[#68707C] uppercase">Prepared By</span>
+                  <span className="font-extrabold text-[#68707C] mt-1 block">Alex Chen (PM)</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Created Date</span>
-                  <span className="font-extrabold text-slate-300 mt-1 block">28/08/2026</span>
+                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                  <span className="text-[10px] font-bold text-[#68707C] uppercase">Created Date</span>
+                  <span className="font-extrabold text-[#68707C] mt-1 block">28/08/2026</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Section 2: Lot Purchase & Financing */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-blue-400" />
                 <span>Lot Purchase & Financing</span>
               </h3>
@@ -619,7 +619,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                 </span>
                 <button
                   onClick={() => toggleCardCollapse('lotPurchase')}
-                  className="p-1 rounded-lg bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1 rounded-lg bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white transition-colors cursor-pointer"
                   title={collapsedCards['lotPurchase'] ? 'Maximize Card' : 'Minimize Card'}
                 >
                   {collapsedCards['lotPurchase'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -631,34 +631,34 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               <div className="flex flex-col gap-3 animate-fade-in">
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Lot / Land Price ($)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Lot / Land Price ($)</label>
                     <div className="relative flex items-center">
-                      <span className="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                      <span className="absolute left-3 text-xs font-bold text-[#68707C]">$</span>
                       <input
                         type="number"
                         value={lotPrice}
                         onChange={(e) => setLotPrice(Math.max(0, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-7 pr-3 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500 transition-colors"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-7 pr-3 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500 transition-colors"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Building SF (total)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Building SF (total)</label>
                     <div className="relative flex items-center">
                       <input
                         type="number"
                         value={buildingSF}
                         onChange={(e) => setBuildingSF(Math.max(1, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-8 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500 transition-colors"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-8 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500 transition-colors"
                       />
-                      <span className="absolute right-3 text-[10px] font-bold text-slate-400">SF</span>
+                      <span className="absolute right-3 text-[10px] font-bold text-[#68707C]">SF</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#050811] border border-[#142036] flex items-center justify-between text-xs mt-1">
-                  <span className="text-slate-400 font-medium">80% LTV Loan Amount:</span>
+                <div className="p-3 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex items-center justify-between text-xs mt-1">
+                  <span className="text-[#68707C] font-medium">80% LTV Loan Amount:</span>
                   <span className="font-black text-emerald-400 text-sm">${(lotPrice * 0.8).toLocaleString()}</span>
                 </div>
               </div>
@@ -666,15 +666,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           </div>
 
           {/* Section 3: Financial Parameters */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 <span>Contingencies & Fees</span>
               </h3>
               <button
                 onClick={() => toggleCardCollapse('contingencies')}
-                className="p-1 rounded-lg bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white transition-colors cursor-pointer"
                 title={collapsedCards['contingencies'] ? 'Maximize Card' : 'Minimize Card'}
               >
                 {collapsedCards['contingencies'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -684,26 +684,26 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
             {!collapsedCards['contingencies'] && (
               <div className="grid grid-cols-2 gap-2 text-xs animate-fade-in">
                 <div>
-                  <label className="text-[10px] text-slate-400 font-bold block mb-1">Contingency (%)</label>
+                  <label className="text-[10px] text-[#68707C] font-bold block mb-1">Contingency (%)</label>
                   <div className="relative flex items-center">
                     <input
                       type="number"
                       value={contingencyPct}
                       onChange={(e) => setContingencyPct(Math.max(0, Number(e.target.value)))}
-                      className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-7 text-amber-400 text-xs font-extrabold focus:outline-none focus:border-amber-500 transition-colors"
+                      className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-7 text-amber-400 text-xs font-extrabold focus:outline-none focus:border-amber-500 transition-colors"
                     />
                     <span className="absolute right-3 text-xs font-bold text-amber-400">%</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-slate-400 font-bold block mb-1">Builder Fee (%)</label>
+                  <label className="text-[10px] text-[#68707C] font-bold block mb-1">Builder Fee (%)</label>
                   <div className="relative flex items-center">
                     <input
                       type="number"
                       value={builderFeePct}
                       onChange={(e) => setBuilderFeePct(Math.max(0, Number(e.target.value)))}
-                      className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-7 text-blue-400 text-xs font-extrabold focus:outline-none focus:border-blue-500 transition-colors"
+                      className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-7 text-blue-400 text-xs font-extrabold focus:outline-none focus:border-blue-500 transition-colors"
                     />
                     <span className="absolute right-3 text-xs font-bold text-blue-400">%</span>
                   </div>
@@ -719,21 +719,21 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
         <div className="flex flex-col gap-3.5 animate-fade-in">
           
           {/* Section Header with Add Member Button */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3.5">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xs font-bold text-white tracking-tight flex items-center gap-2">
+                <h3 className="text-xs font-bold text-[#171A1F] tracking-tight flex items-center gap-2">
                   <span className="p-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
                     <Users className="w-3.5 h-3.5" />
                   </span>
                   <span>Budget Team Roster ({teamMembers.length})</span>
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Assigned Project Leadership & Subcontractor Leads</p>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Assigned Project Leadership & Subcontractor Leads</p>
               </div>
 
               <button
                 onClick={handleAddMember}
-                className="h-8 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-md shadow-blue-600/30 flex-shrink-0"
+                className="h-8 px-3 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-[#171A1F] text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-md shadow-blue-600/30 flex-shrink-0"
               >
                 <UserPlus className="w-3.5 h-3.5 text-white" />
                 <span>+ Add Member</span>
@@ -806,7 +806,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               ].map((member) => (
                 <div 
                   key={member.id}
-                  className="p-3 rounded-2xl bg-[#050811] border border-[#142036] hover:border-blue-500/40 shadow-sm flex items-center justify-between gap-3 transition-all"
+                  className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] hover:border-blue-500/40 shadow-sm flex items-center justify-between gap-3 transition-all"
                 >
                   {/* Avatar + Info */}
                   <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -823,7 +823,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <h4 className="text-xs font-bold text-white truncate">{member.name}</h4>
+                        <h4 className="text-xs font-bold text-[#171A1F] truncate">{member.name}</h4>
                         <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${
                           member.type === 'gc'
                             ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
@@ -832,8 +832,8 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                           {member.type === 'gc' ? 'GC' : 'Sub'}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 font-medium truncate mt-0.5">
-                        {member.role} • <span className="text-slate-500">{member.company}</span>
+                      <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
+                        {member.role} • <span className="text-[#9DA5B1]">{member.company}</span>
                       </p>
                     </div>
                   </div>
@@ -844,7 +844,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
             {/* Bottom Add Member Action Trigger */}
             <button
               onClick={handleAddMember}
-              className="w-full p-3 rounded-2xl bg-[#050811] hover:bg-[#0E1A33] border border-dashed border-[#1E325A] hover:border-blue-500/80 transition-all cursor-pointer text-xs font-bold text-blue-400 hover:text-white flex items-center justify-center gap-2 group active:scale-[0.99] mt-1"
+              className="w-full p-3 rounded-2xl bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-dashed border-[#DDE1E7] hover:border-blue-500/80 transition-all cursor-pointer text-xs font-bold text-blue-400 hover:text-white flex items-center justify-center gap-2 group active:scale-[0.99] mt-1"
             >
               <UserPlus className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
               <span>+ Add Another Team Member</span>
@@ -858,15 +858,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
         <div className="flex flex-col gap-3.5 animate-fade-in">
           
           {/* 1. Contingencies Section */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-amber-400" />
                 <span>Contingencies</span>
               </h3>
               <button
                 onClick={() => toggleCardCollapse('forecastContingencies')}
-                className="p-1 rounded-lg bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white transition-colors cursor-pointer"
                 title={collapsedCards['forecastContingencies'] ? 'Maximize Card' : 'Minimize Card'}
               >
                 {collapsedCards['forecastContingencies'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -876,20 +876,20 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
             {!collapsedCards['forecastContingencies'] && (
               <div className="grid grid-cols-2 gap-3 text-xs animate-fade-in">
                 <div>
-                  <label className="text-[10px] text-slate-400 font-bold block mb-1">Contingency Rate</label>
+                  <label className="text-[10px] text-[#68707C] font-bold block mb-1">Contingency Rate</label>
                   <div className="relative flex items-center">
                     <input
                       type="number"
                       value={contingencyPct}
                       onChange={(e) => setContingencyPct(Math.max(0, Number(e.target.value)))}
-                      className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-7 text-amber-400 text-xs font-extrabold focus:outline-none focus:border-amber-500"
+                      className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-7 text-amber-400 text-xs font-extrabold focus:outline-none focus:border-amber-500"
                     />
                     <span className="absolute right-3 text-xs font-bold text-amber-400">%</span>
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase">Contingency Reserve</span>
+                <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                  <span className="text-[10px] text-[#68707C] font-bold uppercase">Contingency Reserve</span>
                   <span className="text-xs font-black text-amber-400 mt-0.5">${(totalCost * contingencyPct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                 </div>
               </div>
@@ -897,15 +897,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           </div>
 
           {/* 2. Builder Fee Section */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-blue-400" />
                 <span>Builder Fee</span>
               </h3>
               <button
                 onClick={() => toggleCardCollapse('forecastBuilderFee')}
-                className="p-1 rounded-lg bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white transition-colors cursor-pointer"
                 title={collapsedCards['forecastBuilderFee'] ? 'Maximize Card' : 'Minimize Card'}
               >
                 {collapsedCards['forecastBuilderFee'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -916,27 +916,27 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               <div className="flex flex-col gap-3 animate-fade-in">
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Builder Fee Rate</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Builder Fee Rate</label>
                     <div className="relative flex items-center">
                       <input
                         type="number"
                         value={builderFeePct}
                         onChange={(e) => setBuilderFeePct(Math.max(0, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-7 text-blue-400 text-xs font-extrabold focus:outline-none focus:border-blue-500"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-7 text-blue-400 text-xs font-extrabold focus:outline-none focus:border-blue-500"
                       />
                       <span className="absolute right-3 text-xs font-bold text-blue-400">%</span>
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036] flex flex-col justify-between">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase">Fee Amount</span>
+                  <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
+                    <span className="text-[10px] text-[#68707C] font-bold uppercase">Fee Amount</span>
                     <span className="text-xs font-black text-blue-400 mt-0.5">${(totalCost * builderFeePct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#050811] border border-[#142036] flex items-center justify-between text-xs mt-1">
-                  <span className="text-slate-400 font-bold">Total Estimated Budget:</span>
-                  <span className="font-black text-white text-sm">
+                <div className="p-3 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex items-center justify-between text-xs mt-1">
+                  <span className="text-[#68707C] font-bold">Total Estimated Budget:</span>
+                  <span className="font-black text-[#171A1F] text-sm">
                     ${(totalCost + (totalCost * contingencyPct / 100) + (totalCost * builderFeePct / 100)).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </span>
                 </div>
@@ -945,15 +945,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           </div>
 
           {/* 3. ARV & Sale Section */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider flex items-center gap-1.5">
                 <Wallet className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Target ARV & Exit</span>
               </h3>
               <button
                 onClick={() => toggleCardCollapse('forecastArv')}
-                className="p-1 rounded-lg bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white transition-colors cursor-pointer"
                 title={collapsedCards['forecastArv'] ? 'Maximize Card' : 'Minimize Card'}
               >
                 {collapsedCards['forecastArv'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -964,70 +964,70 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               <div className="flex flex-col gap-3 animate-fade-in">
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Target ARV ($)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Target ARV ($)</label>
                     <div className="relative flex items-center">
-                      <span className="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                      <span className="absolute left-3 text-xs font-bold text-[#68707C]">$</span>
                       <input
                         type="number"
                         value={salePrice}
                         onChange={(e) => setSalePrice(Math.max(0, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-7 pr-3 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-7 pr-3 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Closing Costs (%)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Closing Costs (%)</label>
                     <div className="relative flex items-center">
                       <input
                         type="number"
                         value={closingCostsPct}
                         onChange={(e) => setClosingCostsPct(Math.max(0, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-7 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-7 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500"
                       />
-                      <span className="absolute right-3 text-xs font-bold text-slate-400">%</span>
+                      <span className="absolute right-3 text-xs font-bold text-[#68707C]">%</span>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Agent Commission (%)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Agent Commission (%)</label>
                     <div className="relative flex items-center">
                       <input
                         type="number"
                         value={agentCommissionPct}
                         onChange={(e) => setAgentCommissionPct(Math.max(0, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-7 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-7 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500"
                       />
-                      <span className="absolute right-3 text-xs font-bold text-slate-400">%</span>
+                      <span className="absolute right-3 text-xs font-bold text-[#68707C]">%</span>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Other Costs ($)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Other Costs ($)</label>
                     <div className="relative flex items-center">
-                      <span className="absolute left-3 text-xs font-bold text-slate-400">$</span>
+                      <span className="absolute left-3 text-xs font-bold text-[#68707C]">$</span>
                       <input
                         type="number"
                         value={otherSellingCosts}
                         onChange={(e) => setOtherSellingCosts(Math.max(0, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-7 pr-3 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-7 pr-3 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Selling Calculation Strip */}
-                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#142036] text-center text-xs">
-                  <div className="p-2 rounded-xl bg-[#050811] border border-[#142036]">
-                    <span className="text-[9px] text-slate-400 font-bold block uppercase">Closing Costs</span>
-                    <span className="text-xs font-bold text-slate-300 block mt-0.5">${(salePrice * closingCostsPct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#DDE1E7] text-center text-xs">
+                  <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7]">
+                    <span className="text-[9px] text-[#68707C] font-bold block uppercase">Closing Costs</span>
+                    <span className="text-xs font-bold text-[#68707C] block mt-0.5">${(salePrice * closingCostsPct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-[#050811] border border-[#142036]">
-                    <span className="text-[9px] text-slate-400 font-bold block uppercase">Commission</span>
-                    <span className="text-xs font-bold text-slate-300 block mt-0.5">${(salePrice * agentCommissionPct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                  <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7]">
+                    <span className="text-[9px] text-[#68707C] font-bold block uppercase">Commission</span>
+                    <span className="text-xs font-bold text-[#68707C] block mt-0.5">${(salePrice * agentCommissionPct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-[#050811] border border-[#142036]">
-                    <span className="text-[9px] text-slate-400 font-bold block uppercase">Net Proceeds</span>
+                  <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7]">
+                    <span className="text-[9px] text-[#68707C] font-bold block uppercase">Net Proceeds</span>
                     <span className="text-xs font-black text-emerald-400 block mt-0.5">${(salePrice - (salePrice * (closingCostsPct + agentCommissionPct) / 100) - otherSellingCosts).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                 </div>
@@ -1036,15 +1036,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           </div>
 
           {/* 4. Loan Financing Section */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-[#68707C] uppercase tracking-wider flex items-center gap-1.5">
                 <FileSpreadsheet className="w-3.5 h-3.5 text-blue-400" />
                 <span>Loan Financing</span>
               </h3>
               <button
                 onClick={() => toggleCardCollapse('forecastLoan')}
-                className="p-1 rounded-lg bg-[#050811] hover:bg-[#0E1A33] border border-[#142036] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] text-[#68707C] hover:text-white transition-colors cursor-pointer"
                 title={collapsedCards['forecastLoan'] ? 'Maximize Card' : 'Minimize Card'}
               >
                 {collapsedCards['forecastLoan'] ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -1055,26 +1055,26 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               <div className="flex flex-col gap-3 animate-fade-in">
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Interest Rate (%)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Interest Rate (%)</label>
                     <div className="relative flex items-center">
                       <input
                         type="number"
                         step="0.1"
                         value={interestRate}
                         onChange={(e) => setInterestRate(Math.max(0, Number(e.target.value)))}
-                        className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl pl-3 pr-7 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500"
+                        className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl pl-3 pr-7 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500"
                       />
-                      <span className="absolute right-3 text-xs font-bold text-slate-400">%</span>
+                      <span className="absolute right-3 text-xs font-bold text-[#68707C]">%</span>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-slate-400 font-bold block mb-1">Loan Term (Months)</label>
+                    <label className="text-[10px] text-[#68707C] font-bold block mb-1">Loan Term (Months)</label>
                     <input
                       type="number"
                       value={carryingMonths}
                       onChange={(e) => setCarryingMonths(Math.max(1, Number(e.target.value)))}
-                      className="w-full h-9 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs font-extrabold focus:outline-none focus:border-blue-500"
+                      className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs font-extrabold focus:outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -1082,42 +1082,42 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                 {/* Loan Options Comparison */}
                 <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
                   {/* LTV Option (65% of ARV) */}
-                  <div className="p-3 rounded-2xl bg-[#050811] border border-[#142036] flex flex-col gap-2">
-                    <div className="flex items-center justify-between border-b border-[#142036] pb-2">
+                  <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col gap-2">
+                    <div className="flex items-center justify-between border-b border-[#DDE1E7] pb-2">
                       <span className="text-xs font-extrabold text-blue-400">LTV Option</span>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">65% ARV</span>
+                      <span className="text-[9px] font-bold text-[#68707C] uppercase">65% ARV</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-slate-400">Max Loan:</span>
-                      <span className="font-bold text-white">${(salePrice * 0.65).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                      <span className="text-[#68707C]">Max Loan:</span>
+                      <span className="font-bold text-[#171A1F]">${(salePrice * 0.65).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-slate-400">Avg Monthly:</span>
+                      <span className="text-[#68707C]">Avg Monthly:</span>
                       <span className="font-bold text-blue-400">${((salePrice * 0.65 * (interestRate / 100)) / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-slate-400">Total Interest:</span>
-                      <span className="font-extrabold text-white">${((salePrice * 0.65 * (interestRate / 100)) / 12 * carryingMonths).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                      <span className="text-[#68707C]">Total Interest:</span>
+                      <span className="font-extrabold text-[#171A1F]">${((salePrice * 0.65 * (interestRate / 100)) / 12 * carryingMonths).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                   </div>
 
                   {/* LTC Option (80% of Total Cost) */}
-                  <div className="p-3 rounded-2xl bg-[#050811] border border-[#142036] flex flex-col gap-2">
-                    <div className="flex items-center justify-between border-b border-[#142036] pb-2">
+                  <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col gap-2">
+                    <div className="flex items-center justify-between border-b border-[#DDE1E7] pb-2">
                       <span className="text-xs font-extrabold text-emerald-400">LTC Option</span>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">80% Cost</span>
+                      <span className="text-[9px] font-bold text-[#68707C] uppercase">80% Cost</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-slate-400">Max Loan:</span>
-                      <span className="font-bold text-white">${((lotPrice + totalCost) * 0.80).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                      <span className="text-[#68707C]">Max Loan:</span>
+                      <span className="font-bold text-[#171A1F]">${((lotPrice + totalCost) * 0.80).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-slate-400">Avg Monthly:</span>
+                      <span className="text-[#68707C]">Avg Monthly:</span>
                       <span className="font-bold text-emerald-400">${(((lotPrice + totalCost) * 0.80 * (interestRate / 100)) / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-slate-400">Total Interest:</span>
-                      <span className="font-extrabold text-white">${(((lotPrice + totalCost) * 0.80 * (interestRate / 100)) / 12 * carryingMonths).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                      <span className="text-[#68707C]">Total Interest:</span>
+                      <span className="font-extrabold text-[#171A1F]">${(((lotPrice + totalCost) * 0.80 * (interestRate / 100)) / 12 * carryingMonths).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
                   </div>
                 </div>
@@ -1126,13 +1126,13 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           </div>
 
           {/* 5. Deal Score Summary Card */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-black text-sm">
                 88
               </div>
               <div>
-                <h4 className="text-xs font-extrabold text-white">Deal Score Analysis</h4>
+                <h4 className="text-xs font-extrabold text-[#171A1F]">Deal Score Analysis</h4>
                 <p className="text-[11px] text-emerald-400 font-bold mt-0.5">88/100 · High Profit Potential</p>
               </div>
             </div>
@@ -1144,138 +1144,23 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
         </div>
       )}
 
-      {/* ─── 9. LEARNING TAB (BuildScope AI Historical Intelligence & Benchmarks) ─── */}
-      {activeTab === 'learning' && (
-        <div className="flex flex-col gap-3.5 animate-fade-in">
-          
-          {/* Section 1: AI Model Summary Card */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-white tracking-tight flex items-center gap-2">
-                <span className="p-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                  <Sparkles className="w-3.5 h-3.5" />
-                </span>
-                <span>BuildScope AI Learning Engine</span>
-              </h3>
-              <span className="text-[10px] font-extrabold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
-                v4.2 Trained
-              </span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">Accuracy</span>
-                <span className="text-xs font-black text-emerald-400 block mt-0.5">96.4%</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">Benchmark Projects</span>
-                <span className="text-xs font-black text-white block mt-0.5">14 Homes</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">Confidence</span>
-                <span className="text-xs font-black text-blue-400 block mt-0.5">94 / 100</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 2: AI Cost Optimization Insights */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>AI Optimization Insights</span>
-            </h3>
-
-            <div className="flex flex-col gap-2 text-xs">
-              <div className="p-3 rounded-xl bg-[#050811] border border-[#142036] flex flex-col gap-1">
-                <div className="flex items-center justify-between font-bold text-slate-200">
-                  <span>Foundation & Concrete Savings</span>
-                  <span className="text-emerald-400 font-extrabold">-$600 Opportunity</span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-normal">
-                  Historical average for 3,500 SF slab in Dallas County is $27,800. Current budget item #fdn-4 is $28,400. Re-negotiating pour rate can save ~$600.
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#050811] border border-[#142036] flex flex-col gap-1">
-                <div className="flex items-center justify-between font-bold text-slate-200">
-                  <span>Engineering & Plans Alignment</span>
-                  <span className="text-blue-400 font-extrabold">±1.8% Standard</span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-normal">
-                  Truss engineering ($1,800) and soil report ($3,500) match historical averages from 14 similar custom home projects.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 3: CSI Division Benchmark Table */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <FileSpreadsheet className="w-3.5 h-3.5 text-blue-400" />
-              <span>CSI Regional Cost Benchmarks</span>
-            </h3>
-
-            <div className="flex flex-col gap-2 text-xs">
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <div>
-                  <span className="font-bold text-white block">Foundation & Site Work</span>
-                  <span className="text-[10px] text-slate-400">Regional Avg: $27.8k</span>
-                </div>
-                <span className="font-extrabold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">
-                  $28.4k (+2.1%)
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <div>
-                  <span className="font-bold text-white block">Engineering & Design</span>
-                  <span className="text-[10px] text-slate-400">Regional Avg: $14.2k</span>
-                </div>
-                <span className="font-extrabold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-                  $13.9k (-2.1%)
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#050811] border border-[#142036]">
-                <div>
-                  <span className="font-bold text-white block">Framing & Structure</span>
-                  <span className="text-[10px] text-slate-400">Regional Avg: $13.1k</span>
-                </div>
-                <span className="font-extrabold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-                  $11.6k (-11.4%)
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => alert("Project data submitted to BuildScope AI Learning Loop successfully!")}
-              className="mt-1 w-full h-9 rounded-xl bg-[#050811] hover:bg-[#091122] border border-[#142036] text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-              <span>Submit Project Data to AI Model Loop</span>
-            </button>
-          </div>
-
-        </div>
-      )}
-
       {/* ─── 10. ACTIVITY & TEAM CHAT TAB ─── */}
       {activeTab === 'activity' && (
         <div className="flex flex-col gap-3.5 animate-fade-in">
           
           {/* Main Card */}
-          <div className="p-4 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-md flex flex-col gap-3.5">
+          <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-md flex flex-col gap-3.5">
             
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xs font-bold text-white tracking-tight flex items-center gap-2">
+                <h3 className="text-xs font-bold text-[#171A1F] tracking-tight flex items-center gap-2">
                   <span className="p-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
                     <MessageSquare className="w-3.5 h-3.5" />
                   </span>
                   <span>Team Chat & Activity Log ({chatMessages.length})</span>
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Real-time project discussions and team updates</p>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Real-time project discussions and team updates</p>
               </div>
 
               <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
@@ -1290,11 +1175,11 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                 placeholder="Post a message or project update to team chat..."
                 value={newChatMessage}
                 onChange={(e) => setNewChatMessage(e.target.value)}
-                className="flex-1 h-9 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs font-medium placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
+                className="flex-1 h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs font-medium placeholder:text-[#9DA5B1] focus:outline-none focus:border-blue-500 transition-colors"
               />
               <button
                 type="submit"
-                className="h-9 px-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-md shadow-blue-600/30 flex-shrink-0"
+                className="h-9 px-3.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-[#171A1F] text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shadow-md shadow-blue-600/30 flex-shrink-0"
               >
                 <Send className="w-3.5 h-3.5 text-white" />
                 <span>Send</span>
@@ -1306,7 +1191,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               {chatMessages.map((msg) => (
                 <div 
                   key={msg.id}
-                  className="p-3 rounded-2xl bg-[#050811] border border-[#142036] hover:border-blue-500/30 flex items-start gap-3 text-xs transition-all shadow-sm"
+                  className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] hover:border-blue-500/30 flex items-start gap-3 text-xs transition-all shadow-sm"
                 >
                   <div className={`w-8 h-8 rounded-xl ${msg.color} flex items-center justify-center font-extrabold flex-shrink-0 shadow-sm text-xs`}>
                     {msg.initials}
@@ -1315,14 +1200,14 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 truncate">
-                        <span className="font-extrabold text-white">{msg.sender}</span>
-                        <span className="text-[10px] text-slate-400 font-semibold truncate">
+                        <span className="font-extrabold text-[#171A1F]">{msg.sender}</span>
+                        <span className="text-[10px] text-[#68707C] font-semibold truncate">
                           • {msg.role}
                         </span>
                       </div>
-                      <span className="text-[10px] text-slate-500 font-bold flex-shrink-0">{msg.time}</span>
+                      <span className="text-[10px] text-[#9DA5B1] font-bold flex-shrink-0">{msg.time}</span>
                     </div>
-                    <p className="text-[12px] text-slate-300 font-medium leading-relaxed mt-1">
+                    <p className="text-[12px] text-[#68707C] font-medium leading-relaxed mt-1">
                       {msg.text}
                     </p>
                   </div>
@@ -1337,8 +1222,8 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
       {/* ─── 11. REPORTS & EXPORTS TAB (Global Design System Styled) ─── */}
       {activeTab === 'reports' && (
         <div className="flex flex-col gap-5 animate-fade-in">
-          <div className="p-5 rounded-2xl bg-[#070D1A] border border-[#142036] shadow-xl flex flex-col gap-4">
-            <h3 className="text-sm font-extrabold text-white tracking-tight flex items-center gap-2">
+          <div className="p-5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xl flex flex-col gap-4">
+            <h3 className="text-sm font-extrabold text-[#171A1F] tracking-tight flex items-center gap-2">
               <FileText className="w-4 h-4 text-blue-400" />
               <span>Reports & Exports</span>
             </h3>
@@ -1347,7 +1232,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               {/* 1. Detailed Budget PDF */}
               <button
                 onClick={() => alert("Downloading Detailed Budget PDF...")}
-                className="w-full h-12 px-4 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold flex items-center justify-between transition-all shadow-md shadow-blue-600/20 cursor-pointer active:scale-[0.99]"
+                className="w-full h-12 px-4 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-[#171A1F] font-extrabold flex items-center justify-between transition-all shadow-md shadow-blue-600/20 cursor-pointer active:scale-[0.99]"
               >
                 <div className="flex items-center gap-2.5">
                   <Download className="w-4 h-4 text-white" />
@@ -1359,37 +1244,27 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               {/* 2. Budget Summary CSV */}
               <button
                 onClick={() => alert("Exporting Budget Summary CSV...")}
-                className="w-full h-12 px-4 rounded-2xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-slate-500 text-slate-200 font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
+                className="w-full h-12 px-4 rounded-2xl bg-[#F2F2F7] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-slate-500 text-[#171A1F] font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
               >
                 <div className="flex items-center gap-2.5">
-                  <Download className="w-4 h-4 text-slate-400" />
+                  <Download className="w-4 h-4 text-[#68707C]" />
                   <span>Budget Summary CSV</span>
                 </div>
-                <span className="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">CSV</span>
+                <span className="text-[9px] bg-slate-800 text-[#68707C] px-2 py-0.5 rounded-full font-bold uppercase">CSV</span>
               </button>
 
-              {/* 3. Deal Analysis Report */}
-              <button
-                onClick={() => alert("Generating Deal Analysis Report...")}
-                className="w-full h-12 px-4 rounded-2xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-slate-500 text-slate-200 font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
-              >
-                <div className="flex items-center gap-2.5">
-                  <FileText className="w-4 h-4 text-slate-400" />
-                  <span>Deal Analysis Report</span>
-                </div>
-                <span className="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">Report</span>
-              </button>
+              
 
               {/* 4. Cash-Flow Forecast */}
               <button
                 onClick={() => alert("Exporting Cash-Flow Forecast...")}
-                className="w-full h-12 px-4 rounded-2xl bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-slate-500 text-slate-200 font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
+                className="w-full h-12 px-4 rounded-2xl bg-[#F2F2F7] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-slate-500 text-[#171A1F] font-extrabold flex items-center justify-between transition-all cursor-pointer active:scale-[0.99]"
               >
                 <div className="flex items-center gap-2.5">
-                  <TrendingUp className="w-4 h-4 text-slate-400" />
+                  <TrendingUp className="w-4 h-4 text-[#68707C]" />
                   <span>Cash-Flow Forecast</span>
                 </div>
-                <span className="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">Forecast</span>
+                <span className="text-[9px] bg-slate-800 text-[#68707C] px-2 py-0.5 rounded-full font-bold uppercase">Forecast</span>
               </button>
             </div>
           </div>
@@ -1398,7 +1273,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           <div className="flex justify-center pt-1">
             <button
               onClick={() => showToast("Budget saved successfully!")}
-              className="h-11 px-8 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-blue-600/30 border border-blue-500/30 transition-all cursor-pointer active:scale-95"
+              className="h-11 px-8 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-[#171A1F] font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-blue-600/30 border border-blue-500/30 transition-all cursor-pointer active:scale-95"
             >
               <Save className="w-4 h-4 text-white" />
               <span>Save Budget</span>
@@ -1408,7 +1283,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
       )}
 
       {toastMessage && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#091122]/95 border border-[#2563EB]/40 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold text-white animate-fade-in">
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#F2F2F7] border border-[#2563EB]/40 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold text-white animate-fade-in">
           <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
           <span>{toastMessage}</span>
         </div>

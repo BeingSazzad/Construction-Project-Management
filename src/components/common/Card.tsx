@@ -23,9 +23,9 @@ export const Card: React.FC<CardProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    surface: 'bg-[#0A111F] border border-[#142036] shadow-sm',
-    elevated: 'bg-[#0E1A30] border border-[#1E2E4A] shadow-md',
-    inset: 'bg-[#050811] border border-[#142036]',
+    surface: 'bg-white border border-[#DDE1E7] shadow-xs',
+    elevated: 'bg-white border border-[#DDE1E7] shadow-sm',
+    inset: 'bg-[#F7F8FA] border border-[#EAEDF1]',
   }[variant];
 
   return (
@@ -34,12 +34,12 @@ export const Card: React.FC<CardProps> = ({
       {...props}
     >
       {(title || action || icon) && (
-        <div className="flex items-center justify-between p-4 pb-3 border-b border-[#142036]">
+        <div className="flex items-center justify-between p-4 pb-3 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-2.5">
-            {icon && <span className="text-blue-400 flex-shrink-0">{icon}</span>}
+            {icon && <span className="text-[#1677FF] flex-shrink-0">{icon}</span>}
             <div>
-              {title && <h3 className="text-xs font-bold text-white tracking-tight">{title}</h3>}
-              {subtitle && <p className="text-[11px] text-slate-400 font-medium">{subtitle}</p>}
+              {title && <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">{title}</h3>}
+              {subtitle && <p className="text-[11px] text-[#68707C] font-medium">{subtitle}</p>}
             </div>
           </div>
           {action && <div className="flex items-center gap-2">{action}</div>}
@@ -51,10 +51,11 @@ export const Card: React.FC<CardProps> = ({
       </div>
 
       {footer && (
-        <div className="p-3.5 bg-black/20 border-t border-[#142036] rounded-b-2xl">
+        <div className="p-3.5 bg-[#F7F8FA] border-t border-[#EAEDF1] rounded-b-2xl">
           {footer}
         </div>
       )}
     </div>
   );
 };
+

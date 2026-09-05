@@ -137,34 +137,34 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── SUBVIEW: FIELD SYNC & OFFLINE STORAGE ───
   if (subView === 'field-sync') {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
         {/* Navigation Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
           <button
             onClick={() => setSubView('main')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer py-1"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer py-1"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Account</span>
           </button>
-          <h2 className="text-sm font-bold text-white tracking-tight">Field Sync & Storage</h2>
+          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Field Sync & Storage</h2>
           <div className="w-12" />
         </div>
 
         {/* Live Sync Status & Queue Card */}
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#14223E] shadow-sm flex flex-col gap-3">
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-600 flex items-center justify-center">
                 <Database className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-white">Local Field Cache</h3>
-                <p className="text-[11px] text-slate-400">18 Photos Queued · 42.8 MB</p>
+                <h3 className="text-xs font-bold text-[#171A1F]">Local Field Cache</h3>
+                <p className="text-[11px] text-[#68707C]">18 Photos Queued · 42.8 MB</p>
               </div>
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Ready
             </span>
           </div>
@@ -172,14 +172,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <button
             onClick={handleForceSync}
             disabled={isSyncing}
-            className="w-full py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-blue-800 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+            className="w-full py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] disabled:opacity-50 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? 'Syncing Photos to Cloud...' : 'Force Sync Offline Queue Now'}</span>
           </button>
 
           {syncSuccessMsg && (
-            <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs font-semibold text-center animate-fade-in">
+            <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold text-center animate-fade-in">
               ✓ All local photos & logs successfully synced!
             </div>
           )}
@@ -187,24 +187,24 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Section 1: Offline Basement Mode */}
         <div className="flex flex-col gap-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Offline Basement Mode</p>
-          <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Offline Basement Mode</p>
+          <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-semibold text-white">Enable Basement Caching</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Keep blueprints & tasks available offline without cell signal</p>
+                <h4 className="text-xs font-semibold text-[#171A1F]">Enable Basement Caching</h4>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Keep blueprints & tasks available offline without cell signal</p>
               </div>
               <button
                 type="button"
                 onClick={() => setOfflineSyncEnabled(!offlineSyncEnabled)}
                 className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
                   offlineSyncEnabled
-                    ? 'bg-[#2563EB] border-blue-400 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
-                    : 'bg-[#1E293B] border-slate-700'
+                    ? 'bg-[#1677FF] border-[#1677FF]'
+                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
                 }`}
               >
                 <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
                     offlineSyncEnabled ? 'translate-x-4.5' : 'translate-x-0'
                   }`}
                 />
@@ -213,20 +213,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-semibold text-white">Sync Over Cellular Data</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Upload photos instantly via 5G/LTE when outside</p>
+                <h4 className="text-xs font-semibold text-[#171A1F]">Sync Over Cellular Data</h4>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Upload photos instantly via 5G/LTE when outside</p>
               </div>
               <button
                 type="button"
                 onClick={() => setSyncOnCellular(!syncOnCellular)}
                 className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
                   syncOnCellular
-                    ? 'bg-[#2563EB] border-blue-400 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
-                    : 'bg-[#1E293B] border-slate-700'
+                    ? 'bg-[#1677FF] border-[#1677FF]'
+                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
                 }`}
               >
                 <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
                     syncOnCellular ? 'translate-x-4.5' : 'translate-x-0'
                   }`}
                 />
@@ -237,24 +237,24 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Section 2: Camera & Photo Watermarking */}
         <div className="flex flex-col gap-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Camera & Evidence Watermarking</p>
-          <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Camera & Evidence Watermarking</p>
+          <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-semibold text-white">Embed GPS Coordinates</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Burn latitude & longitude watermark on resolution photos</p>
+                <h4 className="text-xs font-semibold text-[#171A1F]">Embed GPS Coordinates</h4>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Burn latitude & longitude watermark on resolution photos</p>
               </div>
               <button
                 type="button"
                 onClick={() => setPhotoGpsTagging(!photoGpsTagging)}
                 className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
                   photoGpsTagging
-                    ? 'bg-[#2563EB] border-blue-400 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
-                    : 'bg-[#1E293B] border-slate-700'
+                    ? 'bg-[#1677FF] border-[#1677FF]'
+                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
                 }`}
               >
                 <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
                     photoGpsTagging ? 'translate-x-4.5' : 'translate-x-0'
                   }`}
                 />
@@ -263,20 +263,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-semibold text-white">Embed Date & Timestamp</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Stamp exact hour/minute for punch list audit trails</p>
+                <h4 className="text-xs font-semibold text-[#171A1F]">Embed Date & Timestamp</h4>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Stamp exact hour/minute for punch list audit trails</p>
               </div>
               <button
                 type="button"
                 onClick={() => setPhotoTimestampTagging(!photoTimestampTagging)}
                 className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
                   photoTimestampTagging
-                    ? 'bg-[#2563EB] border-blue-400 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
-                    : 'bg-[#1E293B] border-slate-700'
+                    ? 'bg-[#1677FF] border-[#1677FF]'
+                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
                 }`}
               >
                 <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
                     photoTimestampTagging ? 'translate-x-4.5' : 'translate-x-0'
                   }`}
                 />
@@ -285,14 +285,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div>
-                <h4 className="text-xs font-semibold text-white">Upload Compression</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Choose speed vs original detail</p>
+                <h4 className="text-xs font-semibold text-[#171A1F]">Upload Compression</h4>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Choose speed vs original detail</p>
               </div>
-              <div className="flex items-center gap-1 bg-[#090F1E] p-0.5 rounded-xl border border-[#162238]">
+              <div className="flex items-center gap-1 bg-[#F2F2F7] p-0.5 rounded-xl border border-[#DDE1E7]">
                 <button
                   onClick={() => setPhotoQuality('optimized')}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
-                    photoQuality === 'optimized' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    photoQuality === 'optimized' ? 'bg-white text-[#171A1F] shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
                   }`}
                 >
                   Fast (1080p)
@@ -300,7 +300,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <button
                   onClick={() => setPhotoQuality('high')}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
-                    photoQuality === 'high' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    photoQuality === 'high' ? 'bg-white text-[#171A1F] shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
                   }`}
                 >
                   High (4K)
@@ -312,24 +312,24 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Section 3: Daily Log Automation */}
         <div className="flex flex-col gap-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Daily Log Automation</p>
-          <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Daily Log Automation</p>
+          <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <h4 className="text-xs font-semibold text-white">Auto-Save Drafts Every 2 Mins</h4>
-                <p className="text-[11px] text-slate-400 mt-0.5">Prevent loss of end-of-day site logs and notes</p>
+                <h4 className="text-xs font-semibold text-[#171A1F]">Auto-Save Drafts Every 2 Mins</h4>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Prevent loss of end-of-day site logs and notes</p>
               </div>
               <button
                 type="button"
                 onClick={() => setDailyLogAutoSave(!dailyLogAutoSave)}
                 className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
                   dailyLogAutoSave
-                    ? 'bg-[#2563EB] border-blue-400 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
-                    : 'bg-[#1E293B] border-slate-700'
+                    ? 'bg-[#1677FF] border-[#1677FF]'
+                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
                 }`}
               >
                 <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
                     dailyLogAutoSave ? 'translate-x-4.5' : 'translate-x-0'
                   }`}
                 />
@@ -344,47 +344,47 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── SUBVIEW: FIELD CERTIFICATIONS & BADGES ───
   if (subView === 'certifications') {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-        <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
           <button
             onClick={() => setSubView('main')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer py-1"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer py-1"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Account</span>
           </button>
-          <h2 className="text-sm font-bold text-white tracking-tight">Safety & Certifications</h2>
+          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Safety & Certifications</h2>
           <div className="w-12" />
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center flex-shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-white">Site Access Compliance</h3>
-            <p className="text-[12px] text-emerald-400 font-semibold mt-0.5">100% Compliant · All Badges Active</p>
+            <h3 className="text-xs font-bold text-[#171A1F]">Site Access Compliance</h3>
+            <p className="text-[12px] text-emerald-700 font-semibold mt-0.5">100% Compliant · All Badges Active</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-2.5">
           {[
-            { title: 'OSHA 30-Hour Construction Safety', id: 'OSHA-NY-88219', exp: 'Valid through Dec 2028', status: 'Active', icon: Award, color: 'text-amber-400' },
-            { title: 'First Aid, CPR & AED Certified', id: 'ARC-FA-99120', exp: 'Valid through Oct 2027', status: 'Active', icon: ShieldAlert, color: 'text-rose-400' },
-            { title: 'Boom & Scissor Lift Operator (MEWP)', id: 'MEWP-4421-B', exp: 'Valid through Aug 2026', status: 'Active', icon: HardHat, color: 'text-blue-400' },
-            { title: 'NYC DOB Site Safety Training (SST)', id: 'DOB-SST-6601', exp: 'Valid through Jan 2029', status: 'Active', icon: CheckCircle2, color: 'text-emerald-400' },
+            { title: 'OSHA 30-Hour Construction Safety', id: 'OSHA-NY-88219', exp: 'Valid through Dec 2028', status: 'Active', icon: Award, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-200' },
+            { title: 'First Aid, CPR & AED Certified', id: 'ARC-FA-99120', exp: 'Valid through Oct 2027', status: 'Active', icon: ShieldAlert, color: 'text-rose-600', bg: 'bg-rose-50 border-rose-200' },
+            { title: 'Boom & Scissor Lift Operator (MEWP)', id: 'MEWP-4421-B', exp: 'Valid through Aug 2026', status: 'Active', icon: HardHat, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-200' },
+            { title: 'NYC DOB Site Safety Training (SST)', id: 'DOB-SST-6601', exp: 'Valid through Jan 2029', status: 'Active', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-200' },
           ].map((cert) => (
-            <div key={cert.id} className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-3">
+            <div key={cert.id} className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-[#090F1E] border border-[#162238] flex items-center justify-center flex-shrink-0">
+                <div className={`w-9 h-9 rounded-xl ${cert.bg} border flex items-center justify-center flex-shrink-0`}>
                   <cert.icon className={`w-4 h-4 ${cert.color}`} />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-white truncate">{cert.title}</h4>
-                  <p className="text-[11px] font-mono text-slate-400 mt-0.5">{cert.id} · {cert.exp}</p>
+                  <h4 className="text-xs font-bold text-[#171A1F] truncate">{cert.title}</h4>
+                  <p className="text-[11px] font-mono text-[#68707C] mt-0.5">{cert.id} · {cert.exp}</p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
                 {cert.status}
               </span>
             </div>
@@ -397,20 +397,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── SUBVIEW: ASSIGNED GEAR & TOOLS ───
   if (subView === 'equipment') {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-        <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
           <button
             onClick={() => setSubView('main')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer py-1"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer py-1"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Account</span>
           </button>
-          <h2 className="text-sm font-bold text-white tracking-tight">Assigned Equipment</h2>
+          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Assigned Equipment</h2>
           <div className="w-12" />
         </div>
 
-        <p className="text-[12px] text-slate-400 px-1">Hardware and diagnostic gear checked out under your name:</p>
+        <p className="text-[12px] text-[#68707C] px-1">Hardware and diagnostic gear checked out under your name:</p>
 
         <div className="flex flex-col gap-2.5">
           {[
@@ -419,17 +419,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             { name: 'Rugged iPad Pro 11" (Field Tough Case)', tag: 'TAB-02', condition: 'Active', lastCalibrated: 'MDM Enrolled' },
             { name: 'FLIR C5 Compact Thermal Camera', tag: 'TH-108', condition: 'Excellent', lastCalibrated: 'May 2025' },
           ].map((item) => (
-            <div key={item.tag} className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-3">
+            <div key={item.tag} className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-blue-200 text-[#1677FF] flex items-center justify-center flex-shrink-0">
                   <Wrench className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-white truncate">{item.name}</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Tag: <span className="text-slate-300 font-mono">{item.tag}</span> · {item.lastCalibrated}</p>
+                  <h4 className="text-xs font-bold text-[#171A1F] truncate">{item.name}</h4>
+                  <p className="text-[11px] text-[#68707C] mt-0.5">Tag: <span className="text-[#171A1F] font-mono font-semibold">{item.tag}</span> · {item.lastCalibrated}</p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-300">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700">
                 {item.condition}
               </span>
             </div>
@@ -442,33 +442,33 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── SUBVIEW: EMERGENCY SITE PROTOCOL ───
   if (subView === 'emergency') {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-        <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
           <button
             onClick={() => setSubView('main')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer py-1"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer py-1"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Account</span>
           </button>
-          <h2 className="text-sm font-bold text-white tracking-tight">Emergency Contacts</h2>
+          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Emergency Contacts</h2>
           <div className="w-12" />
         </div>
 
         {/* 911 Banner */}
-        <div className="p-4 rounded-2xl bg-rose-950/30 border border-rose-500/40 flex items-center justify-between gap-3">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-black text-lg">
+            <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-black text-base shadow-xs">
               911
             </div>
             <div>
-              <h3 className="text-xs font-bold text-white">Emergency Services</h3>
-              <p className="text-[11px] text-rose-300">Police · Fire · Medical Dispatch</p>
+              <h3 className="text-xs font-bold text-rose-900">Emergency Services</h3>
+              <p className="text-[11px] text-rose-700">Police · Fire · Medical Dispatch</p>
             </div>
           </div>
           <a
             href="tel:911"
-            className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md cursor-pointer"
+            className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs cursor-pointer"
           >
             Call 911
           </a>
@@ -481,15 +481,15 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             { role: 'Local Nearest Hospital', name: 'Metropolitan Medical Center', phone: '+1 (555) 880-1200', status: '1.8 Miles' },
             { role: 'Poison Control Center', name: 'National Hotline', phone: '+1 (800) 222-1222', status: 'Toll-Free' },
           ].map((contact, idx) => (
-            <div key={idx} className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] flex items-center justify-between gap-3">
+            <div key={idx} className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">{contact.role}</span>
-                <h4 className="text-xs font-bold text-white mt-0.5">{contact.name}</h4>
-                <p className="text-[11px] text-slate-400 font-mono mt-0.5">{contact.phone}</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1677FF]">{contact.role}</span>
+                <h4 className="text-xs font-bold text-[#171A1F] mt-0.5">{contact.name}</h4>
+                <p className="text-[11px] text-[#68707C] font-mono mt-0.5">{contact.phone}</p>
               </div>
               <a
                 href={`tel:${contact.phone}`}
-                className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/20 transition-colors"
+                className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center hover:bg-emerald-100 transition-colors shadow-xs"
               >
                 <Phone className="w-4 h-4" />
               </a>
@@ -503,44 +503,44 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── SUBVIEW: BILLING & SUBSCRIPTION (Owner Only) ───
   if (subView === 'billing') {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-        <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
           <button
             onClick={() => setSubView('main')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer py-1"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer py-1"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Account</span>
           </button>
-          <h2 className="text-sm font-bold text-white tracking-tight">Billing & Plans</h2>
+          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Billing & Plans</h2>
           <div className="w-12" />
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Current Plan</span>
-            <h3 className="text-base font-black text-white mt-0.5">Trial</h3>
-            <p className="text-[12px] text-slate-400 mt-0.5 font-medium">14-day free trial · No credit card required</p>
+            <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider block">Current Plan</span>
+            <h3 className="text-base font-black text-[#171A1F] mt-0.5">Trial</h3>
+            <p className="text-[12px] text-[#68707C] mt-0.5 font-medium">14-day free trial · No credit card required</p>
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
+          <span className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold">
             Active
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0A111F] border-2 border-blue-500/50 shadow-md flex flex-col gap-3 relative">
-          <span className="text-[10px] font-black tracking-wider text-blue-400 uppercase">Most Popular</span>
+        <div className="p-4 rounded-2xl bg-white border-2 border-[#1677FF] shadow-md flex flex-col gap-3 relative">
+          <span className="text-[10px] font-black tracking-wider text-[#1677FF] uppercase">Most Popular</span>
           <div className="flex items-baseline justify-between">
-            <h4 className="text-sm font-bold text-white">Professional</h4>
+            <h4 className="text-sm font-bold text-[#171A1F]">Professional</h4>
             <div className="text-right">
-              <span className="text-lg font-black text-white">$19</span>
-              <span className="text-xs text-slate-400">/month</span>
+              <span className="text-lg font-black text-[#171A1F]">$19</span>
+              <span className="text-xs text-[#68707C]">/month</span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5 text-xs text-slate-300 pt-2 border-t border-[#142036]">
+          <div className="flex flex-col gap-1.5 text-xs text-[#171A1F] pt-2 border-t border-[#EAEDF1]">
             {['Unlimited Projects', 'AI Features', 'Client Portal', 'Priority Support', 'Daily Log AI Summaries', 'Change Order Tracking'].map(f => (
               <div key={f} className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                <Check className="w-3.5 h-3.5 text-[#1677FF] flex-shrink-0" />
                 <span>{f}</span>
               </div>
             ))}
@@ -548,7 +548,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
           <button
             onClick={() => { alert('Starting 14-Day Free Trial on Professional...'); setSubView('main'); }}
-            className="w-full h-10 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs shadow-md mt-1 cursor-pointer"
+            className="w-full h-10 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs shadow-xs mt-1 cursor-pointer transition-all active:scale-[0.99]"
           >
             Start 14-Day Free Trial
           </button>
@@ -560,27 +560,27 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── SUBVIEW: NOTIFICATIONS PREFERENCES ───
   if (subView === 'notifications') {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
-        <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
           <button
             onClick={() => setSubView('main')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer py-1"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer py-1"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Account</span>
           </button>
-          <h2 className="text-sm font-bold text-white tracking-tight">Notification Settings</h2>
+          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Notification Settings</h2>
           <div className="w-12" />
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-blue-200 flex items-center justify-center text-[#1677FF]">
               <Bell className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-white">Push Notifications</h3>
-              <p className="text-[12px] text-slate-400">Receive alerts on device</p>
+              <h3 className="text-xs font-bold text-[#171A1F]">Push Notifications</h3>
+              <p className="text-[12px] text-[#68707C]">Receive alerts on device</p>
             </div>
           </div>
           <button
@@ -588,22 +588,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             onClick={() => setPushMasterEnabled(!pushMasterEnabled)}
             className={`w-11 h-6 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
               pushMasterEnabled
-                ? 'bg-[#2563EB] border-blue-400 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
-                : 'bg-[#1E293B] border-slate-700 hover:border-slate-600'
+                ? 'bg-[#1677FF] border-[#1677FF]'
+                : 'bg-[#E5E7EB] border-[#D1D5DB]'
             }`}
           >
             <div
-              className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+              className={`w-5 h-5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
                 pushMasterEnabled ? 'translate-x-5' : 'translate-x-0'
               }`}
             />
           </button>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col gap-1">
-          <h3 className="text-xs font-bold text-white pb-2 border-b border-[#142036]">Alert Rules</h3>
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-1">
+          <h3 className="text-xs font-bold text-[#171A1F] pb-2 border-b border-[#EAEDF1]">Alert Rules</h3>
 
-          <div className="flex flex-col divide-y divide-[#142036]">
+          <div className="flex flex-col divide-y divide-[#EAEDF1]">
             {[
               { key: 'taskAssignments', label: 'Task assignments', desc: "When you're assigned a new task" },
               { key: 'dailyLogReminders', label: 'Daily log reminders', desc: '4:30 PM reminder to submit daily logs' },
@@ -616,8 +616,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               return (
                 <div key={item.key} className="py-3 flex items-center justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <h4 className="text-xs font-bold text-white">{item.label}</h4>
-                    <p className="text-[12px] text-slate-400 mt-0.5">{item.desc}</p>
+                    <h4 className="text-xs font-bold text-[#171A1F]">{item.label}</h4>
+                    <p className="text-[12px] text-[#68707C] mt-0.5">{item.desc}</p>
                   </div>
 
                   <button
@@ -625,12 +625,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     onClick={() => toggleNotif(item.key as any)}
                     className={`w-11 h-6 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
                       isEffective
-                        ? 'bg-[#2563EB] border-blue-400 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
-                        : 'bg-[#1E293B] border-slate-700 hover:border-slate-600'
+                        ? 'bg-[#1677FF] border-[#1677FF]'
+                        : 'bg-[#E5E7EB] border-[#D1D5DB]'
                     }`}
                   >
                     <div
-                      className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                      className={`w-5 h-5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
                         isEffective ? 'translate-x-5' : 'translate-x-0'
                       }`}
                     />
@@ -644,21 +644,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     );
   }
 
-  // ─── MAIN SETTINGS & PROFILE SCREEN (Clean, Sleek, Zero-Fluff) ───
+  // ─── MAIN SETTINGS & PROFILE SCREEN (Apple Light Mode) ───
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in relative">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in relative">
       
       {/* Top Header */}
       <div className="flex items-center justify-between pb-1">
         <div className="flex items-center gap-3">
           <button
             onClick={() => onNavigateTab ? onNavigateTab('home') : null}
-            className="w-8 h-8 rounded-full bg-[#0E1726] border border-[#1A263B] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="text-base font-bold text-white tracking-tight">
+            <h1 className="text-base font-bold text-[#171A1F] tracking-tight">
               {isFieldStaff ? 'Field Staff Profile' : 'Account & Organization'}
             </h1>
           </div>
@@ -667,8 +667,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         {/* Role Badge Indicator */}
         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
           isFieldStaff 
-            ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
-            : 'bg-purple-500/15 border-purple-500/30 text-purple-300'
+            ? 'bg-amber-50 border-amber-200 text-amber-800'
+            : 'bg-purple-50 border-purple-200 text-purple-800'
         }`}>
           {isFieldStaff ? 'Field Superintendent' : 'Company Owner'}
         </span>
@@ -677,32 +677,32 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* ─── 1. HERO PROFILE CARD ─── */}
       <div 
         onClick={() => setSubView('profile')}
-        className="p-4 bg-gradient-to-b from-[#111A2E] via-[#0E1526] to-[#0A0E1A] border border-[#1C2A44] hover:border-blue-500/40 transition-all rounded-3xl shadow-md flex items-center justify-between gap-3 cursor-pointer group active:scale-[0.99] relative overflow-hidden"
+        className="p-4 bg-white border border-[#DDE1E7] hover:border-[#1677FF] transition-all rounded-3xl shadow-xs flex items-center justify-between gap-3 cursor-pointer group active:scale-[0.99] relative overflow-hidden"
       >
         <div className="flex items-center gap-3.5 min-w-0 z-10">
           <div className="relative w-12 h-12 flex-shrink-0">
             <img
               src={userData.avatar}
               alt={userData.name}
-              className="w-12 h-12 rounded-full object-cover border-2 border-blue-500/40 group-hover:border-blue-500/70 transition-colors shadow-md"
+              className="w-12 h-12 rounded-full object-cover border-2 border-[#1677FF]/20 group-hover:border-[#1677FF] transition-colors shadow-xs"
             />
-            <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#0A0E1A]" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
           </div>
 
           <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-bold text-white truncate group-hover:text-[#3875F6] transition-colors leading-tight">
+            <h2 className="text-sm font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors leading-tight">
               {userData.name}
             </h2>
-            <p className="text-xs text-slate-400 truncate mt-0.5 font-medium">
+            <p className="text-xs text-[#68707C] truncate mt-0.5 font-medium">
               {userData.email}
             </p>
-            <p className="text-xs text-blue-400 font-semibold truncate mt-0.5">
+            <p className="text-xs text-[#1677FF] font-semibold truncate mt-0.5">
               {userData.roleTitle || (isFieldStaff ? 'Lead Superintendent' : 'Company Owner & Principal')}
             </p>
           </div>
         </div>
 
-        <div className="w-9 h-9 rounded-2xl bg-[#141F33] border border-[#1E2C48] text-slate-300 group-hover:text-white flex items-center justify-center transition-colors flex-shrink-0 z-10 shadow-sm">
+        <div className="w-9 h-9 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] text-[#68707C] group-hover:text-[#171A1F] flex items-center justify-center transition-colors flex-shrink-0 z-10 shadow-xs">
           <Edit3 className="w-3.5 h-3.5" />
         </div>
       </div>
@@ -712,74 +712,74 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
          ══════════════════════════════════════════════════════════ */}
       {isFieldStaff ? (
         <div className="flex flex-col gap-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Field Operations & Safety</p>
-          <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Field Operations & Safety</p>
+          <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">  
             
             {/* Safety Badges & Certs */}
             <button
               onClick={() => setSubView('certifications')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Award className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Safety Badges & Certifications</span>
+                <Award className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Safety Badges & Certifications</span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                   4 Valid
                 </span>
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-[#9DA5B1]" />
               </div>
             </button>
 
             {/* Assigned Hardware Gear */}
             <button
               onClick={() => setSubView('equipment')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Wrench className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Assigned Equipment & Tools</span>
+                <Wrench className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Assigned Equipment & Tools</span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-[10px] font-bold text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
                   4 Items
                 </span>
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-[#9DA5B1]" />
               </div>
             </button>
 
             {/* Field Sync & Storage */}
             <button
               onClick={() => setSubView('field-sync')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Wifi className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Field Sync & Offline Storage</span>
+                <Wifi className="w-4 h-4 text-cyan-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Field Sync & Offline Storage</span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20">
+                <span className="text-[10px] font-bold text-cyan-800 bg-cyan-50 px-2 py-0.5 rounded-full border border-cyan-200">
                   Auto-Sync
                 </span>
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-[#9DA5B1]" />
               </div>
             </button>
 
             {/* Emergency Contacts */}
             <button
               onClick={() => setSubView('emergency')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <AlertOctagon className="w-4 h-4 text-rose-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Emergency Site Contacts</span>
+                <AlertOctagon className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Emergency Site Contacts</span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
+                <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
                   911 Active
                 </span>
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-[#9DA5B1]" />
               </div>
             </button>
 
@@ -790,77 +790,77 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             B. COMPANY OWNER / ADMIN SPECIFIC MODULES
            ══════════════════════════════════════════════════════════ */
         <div className="flex flex-col gap-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Workspace & Company</p>
-          <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Workspace & Company</p>
+          <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">  
             
             {/* Company Profile */}
             <button
               onClick={() => setSubView('company')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Building className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Company Profile</span>
+                <Building className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Company Profile</span>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
             </button>
 
             {/* Subscription & Billing */}
             <button
               onClick={() => setSubView('billing')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Crown className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Subscription & Plan</span>
+                <Crown className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Subscription & Plan</span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                   Trial (Active)
                 </span>
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-[#9DA5B1]" />
               </div>
             </button>
 
             {/* Lattice Verified Score */}
             <button
               onClick={() => setSubView('verified')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Award className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Lattice Verified™ Score</span>
+                <Award className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Lattice Verified™ Score</span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                   Score 33
                 </span>
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-[#9DA5B1]" />
               </div>
             </button>
 
             {/* Team Directory Direct Hub */}
             <button
               onClick={() => onNavigateTab?.('team')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Users className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Team Staff & Directory</span>
+                <Users className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Team Staff & Directory</span>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
             </button>
 
             {/* Milestones Hub */}
             <button
               onClick={() => onNavigateTab?.('milestones')}
-              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+              className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Flag className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-white truncate">Company Milestone Tracker</span>
+                <Flag className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Company Milestone Tracker</span>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
             </button>
 
           </div>
@@ -869,38 +869,38 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ─── COMMON GROUP: PREFERENCES & SECURITY ─── */}
       <div className="flex flex-col gap-1.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Preferences & Security</p>
-        <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Preferences & Security</p>
+        <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">  
           
           {/* Notification Settings */}
           <button
             onClick={() => setSubView('notifications')}
-            className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <Bell className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">Push Notifications</span>
+              <Bell className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Push Notifications</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
                 {pushMasterEnabled ? 'Enabled' : 'Muted'}
               </span>
-              <ChevronRight className="w-4 h-4 text-slate-500" />
+              <ChevronRight className="w-4 h-4 text-[#9DA5B1]" />
             </div>
           </button>
 
           {/* Security & Password */}
           <button
             onClick={() => setSubView('security')}
-            className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <Lock className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">
+              <Lock className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">
                 {isFieldStaff ? 'Security & PIN' : 'Security & Password'}
               </span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
           </button>
 
         </div>
@@ -908,20 +908,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ─── COMMON GROUP: SUPPORT & GUIDES ─── */}
       <div className="flex flex-col gap-1.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Support & Guides</p>
-        <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Support & Guides</p>
+        <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">  
           
           <button
             onClick={() => setSubView('support')}
-            className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <HelpCircle className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">
+              <HelpCircle className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">
                 {isFieldStaff ? 'Field Guides & Help' : 'Help Center & Guides'}
               </span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
           </button>
 
         </div>
@@ -929,67 +929,67 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ─── LEGAL & COMPLIANCE (All 5 Pages Accessible) ─── */}
       <div className="flex flex-col gap-1.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-1">Legal & Compliance</p>
-        <div className="bg-[#070D1A] border border-[#142036] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#142036]">  
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C] px-1">Legal & Compliance</p>
+        <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">  
           
           {/* Privacy Policy */}
           <button
             onClick={() => setSubView('privacy')}
-            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <ShieldCheck className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">Privacy Policy</span>
+              <ShieldCheck className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Privacy Policy</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
           </button>
 
           {/* Terms of Service */}
           <button
             onClick={() => setSubView('terms')}
-            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <FileText className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">Terms of Service</span>
+              <FileText className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Terms of Service</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
           </button>
 
           {/* AI Disclaimer */}
           <button
             onClick={() => setSubView('ai-disclaimer')}
-            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <Sparkles className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">AI Disclaimer</span>
+              <Sparkles className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">AI Disclaimer</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
           </button>
 
           {/* Subscription Terms */}
           <button
             onClick={() => setSubView('subscription-terms')}
-            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <CreditCard className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">Subscription Terms</span>
+              <CreditCard className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Subscription Terms</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
           </button>
 
           {/* Beta Agreement */}
           <button
             onClick={() => setSubView('beta')}
-            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#0C152B] transition-colors text-left cursor-pointer active:bg-[#0E1A33]"
+            className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F7F8FA] transition-colors text-left cursor-pointer active:bg-[#F2F2F7]"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <FlaskConical className="w-4 h-4 text-blue-400 flex-shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-white truncate">Beta Agreement</span>
+              <FlaskConical className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-semibold text-[#171A1F] truncate">Beta Agreement</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
           </button>
 
         </div>
@@ -998,7 +998,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* ─── SIGN OUT BUTTON ─── */}
       <button
         onClick={onSignOut}
-        className="w-full h-11 rounded-2xl bg-[#1A0A10] border border-[#33141C] text-rose-400 hover:bg-rose-500/20 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98] mt-1"
+        className="w-full h-11 rounded-2xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98] mt-1 shadow-xs"
       >
         <LogOut className="w-4 h-4" />
         <span>Sign Out</span>

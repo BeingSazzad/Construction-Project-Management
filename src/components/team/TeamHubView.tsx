@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import { User } from '../../types';
 import {
-  Users, Plus, Search, Shield, Briefcase,
-  HardHat, BarChart3, ChevronRight, Mail,
-  Phone, Check, Crown, UserCheck, X, CheckCircle2,
-  MessageSquare, Award, AlertTriangle, MapPin, Calendar,
-  ExternalLink, Building2
+  Users, Plus, Search, Shield, ChevronRight, Mail,
+  Phone, Crown, X, CheckCircle2, MessageSquare, Building2
 } from 'lucide-react';
 
 export interface TeamMember {
@@ -31,23 +27,16 @@ export interface TeamMember {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  'Owner':   'bg-blue-600/20 text-[#60A5FA] border-blue-500/30 font-bold',
-  'PM':      'bg-blue-500/10 text-blue-300 border-blue-500/20 font-semibold',
-  'Finance': 'bg-[#122444] text-blue-300 border-blue-400/20 font-semibold',
-  'Field':   'bg-[#0F1C36] text-amber-300 border-amber-500/30 font-semibold',
-};
-
-const PRESENCE_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
-  'On Site':   { bg: 'bg-emerald-500/10 border-emerald-500/20', text: 'text-emerald-400', dot: 'bg-emerald-400' },
-  'In Office': { bg: 'bg-blue-500/10 border-blue-500/20',       text: 'text-blue-400',    dot: 'bg-blue-400' },
-  'Remote':    { bg: 'bg-purple-500/10 border-purple-500/20',   text: 'text-purple-400',  dot: 'bg-purple-400' },
-  'Off Duty':  { bg: 'bg-slate-500/10 border-slate-500/20',     text: 'text-slate-400',   dot: 'bg-slate-500' },
+  'Owner':   'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30 font-bold',
+  'PM':      'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/20 font-semibold',
+  'Finance': 'bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold',
+  'Field':   'bg-amber-50 text-amber-700 border-amber-200 font-semibold',
 };
 
 const INITIAL_TEAM: TeamMember[] = [
   {
     id: 't-1',
-    name: 'Avery Marsh',
+    name: 'Avery Scott',
     role: 'Principal General Contractor & Owner',
     department: 'Executive Management',
     roleGroup: 'Owner',
@@ -56,10 +45,10 @@ const INITIAL_TEAM: TeamMember[] = [
     avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
     status: 'Active',
     presence: 'In Office',
-    assignedProjects: ['Riverside Office Complex', '104 Ocean Drive', 'Highland Park Modern', 'Aspen Creek Estate'],
+    assignedProjects: ['Snell Isle Residence', '104 Ocean Drive', 'Highland Park Modern', 'Aspen Creek Estate'],
     certifications: ['Class A General Contractor License', 'OSHA 30', 'LEED AP BD+C'],
-    emergencyContact: { name: 'Elena Marsh', relation: 'Spouse', phone: '+1 (720) 555-0199' },
-    location: 'Denver HQ',
+    emergencyContact: { name: 'Elena Scott', relation: 'Spouse', phone: '+1 (720) 555-0199' },
+    location: 'Tampa HQ',
     hireDate: 'Jan 2018'
   },
   {
@@ -73,10 +62,10 @@ const INITIAL_TEAM: TeamMember[] = [
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
     status: 'Active',
     presence: 'On Site',
-    assignedProjects: ['Riverside Office Complex', '104 Ocean Drive', 'Highland Park Modern'],
+    assignedProjects: ['Snell Isle Residence', '104 Ocean Drive'],
     certifications: ['PMP® Certified', 'OSHA 30 Construction', 'Procore Certified: PM'],
     emergencyContact: { name: 'Mark Johnson', relation: 'Spouse', phone: '+1 (720) 555-0188' },
-    location: 'Riverside Field Trailer',
+    location: 'Snell Isle Field Trailer',
     hireDate: 'Mar 2021'
   },
   {
@@ -90,85 +79,63 @@ const INITIAL_TEAM: TeamMember[] = [
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
     status: 'Active',
     presence: 'In Office',
-    assignedProjects: ['Riverside Office Complex', '104 Ocean Drive', 'Highland Park Modern', 'Aspen Creek Estate'],
+    assignedProjects: ['Snell Isle Residence', '104 Ocean Drive', 'Highland Park Modern', 'Aspen Creek Estate'],
     certifications: ['CPA Certified', 'CCIFP (Construction Financial Pro)', 'AIA G702/G703 Specialist'],
     emergencyContact: { name: 'Vivian Chen', relation: 'Spouse', phone: '+1 (720) 555-0177' },
-    location: 'Denver HQ',
+    location: 'Tampa HQ',
     hireDate: 'Jun 2020'
   },
   {
     id: 't-4',
-    name: 'Jake Torres',
-    role: 'Senior Site Superintendent',
+    name: 'John Smith',
+    role: 'Lead Field Superintendent',
     department: 'Field Operations',
     roleGroup: 'Field',
-    email: 'jake.t@averymarsh.com',
+    email: 'john.s@averymarsh.com',
     phone: '+1 (720) 555-0144',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     status: 'Active',
     presence: 'On Site',
-    assignedProjects: ['104 Ocean Drive', 'Riverside Office Complex'],
-    certifications: ['OSHA 30 Construction Safety', 'CPR & First Aid Trainer', 'Rigging & Signalperson Level 2', 'Stormwater BMP Inspector'],
-    emergencyContact: { name: 'Carmen Torres', relation: 'Spouse', phone: '+1 (720) 555-0166' },
-    location: '104 Ocean Drive Site',
-    hireDate: 'Feb 2019'
-  },
-  {
-    id: 't-5',
-    name: 'Priya Nair',
-    role: 'Assistant Project Manager',
-    department: 'Project Operations',
-    roleGroup: 'PM',
-    email: 'priya.n@averymarsh.com',
-    phone: '+1 (720) 555-0155',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-    status: 'Invited',
-    presence: 'Off Duty',
-    assignedProjects: ['Aspen Creek Estate'],
-    certifications: ['OSHA 10 Construction', 'CAPM Certified', 'Autodesk Construction Cloud'],
-    emergencyContact: { name: 'Rohan Nair', relation: 'Brother', phone: '+1 (720) 555-0150' },
-    location: 'Pending Onboarding',
-    hireDate: 'Scheduled Sep 2026'
-  },
+    assignedProjects: ['Snell Isle Residence'],
+    certifications: ['OSHA 30', 'SWPPP Stormwater Inspector', 'First Aid / CPR'],
+    emergencyContact: { name: 'Mary Smith', relation: 'Spouse', phone: '+1 (720) 555-0166' },
+    location: 'Snell Isle Field Trailer',
+    hireDate: 'Aug 2019'
+  }
 ];
 
 type FilterType = 'All' | 'Owner' | 'PM' | 'Finance' | 'Field';
 
-interface TeamHubViewProps {
-  currentUser?: User;
-}
-
-export const TeamHubView: React.FC<TeamHubViewProps> = () => {
+export const TeamHubView: React.FC = () => {
   const [team, setTeam] = useState<TeamMember[]>(INITIAL_TEAM);
-  const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<FilterType>('All');
+  const [search, setSearch] = useState('');
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  
-  // Invite Modal State
   const [isInviteOpen, setIsInviteOpen] = useState(false);
-  const [inviteName, setInviteName] = useState('');
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRoleGroup, setInviteRoleGroup] = useState<'PM' | 'Finance' | 'Field'>('PM');
-  const [inviteRoleTitle, setInviteRoleTitle] = useState('Project Manager');
-  const [invitePhone, setInvitePhone] = useState('');
-  const [inviteDepartment, setInviteDepartment] = useState('Project Operations');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
+  // Invite Form State
+  const [inviteName, setInviteName] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [invitePhone, setInvitePhone] = useState('');
+  const [inviteRoleGroup, setInviteRoleGroup] = useState<'PM' | 'Field' | 'Finance'>('PM');
+  const [inviteRoleTitle, setInviteRoleTitle] = useState('Project Manager');
+  const [inviteDepartment, setInviteDepartment] = useState('Project Operations');
+
   const filtered = team.filter(m => {
-    const matchFilter = filter === 'All' || m.roleGroup === filter;
-    const matchSearch = !search || 
+    const matchRole = filter === 'All' || m.roleGroup === filter;
+    const matchSearch =
       m.name.toLowerCase().includes(search.toLowerCase()) ||
       m.role.toLowerCase().includes(search.toLowerCase()) ||
-      m.department.toLowerCase().includes(search.toLowerCase()) ||
-      m.certifications.some(c => c.toLowerCase().includes(search.toLowerCase()));
-    return matchFilter && matchSearch;
+      m.department.toLowerCase().includes(search.toLowerCase());
+    return matchRole && matchSearch;
   });
 
   const stats = {
     total: team.length,
     pm: team.filter(m => m.roleGroup === 'PM').length,
     finance: team.filter(m => m.roleGroup === 'Finance').length,
-    field: team.filter(m => m.roleGroup === 'Field').length,
+    field: team.filter(m => m.roleGroup === 'Field').length
   };
 
   const handleSendInvite = (e: React.FormEvent) => {
@@ -203,26 +170,26 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in relative">
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in relative">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-base font-black text-white tracking-tight">Team Directory</h1>
-          <p className="text-[11px] text-slate-400 font-medium">Company members & organizational roles</p>
+          <h1 className="text-base font-black text-[#171A1F] tracking-tight">Team Directory</h1>
+          <p className="text-xs text-[#68707C] font-medium">Company members & organizational roles</p>
         </div>
         <button
           onClick={() => setIsInviteOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-900/40 cursor-pointer active:scale-95 flex-shrink-0"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>Invite Member</span>
+          <span>Invite</span>
         </button>
       </div>
 
       {/* Success Toast */}
       {showSuccessToast && (
-        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-2 animate-fade-in">
+        <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-2 animate-fade-in shadow-xs">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           <span>Invitation successfully sent!</span>
         </div>
@@ -230,38 +197,38 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
 
       {/* ── KPI Stats Bar ── */}
       <div className="grid grid-cols-4 gap-2 text-center">
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total</span>
-          <span className="text-base font-black text-white tabular-nums">{stats.total}</span>
+        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Total</span>
+          <span className="text-base font-black text-[#171A1F] tabular-nums">{stats.total}</span>
         </div>
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">PM</span>
-          <span className="text-base font-black text-blue-400 tabular-nums">{stats.pm}</span>
+        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">PM</span>
+          <span className="text-base font-black text-[#1677FF] tabular-nums">{stats.pm}</span>
         </div>
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Finance</span>
-          <span className="text-base font-black text-emerald-400 tabular-nums">{stats.finance}</span>
+        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Finance</span>
+          <span className="text-base font-black text-emerald-700 tabular-nums">{stats.finance}</span>
         </div>
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Field</span>
-          <span className="text-base font-black text-amber-400 tabular-nums">{stats.field}</span>
+        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Field</span>
+          <span className="text-base font-black text-amber-700 tabular-nums">{stats.field}</span>
         </div>
       </div>
 
       {/* ── Search Bar ── */}
       <div className="relative">
-        <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-4 h-4 text-[#68707C] absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search by name or role..."
-          className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500/70 rounded-xl pl-9 pr-8 text-xs text-white placeholder-slate-500 outline-none transition-colors"
+          className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl pl-9 pr-8 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors shadow-xs"
         />
         {search && (
           <button
             onClick={() => setSearch('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#68707C] hover:text-[#171A1F]"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -274,10 +241,10 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap border ${
+            className={`px-3.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap border ${
               filter === f
-                ? 'bg-blue-600 border-blue-500 text-white shadow-sm shadow-blue-500/20'
-                : 'bg-[#060B17] border-[#142036] text-slate-400 hover:text-white hover:border-[#1E2C48]'
+                ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
+                : 'bg-white border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] hover:bg-[#F2F2F7]'
             }`}
           >
             {f === 'All' ? 'All Roles' : f}
@@ -285,183 +252,177 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
         ))}
       </div>
 
-      {/* ── Team Member Cards (Minimal: Name & Role Only) ── */}
+      {/* ── Team Member Cards ── */}
       <div className="flex flex-col gap-2">
         {filtered.map(member => (
           <div
             key={member.id}
             onClick={() => setSelectedMember(member)}
-            className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] hover:border-blue-500/40 hover:bg-[#081124] transition-all cursor-pointer group active:scale-[0.99] flex items-center justify-between gap-3 shadow-sm"
+            className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 transition-all cursor-pointer group active:scale-[0.99] flex items-center justify-between gap-3 shadow-xs"
           >
             {/* Left: Avatar + Name & Role */}
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <img
                 src={member.avatar}
                 alt={member.name}
-                className="w-10 h-10 rounded-full object-cover border border-[#1A263B] group-hover:border-blue-500/40 transition-colors flex-shrink-0"
+                className="w-10 h-10 rounded-full object-cover border border-[#DDE1E7] flex-shrink-0"
               />
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                  <span className="text-xs sm:text-sm font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
                     {member.name}
                   </span>
                   {member.roleGroup === 'Owner' && (
-                    <Crown className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                    <Crown className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
                   )}
                 </div>
 
-                <p className="text-[11px] text-slate-400 font-medium truncate leading-tight">
+                <p className="text-[11px] text-[#68707C] font-medium truncate leading-tight">
                   {member.role}
                 </p>
               </div>
             </div>
 
-            {/* Right: Subtle Chevron */}
-            <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
           </div>
         ))}
 
         {filtered.length === 0 && (
-          <div className="py-12 flex flex-col items-center gap-2 text-slate-500">
-            <Users className="w-8 h-8 opacity-30" />
-            <p className="text-xs font-semibold">No team members found</p>
+          <div className="py-12 flex flex-col items-center gap-2 text-[#68707C] bg-white border border-[#DDE1E7] rounded-3xl p-8">
+            <Users className="w-8 h-8 text-[#9DA5B1]" />
+            <p className="text-xs font-semibold text-[#171A1F]">No team members found</p>
           </div>
         )}
       </div>
 
       {/* ── Seat Usage Footer ── */}
-      <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex items-center justify-between">
+      <div className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-2">
-          <Shield className="w-4 h-4 text-blue-400" />
+          <Shield className="w-4 h-4 text-[#1677FF]" />
           <div>
-            <p className="text-xs font-bold text-white">Lattice Enterprise Seats</p>
-            <p className="text-[10px] text-slate-400">{team.length} of 10 allocated seats active</p>
+            <p className="text-xs font-bold text-[#171A1F]">Lattice Enterprise Seats</p>
+            <p className="text-[10px] text-[#68707C]">{team.length} of 10 allocated seats active</p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <span className="text-xs font-bold text-blue-400">{team.length}/10</span>
-          <div className="w-20 h-1.5 bg-[#0A1328] rounded-full overflow-hidden">
-            <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(team.length / 10) * 100}%` }} />
+          <span className="text-xs font-bold text-[#1677FF]">{team.length}/10</span>
+          <div className="w-20 h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
+            <div className="h-full bg-[#1677FF] rounded-full" style={{ width: `${(team.length / 10) * 100}%` }} />
           </div>
         </div>
       </div>
 
-      {/* ─── 10-YR PRODUCT DESIGNER STANDARD: MEMBER PROFILE MODAL ─── */}
+      {/* ─── MEMBER PROFILE MODAL ─── */}
       {selectedMember && (
         <div 
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-fade-in font-sans"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4 animate-fade-in font-sans"
           onClick={() => setSelectedMember(null)}
         >
           <div 
-            className="w-full max-w-[430px] bg-[#070C18] border border-[#142036] rounded-t-3xl sm:rounded-3xl p-5 flex flex-col gap-4 max-h-[88vh] overflow-y-auto shadow-2xl shadow-blue-950/40 text-slate-100 animate-in slide-in-from-bottom duration-200"
+            className="w-full max-w-[440px] bg-white border border-[#DDE1E7] rounded-t-3xl sm:rounded-3xl p-5 flex flex-col gap-4 max-h-[88vh] overflow-y-auto shadow-2xl text-[#171A1F]"
             onClick={e => e.stopPropagation()}
           >
-            {/* Mobile Grab Handle */}
-            <div className="w-10 h-1 rounded-full bg-slate-700 mx-auto -mt-1 sm:hidden" />
-
             {/* Profile Header */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="relative flex-shrink-0">
-                  <img
-                    src={selectedMember.avatar}
-                    alt={selectedMember.name}
-                    className="w-14 h-14 rounded-2xl object-cover border-2 border-[#1A263B]"
-                  />
-                </div>
+                <img
+                  src={selectedMember.avatar}
+                  alt={selectedMember.name}
+                  className="w-14 h-14 rounded-2xl object-cover border-2 border-[#DDE1E7]"
+                />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="text-sm font-black text-white truncate">{selectedMember.name}</h3>
+                    <h3 className="text-sm font-black text-[#171A1F] truncate">{selectedMember.name}</h3>
                     {selectedMember.roleGroup === 'Owner' && (
-                      <Crown className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                      <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
                     )}
                   </div>
-                  <p className="text-xs text-blue-400 font-bold truncate mt-0.5">{selectedMember.role}</p>
-                  <p className="text-[10px] text-slate-400 font-medium truncate">{selectedMember.department} · {selectedMember.location}</p>
+                  <p className="text-xs text-[#1677FF] font-bold truncate mt-0.5">{selectedMember.role}</p>
+                  <p className="text-[10px] text-[#68707C] font-medium truncate">{selectedMember.department} · {selectedMember.location}</p>
                 </div>
               </div>
 
               <button
                 onClick={() => setSelectedMember(null)}
-                className="w-8 h-8 rounded-full bg-[#0A1328] border border-[#1A2744] flex items-center justify-center text-slate-400 hover:text-white cursor-pointer flex-shrink-0 transition-colors"
+                className="w-8 h-8 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] flex items-center justify-center text-[#68707C] hover:text-[#171A1F] cursor-pointer flex-shrink-0 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Quick Action Grid (1-Tap Call, Email, Message) */}
+            {/* Quick Action Grid */}
             <div className="grid grid-cols-3 gap-2">
               <a
                 href={`tel:${selectedMember.phone}`}
-                className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] hover:border-blue-500/40 text-slate-200 hover:text-blue-400 transition-colors"
+                className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 text-[#171A1F] hover:text-[#1677FF] transition-colors"
               >
-                <Phone className="w-4 h-4 text-blue-400" />
+                <Phone className="w-4 h-4 text-[#1677FF]" />
                 <span className="text-[10px] font-bold">Call Phone</span>
               </a>
               <a
                 href={`mailto:${selectedMember.email}`}
-                className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] hover:border-blue-500/40 text-slate-200 hover:text-blue-400 transition-colors"
+                className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 text-[#171A1F] hover:text-[#1677FF] transition-colors"
               >
-                <Mail className="w-4 h-4 text-emerald-400" />
+                <Mail className="w-4 h-4 text-emerald-600" />
                 <span className="text-[10px] font-bold">Send Email</span>
               </a>
               <button
                 onClick={() => alert(`Opening Lattice Direct Chat with ${selectedMember.name}...`)}
-                className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-[#0A1328] border border-[#1A2744] hover:border-purple-500/40 text-slate-200 hover:text-purple-400 transition-colors cursor-pointer"
+                className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 text-[#171A1F] hover:text-[#1677FF] transition-colors cursor-pointer"
               >
-                <MessageSquare className="w-4 h-4 text-purple-400" />
+                <MessageSquare className="w-4 h-4 text-purple-600" />
                 <span className="text-[10px] font-bold">Direct Chat</span>
               </button>
             </div>
 
-            {/* Direct Contact & Details Box */}
-            <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col gap-2.5 text-xs">
-              <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Contact Information</h4>
+            {/* Contact Information */}
+            <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-2.5 text-xs">
+              <h4 className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Contact Information</h4>
               
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Direct Phone:</span>
-                <a href={`tel:${selectedMember.phone}`} className="font-bold text-white hover:text-blue-400 transition-colors">
+                <span className="text-[#68707C]">Direct Phone:</span>
+                <a href={`tel:${selectedMember.phone}`} className="font-bold text-[#171A1F] hover:text-[#1677FF] transition-colors">
                   {selectedMember.phone}
                 </a>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Work Email:</span>
-                <a href={`mailto:${selectedMember.email}`} className="font-bold text-white hover:text-blue-400 transition-colors truncate max-w-[220px]">
+                <span className="text-[#68707C]">Work Email:</span>
+                <a href={`mailto:${selectedMember.email}`} className="font-bold text-[#171A1F] hover:text-[#1677FF] transition-colors truncate max-w-[220px]">
                   {selectedMember.email}
                 </a>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Current Station:</span>
-                <span className="font-semibold text-slate-200">{selectedMember.location}</span>
+                <span className="text-[#68707C]">Current Station:</span>
+                <span className="font-semibold text-[#171A1F]">{selectedMember.location}</span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Joined Lattice:</span>
-                <span className="font-semibold text-slate-200">{selectedMember.hireDate}</span>
+                <span className="text-[#68707C]">Joined Lattice:</span>
+                <span className="font-semibold text-[#171A1F]">{selectedMember.hireDate}</span>
               </div>
             </div>
 
             {/* Active Project Assignments */}
-            <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col gap-2">
+            <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Assigned Projects</h4>
-                <span className="text-[10px] font-bold text-blue-400">{selectedMember.assignedProjects.length} Active</span>
+                <h4 className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Assigned Projects</h4>
+                <span className="text-[10px] font-bold text-[#1677FF]">{selectedMember.assignedProjects.length} Active</span>
               </div>
               
               {selectedMember.assignedProjects.length === 0 ? (
-                <p className="text-xs text-slate-500 italic py-1">No active projects assigned.</p>
+                <p className="text-xs text-[#68707C] italic py-1">No active projects assigned.</p>
               ) : (
                 <div className="flex flex-col gap-1.5">
                   {selectedMember.assignedProjects.map((p, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-[#0A1328] border border-[#1A2744]">
+                    <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-white border border-[#DDE1E7]">
                       <div className="flex items-center gap-2 min-w-0">
-                        <Building2 className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                        <span className="text-xs font-semibold text-white truncate">{p}</span>
+                        <Building2 className="w-3.5 h-3.5 text-[#1677FF] flex-shrink-0" />
+                        <span className="text-xs font-semibold text-[#171A1F] truncate">{p}</span>
                       </div>
-                      <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md flex-shrink-0">
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md flex-shrink-0">
                         Assigned
                       </span>
                     </div>
@@ -470,30 +431,17 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
               )}
             </div>
 
-            {/* Safety & Compliance Certifications */}
-            <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col gap-2">
-              <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Safety & Professional Qualifications</h4>
-              <div className="flex flex-wrap gap-1.5">
-                {selectedMember.certifications.map((c, idx) => (
-                  <span key={idx} className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-200 bg-[#0A1328] border border-[#1A2744] px-2.5 py-1 rounded-xl">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                    {c}
-                  </span>
-                ))}
-              </div>
-            </div>
-
             {/* Emergency Contact */}
-            <div className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col gap-2">
-              <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Emergency Contact</h4>
+            <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-2">
+              <h4 className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Emergency Contact</h4>
               <div className="flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-bold text-white">{selectedMember.emergencyContact.name}</p>
-                  <p className="text-[10px] text-slate-400 font-medium">{selectedMember.emergencyContact.relation}</p>
+                  <p className="font-bold text-[#171A1F]">{selectedMember.emergencyContact.name}</p>
+                  <p className="text-[10px] text-[#68707C] font-medium">{selectedMember.emergencyContact.relation}</p>
                 </div>
                 <a
                   href={`tel:${selectedMember.emergencyContact.phone}`}
-                  className="px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 text-xs font-bold flex items-center gap-1.5 transition-colors"
+                  className="px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 text-xs font-bold flex items-center gap-1.5 transition-colors"
                 >
                   <Phone className="w-3 h-3" />
                   <span>{selectedMember.emergencyContact.phone}</span>
@@ -502,13 +450,13 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
             </div>
 
             {/* Role & Access Tier Footer */}
-            <div className="pt-2 flex items-center justify-between border-t border-[#142036] text-xs">
+            <div className="pt-2 flex items-center justify-between border-t border-[#EAEDF1] text-xs">
               <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${ROLE_COLORS[selectedMember.roleGroup]}`}>
                 Tier: {selectedMember.roleGroup}
               </span>
               <button
                 onClick={() => alert(`Editing permissions for ${selectedMember.name}...`)}
-                className="px-3 py-1.5 rounded-xl bg-[#0A1328] border border-[#1A2744] hover:border-blue-500/40 text-slate-300 hover:text-white font-bold text-[11px] transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#171A1F] font-bold text-[11px] transition-colors cursor-pointer"
               >
                 Manage Permissions
               </button>
@@ -519,16 +467,16 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
 
       {/* ─── INVITE TEAM MEMBER MODAL ─── */}
       {isInviteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-sans">
-          <div className="w-full max-w-[390px] bg-[#070D1A] border border-[#142036] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-slate-100 animate-slide-in">
-            <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
+          <div className="w-full max-w-[390px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F]">
+            <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
               <div>
-                <h3 className="text-sm font-bold text-white">Invite Team Member</h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Add a new staff member to company directory</p>
+                <h3 className="text-sm font-bold text-[#171A1F]">Invite Team Member</h3>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Add a new staff member to company directory</p>
               </div>
               <button
                 onClick={() => setIsInviteOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -536,42 +484,42 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
 
             <form onSubmit={handleSendInvite} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Full Name</label>
+                <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Full Name</label>
                 <input
                   type="text"
                   value={inviteName}
                   onChange={e => setInviteName(e.target.value)}
                   placeholder="e.g. David Vance"
-                  className="w-full h-10 bg-[#060B17] border border-[#142036] rounded-xl px-3.5 text-white placeholder-slate-600 outline-none focus:border-blue-500/70"
+                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Work Email</label>
+                <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Work Email</label>
                 <input
                   type="email"
                   value={inviteEmail}
                   onChange={e => setInviteEmail(e.target.value)}
                   placeholder="e.g. david.v@averymarsh.com"
-                  className="w-full h-10 bg-[#060B17] border border-[#142036] rounded-xl px-3.5 text-white placeholder-slate-600 outline-none focus:border-blue-500/70"
+                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Direct Phone</label>
+                <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Direct Phone</label>
                 <input
                   type="tel"
                   value={invitePhone}
                   onChange={e => setInvitePhone(e.target.value)}
                   placeholder="+1 (720) 555-0199"
-                  className="w-full h-10 bg-[#060B17] border border-[#142036] rounded-xl px-3.5 text-white placeholder-slate-600 outline-none focus:border-blue-500/70"
+                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Role & Permissions</label>
+                <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1.5 block">Role & Permissions</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'PM', label: 'PM', title: 'Project Manager', dept: 'Project Operations' },
@@ -588,8 +536,8 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
                       }}
                       className={`py-2 px-2 rounded-xl text-center font-bold text-xs transition-all border cursor-pointer ${
                         inviteRoleGroup === r.id
-                          ? 'bg-blue-600 border-blue-500 text-white'
-                          : 'bg-[#060B17] border-[#142036] text-slate-400 hover:text-white'
+                          ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
+                          : 'bg-white border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F]'
                       }`}
                     >
                       {r.label}
@@ -598,18 +546,18 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#142036] mt-1">
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#EAEDF1] mt-1">
                 <button
                   type="button"
                   onClick={() => setIsInviteOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-[#0E1A33] text-slate-400 font-bold hover:text-white cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#F2F2F7] text-[#171A1F] font-bold hover:bg-[#EAEDF1] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!inviteName.trim() || !inviteEmail.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 disabled:opacity-40 cursor-pointer active:scale-95 transition-all shadow-md shadow-blue-900/30"
+                  className="px-5 py-2.5 rounded-xl bg-[#1677FF] text-white font-bold hover:bg-[#0958D9] disabled:opacity-40 cursor-pointer active:scale-95 transition-all shadow-xs"
                 >
                   Send Invite
                 </button>

@@ -20,7 +20,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`flex items-center gap-2 p-1 bg-[#070D1A] rounded-xl border border-[#142036] ${className}`}>
+    <div className={`flex items-center gap-1.5 p-1 bg-[#EAEDF1] rounded-xl border border-[#DDE1E7] ${className}`}>
       {options.map((option) => {
         const isActive = activeId === option.id;
         return (
@@ -30,8 +30,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
             onClick={() => onChange(option.id)}
             className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center select-none active:scale-[0.98] ${
               isActive
-                ? 'bg-[#2563EB] text-white shadow-sm'
-                : 'text-slate-400 hover:text-white font-semibold'
+                ? 'bg-white text-[#1677FF] shadow-xs'
+                : 'text-[#68707C] hover:text-[#171A1F] font-semibold'
             }`}
           >
             {option.label}

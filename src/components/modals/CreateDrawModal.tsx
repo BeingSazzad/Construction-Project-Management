@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, FinancingDraw } from '../../types';
-import { Landmark, X, DollarSign, Building2, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Landmark, X, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 interface CreateDrawModalProps {
   isOpen: boolean;
@@ -45,23 +45,23 @@ export const CreateDrawModal: React.FC<CreateDrawModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in font-sans">
-      <div className="relative w-full max-w-[430px] bg-[#070D1A] border border-[#142036] rounded-3xl shadow-2xl overflow-hidden flex flex-col text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in font-sans">
+      <div className="relative w-full max-w-[430px] bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl overflow-hidden flex flex-col text-[#171A1F]">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#142036] bg-[#0A1020]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAEDF1] bg-white">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0">
               <Landmark className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Request Lender Draw</h3>
-              <p className="text-[10px] text-slate-400">Initiate capital draw with lender</p>
+              <h3 className="text-sm font-bold text-[#171A1F]">Request Lender Draw</h3>
+              <p className="text-[11px] text-[#68707C]">Initiate capital draw with lender</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-[#0E1A33] border border-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -72,11 +72,11 @@ export const CreateDrawModal: React.FC<CreateDrawModalProps> = ({
           
           {/* 1. Target Project */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">Target Project *</label>
+            <label className="text-xs font-bold text-[#171A1F]">Target Project *</label>
             <select
               value={selectedProjectId}
               onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-semibold focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-semibold focus:outline-none focus:border-[#1677FF] transition-colors cursor-pointer"
             >
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -88,52 +88,52 @@ export const CreateDrawModal: React.FC<CreateDrawModalProps> = ({
 
           {/* 2. Milestone / Draw Title */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">Milestone Title *</label>
+            <label className="text-xs font-bold text-[#171A1F]">Milestone Title *</label>
             <input
               type="text"
               value={milestoneTitle}
               onChange={(e) => setMilestoneTitle(e.target.value)}
               placeholder="e.g. Substructure & Slab Pour"
               required
-              className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-600"
+              className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#9DA5B1]"
             />
           </div>
 
           {/* 3. Requested Draw Amount */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">Requested Draw Amount ($USD) *</label>
+            <label className="text-xs font-bold text-[#171A1F]">Requested Draw Amount ($USD) *</label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">$</span>
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#68707C] font-bold text-xs">$</span>
               <input
                 type="number"
                 value={requestedAmount}
                 onChange={(e) => setRequestedAmount(e.target.value)}
                 placeholder="450000"
                 required
-                className="w-full h-11 pl-8 pr-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-bold focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full h-11 pl-8 pr-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-bold focus:outline-none focus:border-[#1677FF] transition-colors"
               />
             </div>
-            <p className="text-[10px] text-slate-500 font-medium">Est. 10% retainage holdback calculated automatically by lender.</p>
+            <p className="text-[10px] text-[#68707C] font-medium">Est. 10% retainage holdback calculated automatically by lender.</p>
           </div>
 
           {/* 4. Commercial Lender */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">Commercial Lender *</label>
+            <label className="text-xs font-bold text-[#171A1F]">Commercial Lender *</label>
             <input
               type="text"
               value={lenderName}
               onChange={(e) => setLenderName(e.target.value)}
               placeholder="Texas Capital Bank"
               required
-              className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors"
             />
           </div>
 
           {/* 5. Inspection Verification */}
-          <div className="p-3.5 rounded-2xl bg-[#0D1424] border border-[#1A263E] flex flex-col gap-2.5">
+          <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-bold text-[#171A1F] flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
                 Third-Party Field Inspection
               </span>
               <label className="flex items-center gap-2 cursor-pointer">
@@ -141,9 +141,9 @@ export const CreateDrawModal: React.FC<CreateDrawModalProps> = ({
                   type="checkbox"
                   checked={inspectionPassed}
                   onChange={(e) => setInspectionPassed(e.target.checked)}
-                  className="w-4 h-4 rounded text-blue-600 focus:ring-0 bg-[#070D1A] border-[#1A263E]"
+                  className="w-4 h-4 rounded text-[#1677FF] focus:ring-0 bg-white border-[#DDE1E7]"
                 />
-                <span className="text-xs text-emerald-400 font-bold">Passed</span>
+                <span className="text-xs text-emerald-700 font-bold">Passed</span>
               </label>
             </div>
 
@@ -152,14 +152,14 @@ export const CreateDrawModal: React.FC<CreateDrawModalProps> = ({
               value={inspectorName}
               onChange={(e) => setInspectorName(e.target.value)}
               placeholder="Certified Third-Party Inspector Name"
-              className="w-full h-9 px-3 rounded-lg bg-[#070D1A] border border-[#141F33] text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full h-9 px-3 rounded-lg bg-white border border-[#DDE1E7] text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors"
             />
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-11 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-900/40 active:scale-[0.98] mt-2"
+            className="w-full h-11 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-2"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Submit Draw Request to Lender</span>

@@ -61,48 +61,48 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-sans">
-      <div className="w-full max-w-md bg-[#0C121E] border border-[#1A263E] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
+      <div className="w-full max-w-md bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
-        <div className="p-4 px-5 border-b border-[#162033] flex items-center justify-between bg-[#0E1524]">
+        <div className="p-4 px-5 border-b border-[#EAEDF1] flex items-center justify-between bg-white/95 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-blue-200 flex items-center justify-center text-[#1677FF]">
               <UserIcon className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-bold text-white tracking-tight">Edit Profile</h2>
-              <p className="text-xs text-slate-400 font-medium">Update credentials & contact info</p>
+              <h2 className="text-sm sm:text-base font-bold text-[#171A1F] tracking-tight">Edit Profile</h2>
+              <p className="text-xs text-[#68707C] font-medium">Update credentials & contact info</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#141F33] hover:bg-[#1C2C47] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Modal Body Form */}
-        <form onSubmit={handleSave} className="p-5 overflow-y-auto space-y-4 text-slate-100">
+        <form onSubmit={handleSave} className="p-5 overflow-y-auto space-y-4 text-[#171A1F]">
           {savedToast && (
-            <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold text-center flex items-center justify-center gap-2">
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold text-center flex items-center justify-center gap-2">
               <Check className="w-4 h-4 stroke-[2.5]" />
               <span>Profile updated successfully!</span>
             </div>
           )}
 
           {/* Avatar Preview & Info */}
-          <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-[#080D18] border border-[#162033]">
+          <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1]">
             <div className="relative flex-shrink-0">
               <img
                 src={currentUser.avatar}
                 alt={currentUser.name}
-                className="w-14 h-14 rounded-2xl object-cover border-2 border-blue-500/40"
+                className="w-14 h-14 rounded-2xl object-cover border-2 border-[#1677FF]/20 shadow-xs"
               />
               <button
                 type="button"
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#2563EB] border-2 border-[#0C121E] text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-blue-500 transition-transform hover:scale-110"
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#1677FF] border-2 border-white text-white flex items-center justify-center cursor-pointer shadow-xs hover:bg-[#0958D9] transition-transform hover:scale-110"
                 title="Change Photo"
               >
                 <Camera className="w-3 h-3" />
@@ -110,109 +110,109 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </div>
 
             <div className="min-w-0">
-              <span className="text-sm font-bold text-white block truncate">{currentUser.name}</span>
-              <span className="text-xs text-slate-400 truncate block mt-0.5">{currentUser.roleTitle}</span>
+              <span className="text-sm font-bold text-[#171A1F] block truncate">{currentUser.name}</span>
+              <span className="text-xs text-[#68707C] truncate block mt-0.5">{currentUser.roleTitle}</span>
             </div>
           </div>
 
-          {/* Full Name (Standard 44px Height) */}
+          {/* Full Name */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name</label>
+            <label className="block text-xs font-semibold text-[#68707C] mb-1.5">Full Name</label>
             <div className="relative">
-              <UserIcon className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <UserIcon className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9DA5B1] pointer-events-none" />
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="Enter your full name"
-                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl pl-10 pr-3.5 text-sm text-white font-medium focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Job Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Job Title</label>
+            <label className="block text-xs font-semibold text-[#68707C] mb-1.5">Job Title</label>
             <div className="relative">
-              <ShieldCheck className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <ShieldCheck className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9DA5B1] pointer-events-none" />
               <input
                 type="text"
                 value={roleTitle}
                 onChange={(e) => setRoleTitle(e.target.value)}
                 required
                 placeholder="e.g. Senior Project Manager"
-                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl pl-10 pr-3.5 text-sm text-white font-medium focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Company */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Company / Organization</label>
+            <label className="block text-xs font-semibold text-[#68707C] mb-1.5">Company / Organization</label>
             <div className="relative">
-              <Building className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <Building className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9DA5B1] pointer-events-none" />
               <input
                 type="text"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 required
                 placeholder="e.g. Lattice Construction"
-                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl pl-10 pr-3.5 text-sm text-white font-medium focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Official Email</label>
+            <label className="block text-xs font-semibold text-[#68707C] mb-1.5">Official Email</label>
             <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9DA5B1] pointer-events-none" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="name@company.com"
-                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl pl-10 pr-3.5 text-sm text-white font-medium focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Direct Phone</label>
+            <label className="block text-xs font-semibold text-[#68707C] mb-1.5">Direct Phone</label>
             <div className="relative">
-              <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9DA5B1] pointer-events-none" />
               <input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+1 (555) 000-0000"
-                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl pl-10 pr-3.5 text-sm text-white font-medium focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* HQ Location */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">HQ / Office Location</label>
+            <label className="block text-xs font-semibold text-[#68707C] mb-1.5">HQ / Office Location</label>
             <div className="relative">
-              <MapPin className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <MapPin className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9DA5B1] pointer-events-none" />
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. New York, NY"
-                className="w-full h-11 bg-[#080D18] border border-[#1A263E] rounded-xl pl-10 pr-3.5 text-sm text-white font-medium focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
 
-          {/* Industry Certifications (Clean, 44px Touch Targets) */}
+          {/* Industry Certifications */}
           <div className="pt-1">
-            <label className="block text-xs font-semibold text-slate-300 mb-2 flex items-center gap-1.5">
-              <Award className="w-4 h-4 text-blue-400" />
+            <label className="block text-xs font-semibold text-[#68707C] mb-2 flex items-center gap-1.5">
+              <Award className="w-4 h-4 text-[#1677FF]" />
               <span>Verified Industry Certifications</span>
             </label>
 
@@ -226,13 +226,13 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                     onClick={() => toggleCert(cert)}
                     className={`w-full h-11 px-3.5 rounded-xl text-left flex items-center justify-between border transition-all cursor-pointer ${
                       isChecked
-                        ? 'bg-blue-600/10 border-blue-500/40 text-white'
-                        : 'bg-[#080D18] border-[#162033] text-slate-400 hover:text-slate-200'
+                        ? 'bg-[#EAF3FF] border-[#1677FF] text-[#171A1F]'
+                        : 'bg-[#F7F8FA] border-[#EAEDF1] text-[#68707C] hover:bg-[#F2F2F7]'
                     }`}
                   >
                     <span className="font-medium text-xs truncate pr-2">{cert}</span>
                     <div className={`w-5 h-5 rounded-lg flex items-center justify-center border flex-shrink-0 transition-colors ${
-                      isChecked ? 'bg-[#2563EB] border-[#2563EB] text-white' : 'border-slate-600 bg-[#0C121E]'
+                      isChecked ? 'bg-[#1677FF] border-[#1677FF] text-white' : 'border-[#DDE1E7] bg-white'
                     }`}>
                       {isChecked && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
                     </div>
@@ -242,18 +242,18 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </div>
           </div>
 
-          {/* Modal Actions (Standard 48px Height) */}
-          <div className="pt-3 flex items-center gap-2.5 border-t border-[#162033]">
+          {/* Modal Actions */}
+          <div className="pt-3 flex items-center gap-2.5 border-t border-[#EAEDF1]">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-12 rounded-xl bg-[#141F33] hover:bg-[#1A2842] text-slate-300 font-semibold text-sm cursor-pointer transition-colors"
+              className="flex-1 h-11 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] font-semibold text-xs cursor-pointer transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 h-12 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-sm cursor-pointer transition-all shadow-md"
+              className="flex-1 h-11 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs cursor-pointer transition-all shadow-xs"
             >
               Save Changes
             </button>

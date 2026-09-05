@@ -109,27 +109,27 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
   };
 
   const inputClass =
-    'w-full h-10 bg-[#050811] border border-[#142036] focus:border-[#2563EB] rounded-xl px-3.5 text-xs text-white placeholder-slate-500 outline-none transition-colors font-medium';
+    'w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#8F95B2] outline-none transition-colors font-medium';
 
   return (
-    <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       {/* Top Header with Back Navigation */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer py-1"
+          className="flex items-center gap-2 text-xs font-bold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer py-1"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Projects</span>
         </button>
-        <span className="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+        <span className="text-xs font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-1 rounded-full border border-[#1677FF]/20">
           New Construction
         </span>
       </div>
 
-      <div className="bg-[#070D1A] border border-[#142036] rounded-3xl p-5 shadow-2xl flex flex-col text-slate-100">
-        <h2 className="text-base font-bold text-white tracking-tight pb-3 border-b border-[#142036] mb-3">
+      <div className="bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-xs flex flex-col text-[#171A1F]">
+        <h2 className="text-base font-bold text-[#171A1F] tracking-tight pb-3 border-b border-[#EAEDF1] mb-3">
           Create New Project
         </h2>
 
@@ -137,18 +137,18 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           
           {/* Cover Photo Upload Box */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1.5 block">
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1.5 block">
               Project Cover Photo
             </label>
             {thumbnail ? (
-              <div className="h-32 w-full relative rounded-2xl overflow-hidden border border-[#142036] bg-[#050811] group">
+              <div className="h-32 w-full relative rounded-2xl overflow-hidden border border-[#DDE1E7] bg-[#F7F8FA] group">
                 <img
                   src={thumbnail}
                   alt="Project Thumbnail"
                   className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center gap-2">
-                  <label className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95">
+                  <label className="px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95">
                     <Upload className="w-3.5 h-3.5" />
                     <span>Change Image</span>
                     <input
@@ -161,22 +161,22 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setThumbnail('')}
-                    className="px-3 py-1.5 rounded-xl bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
                   >
                     Remove
                   </button>
                 </div>
               </div>
             ) : (
-              <label className="h-28 w-full rounded-2xl border-2 border-dashed border-[#1A2744] hover:border-blue-500/40 bg-[#060B17] flex flex-col items-center justify-center gap-2 cursor-pointer group transition-all">
-                <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <label className="h-28 w-full rounded-2xl border-2 border-dashed border-[#DDE1E7] hover:border-[#1677FF]/40 bg-[#F7F8FA] flex flex-col items-center justify-center gap-2 cursor-pointer group transition-all">
+                <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Upload className="w-4 h-4" />
                 </div>
                 <div className="text-center">
-                  <span className="text-xs font-bold text-blue-400 group-hover:text-blue-300">
+                  <span className="text-xs font-bold text-[#1677FF] group-hover:underline">
                     Upload Cover Photo
                   </span>
-                  <p className="text-[10px] text-slate-500 mt-0.5 font-medium">PNG, JPG or choose a preset below (Optional)</p>
+                  <p className="text-[10px] text-[#68707C] mt-0.5 font-medium">PNG, JPG or choose a preset below (Optional)</p>
                 </div>
                 <input
                   type="file"
@@ -189,7 +189,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
 
             {/* Quick Preset Selector */}
             <div className="mt-2">
-              <p className="text-[10px] text-slate-500 font-medium mb-1.5">Or select a preset:</p>
+              <p className="text-[10px] text-[#68707C] font-medium mb-1.5">Or select a preset:</p>
               <div className="grid grid-cols-4 gap-1.5">
                 {DEFAULT_PRESET_PHOTOS.map((p, idx) => (
                   <button
@@ -197,12 +197,12 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
                     type="button"
                     onClick={() => setThumbnail(thumbnail === p.url ? '' : p.url)}
                     className={`relative h-11 rounded-lg overflow-hidden border transition-all cursor-pointer ${
-                      thumbnail === p.url ? 'border-blue-500 ring-2 ring-blue-500/30' : 'border-[#142036] opacity-60 hover:opacity-100'
+                      thumbnail === p.url ? 'border-[#1677FF] ring-2 ring-[#1677FF]/30' : 'border-[#DDE1E7] opacity-60 hover:opacity-100'
                     }`}
                   >
                     <img src={p.url} alt={p.label} className="w-full h-full object-cover" />
                     {thumbnail === p.url && (
-                      <div className="absolute inset-0 bg-blue-600/50 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-[#1677FF]/50 flex items-center justify-center">
                         <Check className="w-3 h-3 text-white stroke-[3]" />
                       </div>
                     )}
@@ -214,7 +214,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
 
           {/* Project Title */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
               Project Title *
             </label>
             <input
@@ -230,7 +230,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Client / Owner & Project Type */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Client / Owner
               </label>
               <input
@@ -243,7 +243,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Project Type
               </label>
               <CustomSelect
@@ -258,7 +258,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Site Address & City/State */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Site Address
               </label>
               <input
@@ -271,7 +271,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 City / State
               </label>
               <input
@@ -287,13 +287,13 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Lead PM & Total Estimated Budget */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Lead Project Manager
               </label>
               <select
                 value={pmName}
                 onChange={(e) => setPmName(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
               >
                 {AVAILABLE_PMS.map(p => (
                   <option key={p.name} value={p.name}>{p.name}</option>
@@ -302,7 +302,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Total Budget ($ USD)
               </label>
               <input
@@ -318,7 +318,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
           {/* Target Completion Date & Master Code */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Target Completion Date
               </label>
               <input
@@ -330,7 +330,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Master Code (Optional)
               </label>
               <input
@@ -346,7 +346,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
 
           {/* Project Scope & Description */}
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
               Project Scope & Notes
             </label>
             <textarea
@@ -354,26 +354,26 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Detailed description of structure, LEED requirements, architectural notes..."
-              className="w-full bg-[#050811] border border-[#142036] rounded-xl p-3 text-white text-xs outline-none focus:border-blue-500 resize-none font-medium placeholder-slate-500"
+              className="w-full bg-white border border-[#DDE1E7] rounded-xl p-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] resize-none font-medium placeholder-[#8F95B2]"
             />
           </div>
 
           {/* Submit Action */}
-          <div className="pt-2 border-t border-[#142036] flex items-center justify-end gap-2 mt-1">
+          <div className="pt-2 border-t border-[#EAEDF1] flex items-center justify-end gap-2 mt-1">
             <button
               type="button"
               onClick={onBack}
-              className="px-4 py-2 rounded-xl bg-[#0E1A33] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#171A1F] hover:bg-[#EAEDF1] text-xs font-semibold cursor-pointer transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!isValid}
-              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 ${
+              className={`px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 ${
                 isValid
-                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer shadow-blue-600/30 active:scale-95'
-                  : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-[#1677FF] hover:bg-[#0958D9] text-white cursor-pointer active:scale-95'
+                  : 'bg-[#EAEDF1] text-[#8F95B2] cursor-not-allowed'
               }`}
             >
               <Check className="w-3.5 h-3.5" />

@@ -94,20 +94,20 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="card-dark w-full max-w-[390px] bg-[#070D1A] border border-[#142036] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-slate-100 scrollbar-none">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F] scrollbar-none">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-[#142036] mb-4">
+        <div className="flex items-center justify-between pb-3.5 border-b border-[#EAEDF1] mb-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0">
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-base font-bold text-white tracking-tight leading-tight truncate">
+              <h3 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight truncate">
                 New Punch Item
               </h3>
-              <p className="text-xs text-slate-400 font-medium mt-0.5 truncate">
+              <p className="text-xs text-[#68707C] font-medium mt-0.5 truncate">
                 {project?.name || 'Log defect or inspection item'}
               </p>
             </div>
@@ -115,7 +115,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -126,20 +126,20 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
           
           {/* 1. Title * */}
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-slate-300">Title *</label>
+            <label className="font-bold text-[#171A1F]">Title *</label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. HVAC ductwork sealing check"
-              className="w-full h-11 bg-[#050811] border border-[#142036] rounded-xl px-3.5 text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500"
+              className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#8F95B2]"
             />
           </div>
 
           {/* 2. Project * */}
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-slate-300">Project *</label>
+            <label className="font-bold text-[#171A1F]">Project *</label>
             <CustomSelect
               value={selectedProjectId}
               onChange={(v) => setSelectedProjectId(v)}
@@ -154,13 +154,13 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
           {/* 3. Description */}
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-slate-300">Description</label>
+            <label className="font-bold text-[#171A1F]">Description</label>
             <textarea
               rows={2}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe defect, trade issue, or inspection notes..."
-              className="w-full p-3 bg-[#050811] border border-[#142036] rounded-xl text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors resize-none placeholder:text-slate-500"
+              className="w-full p-3 bg-white border border-[#DDE1E7] rounded-xl text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors resize-none placeholder:text-[#8F95B2]"
             />
           </div>
 
@@ -168,7 +168,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
           <div className="grid grid-cols-2 gap-2.5">
             {/* Trade * */}
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-slate-300">Trade *</label>
+              <label className="font-bold text-[#171A1F]">Trade *</label>
               <CustomSelect
                 value={trade}
                 onChange={setTrade}
@@ -179,7 +179,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
             {/* Priority */}
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-slate-300">Priority</label>
+              <label className="font-bold text-[#171A1F]">Priority</label>
               <CustomSelect
                 value={priority}
                 onChange={(v) => setPriority(v as Priority)}
@@ -189,25 +189,25 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
             </div>
           </div>
 
-          {/* 5. Row 2: Location (Moved Down on its own line per request) */}
+          {/* 5. Row 2: Location */}
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-slate-300">Location</label>
+            <label className="font-bold text-[#171A1F]">Location</label>
             <div className="relative flex items-center">
-              <LocateFixed className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
+              <LocateFixed className="w-4 h-4 text-[#68707C] absolute left-3 pointer-events-none" />
 
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Level 12 Deck - Grid B3"
-                className="w-full h-11 bg-[#050811] border border-[#142036] rounded-xl pl-9 pr-9 text-white text-xs font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-500"
+                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-9 pr-9 text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#8F95B2]"
               />
 
               <button
                 type="button"
                 onClick={handleTrackLocation}
-                className={`absolute right-2.5 p-1 text-blue-400 hover:text-cyan-300 transition-colors cursor-pointer ${
-                  isTracking ? 'animate-spin text-cyan-400' : ''
+                className={`absolute right-2.5 p-1 text-[#1677FF] hover:text-[#0958D9] transition-colors cursor-pointer ${
+                  isTracking ? 'animate-spin' : ''
                 }`}
                 title="Auto-detect current GPS location"
               >
@@ -218,15 +218,15 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
           {/* 6. Photos Upload & Thumbnails Section */}
           <div className="flex flex-col gap-2">
-            <label className="font-bold text-slate-300">Evidence Photos</label>
+            <label className="font-bold text-[#171A1F]">Evidence Photos</label>
             
             {/* Camera Upload Dropzone */}
             <div
               onClick={handleAddSamplePhoto}
-              className="p-3.5 rounded-2xl bg-[#050811] border border-dashed border-[#142036] hover:border-blue-500/80 flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer text-center group"
+              className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-dashed border-[#DDE1E7] hover:border-[#1677FF]/80 flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer text-center group"
             >
-              <Camera className="w-5 h-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
-              <span className="text-xs font-bold text-slate-300 group-hover:text-white transition-colors">
+              <Camera className="w-5 h-5 text-[#68707C] group-hover:text-[#1677FF] transition-colors" />
+              <span className="text-xs font-bold text-[#68707C] group-hover:text-[#171A1F] transition-colors">
                 Tap to attach inspection photos
               </span>
             </div>
@@ -239,7 +239,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
                     <img
                       src={url}
                       alt={`evidence-${idx}`}
-                      className="w-13 h-13 rounded-xl object-cover border border-[#142036] shadow"
+                      className="w-13 h-13 rounded-xl object-cover border border-[#DDE1E7] shadow-xs"
                     />
                     <button
                       type="button"
@@ -255,18 +255,18 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
             )}
           </div>
 
-          {/* Equal Size Action Buttons */}
+          {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2.5 mt-2">
             <button
               type="button"
               onClick={onClose}
-              className="w-full btn-lg bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-300 font-bold transition-all cursor-pointer"
+              className="w-full h-11 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#171A1F] font-bold transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-full btn-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold shadow-md shadow-blue-600/30 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full h-11 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>Create Item</span>

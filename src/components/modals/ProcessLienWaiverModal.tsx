@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Subcontractor, LienWaiver } from '../../types';
-import { FileCheck, X, CheckCircle2, ShieldAlert, DollarSign } from 'lucide-react';
+import { FileCheck, X, CheckCircle2 } from 'lucide-react';
 
 interface ProcessLienWaiverModalProps {
   isOpen: boolean;
@@ -48,23 +48,23 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in font-sans">
-      <div className="relative w-full max-w-[430px] bg-[#070D1A] border border-[#142036] rounded-3xl shadow-2xl overflow-hidden flex flex-col text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in font-sans">
+      <div className="relative w-full max-w-[430px] bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl overflow-hidden flex flex-col text-[#171A1F]">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#142036] bg-[#0A1020]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAEDF1] bg-white">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center flex-shrink-0">
               <FileCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Record Lien Waiver</h3>
-              <p className="text-[10px] text-slate-400">Verify sub-trade mechanic lien release</p>
+              <h3 className="text-sm font-bold text-[#171A1F]">Record Lien Waiver</h3>
+              <p className="text-[11px] text-[#68707C]">Verify sub-trade mechanic lien release</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-[#0E1A33] border border-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -75,11 +75,11 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
           
           {/* 1. Subcontractor */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">Subcontractor Firm *</label>
+            <label className="text-xs font-bold text-[#171A1F]">Subcontractor Firm *</label>
             <select
               value={selectedSub}
               onChange={(e) => handleSubChange(e.target.value)}
-              className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-semibold focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-semibold focus:outline-none focus:border-[#1677FF] transition-colors cursor-pointer"
             >
               {subcontractors.map((s) => (
                 <option key={s.id} value={s.companyName}>
@@ -91,49 +91,49 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
 
           {/* 2. Trade Category */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">CSI Trade Discipline</label>
+            <label className="text-xs font-bold text-[#171A1F]">CSI Trade Discipline</label>
             <input
               type="text"
               value={trade}
               onChange={(e) => setTrade(e.target.value)}
-              className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-medium focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors"
             />
           </div>
 
           {/* 3. Invoice Reference & Payment Amount */}
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-300">Invoice Ref # *</label>
+              <label className="text-xs font-bold text-[#171A1F]">Invoice Ref # *</label>
               <input
                 type="text"
                 value={invoiceRef}
                 onChange={(e) => setInvoiceRef(e.target.value)}
                 placeholder="INV-1092"
                 required
-                className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-medium focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-medium focus:outline-none focus:border-[#1677FF] transition-colors"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-300">Payment Amount ($) *</label>
+              <label className="text-xs font-bold text-[#171A1F]">Payment Amount ($) *</label>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="185000"
                 required
-                className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-bold focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-bold focus:outline-none focus:border-[#1677FF] transition-colors"
               />
             </div>
           </div>
 
           {/* 4. Waiver Type */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">Lien Waiver Type *</label>
+            <label className="text-xs font-bold text-[#171A1F]">Lien Waiver Type *</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as any)}
-              className="w-full h-11 px-3.5 rounded-xl bg-[#0D1424] border border-[#1A263E] text-white text-xs font-semibold focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full h-11 px-3.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] text-[#171A1F] text-xs font-semibold focus:outline-none focus:border-[#1677FF] transition-colors cursor-pointer"
             >
               <option value="Progress Unconditional">Progress Unconditional (Payment Received)</option>
               <option value="Progress Conditional">Progress Conditional (Check Issued)</option>
@@ -144,15 +144,15 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
 
           {/* 5. Verification Status */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-slate-300">Verification Status</label>
+            <label className="text-xs font-bold text-[#171A1F]">Verification Status</label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setStatus('Signed & Active')}
                 className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                   status === 'Signed & Active'
-                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400'
-                    : 'bg-[#0D1424] border-[#1A263E] text-slate-400'
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-700 shadow-xs'
+                    : 'bg-[#F7F8FA] border-[#DDE1E7] text-[#68707C]'
                 }`}
               >
                 ✓ Signed & Active
@@ -162,8 +162,8 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
                 onClick={() => setStatus('Action Required')}
                 className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                   status === 'Action Required'
-                    ? 'bg-amber-500/15 border-amber-500 text-amber-400'
-                    : 'bg-[#0D1424] border-[#1A263E] text-slate-400'
+                    ? 'bg-amber-50 border-amber-300 text-amber-700 shadow-xs'
+                    : 'bg-[#F7F8FA] border-[#DDE1E7] text-[#68707C]'
                 }`}
               >
                 ⚠ Action Required
@@ -174,7 +174,7 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-emerald-900/40 active:scale-[0.98] mt-2"
+            className="w-full h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-2"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Verify & Log Lien Waiver</span>

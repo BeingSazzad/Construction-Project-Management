@@ -64,8 +64,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'inline-block'} ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="block text-[12px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-          {label} {required && <span className="text-red-400">*</span>}
+        <label className="block text-[11px] font-bold text-[#171A1F] uppercase tracking-wider mb-1.5">
+          {label} {required && <span className="text-rose-500">*</span>}
         </label>
       )}
 
@@ -74,26 +74,26 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         type="button"
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full ${sizeClasses} bg-[#0A111F] border border-[#142036] hover:border-slate-600 focus:border-[#2563EB] text-slate-200 flex items-center justify-between gap-2 transition-all cursor-pointer outline-none active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed ${
-          isOpen ? 'border-[#2563EB] ring-1 ring-[#2563EB]/40' : ''
+        className={`w-full ${sizeClasses} bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 focus:border-[#1677FF] text-[#171A1F] flex items-center justify-between gap-2 transition-all cursor-pointer outline-none active:scale-[0.99] disabled:opacity-50 disabled:bg-[#F2F2F7] disabled:cursor-not-allowed ${
+          isOpen ? 'border-[#1677FF] ring-2 ring-[#1677FF]/15' : ''
         } ${triggerClassName}`}
       >
         <div className="flex items-center gap-2 min-w-0 truncate">
-          {icon && <span className="text-slate-400 flex-shrink-0">{icon}</span>}
+          {icon && <span className="text-[#68707C] flex-shrink-0">{icon}</span>}
           {selectedOption?.icon && <span className="flex-shrink-0">{selectedOption.icon}</span>}
-          <span className={`truncate font-semibold ${selectedOption ? 'text-white' : 'text-slate-500'}`}>
+          <span className={`truncate font-semibold ${selectedOption ? 'text-[#171A1F]' : 'text-[#8F95B2]'}`}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           {selectedOption?.count !== undefined && (
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/10 text-blue-400 font-bold flex-shrink-0">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#EAF3FF] text-[#1677FF] font-bold flex-shrink-0">
               {selectedOption.count}
             </span>
           )}
         </div>
 
         <ChevronDown
-          className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${
-            isOpen ? 'rotate-180 text-blue-400' : ''
+          className={`w-3.5 h-3.5 text-[#68707C] transition-transform duration-200 flex-shrink-0 ${
+            isOpen ? 'rotate-180 text-[#1677FF]' : ''
           }`}
         />
       </button>
@@ -101,7 +101,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       {/* Floating Custom DOM Menu (Figma-Capturable) */}
       {isOpen && (
         <div
-          className={`absolute left-0 right-0 top-full mt-1.5 min-w-[180px] max-h-60 overflow-y-auto rounded-2xl bg-[#0A111F] border border-[#1E2D4A] p-1.5 shadow-2xl shadow-black/90 backdrop-blur-xl z-50 flex flex-col gap-0.5 animate-fade-in scrollbar-thin scrollbar-thumb-[#142036] ${menuClassName}`}
+          className={`absolute left-0 right-0 top-full mt-1.5 min-w-[180px] max-h-60 overflow-y-auto rounded-2xl bg-white border border-[#DDE1E7] p-1.5 shadow-xl z-50 flex flex-col gap-0.5 animate-fade-in scrollbar-thin ${menuClassName}`}
         >
           {normalizedOptions.map(opt => {
             const isSelected = opt.value === value;
@@ -115,8 +115,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                 }}
                 className={`w-full px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between gap-2 transition-all cursor-pointer text-left ${
                   isSelected
-                    ? 'bg-[#2563EB]/20 text-blue-400 font-bold'
-                    : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                    ? 'bg-[#EAF3FF] text-[#1677FF] font-bold'
+                    : 'text-[#171A1F] hover:bg-[#F2F2F7]'
                 }`}
               >
                 <div className="flex items-center gap-2 min-w-0 truncate">
@@ -128,18 +128,18 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   {opt.count !== undefined && (
                     <span
                       className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                        opt.count > 0 ? 'bg-blue-500/10 text-blue-400' : 'text-slate-600'
+                        opt.count > 0 ? 'bg-[#EAF3FF] text-[#1677FF]' : 'text-[#8F95B2]'
                       }`}
                     >
                       {opt.count}
                     </span>
                   )}
                   {opt.badge && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-medium">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F2F2F7] text-[#68707C] font-medium border border-[#DDE1E7]">
                       {opt.badge}
                     </span>
                   )}
-                  {isSelected && <Check className="w-3.5 h-3.5 text-blue-400 stroke-[2.5]" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#1677FF] stroke-[2.5]" />}
                 </div>
               </button>
             );

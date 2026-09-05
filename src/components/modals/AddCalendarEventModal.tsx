@@ -53,22 +53,22 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
   const PRIORITIES: CalendarEventPriority[] = ['Low', 'Medium', 'High', 'Urgent'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-sans">
-      <div className="w-full max-w-[420px] bg-[#070D1A] border border-[#142036] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-slate-100 animate-scale-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
+      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F] animate-scale-up">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[#3875F6] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-blue-200 text-[#1677FF] flex items-center justify-center">
               <CalendarIcon className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-white leading-none">Add to Calendar</h2>
-              <p className="text-[10px] text-slate-400 mt-1">Schedule milestone, inspection, or task</p>
+              <h2 className="text-sm font-bold text-[#171A1F] leading-none">Add to Calendar</h2>
+              <p className="text-[10px] text-[#68707C] mt-1">Schedule milestone, inspection, or task</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-lg bg-[#0E1A33] border border-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-7 h-7 rounded-lg bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -78,8 +78,8 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           {/* Title */}
           <div>
-            <label className="text-[11px] font-bold text-slate-300 block mb-1">
-              Title <span className="text-rose-400">*</span>
+            <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+              Title <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
@@ -87,26 +87,26 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
               placeholder="e.g. Rough Inspection, Foundation Pour..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-[#091122] border border-[#172540] focus:border-blue-500 focus:outline-none text-white placeholder-slate-500"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white focus:outline-none text-[#171A1F] placeholder-[#9DA5B1] transition-colors"
             />
           </div>
 
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="text-[11px] font-bold text-slate-300 block mb-1">
-                Date <span className="text-rose-400">*</span>
+              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+                Date <span className="text-rose-500">*</span>
               </label>
               <input
                 type="date"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-[#091122] border border-[#172540] focus:border-blue-500 focus:outline-none text-white"
+                className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white focus:outline-none text-[#171A1F] transition-colors"
               />
             </div>
             <div>
-              <label className="text-[11px] font-bold text-slate-300 block mb-1">
+              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
                 Time
               </label>
               <input
@@ -114,7 +114,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
                 placeholder="09:00 AM"
-                className="w-full px-3 py-2 text-xs rounded-xl bg-[#091122] border border-[#172540] focus:border-blue-500 focus:outline-none text-white placeholder-slate-500"
+                className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white focus:outline-none text-[#171A1F] placeholder-[#9DA5B1] transition-colors"
               />
             </div>
           </div>
@@ -122,31 +122,31 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
           {/* Type & Priority */}
           <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="text-[11px] font-bold text-slate-300 block mb-1">
+              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
                 Type
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as CalendarEventType)}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-[#091122] border border-[#172540] focus:border-blue-500 focus:outline-none text-white cursor-pointer"
+                className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white focus:outline-none text-[#171A1F] cursor-pointer transition-colors"
               >
                 {EVENT_TYPES.map(t => (
-                  <option key={t} value={t} className="bg-[#091122] text-white">{t}</option>
+                  <option key={t} value={t} className="bg-white text-[#171A1F]">{t}</option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-slate-300 block mb-1">
+              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
                 Priority
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as CalendarEventPriority)}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-[#091122] border border-[#172540] focus:border-blue-500 focus:outline-none text-white cursor-pointer"
+                className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white focus:outline-none text-[#171A1F] cursor-pointer transition-colors"
               >
                 {PRIORITIES.map(p => (
-                  <option key={p} value={p} className="bg-[#091122] text-white">{p}</option>
+                  <option key={p} value={p} className="bg-white text-[#171A1F]">{p}</option>
                 ))}
               </select>
             </div>
@@ -154,24 +154,24 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
 
           {/* Project Association */}
           <div>
-            <label className="text-[11px] font-bold text-slate-300 block mb-1">
-              Project <span className="text-slate-500 font-normal">(Optional)</span>
+            <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+              Project <span className="text-[#9DA5B1] font-normal">(Optional)</span>
             </label>
             <select
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-[#091122] border border-[#172540] focus:border-blue-500 focus:outline-none text-white cursor-pointer"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white focus:outline-none text-[#171A1F] cursor-pointer transition-colors"
             >
-              <option value="" className="bg-[#091122] text-slate-400">All / Unassigned</option>
+              <option value="" className="bg-white text-[#68707C]">All / Unassigned</option>
               {projects.map(p => (
-                <option key={p.id} value={p.id} className="bg-[#091122] text-white">{p.name}</option>
+                <option key={p.id} value={p.id} className="bg-white text-[#171A1F]">{p.name}</option>
               ))}
             </select>
           </div>
 
           {/* Notes */}
           <div>
-            <label className="text-[11px] font-bold text-slate-300 block mb-1">
+            <label className="text-[11px] font-bold text-[#68707C] block mb-1">
               Notes / Location
             </label>
             <input
@@ -179,22 +179,22 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
               placeholder="e.g. Inspector Dave on-site, Level 4 north zone"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-[#091122] border border-[#172540] focus:border-blue-500 focus:outline-none text-white placeholder-slate-500"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white focus:outline-none text-[#171A1F] placeholder-[#9DA5B1] transition-colors"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2.5 pt-2 border-t border-[#142036]">
+          <div className="flex items-center gap-2.5 pt-2 border-t border-[#EAEDF1]">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl bg-[#091122] border border-[#172540] hover:bg-[#0E1A33] text-xs font-semibold text-slate-300 transition-colors cursor-pointer"
+              className="flex-1 py-2.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-xs font-semibold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-xs font-bold text-white shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+              className="flex-1 py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-xs font-bold text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add to Calendar</span>

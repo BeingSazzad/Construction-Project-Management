@@ -15,7 +15,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) =>
   return (
     <div
       onClick={onClick}
-      className="p-3.5 rounded-2xl bg-[#070D1A] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-sm group active:scale-[0.99]"
+      className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-xs group active:scale-[0.99]"
     >
       {/* Top Header Row: Thumbnail + Full-Width Title & Status Badge */}
       <div className="flex items-start gap-3">
@@ -25,24 +25,24 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) =>
           onError={(e) => {
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80';
           }}
-          className="w-10 h-10 rounded-xl object-cover border border-[#1E2C48] flex-shrink-0 group-hover:scale-105 transition-transform mt-0.5 shadow-sm"
+          className="w-10 h-10 rounded-xl object-cover border border-[#EAEDF1] flex-shrink-0 group-hover:scale-105 transition-transform mt-0.5 shadow-xs"
         />
 
         <div className="min-w-0 flex-1 flex flex-col gap-1">
           {/* Line 1: Title + Status Badge */}
           <div className="flex items-center justify-between gap-2 min-w-0">
-            <h3 className="text-sm font-bold text-[#3875F6] group-hover:underline leading-tight min-w-0 flex-1 truncate whitespace-nowrap">
+            <h3 className="text-sm font-bold text-[#1677FF] group-hover:underline leading-tight min-w-0 flex-1 truncate whitespace-nowrap">
               {project.name}
             </h3>
             <StatusBadge status={project.status} size="xs" />
           </div>
 
           {/* Line 2: Location & PM */}
-          <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
-            <MapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+          <div className="flex items-center gap-1.5 text-xs text-[#68707C] font-medium">
+            <MapPin className="w-3.5 h-3.5 text-[#68707C] flex-shrink-0" />
             <span className="truncate">{project.cityState}</span>
-            <span className="text-slate-500">•</span>
-            <span className="truncate font-semibold text-slate-200">{project.projectManager.name}</span>
+            <span className="text-[#DDE1E7]">•</span>
+            <span className="truncate font-semibold text-[#171A1F]">{project.projectManager.name}</span>
           </div>
         </div>
       </div>
@@ -50,19 +50,19 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) =>
       {/* Middle Row: Budget Spent + Gold Accent + Raw Percentage */}
       <div className="flex flex-col gap-1.5 pt-0.5">
         <div className="flex items-center justify-between text-xs font-medium">
-          <span className="text-slate-300 truncate">
-            Spent <strong className="text-amber-400 font-bold">${spentM}M</strong> of <strong className="text-white font-bold">${totalM}M</strong>
+          <span className="text-[#68707C] truncate">
+            Spent <strong className="text-[#D97706] font-bold">${spentM}M</strong> of <strong className="text-[#171A1F] font-bold">${totalM}M</strong>
           </span>
 
-          <span className="text-xs font-bold text-white flex-shrink-0">
+          <span className="text-xs font-bold text-[#171A1F] flex-shrink-0">
             {project.progress}%
           </span>
         </div>
 
         {/* Linear Progress Bar Track */}
-        <div className="w-full h-1 bg-[#121B2D] rounded-full overflow-hidden border border-[#162238]">
+        <div className="w-full h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
           <div 
-            className="h-full bg-blue-500 rounded-full transition-all duration-500"
+            className="h-full bg-[#1677FF] rounded-full transition-all duration-500"
             style={{ width: `${project.progress}%` }}
           />
         </div>
@@ -70,3 +70,4 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) =>
     </div>
   );
 };
+

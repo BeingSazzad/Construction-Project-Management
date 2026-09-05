@@ -56,31 +56,31 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       {/* Top Header with Back Navigation */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer"
+          className="flex items-center gap-2 text-xs font-bold text-[#68707C] hover:text-[#171A1F] transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back</span>
         </button>
-        <span className="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+        <span className="text-xs font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-1 rounded-full border border-[#1677FF]/20">
           New Task
         </span>
       </div>
 
-      <div className="bg-[#070D1A] border border-[#142036] rounded-3xl p-5 shadow-2xl flex flex-col text-slate-100">
-        <div className="pb-3 border-b border-[#142036] mb-3 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
+      <div className="bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-xs flex flex-col text-[#171A1F]">
+        <div className="pb-3 border-b border-[#EAEDF1] mb-3 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0">
             <CheckSquare className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-white tracking-tight leading-tight">
+            <h2 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight">
               Create Construction Task
             </h2>
-            <p className="text-xs text-slate-400 font-medium mt-0.5">
+            <p className="text-xs text-[#68707C] font-medium mt-0.5">
               Assign trade scope, location & milestone
             </p>
           </div>
@@ -88,20 +88,20 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Task Title *</label>
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">Task Title *</label>
             <input
               type="text"
               required
               placeholder="e.g. Inspect Rebar Placement"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500 placeholder-slate-500"
+              className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] placeholder-[#8F95B2]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Priority Level</label>
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">Priority Level</label>
               <CustomSelect
                 value={priority}
                 onChange={(v) => setPriority(v as Priority)}
@@ -110,19 +110,19 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
               />
             </div>
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Due Date</label>
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">Due Date</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Trade Milestone</label>
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">Trade Milestone</label>
               <CustomSelect
                 value={milestone}
                 onChange={setMilestone}
@@ -131,18 +131,18 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
               />
             </div>
             <div>
-              <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Location / Zone</label>
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">Location / Zone</label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full h-10 bg-[#050811] border border-[#142036] rounded-xl px-3 text-white text-xs outline-none focus:border-blue-500"
+                className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Assigned Superintendent / Lead</label>
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">Assigned Superintendent / Lead</label>
             <CustomSelect
               value={assigneeName}
               onChange={setAssigneeName}
@@ -152,28 +152,28 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
           </div>
 
           <div>
-            <label className="text-[12px] font-semibold text-slate-300 mb-1 block">Scope Notes & Description</label>
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">Scope Notes & Description</label>
             <textarea
               rows={3}
               placeholder="Provide specific trade instructions, inspection requirements..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-[#050811] border border-[#142036] rounded-xl p-3 text-white text-xs outline-none focus:border-blue-500 resize-none placeholder-slate-500"
+              className="w-full bg-white border border-[#DDE1E7] rounded-xl p-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] resize-none placeholder-[#8F95B2]"
             />
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#142036] mt-2">
+          <div className="flex items-center justify-between pt-4 border-t border-[#EAEDF1] mt-2">
             <button
               type="button"
               onClick={onBack}
-              className="px-4 h-10 rounded-xl border border-[#142036] bg-[#050811] text-slate-300 hover:text-white text-xs font-semibold cursor-pointer"
+              className="px-4 h-10 rounded-xl border border-[#DDE1E7] bg-[#F2F2F7] text-[#171A1F] hover:bg-[#EAEDF1] text-xs font-semibold cursor-pointer transition-colors"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="px-5 h-10 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-500/20 cursor-pointer active:scale-95 transition-all"
+              className="px-5 h-10 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all"
             >
               <Check className="w-4 h-4" />
               <span>Create Task</span>

@@ -1,11 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Task, TaskStatus } from '../../types';
 import { 
-  X, Calendar, CheckSquare, DollarSign, Clock, 
-  ShieldCheck, AlertCircle, Users, Camera, FileText, 
-  Check, ArrowUpRight, Sparkles, ChevronRight, Plus
+  X, CheckSquare, DollarSign, Clock, 
+  ShieldCheck, Users, Check, Plus
 } from 'lucide-react';
-import { StatusBadge } from '../common/StatusBadge';
 
 export interface MilestoneItem {
   id: string;
@@ -100,22 +98,25 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
     // Add to local state
     setLocalTasks(prev => [
       ...prev,
-      { id: newTaskId, title: newTaskTitle, completed: false, assignee: milestone.subcontractor, isRealTask: true }
+      {
+        id: newTaskId,
+        title: newTaskTitle,
+        completed: false,
+        assignee: milestone.subcontractor,
+        isRealTask: true
+      }
     ]);
 
-    // Dispatch to parent project task list
+    // Push into real app store if handler provided
     if (onAddTask) {
       onAddTask({
         id: newTaskId,
         title: newTaskTitle,
-        description: `Milestone work package under ${milestone.name}`,
+        status: 'In Progress',
+        priority: 'Medium',
         milestone: milestone.name,
-        status: 'Not Started',
-        priority: 'High',
-        startDate: new Date().toISOString().split('T')[0],
-        dueDate: milestone.dates.split('–')[1]?.trim() || new Date().toISOString().split('T')[0],
         assignee: {
-          id: 'pm-1',
+          id: 'sub-trade',
           name: milestone.subcontractor,
           avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
           role: 'Trade Lead'
@@ -137,23 +138,23 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
   const budgetValue = milestone.budgetAllocation || 450000;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4 animate-fade-in font-sans">
-      <div className="w-full max-w-[430px] bg-[#070A12] border border-[#142036] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4 animate-fade-in font-sans">
+      <div className="w-full max-w-[460px] bg-white border border-[#DDE1E7] rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-[#171A1F]">
         
         {/* ─── 1. MODAL HEADER ─── */}
-        <div className="p-4 bg-[#09101F] border-b border-[#142036] flex items-center justify-between sticky top-0 z-10">
+        <div className="p-4 bg-white border-b border-[#EAEDF1] flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-2.5 min-w-0 pr-2">
-            <div className="w-9 h-9 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-[#38BDF8] flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0">
               <CheckSquare className="w-4.5 h-4.5" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-blue-400 font-mono uppercase tracking-wider bg-blue-500/10 px-1.5 py-0.2 rounded">
+                <span className="text-[10px] font-bold text-[#1677FF] font-mono uppercase tracking-wider bg-[#EAF3FF] px-1.5 py-0.2 rounded">
                   {milestone.code || 'MILESTONE GATE'}
                 </span>
-                <span className="text-[10px] text-slate-400 truncate">· {projectName}</span>
+                <span className="text-[11px] text-[#68707C] truncate">· {projectName}</span>
               </div>
-              <h2 className="text-sm font-black text-white truncate tracking-tight mt-0.5">
+              <h2 className="text-sm font-black text-[#171A1F] truncate tracking-tight mt-0.5">
                 {milestone.name}
               </h2>
             </div>
@@ -161,7 +162,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#121E36] text-slate-400 hover:text-white flex items-center justify-center transition-colors flex-shrink-0 active:scale-95 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors flex-shrink-0 active:scale-95 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -171,90 +172,90 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
           
           {/* Status & Progress Summary Card */}
-          <div className="p-4 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-3">
+          <div className="p-4 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
                 isFullyComplete 
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                  : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/20'
               }`}>
                 {isFullyComplete ? 'Completed Gate' : 'In Progress'}
               </span>
               <div className="text-right">
-                <span className="text-xs font-bold text-white tabular-nums">{computedProgress}%</span>
-                <span className="text-[10px] text-slate-400 ml-1 font-semibold">({completedTasksCount}/{localTasks.length} tasks done)</span>
+                <span className="text-xs font-bold text-[#171A1F] tabular-nums">{computedProgress}%</span>
+                <span className="text-[11px] text-[#68707C] ml-1 font-semibold">({completedTasksCount}/{localTasks.length} tasks done)</span>
               </div>
             </div>
 
             {/* Live Progress Bar */}
-            <div className="w-full h-2 rounded-full bg-[#121E36] overflow-hidden">
+            <div className="w-full h-2 rounded-full bg-[#EAEDF1] overflow-hidden">
               <div 
                 className={`h-full transition-all duration-500 ${
                   isFullyComplete
                     ? 'bg-emerald-500'
-                    : 'bg-gradient-to-r from-[#2563EB] to-[#38BDF8]'
+                    : 'bg-[#1677FF]'
                 }`}
                 style={{ width: `${computedProgress}%` }}
               />
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium pt-0.5">
+            <div className="flex items-center justify-between text-[11px] text-[#68707C] font-medium pt-0.5">
               <span>{milestone.dates}</span>
-              <span className="text-slate-300 font-bold">{milestone.duration}</span>
+              <span className="text-[#171A1F] font-bold">{milestone.duration}</span>
             </div>
           </div>
 
           {/* Key Metrics Grid (2x2) */}
           <div className="grid grid-cols-2 gap-2.5">
             {/* Draw Allocation Value */}
-            <div className="p-3 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-1">
-              <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold">
+            <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-emerald-700 text-xs font-bold">
                 <DollarSign className="w-3.5 h-3.5" />
                 <span>Draw Allocation</span>
               </div>
-              <div className="text-base font-black text-white tracking-tight mt-1 tabular-nums">
+              <div className="text-base font-black text-[#171A1F] tracking-tight mt-1 tabular-nums">
                 ${(budgetValue / 1000).toFixed(0)}k
               </div>
-              <div className="text-[10px] text-slate-400 font-medium">Lender Draw Gate</div>
+              <div className="text-[10px] text-[#68707C] font-medium">Lender Draw Gate</div>
             </div>
 
             {/* Lead Subcontractor */}
-            <div className="p-3 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-1">
-              <div className="flex items-center gap-1.5 text-blue-400 text-xs font-bold">
+            <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-[#1677FF] text-xs font-bold">
                 <Users className="w-3.5 h-3.5" />
                 <span>Lead Subcontractor</span>
               </div>
-              <div className="text-xs font-bold text-white truncate mt-1">
+              <div className="text-xs font-bold text-[#171A1F] truncate mt-1">
                 {milestone.subcontractor}
               </div>
-              <div className="text-[10px] text-slate-400 font-medium">Trade Partner Lead</div>
+              <div className="text-[10px] text-[#68707C] font-medium">Trade Partner Lead</div>
             </div>
 
             {/* Inspection Status */}
-            <div className="p-3 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-1">
-              <div className="flex items-center gap-1.5 text-purple-400 text-xs font-bold">
+            <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-purple-700 text-xs font-bold">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>City Inspection</span>
               </div>
               <div className={`text-xs font-bold mt-1 flex items-center gap-1 ${
-                isFullyComplete ? 'text-emerald-400' : 'text-amber-400'
+                isFullyComplete ? 'text-emerald-700' : 'text-amber-700'
               }`}>
                 {isFullyComplete ? <Check className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
                 <span>{isFullyComplete ? 'Passed & Approved' : 'Pending Verification'}</span>
               </div>
-              <div className="text-[10px] text-slate-400 font-medium">Building Dept Signoff</div>
+              <div className="text-[10px] text-[#68707C] font-medium">Building Dept Signoff</div>
             </div>
 
             {/* Connected Tasks Count */}
-            <div className="p-3 rounded-2xl bg-[#090F1E] border border-[#162238] flex flex-col gap-1">
-              <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold">
+            <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-amber-700 text-xs font-bold">
                 <CheckSquare className="w-3.5 h-3.5" />
                 <span>Linked Tasks</span>
               </div>
-              <div className="text-base font-black text-white tracking-tight mt-1 tabular-nums">
+              <div className="text-base font-black text-[#171A1F] tracking-tight mt-1 tabular-nums">
                 {completedTasksCount} / {localTasks.length}
               </div>
-              <div className="text-[10px] text-slate-400 font-medium">Field Work Items</div>
+              <div className="text-[10px] text-[#68707C] font-medium">Field Work Items</div>
             </div>
           </div>
 
@@ -262,12 +263,12 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xs font-bold text-white tracking-tight">Milestone Field Tasks ({localTasks.length})</h3>
-                <p className="text-[10px] text-slate-400">Complete all tasks to unlock bank draw</p>
+                <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">Milestone Field Tasks ({localTasks.length})</h3>
+                <p className="text-[10px] text-[#68707C]">Complete all tasks to unlock bank draw</p>
               </div>
               <button
                 onClick={() => setIsAddingSubtask(true)}
-                className="text-[11px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20"
+                className="text-[11px] font-bold text-[#1677FF] hover:text-[#0958D9] flex items-center gap-1 cursor-pointer bg-[#EAF3FF] px-2.5 py-1 rounded-lg border border-[#1677FF]/20"
               >
                 <Plus className="w-3 h-3" />
                 <span>Add Task</span>
@@ -275,18 +276,18 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
             </div>
 
             {isAddingSubtask && (
-              <form onSubmit={handleAddSubtask} className="flex items-center gap-2 p-2 bg-[#090F1E] border border-[#162238] rounded-2xl animate-fade-in">
+              <form onSubmit={handleAddSubtask} className="flex items-center gap-2 p-2 bg-[#F7F8FA] border border-[#EAEDF1] rounded-2xl animate-fade-in">
                 <input
                   type="text"
                   placeholder="Enter task name for this milestone..."
                   value={newSubtaskTitle}
                   onChange={(e) => setNewSubtaskTitle(e.target.value)}
-                  className="flex-1 h-9 bg-[#060B17] px-3 text-xs text-white outline-none rounded-xl border border-[#142036] placeholder-slate-500 focus:border-blue-500"
+                  className="flex-1 h-9 bg-white px-3 text-xs text-[#171A1F] outline-none rounded-xl border border-[#DDE1E7] placeholder-[#9DA5B1] focus:border-[#1677FF]"
                   autoFocus
                 />
                 <button
                   type="submit"
-                  className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs"
                 >
                   Save
                 </button>
@@ -300,25 +301,25 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                   onClick={() => toggleSubtask(st.id, st.isRealTask, st.completed)}
                   className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer select-none active:scale-[0.99] ${
                     st.completed
-                      ? 'bg-[#090F1E]/60 border-[#142036] opacity-80'
-                      : 'bg-[#090F1E] border-[#162238] hover:border-blue-500/40'
+                      ? 'bg-[#F7F8FA] border-[#EAEDF1] opacity-75'
+                      : 'bg-white border-[#DDE1E7] hover:border-[#1677FF]/40 shadow-xs'
                   }`}
                 >
                   <div className={`w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
-                    st.completed ? 'bg-emerald-500 text-white shadow-sm' : 'border border-[#263756] bg-[#0D1629]'
+                    st.completed ? 'bg-emerald-500 text-white shadow-xs' : 'border border-[#DDE1E7] bg-white'
                   }`}>
                     {st.completed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <p className={`text-xs font-semibold leading-snug ${st.completed ? 'line-through text-slate-400' : 'text-white'}`}>
+                    <p className={`text-xs font-semibold leading-snug ${st.completed ? 'line-through text-[#68707C]' : 'text-[#171A1F]'}`}>
                       {st.title}
                     </p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Assigned to: {st.assignee}</p>
+                    <p className="text-[10px] text-[#68707C] mt-0.5">Assigned to: {st.assignee}</p>
                   </div>
 
-                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${
-                    st.completed ? 'bg-emerald-500/10 text-emerald-400' : 'bg-[#121E36] text-slate-400'
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${
+                    st.completed ? 'bg-emerald-50 text-emerald-700' : 'bg-[#F2F2F7] text-[#68707C]'
                   }`}>
                     {st.completed ? 'Done' : 'To-Do'}
                   </span>
@@ -329,25 +330,25 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
           {/* Photo Documentation Section */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-xs font-bold text-white tracking-tight">Milestone Inspection Proof</h3>
+            <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">Milestone Inspection Proof</h3>
             <div className="grid grid-cols-2 gap-2">
-              <div className="relative rounded-2xl overflow-hidden border border-[#162238] group h-24">
+              <div className="relative rounded-2xl overflow-hidden border border-[#DDE1E7] group h-24">
                 <img 
                   src="https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=400&auto=format&fit=crop&q=80" 
                   alt="Site Pour Proof" 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex items-end">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent p-2 flex items-end">
                   <span className="text-[10px] font-bold text-white truncate">Field QA Sign-off</span>
                 </div>
               </div>
-              <div className="relative rounded-2xl overflow-hidden border border-[#162238] group h-24">
+              <div className="relative rounded-2xl overflow-hidden border border-[#DDE1E7] group h-24">
                 <img 
                   src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&auto=format&fit=crop&q=80" 
                   alt="Site Signoff" 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-2 flex items-end">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent p-2 flex items-end">
                   <span className="text-[10px] font-bold text-white truncate">Building Dept Permit</span>
                 </div>
               </div>
@@ -357,14 +358,14 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
         </div>
 
         {/* ─── 3. MODAL FOOTER ACTIONS ─── */}
-        <div className="p-4 bg-[#09101F] border-t border-[#142036] flex items-center gap-2">
+        <div className="p-4 bg-white border-t border-[#EAEDF1] flex items-center gap-2">
           {!isFullyComplete ? (
             <button
               onClick={() => {
                 if (onUpdateStatus) onUpdateStatus(milestone.id, 'Completed');
                 onClose();
               }}
-              className="flex-1 h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 transition-all active:scale-95 cursor-pointer"
+              className="flex-1 h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
             >
               <Check className="w-4 h-4 stroke-[3]" />
               <span>Mark Gate Completed (100%)</span>
@@ -375,7 +376,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                 if (onRequestDraw) onRequestDraw(milestone);
                 onClose();
               }}
-              className="flex-1 h-11 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30 transition-all active:scale-95 cursor-pointer"
+              className="flex-1 h-11 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
             >
               <DollarSign className="w-4 h-4" />
               <span>Request Draw (${(budgetValue / 1000).toFixed(0)}k)</span>
@@ -384,7 +385,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
           <button
             onClick={onClose}
-            className="px-4 h-11 rounded-2xl bg-[#0F192E] hover:bg-[#162442] border border-[#1E2E4A] text-slate-300 text-xs font-bold transition-all active:scale-95 cursor-pointer"
+            className="px-4 h-11 rounded-2xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] text-xs font-bold transition-all active:scale-95 cursor-pointer"
           >
             Close
           </button>

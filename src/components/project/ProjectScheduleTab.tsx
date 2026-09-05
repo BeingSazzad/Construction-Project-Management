@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Project, GanttItem, Task, TaskStatus } from '../../types';
-import { Check, ChevronRight, Plus, X, Calendar, DollarSign, Users, Clock, ShieldCheck, Flag, CheckSquare } from 'lucide-react';
+import { Check, Plus, X, Flag } from 'lucide-react';
 import { MilestoneDetailsModal, MilestoneItem } from '../modals/MilestoneDetailsModal';
-import { DEFAULT_PROJECT_MILESTONES } from '../../data/projectMilestones';
 
 interface ProjectScheduleTabProps {
   project: Project;
@@ -69,7 +68,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
       subcontractor: 'Apex Concrete Masters',
       dates: 'Apr 11 – Jul 20, 2025',
       duration: '100 days',
-      progress: 68,
+      progress: 62,
       status: 'In Progress',
       budgetAllocation: 850000,
       inspectionPassed: false
@@ -77,11 +76,11 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
     {
       id: `${project.id}-ms-4`,
       code: 'MS-04',
-      name: 'MEP Utility Rough-in (Mech, Elec, Plumb)',
+      name: 'MEP Utility Rough-In (Mech, Elec, Plumb)',
       subcontractor: 'Prime Electrical & Mechanical',
       dates: 'Jun 01 – Sep 15, 2025',
       duration: '106 days',
-      progress: 35,
+      progress: 40,
       status: 'In Progress',
       budgetAllocation: 920000,
       inspectionPassed: false
@@ -89,10 +88,10 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
     {
       id: `${project.id}-ms-5`,
       code: 'MS-05',
-      name: 'Curtain Wall Facade & Building Envelope',
-      subcontractor: 'Apex Glass Architectural',
-      dates: 'Aug 10 – Nov 05, 2025',
-      duration: '87 days',
+      name: 'Building Envelope & Exterior Glass',
+      subcontractor: 'GlassCraft Facades',
+      dates: 'Aug 10 – Nov 30, 2025',
+      duration: '112 days',
       progress: 0,
       status: 'Upcoming',
       budgetAllocation: 540000,
@@ -218,20 +217,20 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       
       {/* ─── 1. CLEAN HEADER WITH ADD MILESTONE BUTTON ─── */}
       <div className="flex items-center justify-between pt-1">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold text-white tracking-tight">
+            <h2 className="text-sm md:text-base font-bold text-[#171A1F] tracking-tight">
               {isMilestoneView ? 'Milestone Gates' : 'Master Schedule'}
             </h2>
-            <span className="text-[11px] text-slate-400 font-medium">
+            <span className="text-[11px] text-[#68707C] font-medium">
               ({completedCount} of {phases.length} complete)
             </span>
           </div>
-          <p className="text-[10px] text-slate-500 font-medium">{project.name}</p>
+          <p className="text-[11px] text-[#68707C] font-medium mt-0.5">{project.name}</p>
         </div>
 
         <button
@@ -239,7 +238,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
             setNewCode(`MS-0${phases.length + 1}`);
             setIsAddModalOpen(true);
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-900/30 cursor-pointer active:scale-95 flex-shrink-0"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add Gate</span>
@@ -254,10 +253,10 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border ${
+              className={`px-3.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border ${
                 isActive
-                  ? 'bg-blue-600 border-blue-500 text-white font-bold shadow-sm'
-                  : 'bg-[#070D1A] text-slate-400 hover:text-white border-[#142036]'
+                  ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-xs'
+                  : 'bg-white text-[#68707C] hover:text-[#171A1F] hover:bg-[#F2F2F7] border-[#DDE1E7]'
               }`}
             >
               {f}
@@ -266,7 +265,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
         })}
       </div>
 
-      {/* ─── 3. REAL CONSTRUCTION SCHEDULE / MILESTONE CARDS (Live Task Count & Progress) ─── */}
+      {/* ─── 3. REAL CONSTRUCTION SCHEDULE / MILESTONE CARDS ─── */}
       <div className="flex flex-col gap-2.5">
         {filtered.map((phase) => {
           const isDone = phase.status === 'Completed';
@@ -277,30 +276,30 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
             <div
               key={phase.id}
               onClick={() => setSelectedMilestone(phase)}
-              className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] hover:border-blue-500/50 cursor-pointer transition-all active:scale-[0.99] flex flex-col gap-2.5 shadow-sm group"
+              className="p-4 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/50 cursor-pointer transition-all active:scale-[0.99] flex flex-col gap-3 shadow-xs group"
             >
               {/* Row 1: Code + Phase Title + Status Pill */}
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 mb-0.5">
                     {phase.code && (
-                      <span className="text-[9px] font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-mono font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-md border border-[#1677FF]/20">
                         {phase.code}
                       </span>
                     )}
-                    <span className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                    <span className="text-xs md:text-sm font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
                       {phase.name}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 font-medium truncate">{phase.subcontractor}</p>
+                  <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">{phase.subcontractor}</p>
                 </div>
 
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1 border ${
+                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1 border ${
                   isDone
-                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                     : isInProgress
-                    ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                    : 'bg-[#0A1328] text-slate-500 border-[#142036]'
+                    ? 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30'
+                    : 'bg-[#F2F2F7] text-[#68707C] border-[#DDE1E7]'
                 }`}>
                   {isDone && <Check className="w-3 h-3 stroke-[3]" />}
                   <span>{isDone ? 'Completed' : isInProgress ? `${taskMetrics.progress}%` : 'Upcoming'}</span>
@@ -308,15 +307,15 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
               </div>
 
               {/* Row 2: Dates, Tasks Count, Draw Allocation */}
-              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-[#142036]/60">
-                <span className="text-slate-300 font-medium">{phase.dates}</span>
+              <div className="flex items-center justify-between text-[11px] text-[#68707C] pt-1.5 border-t border-[#EAEDF1]">
+                <span className="text-[#171A1F] font-medium">{phase.dates}</span>
                 
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-400 font-medium bg-[#0A1328] px-1.5 py-0.5 rounded border border-[#142036]">
+                  <span className="text-[10px] text-[#68707C] font-medium bg-[#F2F2F7] px-2 py-0.5 rounded-md border border-[#DDE1E7]">
                     {taskMetrics.completedTasks}/{taskMetrics.totalTasks} Tasks
                   </span>
                   {phase.budgetAllocation && (
-                    <span className="text-emerald-400 font-bold tabular-nums">
+                    <span className="text-emerald-600 font-bold tabular-nums">
                       ${phase.budgetAllocation.toLocaleString()}
                     </span>
                   )}
@@ -324,13 +323,13 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
               </div>
 
               {/* Row 3: Progress Bar */}
-              <div className="w-full h-1.5 bg-[#0A1328] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-300 ${
                     isDone
                       ? 'bg-emerald-500'
                       : isInProgress
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-400'
+                      ? 'bg-[#1677FF]'
                       : 'bg-transparent'
                   }`}
                   style={{ width: `${taskMetrics.progress}%` }}
@@ -343,19 +342,19 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
 
       {/* ─── 4. ADD NEW MILESTONE INPUT MODAL ─── */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-fade-in font-sans">
-          <div className="w-full max-w-[430px] bg-[#070C18] border border-[#142036] rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-slate-100 animate-in slide-in-from-bottom duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-[#142036]">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-fade-in font-sans">
+          <div className="w-full max-w-[430px] bg-white border border-[#DDE1E7] rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F] animate-slide-up">
+            <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                  <Flag className="w-4 h-4 text-blue-400" />
+                <h3 className="text-sm font-bold text-[#171A1F] flex items-center gap-1.5">
+                  <Flag className="w-4 h-4 text-[#1677FF]" />
                   <span>Add Project Milestone Gate</span>
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Define schedule gate, trade subcontractor & draw value</p>
+                <p className="text-[11px] text-[#68707C] mt-0.5">Define schedule gate, trade subcontractor & draw value</p>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#0A1328] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -365,23 +364,23 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
               {/* Code + Milestone Name */}
               <div className="grid grid-cols-[80px_1fr] gap-2">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Code</label>
+                  <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Code</label>
                   <input
                     type="text"
                     value={newCode}
                     onChange={e => setNewCode(e.target.value)}
                     placeholder="MS-08"
-                    className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500 rounded-xl px-2.5 text-xs text-white outline-none font-mono"
+                    className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-2.5 text-xs text-[#171A1F] outline-none font-mono"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Milestone Title</label>
+                  <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Milestone Title</label>
                   <input
                     type="text"
                     value={newName}
                     onChange={e => setNewName(e.target.value)}
                     placeholder="e.g. Dry-In & Roofing Inspection"
-                    className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none"
+                    className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none"
                     required
                   />
                 </div>
@@ -389,55 +388,55 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
 
               {/* Subcontractor / Lead Trade */}
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Responsible Subcontractor / Trade</label>
+                <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Responsible Subcontractor / Trade</label>
                 <input
                   type="text"
                   value={newSubcontractor}
                   onChange={e => setNewSubcontractor(e.target.value)}
                   placeholder="e.g. Apex Roofing & Glazing LLC"
-                  className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none"
+                  className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none"
                 />
               </div>
 
               {/* Dates & Duration */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Date Span / Target</label>
+                  <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Date Span / Target</label>
                   <input
                     type="text"
                     value={newDates}
                     onChange={e => setNewDates(e.target.value)}
                     placeholder="e.g. Nov 01 – Nov 25, 2025"
-                    className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white outline-none"
+                    className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Duration</label>
+                  <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Duration</label>
                   <input
                     type="text"
                     value={newDuration}
                     onChange={e => setNewDuration(e.target.value)}
                     placeholder="e.g. 25 days"
-                    className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white outline-none"
+                    className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none"
                   />
                 </div>
               </div>
 
               {/* Budget / Draw Allocation */}
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Draw Budget Allocation ($)</label>
+                <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Draw Budget Allocation ($)</label>
                 <input
                   type="number"
                   value={newBudget}
                   onChange={e => setNewBudget(e.target.value)}
                   placeholder="e.g. 350000"
-                  className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500 rounded-xl px-3 text-xs text-white outline-none font-mono"
+                  className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none font-mono"
                 />
               </div>
 
               {/* Initial Status */}
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Initial Status</label>
+                <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider mb-1 block">Initial Status</label>
                 <div className="grid grid-cols-3 gap-2">
                   {(['Upcoming', 'In Progress', 'Completed'] as const).map(s => (
                     <button
@@ -446,8 +445,8 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
                       onClick={() => setNewStatus(s)}
                       className={`h-9 rounded-xl text-center font-bold text-[11px] transition-all border cursor-pointer ${
                         newStatus === s
-                          ? 'bg-blue-600 border-blue-500 text-white'
-                          : 'bg-[#060B17] border-[#142036] text-slate-400 hover:text-white'
+                          ? 'bg-[#1677FF] border-[#1677FF] text-white'
+                          : 'bg-[#F7F8FA] border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F]'
                       }`}
                     >
                       {s}
@@ -457,18 +456,18 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
               </div>
 
               {/* Modal Actions */}
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#142036] mt-1">
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#EAEDF1] mt-1">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-[#0A1328] border border-[#142036] text-slate-400 font-bold hover:text-white cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] font-bold hover:text-[#171A1F] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!newName.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 disabled:opacity-40 cursor-pointer active:scale-95 transition-all shadow-md shadow-blue-900/30"
+                  className="px-5 py-2 rounded-xl bg-[#1677FF] text-white font-bold hover:bg-[#0958D9] disabled:opacity-40 cursor-pointer active:scale-95 transition-all shadow-xs"
                 >
                   Save Milestone Gate
                 </button>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, PunchItem, PunchStatus } from '../../types';
-import { Plus, MapPin, Trash2, Folder, CheckSquare, ChevronDown } from 'lucide-react';
+import { Plus, MapPin, Trash2, Folder } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectPunchListTabProps {
@@ -15,7 +15,6 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   project,
   punchItems,
   onCreatePunch,
-  onOpenPunchDetails,
   onUpdatePunchStatus
 }) => {
   const [activeFilter, setActiveFilter] = useState<PunchStatus | 'All'>('All');
@@ -41,30 +40,30 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   };
 
   const STATUS_DOT: Record<PunchStatus, string> = {
-    'Open': 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]',
-    'In Progress': 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]',
-    'Resolved': 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]',
-    'Verified': 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]',
-    'Closed': 'bg-slate-500 shadow-[0_0_8px_rgba(100,116,139,0.6)]',
+    'Open': 'bg-amber-500',
+    'In Progress': 'bg-[#1677FF]',
+    'Resolved': 'bg-emerald-500',
+    'Verified': 'bg-teal-500',
+    'Closed': 'bg-slate-400',
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans text-slate-100 animate-fade-in max-w-[430px] mx-auto">
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       
       {/* ── 1. Page Header & Live Open Count ── */}
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-base font-extrabold text-white tracking-tight">Punch List</h2>
-          <p className="text-[12px] text-slate-400 mt-0.5 font-medium">
+          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Punch List</h2>
+          <p className="text-xs text-[#68707C] mt-0.5 font-medium">
             {openCount} open {openCount === 1 ? 'item' : 'items'}
           </p>
         </div>
 
         <button
           onClick={onCreatePunch}
-          className="btn-md rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-md shadow-blue-900/40 active:scale-95 flex-shrink-0"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
         >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>New Item</span>
         </button>
       </div>
@@ -77,10 +76,10 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
             <button
               key={st}
               onClick={() => setActiveFilter(st)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border ${
                 isActive
-                  ? 'bg-[#2563EB] text-white font-bold shadow-sm'
-                  : 'bg-[#0D1424] border border-[#1A263E] text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-xs'
+                  : 'bg-white text-[#68707C] hover:text-[#171A1F] hover:bg-[#F2F2F7] border-[#DDE1E7]'
               }`}
             >
               {st}
@@ -90,22 +89,22 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
       </div>
 
       {/* ── 3. Project Group Header Divider ── */}
-      <div className="flex items-center justify-between pt-1 border-b border-[#142036] pb-2">
+      <div className="flex items-center justify-between pt-1 border-b border-[#EAEDF1] pb-2">
         <div className="flex items-center gap-2 min-w-0">
-          <Folder className="w-4 h-4 text-blue-400 flex-shrink-0" />
-          <span className="text-xs font-bold text-slate-200 truncate">{project.name}</span>
+          <Folder className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
+          <span className="text-xs font-bold text-[#171A1F] truncate">{project.name}</span>
         </div>
-        <span className="text-[10px] font-bold text-slate-400 bg-[#090E1A] px-2 py-0.5 rounded-md border border-[#141F33] flex-shrink-0">
-          {filteredItems.length}
+        <span className="text-[11px] font-bold text-[#68707C] bg-white px-2 py-0.5 rounded-md border border-[#DDE1E7] flex-shrink-0">
+          {filteredItems.length} items
         </span>
       </div>
 
       {/* ── 4. Ultra-Clean Pro Card Feed ── */}
       {filteredItems.length === 0 ? (
-        <div className="p-8 rounded-2xl bg-[#0D1424] border border-[#141F33] text-center flex flex-col items-center justify-center gap-2">
-          <Folder className="w-8 h-8 text-slate-600" />
-          <p className="text-xs font-bold text-slate-300">No punch items for this filter</p>
-          <p className="text-[12px] text-slate-400 font-medium">Tap "+ New Item" to log a field defect.</p>
+        <div className="p-8 rounded-2xl bg-white border border-[#DDE1E7] text-center flex flex-col items-center justify-center gap-2 shadow-xs">
+          <Folder className="w-8 h-8 text-[#9DA5B1]" />
+          <p className="text-xs font-bold text-[#171A1F]">No punch items for this filter</p>
+          <p className="text-[12px] text-[#68707C] font-medium">Tap "+ New Item" to log a field defect.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
@@ -113,19 +112,18 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
             return (
               <div
                 key={item.id}
-                className="p-3.5 sm:p-4 rounded-2xl bg-[#0D1424] border border-[#141F33] hover:border-blue-500/40 transition-all flex flex-col gap-2.5 shadow-sm group"
+                className="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 transition-all flex flex-col gap-2.5 shadow-xs group"
               >
-                {/* Line 1: Title (Full Width) + Status Dropdown Selector + Trash Icon */}
+                {/* Line 1: Title + Status Dropdown + Delete Icon */}
                 <div className="flex items-start justify-between gap-2.5">
                   <div className="flex items-start gap-2.5 min-w-0 flex-1">
                     <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1 ${STATUS_DOT[item.status] || 'bg-amber-400'}`} />
-                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#3875F6] transition-colors leading-snug tracking-tight">
+                    <h3 className="text-xs sm:text-sm font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors leading-snug tracking-tight">
                       {item.title}
                     </h3>
                   </div>
 
                   <div className="flex items-center gap-1.5 flex-shrink-0">
-                    {/* Status Dropdown Selector styled as native pill */}
                     <div className="w-28">
                       <CustomSelect
                         value={item.status}
@@ -135,10 +133,9 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                       />
                     </div>
 
-                    {/* Trash Delete Icon */}
                     <button
                       onClick={() => handleDeletePunch(item.id)}
-                      className="w-7 h-7 rounded-xl bg-[#090E1A] hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 border border-[#141F33] flex items-center justify-center transition-colors cursor-pointer"
+                      className="w-7 h-7 rounded-xl bg-[#F2F2F7] hover:bg-rose-50 text-[#68707C] hover:text-rose-600 border border-[#DDE1E7] flex items-center justify-center transition-colors cursor-pointer"
                       title="Delete item"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -146,23 +143,23 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                   </div>
                 </div>
 
-                {/* Line 2: Description Text (Full Width Aligned) */}
+                {/* Line 2: Description Text */}
                 {item.description && (
-                  <p className="text-xs text-slate-300 leading-relaxed font-normal">
+                  <p className="text-xs text-[#68707C] leading-relaxed font-normal">
                     {item.description}
                   </p>
                 )}
 
-                {/* Line 3: Clean Metadata Row (Trade + Location + Evidence Photo Thumbnail) */}
-                <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#141F33]/70">
+                {/* Line 3: Clean Metadata Row */}
+                <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#EAEDF1]">
                   <div className="flex items-center gap-2 flex-wrap text-xs min-w-0 flex-1">
-                    <span className="px-2.5 py-1 rounded-lg bg-[#090E1A] text-slate-300 border border-[#141F33] font-semibold text-[10px] truncate">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-[#F7F8FA] text-[#171A1F] border border-[#EAEDF1] font-semibold text-[11px] truncate">
                       {item.assignedTo?.trade || 'General Trade'}
                     </span>
 
                     {item.location && (
-                      <span className="flex items-center gap-1 text-slate-400 font-medium text-[10px] bg-[#090E1A] px-2.5 py-1 rounded-lg border border-[#141F33] truncate">
-                        <MapPin className="w-3 h-3 text-rose-400 flex-shrink-0" />
+                      <span className="flex items-center gap-1 text-[#68707C] font-medium text-[11px] bg-[#F7F8FA] px-2.5 py-0.5 rounded-lg border border-[#EAEDF1] truncate">
+                        <MapPin className="w-3 h-3 text-rose-500 flex-shrink-0" />
                         <span className="truncate">{item.location}</span>
                       </span>
                     )}
@@ -174,7 +171,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                       <img
                         src={item.photos[0]}
                         alt="evidence thumbnail"
-                        className="w-11 h-11 rounded-xl object-cover border border-[#1A263E] shadow hover:scale-105 transition-transform"
+                        className="w-11 h-11 rounded-xl object-cover border border-[#DDE1E7] shadow-xs hover:scale-105 transition-transform"
                       />
                     </div>
                   )}

@@ -98,38 +98,29 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
     setCategories(prev => prev.map(cat => {
       const hasCode = cat.costCodes.some(cc => cc.code === editingCode.code);
-      if (hasCode) {
-        const updatedCodes = cat.costCodes.map(cc => {
-          if (cc.code === editingCode.code) {
-            return {
-              ...cc,
-              name: editingName.trim(),
-              estimatedCost: newEst,
-              actualCost: newAct,
-              committedCost: newAct,
-              variance: newAct - newEst,
-              items: cc.items.map(item => ({
-                ...item,
-                name: editingName.trim(),
-                estimatedCost: newEst,
-                committedCost: newAct,
-                actualCost: newAct,
-                remaining: Math.max(0, newEst - newAct)
-              }))
-            };
-          }
-          return cc;
-        });
+      if (!hasCode) return cat;
 
-        return {
-          ...cat,
-          estimatedCost: updatedCodes.reduce((sum, cc) => sum + cc.estimatedCost, 0),
-          actualCost: updatedCodes.reduce((sum, cc) => sum + cc.actualCost, 0),
-          committedCost: updatedCodes.reduce((sum, cc) => sum + cc.committedCost, 0),
-          costCodes: updatedCodes
-        };
-      }
-      return cat;
+      const updatedCodes = cat.costCodes.map(cc => {
+        if (cc.code === editingCode.code) {
+          return {
+            ...cc,
+            name: editingName.trim(),
+            estimatedCost: newEst,
+            actualCost: newAct,
+            committedCost: newAct,
+            variance: newAct - newEst
+          };
+        }
+        return cc;
+      });
+
+      return {
+        ...cat,
+        estimatedCost: updatedCodes.reduce((sum, cc) => sum + cc.estimatedCost, 0),
+        actualCost: updatedCodes.reduce((sum, cc) => sum + cc.actualCost, 0),
+        committedCost: updatedCodes.reduce((sum, cc) => sum + cc.committedCost, 0),
+        costCodes: updatedCodes
+      };
     }));
 
     setEditingCode(null);
@@ -144,11 +135,11 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
-      case 'Hammer': return <Hammer className="w-4 h-4 text-blue-400" />;
-      case 'Boxes': return <Boxes className="w-4 h-4 text-blue-400" />;
-      case 'Flame': return <Flame className="w-4 h-4 text-amber-400" />;
-      case 'Zap': return <Zap className="w-4 h-4 text-purple-400" />;
-      default: return <Layers className="w-4 h-4 text-slate-400" />;
+      case 'Hammer': return <Hammer className="w-4 h-4 text-[#1677FF]" />;
+      case 'Boxes': return <Boxes className="w-4 h-4 text-[#1677FF]" />;
+      case 'Flame': return <Flame className="w-4 h-4 text-amber-600" />;
+      case 'Zap': return <Zap className="w-4 h-4 text-purple-600" />;
+      default: return <Layers className="w-4 h-4 text-[#68707C]" />;
     }
   };
 
@@ -162,18 +153,18 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
   if (project.budget.total === 0) {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-6 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in text-center items-center justify-center min-h-[50vh]">
-        <div className="w-14 h-14 rounded-3xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3">
+      <div className="w-full flex-1 flex flex-col gap-4 px-5 py-6 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in text-center items-center justify-center min-h-[50vh]">
+        <div className="w-14 h-14 rounded-3xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center mb-3">
           <Download className="w-7 h-7" />
         </div>
-        <h3 className="text-sm font-bold text-white">No Budget Ledger Active</h3>
-        <p className="text-xs text-slate-400 max-w-[280px] leading-relaxed mt-1 mb-4">
+        <h3 className="text-sm font-bold text-[#171A1F]">No Budget Ledger Active</h3>
+        <p className="text-xs text-[#68707C] max-w-[280px] leading-relaxed mt-1 mb-4">
           This project does not have a Master CSI budget ledger imported. Import an Excel or CSV template to track trade divisions, allowances, and vendor contracts.
         </p>
         {onImportBudget && (
           <button
             onClick={onImportBudget}
-            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all active:scale-[0.99] cursor-pointer"
+            className="w-full py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs transition-all active:scale-[0.99] cursor-pointer shadow-xs"
           >
             Import Budget Ledger
           </button>
@@ -183,16 +174,16 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   }
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       {/* Budget Overview Card */}
-      <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm">
+      <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Budget Overview</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#68707C]">Budget Overview</span>
           <div className="flex items-center gap-1.5">
             {onImportBudget && (
               <button
                 onClick={onImportBudget}
-                className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/25 px-2 py-1 rounded-xl flex items-center gap-1 hover:bg-blue-500/20 cursor-pointer transition-all active:scale-95"
+                className="text-[11px] font-bold text-[#1677FF] bg-[#EAF3FF] border border-[#1677FF]/25 px-2.5 py-1 rounded-xl flex items-center gap-1 hover:bg-[#D4E8FF] cursor-pointer transition-all active:scale-95"
               >
                 <Upload className="w-3 h-3" />
                 <span>Import</span>
@@ -200,27 +191,27 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             )}
             <button
               onClick={() => alert(`Exporting ${project.name} Master CSI Budget to PDF / Excel...`)}
-              className="text-[10px] font-bold text-slate-300 bg-[#0E1A33] border border-[#1E2E4A] px-2 py-1 rounded-xl flex items-center gap-1 hover:bg-[#142036] cursor-pointer transition-all active:scale-95"
+              className="text-[11px] font-bold text-[#171A1F] bg-[#F2F2F7] border border-[#DDE1E7] px-2.5 py-1 rounded-xl flex items-center gap-1 hover:bg-[#EAEDF1] cursor-pointer transition-all active:scale-95"
             >
-              <Download className="w-3 h-3 text-slate-400" />
+              <Download className="w-3 h-3 text-[#68707C]" />
               <span>Export</span>
             </button>
-            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-              +${Math.max(0, Math.round((totalBudget - totalActual) / 1000))}K
+            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+              +${Math.max(0, Math.round((totalBudget - totalActual) / 1000))}K Under
             </span>
           </div>
         </div>
 
         {/* 2 Main Metrics + Circular Percentage Donut */}
-        <div className="flex items-center justify-between bg-[#070D1A] p-3 rounded-xl border border-[#142036] mb-3">
+        <div className="flex items-center justify-between bg-[#F7F8FA] p-3.5 rounded-xl border border-[#EAEDF1] mb-3">
           <div className="space-y-2">
             <div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Budget</span>
-              <div className="text-lg font-black text-white mt-0.5">${(totalBudget / 1000000).toFixed(2)}M</div>
+              <span className="text-[10px] text-[#68707C] font-bold uppercase tracking-wider">Total Budget</span>
+              <div className="text-xl font-black text-[#171A1F] mt-0.5">${(totalBudget / 1000000).toFixed(2)}M</div>
             </div>
             <div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Cost (Actual)</span>
-              <div className="text-lg font-black text-blue-400 mt-0.5">${(totalActual / 1000000).toFixed(2)}M</div>
+              <span className="text-[10px] text-[#68707C] font-bold uppercase tracking-wider">Total Cost (Actual)</span>
+              <div className="text-xl font-black text-[#1677FF] mt-0.5">${(totalActual / 1000000).toFixed(2)}M</div>
             </div>
           </div>
 
@@ -228,14 +219,14 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           <div className="relative w-16 h-16 flex items-center justify-center flex-shrink-0">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
               <path
-                className="text-[#142036]"
+                className="text-[#EAEDF1]"
                 strokeWidth="3.5"
                 stroke="currentColor"
                 fill="none"
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               <path
-                className="text-emerald-400"
+                className="text-[#1677FF]"
                 strokeDasharray={`${progressPercent}, 100`}
                 strokeWidth="3.5"
                 strokeLinecap="round"
@@ -244,23 +235,23 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
-            <span className="absolute text-xs font-bold text-white">{progressPercent}%</span>
+            <span className="absolute text-xs font-bold text-[#171A1F]">{progressPercent}%</span>
           </div>
         </div>
 
         {/* Financial Line Breakdown */}
-        <div className="space-y-2 text-xs text-slate-300">
+        <div className="space-y-2 text-xs text-[#68707C]">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Committed (Subcontracts):</span>
-            <span className="font-bold text-white">${(totalCommitted / 1000000).toFixed(2)}M</span>
+            <span className="text-[#68707C]">Committed (Subcontracts):</span>
+            <span className="font-bold text-[#171A1F]">${(totalCommitted / 1000000).toFixed(2)}M</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Paid Invoices:</span>
-            <span className="font-bold text-slate-200">${(totalPaid / 1000000).toFixed(2)}M</span>
+            <span className="text-[#68707C]">Paid Invoices:</span>
+            <span className="font-bold text-[#171A1F]">${(totalPaid / 1000000).toFixed(2)}M</span>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400">Remaining Balance:</span>
-            <span className="font-bold text-emerald-400">${(totalRemaining / 1000000).toFixed(2)}M</span>
+          <div className="flex items-center justify-between pt-1 border-t border-[#EAEDF1]">
+            <span className="text-[#68707C]">Remaining Balance:</span>
+            <span className="font-bold text-emerald-700">${(totalRemaining / 1000000).toFixed(2)}M</span>
           </div>
         </div>
       </div>
@@ -268,10 +259,10 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
       {/* CSI Cost Codes Accordion */}
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">CSI MasterFormat Trades</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#68707C]">CSI MasterFormat Trades</h3>
           <button
             onClick={() => setIsAddCodeModalOpen(true)}
-            className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-[#1677FF] hover:text-[#0958D9] flex items-center gap-1 cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Code</span>
@@ -284,53 +275,53 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             return (
               <div 
                 key={cat.id}
-                className="rounded-2xl border border-[#142036] bg-[#0A111F] overflow-hidden"
+                className="rounded-2xl border border-[#DDE1E7] bg-white overflow-hidden shadow-xs"
               >
                 {/* Category Header */}
                 <button
                   type="button"
                   onClick={() => toggleCategory(cat.id)}
-                  className="w-full p-3.5 flex items-center justify-between cursor-pointer hover:bg-[#111A2C] transition-colors text-left"
+                  className="w-full p-3.5 flex items-center justify-between cursor-pointer hover:bg-[#F7F8FA] transition-colors text-left"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="text-blue-400">
+                    <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] flex items-center justify-center flex-shrink-0">
                       {getIcon(cat.icon)}
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-white">{cat.name}</h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">
+                      <h4 className="text-xs font-bold text-[#171A1F]">{cat.name}</h4>
+                      <p className="text-[11px] text-[#68707C] mt-0.5">
                         ${(cat.actualCost / 1000).toFixed(0)}K of ${(cat.estimatedCost / 1000).toFixed(0)}K
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-xs font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                    <span className="text-xs font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded border border-[#1677FF]/20">
                       {cat.estimatedCost > 0 ? Math.round((cat.actualCost / cat.estimatedCost) * 100) : 0}%
                     </span>
                     {isExpanded ? (
-                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                      <ChevronDown className="w-4 h-4 text-[#68707C]" />
                     ) : (
-                      <ChevronRight className="w-4 h-4 text-slate-400" />
+                      <ChevronRight className="w-4 h-4 text-[#68707C]" />
                     )}
                   </div>
                 </button>
 
-                {/* Expanded Cost Codes - Flat Design, No Nested Box Cards */}
+                {/* Expanded Cost Codes */}
                 {isExpanded && (
-                  <div className="px-3.5 pb-3.5 pt-0 border-t border-[#142036] bg-[#070D1A]/50 divide-y divide-[#142036]/50">
+                  <div className="px-3.5 pb-3.5 pt-0 border-t border-[#EAEDF1] bg-[#F7F8FA]/60 divide-y divide-[#EAEDF1]">
                     {cat.costCodes.map((cc) => (
                       <div key={cc.code} className="py-3 first:pt-2.5 last:pb-0 flex flex-col gap-2 animate-fade-in">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="font-mono text-[10px] font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.2 rounded border border-blue-500/20 flex-shrink-0">
+                            <span className="font-mono text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.2 rounded border border-[#1677FF]/20 flex-shrink-0">
                               {cc.code}
                             </span>
-                            <span className="font-bold text-white text-[12px] truncate">{cc.name}</span>
+                            <span className="font-bold text-[#171A1F] text-[12px] truncate">{cc.name}</span>
                           </div>
                           
                           <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className={`text-[10px] font-bold ${cc.variance <= 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                            <span className={`text-[11px] font-bold ${cc.variance <= 0 ? 'text-emerald-700' : 'text-amber-700'}`}>
                               {cc.variance <= 0 ? `-$${Math.abs(cc.variance).toLocaleString()}` : `+$${cc.variance.toLocaleString()}`}
                             </span>
                             <button
@@ -341,23 +332,23 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                                 setEditingBudget(String(cc.estimatedCost));
                                 setEditingCommitted(String(cc.actualCost));
                               }}
-                              className="text-[10px] font-bold text-blue-400 hover:text-blue-300 cursor-pointer active:scale-95 transition-all"
+                              className="text-[11px] font-bold text-[#1677FF] hover:text-[#0958D9] cursor-pointer active:scale-95 transition-all"
                             >
                               Edit
                             </button>
                           </div>
                         </div>
 
-                        {/* Cost Line Items - Flat Indented Row items */}
+                        {/* Cost Line Items */}
                         <div className="flex flex-col gap-1.5 pl-3">
                           {cc.items.map((item) => (
-                            <div key={item.id} className="flex items-center justify-between text-[12px] text-slate-400 py-0.5">
+                            <div key={item.id} className="flex items-center justify-between text-[12px] text-[#68707C] py-0.5">
                               <div className="flex items-center gap-1.5 min-w-0">
-                                <span className="w-1 h-1 rounded-full bg-slate-600 flex-shrink-0" />
-                                <span className="font-medium text-slate-300 truncate">{item.name}</span>
-                                <span className="text-[10px] uppercase text-slate-500 font-bold flex-shrink-0">({item.type})</span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#9DA5B1] flex-shrink-0" />
+                                <span className="font-medium text-[#171A1F] truncate">{item.name}</span>
+                                <span className="text-[10px] uppercase text-[#68707C] font-semibold flex-shrink-0">({item.type})</span>
                               </div>
-                              <span className="font-semibold text-slate-300 flex-shrink-0">${item.actualCost.toLocaleString()}</span>
+                              <span className="font-semibold text-[#171A1F] flex-shrink-0">${item.actualCost.toLocaleString()}</span>
                             </div>
                           ))}
                         </div>
@@ -373,13 +364,13 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
       {/* ─── ADD COST CODE MODAL ─── */}
       {isAddCodeModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[380px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-slate-100">
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-              <h3 className="text-xs font-bold text-white">Add CSI Cost Code</h3>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[380px] bg-white border border-[#DDE1E7] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-[#171A1F]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
+              <h3 className="text-xs font-bold text-[#171A1F]">Add CSI Cost Code</h3>
               <button
                 onClick={() => setIsAddCodeModalOpen(false)}
-                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+                className="w-6 h-6 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
               >
                 ✕
               </button>
@@ -387,11 +378,11 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
             <form onSubmit={handleAddCodeSubmit} className="flex flex-col gap-2.5 text-xs">
               <div>
-                <label className="text-[12px] text-slate-400 block mb-1">CSI Trade Division</label>
+                <label className="text-[12px] text-[#68707C] block mb-1 font-semibold">CSI Trade Division</label>
                 <select
                   value={tradeName}
                   onChange={(e) => setTradeName(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500 cursor-pointer"
+                  className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
                 >
                   <option value="03 - Concrete & Formwork">03 - Concrete & Formwork</option>
                   <option value="05 - Metals & Structural Steel">05 - Metals & Structural Steel</option>
@@ -401,53 +392,54 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               </div>
 
               <div>
-                <label className="text-[12px] text-slate-400 block mb-1">Cost Code Line Item Name *</label>
+                <label className="text-[12px] text-[#68707C] block mb-1 font-semibold">Cost Code Line Item Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Slab Rebar Reinforcement"
                   value={costCodeName}
                   onChange={(e) => setCostCodeName(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
-                />
+                  className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                >
+                </input>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[12px] text-slate-400 block mb-1">Budget Amount ($) *</label>
+                  <label className="text-[12px] text-[#68707C] block mb-1 font-semibold">Budget Amount ($) *</label>
                   <input
                     type="number"
                     required
                     placeholder="45000"
                     value={budgetAmount}
                     onChange={(e) => setBudgetAmount(e.target.value)}
-                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[12px] text-slate-400 block mb-1">Committed ($)</label>
+                  <label className="text-[12px] text-[#68707C] block mb-1 font-semibold">Committed ($)</label>
                   <input
                     type="number"
                     placeholder="38000"
                     value={committedAmount}
                     onChange={(e) => setCommittedAmount(e.target.value)}
-                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#EAEDF1] mt-1">
                 <button
                   type="button"
                   onClick={() => setIsAddCodeModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg bg-[#0E1A33] text-slate-300 text-xs font-semibold cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#F2F2F7] text-[#171A1F] text-xs font-semibold cursor-pointer hover:bg-[#EAEDF1]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="px-4 py-1.5 rounded-lg bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer"
                 >
                   Save Code
                 </button>
@@ -459,16 +451,16 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
       {/* ─── EDIT COST CODE MODAL ─── */}
       {editingCode && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[380px] bg-[#070D1A] border border-[#1E2E4A] rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5 text-slate-100">
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[380px] bg-white border border-[#DDE1E7] rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5 text-[#171A1F]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
               <div>
-                <h3 className="text-xs font-bold text-white">Edit CSI Cost Code ({editingCode.code})</h3>
-                <p className="text-[10px] text-slate-400 mt-0.5">Modify budget and actual costs</p>
+                <h3 className="text-xs font-bold text-[#171A1F]">Edit CSI Cost Code ({editingCode.code})</h3>
+                <p className="text-[10px] text-[#68707C] mt-0.5">Modify budget and actual costs</p>
               </div>
               <button
                 onClick={() => setEditingCode(null)}
-                className="w-6 h-6 rounded-full bg-[#0E1A33] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer text-xs"
+                className="w-6 h-6 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
               >
                 ✕
               </button>
@@ -476,54 +468,54 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
             <form onSubmit={handleEditCodeSubmit} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-[12px] text-slate-350 block mb-1">Cost Code Line Item Name *</label>
+                <label className="text-[12px] text-[#68707C] block mb-1 font-semibold">Cost Code Line Item Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Slab Rebar Reinforcement"
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)}
-                  className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                  className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[12px] text-slate-350 block mb-1">Budget Amount ($) *</label>
+                  <label className="text-[12px] text-[#68707C] block mb-1 font-semibold">Budget Amount ($) *</label>
                   <input
                     type="number"
                     required
                     placeholder="45000"
                     value={editingBudget}
                     onChange={(e) => setEditingBudget(e.target.value)}
-                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[12px] text-slate-350 block mb-1">Committed / Actual ($)</label>
+                  <label className="text-[12px] text-[#68707C] block mb-1 font-semibold">Committed / Actual ($)</label>
                   <input
                     type="number"
                     required
                     placeholder="38000"
                     value={editingCommitted}
                     onChange={(e) => setEditingCommitted(e.target.value)}
-                    className="w-full h-9 bg-[#050811] border border-[#142036] rounded-lg px-3 text-white text-xs outline-none focus:border-blue-500"
+                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#142036] mt-1">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#EAEDF1] mt-1">
                 <button
                   type="button"
                   onClick={() => setEditingCode(null)}
-                  className="px-3 py-1.5 rounded-lg bg-[#0E1A33] text-slate-300 text-xs font-semibold cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#F2F2F7] text-[#171A1F] text-xs font-semibold cursor-pointer hover:bg-[#EAEDF1]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="px-4 py-1.5 rounded-lg bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer"
                 >
                   Save Changes
                 </button>

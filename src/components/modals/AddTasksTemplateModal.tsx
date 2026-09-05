@@ -99,132 +99,70 @@ const TEMPLATE_GROUPS: TemplateTaskGroup[] = [
       {
         id: 'pre-5',
         title: 'Set up temporary power & water',
-        description: 'Utility hookup for jobsite temporary meter and standpipe.',
+        description: 'Temporary power pole install and municipal water hookup.',
         priority: 'High',
         milestone: 'Pre-Construction'
       },
       {
         id: 'pre-6',
-        title: 'Site clearing, tree protection & silt fencing',
-        description: 'Excavation perimeter protection and site boundary staking.',
+        title: 'Install silt fencing & erosion control',
+        description: 'Perimeter erosion barriers per environmental specs.',
         priority: 'Medium',
         milestone: 'Pre-Construction'
       }
     ]
   },
   {
-    id: 'concrete',
-    name: '3. Foundation & Concrete',
+    id: 'foundation',
+    name: '3. Site Work & Foundation',
     tasks: [
       {
-        id: 'con-1',
-        title: 'Excavation & footing trenches',
-        description: 'Dig continuous perimeter footings and grade beams.',
+        id: 'fnd-1',
+        title: 'Excavation & rough grading',
+        description: 'Mass excavation and site clearing to engineered pad elevation.',
         priority: 'High',
-        milestone: 'Substructure'
+        milestone: 'Substructure & Foundation'
       },
       {
-        id: 'con-2',
-        title: 'Under-slab plumbing & electrical rough-ins',
-        description: 'PVC sanitary sewer lines and power conduits below vapor barrier.',
+        id: 'fnd-2',
+        title: 'Underground plumbing rough-in inspection',
+        description: 'Sewer and under-slab plumbing piping pressure test and sign-off.',
         priority: 'Critical',
-        milestone: 'Substructure'
+        milestone: 'Substructure & Foundation'
       },
       {
-        id: 'con-3',
-        title: 'Vapor barrier & rebar grid installation',
-        description: '15-mil vapor barrier and grade 60 steel rebar placement.',
-        priority: 'High',
-        milestone: 'Substructure'
-      },
-      {
-        id: 'con-4',
-        title: 'Pre-pour municipal foundation inspection',
-        description: 'Building inspector sign-off prior to concrete truck delivery.',
+        id: 'fnd-3',
+        title: 'Form & pour post-tension slab foundation',
+        description: 'Rebar placement, vapor barrier, and monolithic concrete pour.',
         priority: 'Critical',
-        milestone: 'Substructure'
-      },
-      {
-        id: 'con-5',
-        title: 'Pour slab & foundation walls (4,000 PSI ready-mix)',
-        description: 'Concrete placement, vibrated and power troweled finish.',
-        priority: 'Critical',
-        milestone: 'Substructure'
+        milestone: 'Substructure & Foundation'
       }
     ]
   },
   {
     id: 'framing',
-    name: '4. Structural Framing',
+    name: '4. Framing & Structure',
     tasks: [
       {
         id: 'frm-1',
-        title: 'Sill plate installation & hurricane anchors',
-        description: 'Treated sill plates fastened with Simpson anchor bolts.',
-        priority: 'Critical',
-        milestone: 'Structural Framing'
+        title: 'First & second floor wood framing',
+        description: 'Wall plates, exterior shear walls, floor joists, and interior partitions.',
+        priority: 'High',
+        milestone: 'Superstructure Framing'
       },
       {
         id: 'frm-2',
-        title: 'First floor wall framing & shear panels',
-        description: '2x6 exterior framing with OSB shear wall strapping.',
+        title: 'Roof truss installation & decking',
+        description: 'Crane truss setting, bracing, and roof sheathing.',
         priority: 'High',
-        milestone: 'Structural Framing'
+        milestone: 'Superstructure Framing'
       },
       {
         id: 'frm-3',
-        title: 'Engineered floor joists & subfloor decking',
-        description: 'I-joists with glued and screwed 3/4 tongue & groove subfloor.',
-        priority: 'High',
-        milestone: 'Structural Framing'
-      },
-      {
-        id: 'frm-4',
-        title: 'Roof truss erection & hurricane clips',
-        description: 'Crane erection of roof trusses and H2.5A hurricane ties.',
+        title: 'Framing structural municipal inspection',
+        description: 'City building official structural framing inspection approval.',
         priority: 'Critical',
-        milestone: 'Structural Framing'
-      },
-      {
-        id: 'frm-5',
-        title: 'Roof sheathing & synthetic underlayment dry-in',
-        description: 'Roof OSB deck with waterproof peel-and-stick underlayment.',
-        priority: 'Critical',
-        milestone: 'Structural Framing'
-      }
-    ]
-  },
-  {
-    id: 'mep',
-    name: '5. Rough-In MEP (Trades)',
-    tasks: [
-      {
-        id: 'mep-1',
-        title: 'HVAC ductwork, line sets & air handlers',
-        description: 'Rigid trunk lines, flexible branch ducts and condenser lines.',
-        priority: 'High',
-        milestone: 'MEP Rough-In'
-      },
-      {
-        id: 'mep-2',
-        title: 'Plumbing supply (PEX) & drain-waste-vent (DWV)',
-        description: 'Pressure tested water supply lines and roof stack vents.',
-        priority: 'High',
-        milestone: 'MEP Rough-In'
-      },
-      {
-        id: 'mep-3',
-        title: 'Electrical wiring, panel & low voltage',
-        description: 'Romex branch circuits, home runs to 200A main panel and CAT6.',
-        priority: 'High',
-        milestone: 'MEP Rough-In'
-      },
-      {
-        id: 'mep-4',
-        title: 'Rough-in MEP municipal combination inspection',
-        description: 'Full multi-trade inspection sign-off before insulation.',
-        priority: 'Critical',
-        milestone: 'MEP Rough-In'
+        milestone: 'Superstructure Framing'
       }
     ]
   }
@@ -234,10 +172,9 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
   isOpen,
   onClose,
   onAddTasks,
-  projectName = 'Active Project',
+  projectName = 'Snell Isle Residence',
   projectId = 'proj-1'
 }) => {
-  // Collect all task IDs by default
   const allTaskIds = TEMPLATE_GROUPS.flatMap(g => g.tasks.map(t => t.id));
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set(allTaskIds));
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
@@ -310,45 +247,45 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[460px] bg-[#070D1A] border border-[#142036] rounded-3xl p-5 max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-slate-100">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+      <div className="w-full max-w-[460px] bg-white border border-[#DDE1E7] rounded-3xl p-5 max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F]">
         
         {/* Header */}
-        <div className="flex items-start justify-between pb-3.5 border-b border-[#142036]">
+        <div className="flex items-start justify-between pb-3.5 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0">
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">
-                Add Tasks — Southeast Template
+              <h3 className="text-sm sm:text-base font-bold text-[#171A1F] tracking-tight">
+                Add Tasks — Standard Build Template
               </h3>
-              <p className="text-xs text-slate-400 font-medium mt-0.5">
-                (Hurricane / Wind Zone) • Build Order
+              <p className="text-xs text-[#68707C] font-medium mt-0.5">
+                Standard Phase Construction Checklist
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Action Controls Bar: Selected Count + Select All / Deselect All */}
-        <div className="flex items-center justify-between py-3 border-b border-[#142036] text-xs">
-          <span className="font-bold text-blue-400">
+        <div className="flex items-center justify-between py-3 border-b border-[#EAEDF1] text-xs">
+          <span className="font-bold text-[#1677FF]">
             {selectedTaskIds.size} of {allTaskIds.length} tasks selected
           </span>
 
           <button
             type="button"
             onClick={toggleSelectAll}
-            className="text-xs text-slate-300 hover:text-white font-semibold flex items-center gap-1.5 cursor-pointer"
+            className="text-xs text-[#68707C] hover:text-[#171A1F] font-semibold flex items-center gap-1.5 cursor-pointer"
           >
-            <CheckSquare className="w-3.5 h-3.5 text-blue-400" />
+            <CheckSquare className="w-3.5 h-3.5 text-[#1677FF]" />
             <span>{selectedTaskIds.size === allTaskIds.length ? 'Deselect all' : 'Select all'}</span>
           </button>
         </div>
@@ -360,29 +297,29 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
             const groupSelectedCount = group.tasks.filter(t => selectedTaskIds.has(t.id)).length;
 
             return (
-              <div key={group.id} className="rounded-2xl bg-[#050811] border border-[#142036] overflow-hidden">
+              <div key={group.id} className="rounded-2xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs">
                 {/* Group Header */}
                 <div
                   onClick={() => toggleGroup(group.id)}
-                  className="p-3 bg-[#080E1D] flex items-center justify-between cursor-pointer hover:bg-[#0C152B] transition-colors"
+                  className="p-3 bg-[#F7F8FA] flex items-center justify-between cursor-pointer hover:bg-[#EAF3FF]/50 transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     {isCollapsed ? (
-                      <ChevronRight className="w-4 h-4 text-slate-400" />
+                      <ChevronRight className="w-4 h-4 text-[#68707C]" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-blue-400" />
+                      <ChevronDown className="w-4 h-4 text-[#1677FF]" />
                     )}
-                    <span className="text-xs font-bold text-white">{group.name}</span>
+                    <span className="text-xs font-bold text-[#171A1F]">{group.name}</span>
                   </div>
 
-                  <span className="text-[12px] font-bold text-slate-400 bg-[#050811] px-2 py-0.5 rounded-md border border-[#142036]">
+                  <span className="text-[12px] font-bold text-[#68707C] bg-white px-2 py-0.5 rounded-md border border-[#DDE1E7]">
                     {groupSelectedCount}/{group.tasks.length}
                   </span>
                 </div>
 
                 {/* Group Tasks */}
                 {!isCollapsed && (
-                  <div className="p-2 flex flex-col gap-1.5">
+                  <div className="p-2 flex flex-col gap-1.5 border-t border-[#EAEDF1]">
                     {group.tasks.map((task) => {
                       const isSelected = selectedTaskIds.has(task.id);
                       return (
@@ -391,25 +328,25 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
                           onClick={() => toggleTask(task.id)}
                           className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-start gap-2.5 ${
                             isSelected
-                              ? 'bg-[#0E1A33] border-[#1E325A] text-white'
-                              : 'bg-[#050811] border-transparent text-slate-400 hover:text-slate-200'
+                              ? 'bg-[#EAF3FF]/40 border-[#1677FF]/40 text-[#171A1F]'
+                              : 'bg-white border-[#EAEDF1] text-[#68707C] hover:bg-[#F7F8FA]'
                           }`}
                         >
                           <div className={`w-4 h-4 rounded-md border mt-0.5 flex items-center justify-center flex-shrink-0 transition-all ${
-                            isSelected ? 'bg-[#2563EB] border-blue-400 text-white' : 'border-[#1E2C48]'
+                            isSelected ? 'bg-[#1677FF] border-[#1677FF] text-white' : 'border-[#DDE1E7] bg-white'
                           }`}>
                             {isSelected && <CheckCircle2 className="w-3 h-3" />}
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-xs font-semibold leading-snug">{task.title}</h4>
-                            <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-1">{task.description}</p>
+                            <h4 className="text-xs font-semibold leading-snug text-[#171A1F]">{task.title}</h4>
+                            <p className="text-[11px] text-[#68707C] mt-0.5 line-clamp-1">{task.description}</p>
                           </div>
 
                           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${
                             task.priority === 'Critical'
-                              ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                              : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                              : 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20'
                           }`}>
                             {task.priority}
                           </span>
@@ -424,11 +361,11 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#142036] mt-auto">
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#EAEDF1] mt-auto">
           <button
             type="button"
             onClick={onClose}
-            className="h-10 px-4 rounded-xl border border-[#1E2C48] text-slate-300 text-xs font-semibold hover:bg-[#0E1A33] cursor-pointer"
+            className="h-10 px-4 rounded-xl border border-[#DDE1E7] bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] text-xs font-semibold cursor-pointer"
           >
             Cancel
           </button>
@@ -436,7 +373,7 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
             type="button"
             onClick={handleApply}
             disabled={selectedTaskIds.size === 0}
-            className="h-10 px-5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5"
+            className="h-10 px-5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] disabled:opacity-50 text-white text-xs font-bold shadow-xs cursor-pointer flex items-center gap-1.5 transition-all active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Add {selectedTaskIds.size} Tasks</span>

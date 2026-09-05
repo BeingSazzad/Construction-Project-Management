@@ -22,10 +22,10 @@ export const FilterPills: React.FC<FilterPillsProps> = ({
             key={option}
             type="button"
             onClick={() => onSelect(option)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border select-none active:scale-95 ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border select-none active:scale-95 ${
               isActive
-                ? 'bg-[#2563EB] border-blue-500 text-white font-bold shadow-sm'
-                : 'bg-[#070D1A] text-slate-400 hover:text-white border-[#142036]'
+                ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-xs'
+                : 'bg-white text-[#68707C] hover:text-[#171A1F] border-[#DDE1E7] hover:bg-[#F2F2F7]'
             }`}
           >
             {option}
