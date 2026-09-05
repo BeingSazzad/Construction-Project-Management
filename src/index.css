@@ -23,7 +23,7 @@
 .radius-sm { border-radius: 8px !important; }
 .radius-pill { border-radius: 9999px !important; }
 
-/* Custom Minimalist Scrollbars */
+/* Custom Minimalist Scrollbars (Light) */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -34,19 +34,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #DDE1E7;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #C4C9D2;
 }
 
-/* Base Typography & Background - Standard B2B Construction Grade */
+/* Base Typography & Background - Apple-inspired Light Monochrome */
 body {
   font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #060913;
-  color: #F8FAFC;
+  background-color: #F2F2F7;
+  color: #171A1F;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
@@ -105,7 +105,7 @@ body {
   white-space: nowrap !important;
 }
 
-/* Global Standardized Input Box Architecture */
+/* Global Standardized Input Box Architecture (Light) */
 /* 1. Large Input Box (Height: 48px, Radius: 16px) - Modal Forms, Main Search & Key Field Inputs */
 .input-lg {
   height: 48px !important;
@@ -113,17 +113,17 @@ body {
   padding-left: 1rem !important;
   padding-right: 1rem !important;
   border-radius: 1rem !important; /* rounded-2xl (16px) */
-  background-color: #090E1A !important;
-  border: 1px solid #1E2E4A !important;
-  color: #F8FAFC !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #DDE1E7 !important;
+  color: #171A1F !important;
   width: 100% !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 .input-lg:focus {
   outline: none !important;
-  border-color: #2563EB !important;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) !important;
+  border-color: #1677FF !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
 }
 
 /* 2. Medium Input Box (Height: 40px, Radius: 12px) - Standard Form Inputs & Dropdowns */
@@ -133,16 +133,16 @@ body {
   padding-left: 0.875rem !important;
   padding-right: 0.875rem !important;
   border-radius: 0.75rem !important; /* rounded-xl (12px) */
-  background-color: #090E1A !important;
-  border: 1px solid #1E2E4A !important;
-  color: #F8FAFC !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #DDE1E7 !important;
+  color: #171A1F !important;
   width: 100% !important;
   transition: border-color 0.2s ease !important;
 }
 
 .input-md:focus {
   outline: none !important;
-  border-color: #2563EB !important;
+  border-color: #1677FF !important;
 }
 
 /* 3. Small Input Box (Height: 32px, Radius: 8px) - Micro Search & Table Inline Filters */
@@ -152,15 +152,15 @@ body {
   padding-left: 0.75rem !important;
   padding-right: 0.75rem !important;
   border-radius: 0.5rem !important; /* rounded-lg (8px) */
-  background-color: #090E1A !important;
-  border: 1px solid #1E2E4A !important;
-  color: #F8FAFC !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #DDE1E7 !important;
+  color: #171A1F !important;
   transition: border-color 0.2s ease !important;
 }
 
 .input-sm:focus {
   outline: none !important;
-  border-color: #2563EB !important;
+  border-color: #1677FF !important;
 }
 
 /* Standard B2B Action Buttons */
@@ -173,7 +173,7 @@ body {
   justify-content: center;
   gap: 8px;
   border-radius: 16px;
-  background: #2563EB;
+  background: #1677FF;
   color: #FFFFFF;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -182,8 +182,8 @@ body {
 }
 
 .btn-lattice-primary:hover {
-  background: #1D4ED8;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  background: #0958D9;
+  box-shadow: 0 4px 14px rgba(22, 119, 255, 0.25);
 }
 
 .btn-lattice-primary:active {
@@ -199,58 +199,34 @@ body {
   justify-content: center;
   gap: 8px;
   border-radius: 16px;
-  background: #0E1526;
-  color: #E2E8F0;
-  border: 1px solid #1E2C48;
+  background: #FFFFFF;
+  color: #171A1F;
+  border: 1px solid #DDE1E7;
   transition: all 0.2s ease;
   cursor: pointer;
   width: 100%;
 }
 
 .btn-lattice-secondary:hover {
-  background: #141E34;
-  border-color: #2D436D;
+  background: #F8FAFC;
+  border-color: #C4C9D2;
 }
 
-/* Professional Enterprise Cards */
-.card-dark {
-  background: #0D1424;
-  border: 1px solid #1A263E;
+/* Light Enterprise Cards */
+.card-light {
+  background: #FFFFFF;
+  border: 1px solid #DDE1E7;
   border-radius: 24px;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.card-dark:hover {
-  border-color: #2B3D62;
+.card-light:hover {
+  border-color: #C4C9D2;
 }
 
-.card-dark-subtle {
-  background: #090E1A;
-  border: 1px solid #151F33;
+.card-light-subtle {
+  background: #EAEDF1;
+  border: 1px solid #DDE1E7;
   border-radius: 16px;
-}
-
-/* Input Autofill Styling */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 9999px #0D1424 inset !important;
-  box-shadow: 0 0 0 9999px #0D1424 inset !important;
-  -webkit-text-fill-color: #F8FAFC !important;
-  caret-color: #F8FAFC;
-  background-color: #0D1424 !important;
-  border-color: #1E2C48 !important;
-  transition: background-color 99999s ease-in-out 0s;
-}
-
-input:-webkit-autofill::first-line {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.875rem;
-  color: #F8FAFC;
-}
-
-input:autofill {
-  background-color: #0D1424 !important;
-  color: #F8FAFC !important;
 }

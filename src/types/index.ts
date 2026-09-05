@@ -70,6 +70,44 @@ export interface Project {
   type?: 'Custom Home' | 'Remodel' | 'New Construction' | 'Commercial' | 'Design-Build';
   masterCode?: string;
   dailyLogs?: DailyLogItem[];
+  stages?: ProjectStage[];
+  weather?: ProjectWeather;
+}
+
+export interface ProjectStage {
+  id: string;
+  name: 'Design' | 'Permitting' | 'Preconstruction' | 'Construction' | 'Closeout' | string;
+  status: 'Complete' | 'In Progress' | 'Upcoming';
+}
+
+export interface ProjectWeather {
+  temperature: string;
+  condition: string;
+  forecastRisk?: string;
+  highRiskTasks?: string[];
+  locationName?: string;
+}
+
+export interface ProjectUpdate {
+  id: string;
+  projectId: string;
+  author: {
+    name: string;
+    avatar: string;
+    role: string;
+  };
+  title: string;
+  description: string;
+  timestamp: string;
+  type: 'progress' | 'photo' | 'document' | 'decision_needed' | 'milestone';
+  decisionNeeded?: boolean;
+  decisionText?: string;
+  decisionStatus?: 'Pending' | 'Approved' | 'Resolved';
+  attachments?: {
+    name: string;
+    type: string;
+    url?: string;
+  }[];
 }
 
 export type TaskStatus = 'Not Started' | 'In Progress' | 'Blocked' | 'Completed';

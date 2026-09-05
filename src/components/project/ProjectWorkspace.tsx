@@ -3,7 +3,7 @@ import {
   Project, UserRole, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
   PunchStatus, TaskStatus, PlanGridPin, ProjectChatMessage, User,
-  ProjectStatus, DailyLogItem
+  ProjectStatus, DailyLogItem, ProjectUpdate
 } from '../../types';
 import { ProjectOverviewTab } from './ProjectOverviewTab';
 import { ProjectDailyLogsTab } from './ProjectDailyLogsTab';
@@ -15,11 +15,12 @@ import { ProjectDocumentsTab } from './ProjectDocumentsTab';
 import { ProjectTeamTab } from './ProjectTeamTab';
 import { ProjectReportsTab } from './ProjectReportsTab';
 import { ProjectScheduleTab } from './ProjectScheduleTab';
-import { LattiAssistant } from '../ai/LattiAssistant';
+import { ProjectUpdatesTab } from './ProjectUpdatesTab';
+import { MOCK_PROJECT_UPDATES } from '../../data/mockData';
 import { 
   Layers, DollarSign, CheckSquare, 
-  AlertCircle, Camera, FileText, Users2, 
-  BarChart3, Sparkles, MapPin, Calendar, ArrowLeft, ClipboardList 
+  Camera, FileText, Users2, 
+  Calendar, ArrowLeft, Activity 
 } from 'lucide-react';
 
 interface ProjectWorkspaceProps {
@@ -65,14 +66,12 @@ interface ProjectWorkspaceProps {
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   project,
   currentRole,
-  currentUser,
   activeSubTab,
   onSubTabChange,
   tasks,
   ganttItems,
   categories,
   punchItems,
-  subcontractors,
   photos,
   documents,
   reports,
@@ -87,8 +86,6 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onUploadDocument,
   onPreviewDocument,
   onExportReport,
-  onUpdateProjectStatus,
-  onOpenEditProject,
   onImportBudget,
   changeOrders,
   onCreateChangeOrder,
@@ -103,41 +100,28 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
     if (onSubTabChange) onSubTabChange(tab);
   };
 
-  // Quick Action / Field Capture pages that have dedicated views and are accessed directly from Overview Quick Actions
   const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents'].includes(activeTab);
 
-  // Core project tabs according to Reference Web Specs (Overview, Schedule, Budget, Team, Reports)
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
+    { id: 'budget', label: 'Budget', icon: DollarSign },
     { id: 'schedule', label: 'Schedule', icon: Calendar },
-    { id: 'budget', label: 'Budget', icon: DollarSign, hideFor: ['field'] },
+    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { id: 'updates', label: 'Updates', icon: Activity },
+    { id: 'documents', label: 'Documents', icon: FileText },
+    { id: 'photos', label: 'Photos', icon: Camera },
     { id: 'team', label: 'Team', icon: Users2 },
-    { id: 'reports', label: 'Reports', icon: BarChart3, hideFor: ['field'] },
   ];
 
-  const visibleTabs = allTabs.filter(t => !t.hideFor || !t.hideFor.includes(currentRole));
-
-  const getPageTitle = (tabId: string) => {
-    switch (tabId) {
-      case 'tasks': return 'Project Tasks';
-      case 'punch': return 'Punch List';
-      case 'photos': return 'Site Photos';
-      case 'documents': return 'Project Documents';
-      case 'schedule': return 'Schedule & Calendar';
-      case 'milestones': return 'Milestone Tracker';
-      default: return '';
-    }
-  };
-
   return (
-    <div className="w-full flex flex-col flex-1">
-      {/* Dynamic Header: Dedicated Back Header for Quick Action Pages vs Tab Scrollbar for Project Tabs */}
+    <div className="w-full flex flex-col flex-1 bg-[#F2F2F7]">
+      {/* Sub-navigation bar with light theme pills */}
       {isQuickActionPage ? (
-        <div className="w-full bg-[#060913]/95 backdrop-blur-md border-b border-[#142036] sticky top-0 z-20 px-5 py-2">
+        <div className="w-full bg-white border-b border-[#DDE1E7] sticky top-0 z-20 px-5 py-2">
           <div className="flex items-center justify-between max-w-[430px] mx-auto">
             <button
               onClick={() => setActiveTab('overview')}
-              className="flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white cursor-pointer transition-all bg-[#0D1424] hover:bg-[#142036] px-3 py-1.5 rounded-xl border border-[#1E2E4A] active:scale-95 shadow-sm"
+              className="flex items-center gap-1.5 text-xs font-bold text-[#171A1F] hover:text-[#1677FF] cursor-pointer transition-all bg-[#F2F2F7] hover:bg-[#EAEDF1] px-3 py-1.5 rounded-xl border border-[#DDE1E7] active:scale-95 shadow-sm"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Overview</span>
@@ -145,9 +129,9 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           </div>
         </div>
       ) : (
-        <div className="w-full bg-[#060913] border-b border-[#142036] sticky top-0 z-20">
-          <div className="flex items-center gap-1 overflow-x-auto scrollbar-none px-5 py-2.5 max-w-[430px] mx-auto">
-            {visibleTabs.map((tab) => {
+        <div className="w-full bg-white border-b border-[#DDE1E7] sticky top-0 z-20">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-5 py-2.5 max-w-[430px] mx-auto">
+            {allTabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
@@ -156,8 +140,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0 active:scale-95 ${
                     isActive
-                      ? 'bg-[#2563EB] text-white shadow-md shadow-blue-500/30 ring-1 ring-blue-400/50'
-                      : 'bg-[#0D1424] text-slate-400 hover:text-slate-200 border border-[#1A263E]'
+                      ? 'bg-[#1677FF] text-white shadow-sm'
+                      : 'bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7]'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -171,7 +155,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
       {/* Main Workspace Body Content */}
       <div className="flex-1 overflow-y-auto">
-        {(activeTab === 'overview' || !['daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule', 'milestones'].includes(activeTab)) && (
+        {(activeTab === 'overview' || !['updates', 'daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule'].includes(activeTab)) && (
           <ProjectOverviewTab
             project={project}
             tasks={tasks}
@@ -182,7 +166,14 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onNavigate={(subTab) => setActiveTab(subTab)}
             changeOrders={changeOrders}
             onCreateChangeOrder={onCreateChangeOrder}
-            onUpdateTaskStatus={onUpdateTaskStatus}
+          />
+        )}
+
+        {activeTab === 'updates' && (
+          <ProjectUpdatesTab
+            project={project}
+            updates={MOCK_PROJECT_UPDATES.filter(u => u.projectId === project.id)}
+            onAddUpdate={() => alert("Post update to feed")}
           />
         )}
 
@@ -218,7 +209,6 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {/* Quick Action Dedicated Full Views */}
         {activeTab === 'tasks' && (
           <ProjectTasksTab
             project={project}
@@ -257,14 +247,13 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {(activeTab === 'schedule' || activeTab === 'milestones') && (
+        {activeTab === 'schedule' && (
           <ProjectScheduleTab
             project={project}
             tasks={tasks}
             ganttItems={ganttItems}
             onCreateTask={onCreateTask}
             onUpdateTaskStatus={onUpdateTaskStatus}
-            isMilestoneView={activeTab === 'milestones'}
           />
         )}
       </div>

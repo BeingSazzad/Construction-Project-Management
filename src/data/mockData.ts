@@ -2,18 +2,18 @@ import {
   User, Project, Task, GanttItem, TradeCategory, 
   PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, NotificationItem,
   DailyLogItem, PlanGridPin, FinancingDraw, LienWaiver, OpportunityDeal, ProjectChatMessage,
-  ChangeOrder, CalendarEventItem
+  ChangeOrder, CalendarEventItem, ProjectUpdate
 } from '../types';
 
 export const CURRENT_USERS: Record<string, User> = {
   admin: {
     id: 'usr_admin',
-    name: 'Alex Chen',
-    email: 'alex.chen@averymarsh.com',
+    name: 'Avery Scott',
+    email: 'avery.scott@averymarsh.com',
     role: 'admin',
-    roleTitle: 'Company Owner & Principal',
+    roleTitle: 'Managing Principal & Founder',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    company: 'Lattice Construction Group',
+    company: 'Avery & Marsh Construction',
     phone: '+1 (555) 234-5678',
     assignedProjects: ['proj-1', 'proj-2', 'proj-3', 'proj-4', 'proj-5']
   },
@@ -24,7 +24,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'pm',
     roleTitle: 'Senior Project Manager',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    company: 'Lattice Construction Group',
+    company: 'Avery & Marsh Construction',
     phone: '+1 (555) 345-6789',
     assignedProjects: ['proj-1', 'proj-2', 'proj-3']
   },
@@ -35,7 +35,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'finance',
     roleTitle: 'Director of Project Finance',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    company: 'Lattice Construction Group',
+    company: 'Avery & Marsh Construction',
     phone: '+1 (555) 456-7890',
     assignedProjects: ['proj-1', 'proj-2', 'proj-3', 'proj-4', 'proj-5']
   },
@@ -46,7 +46,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'field',
     roleTitle: 'Lead Field Superintendent',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    company: 'Lattice Construction Group',
+    company: 'Avery & Marsh Construction',
     phone: '+1 (555) 567-8901',
     assignedProjects: ['proj-1', 'proj-2']
   }
@@ -55,42 +55,56 @@ export const CURRENT_USERS: Record<string, User> = {
 export const MOCK_PROJECTS: Project[] = [
   {
     id: 'proj-1',
-    name: 'Riverside Office Complex',
-    code: 'ROC-2025',
-    location: '450 Waterfront Blvd',
-    cityState: 'New York, NY',
-    status: 'In Progress',
-    progress: 66,
-    startDate: '2024-09-01',
-    targetEndDate: '2025-11-30',
+    name: 'Snell Isle Residence',
+    code: 'SIR-2025',
+    location: '1840 Brightwaters Blvd NE',
+    cityState: 'Tampa, FL',
+    status: 'On Schedule',
+    progress: 62,
+    startDate: '2024-10-01',
+    targetEndDate: '2025-08-30',
     projectManager: {
       id: 'usr_pm',
       name: 'Sarah Johnson',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
     },
     budget: {
-      total: 4650000,
-      committed: 3850000,
-      actual: 3250000,
-      paid: 2800000,
-      remaining: 1400000,
-      variance: -230000, // under budget favorable
-      costToComplete: 1150000
+      total: 1840000,
+      committed: 1420000,
+      actual: 980000,
+      paid: 820000,
+      remaining: 860000,
+      variance: -60000,
+      costToComplete: 860000
     },
     metrics: {
-      totalTasks: 128,
-      completedTasks: 84,
-      overdueTasks: 2,
-      openPunchItems: 12,
-      totalMilestones: 9,
-      completedMilestones: 5
+      totalTasks: 48,
+      completedTasks: 30,
+      overdueTasks: 1,
+      openPunchItems: 4,
+      totalMilestones: 5,
+      completedMilestones: 3
     },
-    thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
-    coverImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80',
-    description: '14-story Class A commercial office building featuring curtain wall facade, LEED Gold target, and multi-tenant high-efficiency HVAC.',
-    clientName: 'Waterfront Development LLC',
-    type: 'Commercial',
-    masterCode: '1234',
+    stages: [
+      { id: 'stg-1', name: 'Design', status: 'Complete' },
+      { id: 'stg-2', name: 'Permitting', status: 'Complete' },
+      { id: 'stg-3', name: 'Preconstruction', status: 'Complete' },
+      { id: 'stg-4', name: 'Construction', status: 'In Progress' },
+      { id: 'stg-5', name: 'Closeout', status: 'Upcoming' }
+    ],
+    weather: {
+      temperature: '82°F',
+      condition: 'Sunny · Rain Expected Thursday',
+      forecastRisk: 'Heavy rain expected Thursday may affect scheduled concrete pour',
+      highRiskTasks: ['Concrete Pour', 'Framing Inspection'],
+      locationName: 'Tampa, FL'
+    },
+    thumbnail: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80',
+    description: 'Luxury coastal modern waterfront residence featuring post-tension concrete foundation, impact glass curtain walls, and high-performance building envelope.',
+    clientName: 'Arthur & Evelyn Vance',
+    type: 'Custom Home',
+    masterCode: '1840',
     dailyLogs: [
       {
         id: 'dl-101',
@@ -433,56 +447,80 @@ export const MOCK_TASKS: Task[] = [
   {
     id: 'tsk-1',
     projectId: 'proj-1',
-    projectName: 'Riverside Office Complex',
-    title: 'Concrete Pour - L12 Deck',
-    description: 'Coordinate ready-mix trucks and pump crew for Level 12 elevated post-tensioned deck slab pour. Slump testing and cylinder tests required on-site.',
+    projectName: 'Snell Isle Residence',
+    title: 'Framing Inspection',
+    description: 'City structural inspector on-site for framing rough-in inspection for Building A main residence envelope.',
     assignee: {
       id: 'usr_field',
       name: 'John Smith',
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-      role: 'Superintendent'
+      role: 'Lead Superintendent'
     },
-    startDate: '2025-05-18',
-    dueDate: '2025-05-20',
+    startDate: '2025-05-16',
+    dueDate: '2025-05-16',
     priority: 'High',
     status: 'In Progress',
-    milestone: 'Structural Framing',
-    costCode: '03-3000 Cast-in-Place Concrete',
+    milestone: 'Framing Inspection',
+    costCode: '06-1000 Rough Carpentry',
     subtasks: [
-      { id: 'st-1', title: 'Verify rebar clearance & chair spacing', completed: true },
-      { id: 'st-2', title: 'Pre-pour inspection with city inspector', completed: true },
-      { id: 'st-3', title: 'Execute continuous batch pour (450 cu yd)', completed: false },
-      { id: 'st-4', title: 'Power trowel finish & apply curing compound', completed: false }
+      { id: 'st-1', title: 'Verify hurricane strap nailing schedule', completed: true },
+      { id: 'st-2', title: 'Sign off municipal inspection card', completed: false }
     ],
-    attachmentsCount: 3,
-    notesCount: 5,
-    location: 'Level 12 Deck - Grid Line C4 to F8'
+    attachmentsCount: 2,
+    notesCount: 3,
+    location: '10:00 AM · Building A'
   },
   {
     id: 'tsk-2',
     projectId: 'proj-1',
-    projectName: 'Riverside Office Complex',
-    title: 'Rebar Installation - South Shear Wall',
-    description: 'Tie #8 and #11 vertical rebar bars for Level 12 shear walls according to structural sheet S-204.',
+    projectName: 'Snell Isle Residence',
+    title: 'MEP Rough-In',
+    description: 'Coordinate mechanical, electrical, and plumbing rough-in penetration lines across first floor ceiling plenum.',
     assignee: {
       id: 'usr_field',
       name: 'John Smith',
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-      role: 'Superintendent'
+      role: 'Lead Superintendent'
     },
-    startDate: '2025-05-19',
-    dueDate: '2025-05-21',
+    startDate: '2025-05-16',
+    dueDate: '2025-05-18',
     priority: 'Medium',
     status: 'In Progress',
-    milestone: 'Structural Framing',
-    costCode: '03-2000 Concrete Reinforcing',
+    milestone: 'MEP Rough-in',
+    costCode: '15-4000 Mechanical & Plumbing',
     subtasks: [
-      { id: 'st-21', title: 'Verify lap splice lengths (48 bar diameters)', completed: true },
-      { id: 'st-22', title: 'Secure tie wires & corner dowels', completed: false }
+      { id: 'st-21', title: 'Route PVC drain waste vents', completed: true },
+      { id: 'st-22', title: 'Pull home-run Romex wiring', completed: false }
     ],
-    attachmentsCount: 2,
+    attachmentsCount: 1,
     notesCount: 2,
-    location: 'Level 12 - South Core'
+    location: '1:30 PM · Building A'
+  },
+  {
+    id: 'tsk-weather',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
+    title: 'Concrete Pour - Level 2 Deck',
+    description: 'Batch plant mix pour for Level 2 post-tension deck. Weather radar indicates heavy rain Thursday—requires monitoring or rescheduling.',
+    assignee: {
+      id: 'usr_pm',
+      name: 'Sarah Johnson',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+      role: 'Project Manager'
+    },
+    startDate: '2025-05-22',
+    dueDate: '2025-05-22',
+    priority: 'Critical',
+    status: 'Not Started',
+    milestone: 'Structural Slab',
+    costCode: '03-3000 Cast-in-Place Concrete',
+    subtasks: [
+      { id: 'st-w1', title: 'Confirm weather protection tarps on site', completed: false },
+      { id: 'st-w2', title: 'Coordinate schedule with Apex Ready-Mix', completed: false }
+    ],
+    attachmentsCount: 3,
+    notesCount: 4,
+    location: 'Level 2 Elevated Deck'
   },
   {
     id: 'tsk-3',
@@ -1761,6 +1799,60 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     projectName: 'Metro Logistics Warehouse',
     priority: 'High',
     time: '08:00 AM'
+  }
+];
+
+export const MOCK_PROJECT_UPDATES: ProjectUpdate[] = [
+  {
+    id: 'upd-1',
+    projectId: 'proj-1',
+    author: {
+      name: 'Sarah Johnson',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+      role: 'Project Manager'
+    },
+    title: 'Framing Stage Signoff & City Inspection Prep',
+    description: 'First floor structural wood framing and steel flitch beams completed. Pre-inspection walkthrough done. Building permit card posted on site.',
+    timestamp: 'Today · 9:15 AM',
+    type: 'progress',
+    decisionNeeded: false,
+    attachments: [
+      { name: 'Framing-Inspection-Checklist.pdf', type: 'document' },
+      { name: 'East-Elevation-Framed.jpg', type: 'photo' }
+    ]
+  },
+  {
+    id: 'upd-2',
+    projectId: 'proj-1',
+    author: {
+      name: 'John Smith',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+      role: 'Superintendent'
+    },
+    title: 'Exterior Stucco Finish & Cladding Color Confirmation',
+    description: 'Sample boards installed on south wall. Need client/architect final signoff between Sherwin-Williams Alabaster vs Pure White before batch order.',
+    timestamp: 'Yesterday · 3:45 PM',
+    type: 'decision_needed',
+    decisionNeeded: true,
+    decisionText: 'Approve final exterior stucco tint sample (SW 7008 vs SW 7005)',
+    decisionStatus: 'Pending',
+    attachments: [
+      { name: 'Stucco-Color-Mockup.jpg', type: 'photo' }
+    ]
+  },
+  {
+    id: 'upd-3',
+    projectId: 'proj-1',
+    author: {
+      name: 'Michael Chang',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      role: 'Finance Director'
+    },
+    title: 'Approved Change Order #04 (Kitchen Island Stone Upgrade)',
+    description: 'Client approved $12,400 change order for Calacatta Gold waterfall island slab. Subcontractor purchase order issued.',
+    timestamp: 'May 14, 2025',
+    type: 'milestone',
+    decisionNeeded: false
   }
 ];
 

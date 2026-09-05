@@ -24,13 +24,10 @@ import { SideDrawer } from './components/common/SideDrawer';
 import { AuthScreens } from './components/auth/AuthScreens';
 import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
 
-// Dashboards
-import { SimpleHomeView } from './components/dashboards/SimpleHomeView';
-import { AdminDashboard } from './components/dashboards/AdminDashboard';
-import { PMDashboard } from './components/dashboards/PMDashboard';
-import { FinanceDashboard } from './components/dashboards/FinanceDashboard';
-import { FinanceHomeView } from './components/dashboards/FinanceHomeView';
-import { FieldDashboard } from './components/dashboards/FieldDashboard';
+// Core Home Screen (Figma Screen 1)
+import { HomeScreen } from './components/dashboards/HomeScreen';
+import { MoreHubView } from './components/settings/MoreHubView';
+import { CentralAddActionSheet } from './components/modals/CentralAddActionSheet';
 
 // Projects & Workspace
 import { ProjectsList } from './components/project/ProjectsList';
@@ -703,78 +700,23 @@ export function App() {
             ) : (
               /* Global Hub Views */
               <>
-                {/* 1. ROLE-SPECIFIC HOME DASHBOARD */}
+                {/* 1. CORE HOME DASHBOARD (Figma Screen 1) */}
                 {activeTab === 'home' && (
-                  currentRole === 'finance' ? (
-                    <FinanceHomeView
-                      projects={projects}
-                      categories={categories}
-                      draws={draws}
-                      lienWaivers={lienWaivers}
-                      onSelectProject={handleSelectProject}
-                      onOpenDraws={() => setActiveTab('finance')}
-                      onOpenLienWaivers={() => setActiveTab('finance')}
-                      onOpenBudgets={() => setActiveTab('budgets')}
-                      onOpenOpportunities={() => setActiveTab('opportunities')}
-                      onRequestDraw={() => setIsCreateDrawOpen(true)}
-                      onRecordLienWaiver={() => setIsRecordLienWaiverOpen(true)}
-                      onApprovePayApp={() => setIsApprovePayAppOpen(true)}
-                      onOpenLatti={() => setActiveTab('latti')}
-                    />
-                  ) : currentRole === 'pm' ? (
-                    <PMDashboard
-                      projects={projects}
-                      tasks={tasks}
-                      onSelectProject={handleSelectProject}
-                      onOpenTask={(t) => setSelectedTask(t)}
-                      onCreateTask={() => setIsTaskTypeSelectOpen(true)}
-                      onOpenSchedule={() => setActiveTab('calendar')}
-                      onOpenLatti={() => setActiveTab('latti')}
-                    />
-                  ) : currentRole === 'field' ? (
-                    <FieldDashboard
-                      projects={projects}
-                      tasks={tasks}
-                      photos={photos}
-                      onOpenTask={(t) => setSelectedTask(t)}
-                      onUpdateTaskStatus={handleUpdateTaskStatus}
-                      onTriggerPhotoUpload={() => setIsPhotoUploadOpen(true)}
-                      onViewDrawings={() => setActiveTab('buildscope')}
-                      onSelectProject={handleSelectProject}
-                      onOpenSchedule={() => setActiveTab('calendar')}
-                      onOpenMessages={() => setActiveTab('messages')}
-                      onOpenDailyLog={() => {
-                        handleSelectProject(projects[0]);
-                      }}
-                    />
-                  ) : (
-                    <SimpleHomeView
-                      currentUser={currentUser}
-                      projects={projects}
-                      tasks={tasks}
-                      onSelectProject={handleSelectProject}
-                      onOpenLatti={() => setActiveTab('latti')}
-                      onOpenMessages={() => setActiveTab('messages')}
-                      onOpenCalendar={() => setActiveTab('calendar')}
-                      onOpenTasks={() => {
-                        handleSelectProject(projects[0]);
-                      }}
-                      onOpenProjects={() => setActiveTab('projects')}
-                      onOpenBudgets={() => setActiveTab('budgets')}
-                      onOpenOpportunities={() => setActiveTab('opportunities')}
-                      onOpenNewProject={() => setIsCreateProjectOpen(true)}
-                      onOpenTeam={() => setActiveTab('team')}
-                      onOpenReports={() => setActiveTab('reports')}
-                    />
-                  )
+                  <HomeScreen
+                    projects={projects}
+                    tasks={tasks}
+                    onSelectProject={handleSelectProject}
+                    onOpenProjects={() => setActiveTab('projects')}
+                    onOpenLatti={() => setActiveTab('latti')}
+                    onOpenTask={(t) => setSelectedTask(t)}
+                    onOpenTasks={() => {
+                      handleSelectProject(projects[0]);
+                      setProjectSubTab('tasks');
+                    }}
+                  />
                 )}
 
-                {/* 2. OPPORTUNITIES / DEALS TAB */}
-                {activeTab === 'opportunities' && (
-                  <OpportunitiesView />
-                )}
-
-                {/* 3. PROJECTS MASTER LIST */}
+                {/* 2. PROJECTS MASTER LIST (Figma Screen 2) */}
                 {activeTab === 'projects' && (
                   <ProjectsList
                     projects={projects}
@@ -783,71 +725,15 @@ export function App() {
                   />
                 )}
 
-                {/* 4. BUDGETS HUB TAB */}
-                {activeTab === 'budgets' && (
-                  <BudgetsHubView 
-                    onOpenImportBudget={() => setIsImportBudgetOpen(true)}
-                    onSelectBudgetName={(name) => setActiveBudgetName(name)}
-                  />
-                )}
-
-                {/* 4.5 FINANCE DEEP-DIVE TAB */}
-                {activeTab === 'finance' && (
-                  <FinanceDashboard
-                    projects={projects}
-                    categories={categories}
-                    onSelectProject={(p) => setActiveProject(p)}
-                    onOpenBudgetDetails={() => setActiveTab('budgets')}
-                    onOpenReports={() => setActiveTab('reports')}
-                    onOpenLatti={() => setActiveTab('latti')}
-                    onOpenOpportunities={() => setActiveTab('opportunities')}
-                  />
-                )}
-
-                {/* 5. MESSAGES & DISCUSSIONS HUB */}
-                {activeTab === 'messages' && (
-                  <MessagesHubView
-                    currentUser={currentUser}
-                    projects={projects}
-                    chatMessages={chatMessages}
-                    onSendMessage={handleSendMessage}
-                    onSelectProject={(p) => setActiveProject(p)}
-                  />
-                )}
-
-                {/* 5.5 CALENDAR & INSPECTIONS MASTER HUB */}
-                {activeTab === 'calendar' && (
-                  <CalendarView
-                    projects={projects}
-                    events={calendarEvents}
-                    onSelectProject={handleSelectProject}
-                    onAddEvent={(evt) => setCalendarEvents(prev => [evt, ...prev])}
-                  />
-                )}
-
-                {/* 6. TEAM DIRECTORY HUB */}
-                {activeTab === 'team' && (
-                  <TeamHubView currentUser={currentUser} />
-                )}
-
-                {/* 6. REPORTS TAB */}
-                {activeTab === 'reports' && (
-                  <ProjectReportsTab
-                    project={projects[0]}
-                    reports={reports}
-                    onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
-                  />
-                )}
-
-                {/* 7. LATTI AI ASSISTANT */}
+                {/* 3. LATTI AI ASSISTANT (Figma Screen 5) */}
                 {activeTab === 'latti' && (
                   <LattiAssistant
                     currentRole={currentRole}
-                    activeProject={null}
+                    activeProject={activeProject}
                     tasks={tasks}
                     punchItems={punchItems}
                     onNavigate={(tab) => {
-                      if (tab === 'overview' || tab === 'tasks') {
+                      if (tab === 'projects' || tab === 'overview') {
                         handleSelectProject(projects[0]);
                       } else {
                         setActiveTab(tab);
@@ -856,28 +742,26 @@ export function App() {
                   />
                 )}
 
-                {/* 7.5 BUILDSCOPE AI TAKEOFF HUB */}
-                {activeTab === 'buildscope' && (
-                  <BuildScopeView />
-                )}
-
-                {/* 7.6 DEDICATED AI INTELLIGENCE CENTER */}
-                {activeTab === 'intelligence-center' && (
-                  <AIIntelligenceCenterView
-                    projects={projects}
-                    onSelectProject={handleSelectProject}
-                    onOpenLatti={() => setActiveTab('latti')}
-                    onOpenBudgets={() => setActiveTab('budgets')}
-                  />
-                )}
-
-                {/* 8. MORE / SETTINGS VIEW */}
+                {/* 4. MORE HUB (Company Profile, Contacts, Settings) */}
                 {activeTab === 'more' && (
-                  <SettingsView
+                  <MoreHubView
                     currentUser={currentUser}
                     onSignOut={() => setAppView('auth')}
-                    onNavigateTab={(t) => setActiveTab(t)}
+                    onNavigateTab={(t) => {
+                      if (t === 'team') {
+                        setActiveTab('team');
+                      } else if (t === 'notifications') {
+                        setActiveTab('notifications');
+                      } else {
+                        setActiveTab(t);
+                      }
+                    }}
                   />
+                )}
+
+                {/* 5. TEAM DIRECTORY FALLBACK */}
+                {activeTab === 'team' && (
+                  <TeamHubView currentUser={currentUser} />
                 )}
 
                 {/* 9. NOTIFICATIONS DRAWER */}
@@ -960,9 +844,8 @@ export function App() {
             )}
           </div>
 
-          {/* Bottom Navigation */}
+          {/* Bottom Navigation (5 Unified Launch Tabs) */}
           <BottomNav
-            currentRole={currentRole}
             activeTab={activeTab}
             onTabChange={(tab) => {
               setActiveProject(null);
@@ -1001,212 +884,28 @@ export function App() {
         </div>
       )}
 
-      {/* FLOATING QUICK ACTION BOTTOM SHEET (+) */}
-      {isQuickActionSheetOpen && (
-        <div 
-          onClick={() => setIsQuickActionSheetOpen(false)}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-sm animate-fade-in font-sans"
-        >
-          <div 
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-[430px] bg-[#070D1A] border-t border-x border-[#142036] rounded-t-[28px] rounded-b-none p-5 pb-9 shadow-2xl flex flex-col gap-3 text-slate-100 animate-slide-up"
-          >
-            {/* Top Pull Indicator Bar */}
-            <div className="w-10 h-1 rounded-full bg-slate-600/50 mx-auto -mt-1 mb-1" />
-
-            {/* Header matching user's design */}
-            <div className="flex items-center justify-between pb-2 border-b border-[#142036]">
-              <h3 className="text-sm font-bold text-white tracking-tight">Create New</h3>
-              <button
-                onClick={() => setIsQuickActionSheetOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#0E1A33] border border-[#1E293B] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer active:scale-95 transition-all text-xs"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Role-Tailored Quick Actions */}
-            <div className="flex flex-col gap-2 pt-0.5">
-              {currentRole === 'finance' ? (
-                <>
-                  {/* F1. Request Lender Draw */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsCreateDrawOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-blue-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Landmark className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-blue-400 transition-colors">Request Lender Draw (AIA G702)</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* F2. Process Pay Application */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsApprovePayAppOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-purple-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <DollarSign className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-purple-400 transition-colors">Process Pay Application</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* F3. Record Lien Waiver */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsRecordLienWaiverOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-emerald-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <FileCheck className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Record Lien Waiver</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* F4. Import / Master Budget */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsImportBudgetOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-cyan-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <FileSpreadsheet className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-cyan-400 transition-colors">Import CSI Master Budget</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* F5. Latti Deal Analyzer */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsDealAnalyzerOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-amber-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">Underwrite Pro-Forma Deal</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors flex-shrink-0" />
-                  </button>
-                </>
-              ) : (
-                <>
-                  {/* 1. New Construction Project */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsCreateProjectOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-blue-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <FolderKanban className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-blue-400 transition-colors">New Construction Project</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* 2. Project Budget */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsCreateBudgetOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-purple-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <DollarSign className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-purple-400 transition-colors">Project Budget</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* 3. New Construction Task */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsTaskTypeSelectOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-amber-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <CheckSquare className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-amber-400 transition-colors">New Construction Task</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* 4. Latti Deal Analyzer™ */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setIsDealAnalyzerOpen(true);
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-emerald-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">Latti Deal Analyzer™</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
-                  </button>
-
-                  {/* 5. BuildScope AI Takeoff */}
-                  <button
-                    onClick={() => {
-                      setIsQuickActionSheetOpen(false);
-                      setActiveProject(null);
-                      setActiveTab('buildscope');
-                    }}
-                    className="p-3 bg-[#091122] hover:bg-[#0E1A33] border border-[#172540] hover:border-sky-500/40 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-sm"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                      <Layers className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-white leading-tight group-hover:text-sky-400 transition-colors">BuildScope AI Takeoff</h4>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 transition-colors flex-shrink-0" />
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* CENTRAL ADD (+) ACTION SHEET */}
+      <CentralAddActionSheet
+        isOpen={isQuickActionSheetOpen}
+        onClose={() => setIsQuickActionSheetOpen(false)}
+        onAddTask={() => {
+          setIsTaskTypeSelectOpen(true);
+        }}
+        onAddUpdate={() => {
+          if (!activeProject) setActiveProject(projects[0]);
+          setProjectSubTab('updates');
+        }}
+        onAddExpense={() => {
+          setIsCreateChangeOrderOpen(true);
+        }}
+        onAddPhoto={() => {
+          setIsPhotoUploadOpen(true);
+        }}
+        onAddDocument={() => {
+          if (!activeProject) setActiveProject(projects[0]);
+          setProjectSubTab('documents');
+        }}
+      />
 
       {/* TASK CREATION TYPE SELECTION MODAL */}
       <TaskCreationTypeModal
