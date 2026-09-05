@@ -166,9 +166,9 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
 
   const stats = {
     total: team.length,
-    active: team.filter(m => m.status === 'Active').length,
-    onSite: team.filter(m => m.presence === 'On Site').length,
-    inOffice: team.filter(m => m.presence === 'In Office').length,
+    pm: team.filter(m => m.roleGroup === 'PM').length,
+    finance: team.filter(m => m.roleGroup === 'Finance').length,
+    field: team.filter(m => m.roleGroup === 'Field').length,
   };
 
   const handleSendInvite = (e: React.FormEvent) => {
@@ -184,8 +184,8 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
       email: inviteEmail.trim(),
       phone: invitePhone.trim() || '+1 (555) 000-0000',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-      status: 'Invited',
-      presence: 'Off Duty',
+      status: 'Active',
+      presence: 'In Office',
       assignedProjects: [],
       certifications: ['OSHA 10 (Pending)'],
       emergencyContact: { name: 'N/A', relation: 'Contact', phone: '+1 (555) 000-0000' },
@@ -209,7 +209,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-base font-black text-white tracking-tight">Team Directory</h1>
-          <p className="text-[11px] text-slate-400 font-medium">Company staff, roles & field assignments</p>
+          <p className="text-[11px] text-slate-400 font-medium">Company members & organizational roles</p>
         </div>
         <button
           onClick={() => setIsInviteOpen(true)}
@@ -230,21 +230,21 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
 
       {/* ── KPI Stats Bar ── */}
       <div className="grid grid-cols-4 gap-2 text-center">
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[68px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total Staff</span>
+        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total</span>
           <span className="text-base font-black text-white tabular-nums">{stats.total}</span>
         </div>
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[68px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">On Site</span>
-          <span className="text-base font-black text-emerald-400 tabular-nums">{stats.onSite}</span>
+        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">PM</span>
+          <span className="text-base font-black text-blue-400 tabular-nums">{stats.pm}</span>
         </div>
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[68px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Office</span>
-          <span className="text-base font-black text-blue-400 tabular-nums">{stats.inOffice}</span>
+        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Finance</span>
+          <span className="text-base font-black text-emerald-400 tabular-nums">{stats.finance}</span>
         </div>
-        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[68px]">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Active</span>
-          <span className="text-base font-black text-white tabular-nums">{stats.active}</span>
+        <div className="p-2.5 rounded-xl bg-[#060B17] border border-[#142036] flex flex-col justify-between h-[64px]">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Field</span>
+          <span className="text-base font-black text-amber-400 tabular-nums">{stats.field}</span>
         </div>
       </div>
 
@@ -255,7 +255,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name, role, or certification..."
+          placeholder="Search by name or role..."
           className="w-full h-10 bg-[#060B17] border border-[#142036] focus:border-blue-500/70 rounded-xl pl-9 pr-8 text-xs text-white placeholder-slate-500 outline-none transition-colors"
         />
         {search && (
@@ -285,98 +285,42 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
         ))}
       </div>
 
-      {/* ── Team Member Cards (High Quality Product Design) ── */}
-      <div className="flex flex-col gap-2.5">
-        {filtered.map(member => {
-          const presenceStyle = PRESENCE_COLORS[member.presence] || PRESENCE_COLORS['In Office'];
-          return (
-            <div
-              key={member.id}
-              onClick={() => setSelectedMember(member)}
-              className="p-3.5 rounded-2xl bg-[#060B17] border border-[#142036] hover:border-[#1E3050] transition-all cursor-pointer group active:scale-[0.99] flex flex-col gap-2.5 shadow-sm"
-            >
-              {/* Member Main Row */}
-              <div className="flex items-start gap-3">
-                <div className="relative flex-shrink-0 mt-0.5">
-                  <img
-                    src={member.avatar}
-                    alt={member.name}
-                    className="w-11 h-11 rounded-full object-cover border border-[#1A263B]"
-                  />
-                  <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#060B17] ${
-                    member.status === 'Active' ? 'bg-emerald-400' : 'bg-blue-400'
-                  }`} />
+      {/* ── Team Member Cards (Minimal: Name & Role Only) ── */}
+      <div className="flex flex-col gap-2">
+        {filtered.map(member => (
+          <div
+            key={member.id}
+            onClick={() => setSelectedMember(member)}
+            className="p-3 rounded-2xl bg-[#060B17] border border-[#142036] hover:border-blue-500/40 hover:bg-[#081124] transition-all cursor-pointer group active:scale-[0.99] flex items-center justify-between gap-3 shadow-sm"
+          >
+            {/* Left: Avatar + Name & Role */}
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <img
+                src={member.avatar}
+                alt={member.name}
+                className="w-10 h-10 rounded-full object-cover border border-[#1A263B] group-hover:border-blue-500/40 transition-colors flex-shrink-0"
+              />
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                    {member.name}
+                  </span>
+                  {member.roleGroup === 'Owner' && (
+                    <Crown className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                  )}
                 </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1 mb-0.5">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <span className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">{member.name}</span>
-                      {member.roleGroup === 'Owner' && (
-                        <Crown className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                      )}
-                    </div>
-                    {/* Presence Pill */}
-                    <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border ${presenceStyle.bg} ${presenceStyle.text}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${presenceStyle.dot}`} />
-                      {member.presence}
-                    </span>
-                  </div>
-
-                  <p className="text-[11px] text-slate-300 font-medium truncate leading-tight">{member.role}</p>
-                  <p className="text-[10px] text-slate-500 font-medium truncate">{member.department}</p>
-                </div>
+                <p className="text-[11px] text-slate-400 font-medium truncate leading-tight">
+                  {member.role}
+                </p>
               </div>
-
-              {/* Quick Contact & Action Bar (1-Tap Direct Action) */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#142036]/70 text-[11px]">
-                <div className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
-                  <a
-                    href={`tel:${member.phone}`}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0A1328] border border-[#1A2744] hover:border-blue-500/40 text-slate-300 hover:text-blue-400 text-[10px] font-semibold transition-colors"
-                    title={`Call ${member.phone}`}
-                  >
-                    <Phone className="w-3 h-3 text-blue-400" />
-                    <span>Call</span>
-                  </a>
-                  <a
-                    href={`mailto:${member.email}`}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0A1328] border border-[#1A2744] hover:border-blue-500/40 text-slate-300 hover:text-blue-400 text-[10px] font-semibold transition-colors"
-                    title={`Email ${member.email}`}
-                  >
-                    <Mail className="w-3 h-3 text-blue-400" />
-                    <span>Email</span>
-                  </a>
-                </div>
-
-                <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium">
-                  <Briefcase className="w-3 h-3 text-blue-400" />
-                  <span>{member.assignedProjects.length} project{member.assignedProjects.length !== 1 ? 's' : ''}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 transition-colors ml-0.5" />
-                </div>
-              </div>
-
-              {/* Certifications Badge Row */}
-              {member.certifications.length > 0 && (
-                <div className="flex items-center gap-1.5 overflow-hidden">
-                  <Award className="w-3 h-3 text-amber-400 flex-shrink-0" />
-                  <div className="flex gap-1 overflow-hidden">
-                    {member.certifications.slice(0, 2).map((cert, idx) => (
-                      <span key={idx} className="text-[9px] font-medium bg-[#0A1328] border border-[#1A2744] text-slate-400 px-1.5 py-0.5 rounded-md truncate max-w-[140px]">
-                        {cert}
-                      </span>
-                    ))}
-                    {member.certifications.length > 2 && (
-                      <span className="text-[9px] font-semibold text-slate-500">
-                        +{member.certifications.length - 2}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
-          );
-        })}
+
+            {/* Right: Subtle Chevron */}
+            <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+          </div>
+        ))}
 
         {filtered.length === 0 && (
           <div className="py-12 flex flex-col items-center gap-2 text-slate-500">
@@ -425,9 +369,6 @@ export const TeamHubView: React.FC<TeamHubViewProps> = () => {
                     alt={selectedMember.name}
                     className="w-14 h-14 rounded-2xl object-cover border-2 border-[#1A263B]"
                   />
-                  <span className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-[#070C18] ${
-                    selectedMember.status === 'Active' ? 'bg-emerald-400' : 'bg-blue-400'
-                  }`} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
