@@ -133,15 +133,52 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
             </div>
           </div>
 
-          {/* Work Completed Summary (Clean text, no inner gray box) */}
+          {/* Work Completed Summary */}
           <div className="p-5 flex flex-col gap-1.5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">
               Work Progress Summary
             </span>
-            <p className="text-xs text-[#171A1F] leading-relaxed font-normal">
+            <p className="text-xs text-[#0F172A] leading-relaxed font-normal">
               {selectedLog.workSummary}
             </p>
           </div>
+
+          {/* Subcontractor Crews on Site */}
+          {selectedLog.crews && selectedLog.crews.length > 0 && (
+            <div className="p-5 flex flex-col gap-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">
+                  Active Trade Crews ({selectedLog.crews.length})
+                </span>
+                <span className="text-xs text-[#64748B] font-medium">
+                  {selectedLog.crews.reduce((acc, c) => acc + c.workersCount, 0)} Total Workers
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {selectedLog.crews.map((crew, idx) => (
+                  <div key={idx} className="p-3 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between gap-3 text-xs">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-[#0F172A] truncate">{crew.subcontractor}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3FF] text-[#1677FF] font-semibold">
+                          {crew.trade}
+                        </span>
+                      </div>
+                      {crew.notes && (
+                        <p className="text-[11px] text-[#64748B] mt-0.5 truncate">{crew.notes}</p>
+                      )}
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span className="font-bold text-[#0F172A] block">{crew.workersCount} Workers</span>
+                      <span className="text-[10px] text-[#64748B]">{crew.hoursWorked} hrs shift</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Site Operations: Deliveries, Equipment, Visitors (Clean list rows, no gray boxes) */}
           {(selectedLog.deliveries || selectedLog.equipment || selectedLog.visitors) && (

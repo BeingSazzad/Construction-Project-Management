@@ -108,6 +108,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
     { id: 'budget', label: 'Budget', icon: DollarSign },
     { id: 'schedule', label: 'Schedule', icon: Calendar },
     { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { id: 'daily-logs', label: 'Daily Logs', icon: FileText },
     { id: 'updates', label: 'Updates', icon: Activity },
     { id: 'documents', label: 'Documents', icon: FileText },
     { id: 'photos', label: 'Photos', icon: Camera },

@@ -109,75 +109,152 @@ export const MOCK_PROJECTS: Project[] = [
       {
         id: 'dl-101',
         projectId: 'proj-1',
-        projectName: 'Riverside Office Complex',
-        date: 'Aug 31, 2026',
+        projectName: 'Snell Isle Residence',
+        date: 'Today · Sep 5',
         weather: {
           condition: 'Sunny',
-          temperature: '78°F / 25°C',
+          temperature: '82°F / 28°C',
           windSpeed: '6 mph SW',
           precipitation: '0%',
           siteCondition: 'Dry'
         },
         totalHeadcount: 24,
-        visitors: 'City Building Inspector (Electrical rough-in signoff)',
-        deliveries: ['Lumber framing packs (2 trucks)', '50 bundles conduit'],
-        equipment: '50-ton Mobile Crane, Forklift #2',
+        visitors: 'City of Tampa Building Inspector (Structural framing walkthrough)',
+        deliveries: ['84 Lumber Framing Package (2 flatbeds)', '50 bundles EMT conduit'],
+        equipment: '50-ton Mobile Crane, Genie GTH-844 Telehandler',
         crews: [
           {
-            trade: 'Concrete & Steel',
-            subcontractor: 'Apex Concrete LLC',
+            trade: 'Structural Framing',
+            subcontractor: 'Apex Concrete Masters',
             workersCount: 14,
             hoursWorked: 8,
-            notes: 'Poured foundation slab section B'
+            notes: 'Completed second-floor structural ceiling joists and exterior shear tie-downs'
           },
           {
-            trade: 'Electrical',
-            subcontractor: 'Volt Electrical Pro',
+            trade: 'Electrical & MEP',
+            subcontractor: 'Prime Electrical & Mechanical',
             workersCount: 10,
             hoursWorked: 8,
-            notes: 'Level 8 rough-in cabling completed'
+            notes: 'Level 2 rough-in home runs and sub-panel feeders installed'
           }
         ],
-        workSummary: 'Completed level 8 rough-in wiring, poured east foundation wall section B. City inspector signed off on electrical rough-in.',
-        materialsReceived: ['Lumber framing packs (2 trucks)', '50 bundles conduit', '2 pallets cement mix'],
-        safetyIncidents: '0 Incidents. PPE inspection completed 100% compliant.',
+        workSummary: 'Completed level 2 structural floor framing, installed hurricane clips and tie-down holdowns on west shear wall. Electrical rough-in conduits ran to main distribution panel. Site safety check passed 100%.',
+        materialsReceived: ['84 Lumber Framing Package (2 flatbeds)', '50 bundles EMT conduit', 'Simpson Strong-Tie hardware boxes'],
+        safetyIncidents: '0 Incidents. Daily morning safety briefing conducted. Fall protection harnesses inspected.',
         safetyPassed: true,
         author: 'John Smith (Field Superintendent)',
         photos: [
-          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=400&auto=format&fit=crop&q=80',
-          'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&auto=format&fit=crop&q=80'
+          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80'
         ]
       },
       {
         id: 'dl-102',
         projectId: 'proj-1',
-        projectName: 'Riverside Office Complex',
-        date: 'Aug 30, 2026',
+        projectName: 'Snell Isle Residence',
+        date: 'Yesterday · Sep 4',
         weather: {
-          condition: 'Partly Cloudy',
-          temperature: '75°F / 24°C',
-          windSpeed: '9 mph W',
+          condition: 'Sunny',
+          temperature: '84°F / 29°C',
+          windSpeed: '8 mph W',
           precipitation: '0%',
           siteCondition: 'Dry'
         },
-        totalHeadcount: 20,
-        visitors: 'Client Representative (Alex Chen walk-through)',
-        deliveries: ['Structural steel beams (1 flatbed)'],
-        equipment: 'Tower Crane #1',
+        totalHeadcount: 22,
+        visitors: 'Arthur Vance (Client site visit with Architect)',
+        deliveries: ['Structural steel flitch plates (1 truck)'],
+        equipment: 'Cat 320 Excavator, Forklift #2',
         crews: [
           {
-            trade: 'Framing & Lumber',
-            subcontractor: 'Empire Steelworks',
-            workersCount: 20,
+            trade: 'Framing & Steel',
+            subcontractor: 'Apex Concrete Masters',
+            workersCount: 12,
             hoursWorked: 8,
-            notes: 'Erected framing grid on gridlines 4 to 8'
+            notes: 'Set primary structural steel beam over great room opening'
+          },
+          {
+            trade: 'Earthworks & Site',
+            subcontractor: 'Earthworks Pro LLC',
+            workersCount: 10,
+            hoursWorked: 8,
+            notes: 'Finalized exterior perimeter grading and storm drainage swale'
           }
         ],
-        workSummary: 'Erected level 7 steel frame grid and completed perimeter safety rails installation.',
-        materialsReceived: ['Structural steel beams (1 flatbed)'],
-        safetyIncidents: '0 Incidents. Daily morning safety briefing conducted.',
+        workSummary: 'Erected great room structural steel beam with mobile crane. Completed exterior rough grading to prevent pooling ahead of Thursday rain advisory.',
+        materialsReceived: ['Structural steel flitch plates (1 truck)', '12-inch corrugated drainage pipe (100 ft)'],
+        safetyIncidents: '0 Incidents. Crane lift perimeter barricaded during heavy picks.',
         safetyPassed: true,
-        author: 'Elena Rossi (PM)'
+        author: 'Sarah Johnson (Project Manager)',
+        photos: [
+          'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80'
+        ]
+      },
+      {
+        id: 'dl-103',
+        projectId: 'proj-1',
+        projectName: 'Snell Isle Residence',
+        date: 'Sep 3',
+        weather: {
+          condition: 'Partly Cloudy',
+          temperature: '81°F / 27°C',
+          windSpeed: '11 mph E',
+          precipitation: '10%',
+          siteCondition: 'Normal'
+        },
+        totalHeadcount: 18,
+        visitors: 'Universal Engineering Sciences (Concrete break testing tech)',
+        deliveries: ['Ready-mix concrete trucks (4 loads)'],
+        equipment: 'Putzmeister 38Z Concrete Boom Pump',
+        crews: [
+          {
+            trade: 'Concrete & Foundations',
+            subcontractor: 'Concrete Solutions Inc.',
+            workersCount: 18,
+            hoursWorked: 8,
+            notes: 'Poured grade beams and STEM walls on grid A-D'
+          }
+        ],
+        workSummary: 'Poured 42 yards of 4,000 PSI concrete for foundation STEM walls. 7-day cylinder break tests passed at 3,850 PSI (exceeding 3,500 PSI spec). Clean finish troweled.',
+        materialsReceived: ['Ready-mix concrete (42 yards)'],
+        safetyIncidents: '0 Incidents. Concrete chemical eye wash stations verified.',
+        safetyPassed: true,
+        author: 'John Smith (Field Superintendent)',
+        photos: [
+          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80'
+        ]
+      },
+      {
+        id: 'dl-104',
+        projectId: 'proj-1',
+        projectName: 'Snell Isle Residence',
+        date: 'Sep 2',
+        weather: {
+          condition: 'Clear',
+          temperature: '80°F / 27°C',
+          windSpeed: '5 mph NW',
+          precipitation: '0%',
+          siteCondition: 'Dry'
+        },
+        totalHeadcount: 16,
+        visitors: 'Geotechnical Soil Engineer (Soil bearing verification)',
+        deliveries: ['Rebar #5 and #6 bundles (2 trailers)'],
+        equipment: 'CAT 308 Mini Excavator, Vibratory Plate Compactor',
+        crews: [
+          {
+            trade: 'Earthwork & Foundations',
+            subcontractor: 'Earthworks Pro LLC',
+            workersCount: 16,
+            hoursWorked: 8,
+            notes: 'Excavated grade beam trenches and tied rebar cages'
+          }
+        ],
+        workSummary: 'Geotechnical engineer tested soil bearing compaction at 3,000 PSF (approved). Installed vapor barrier and tied continuous rebar reinforcement.',
+        materialsReceived: ['Rebar bundles (8 tons)', '15-mil Stego Wrap Vapor Barrier rolls'],
+        safetyIncidents: '0 Incidents. Trench shoring safety inspection signed off.',
+        safetyPassed: true,
+        author: 'John Smith (Field Superintendent)'
       }
     ]
   },
@@ -1922,9 +1999,26 @@ export const MOCK_PROJECT_UPDATES: ProjectUpdate[] = [
     },
     title: 'Approved Change Order #04 (Kitchen Island Stone Upgrade)',
     description: 'Client approved $12,400 change order for Calacatta Gold waterfall island slab. Subcontractor purchase order issued.',
-    timestamp: 'May 14, 2025',
+    timestamp: 'Sep 3, 2026',
     type: 'milestone',
     decisionNeeded: false
+  },
+  {
+    id: 'upd-4',
+    projectId: 'proj-1',
+    author: {
+      name: 'Alex Rivera',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      role: 'Field Lead'
+    },
+    title: 'Stem Wall Pour Complete & Thursday Weather Advisory',
+    description: 'Foundation stem walls poured and finished. Putzmeister boom pump de-rigged. In light of Thursday heavy rain risk, patio slab pour shifted to Friday morning.',
+    timestamp: 'Sep 2, 2026',
+    type: 'progress',
+    decisionNeeded: false,
+    attachments: [
+      { name: 'Stem-Wall-Pour-Inspection.jpg', type: 'photo' }
+    ]
   }
 ];
 
