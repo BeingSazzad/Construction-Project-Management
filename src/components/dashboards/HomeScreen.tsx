@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Project, Task } from '../../types';
 import { 
   CheckSquare, Calendar, DollarSign, CloudRain, Sparkles, 
@@ -6,6 +6,7 @@ import {
   ChevronRight 
 } from 'lucide-react';
 import { ProjectCard } from '../common/ProjectCard';
+import { WeatherImpactModal } from '../modals/WeatherImpactModal';
 
 interface HomeScreenProps {
   projects: Project[];
@@ -30,6 +31,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenCalendar,
   onOpenBudget,
 }) => {
+  const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
   const snellProject = projects.find(p => p.id === 'proj-1') || projects[0];
   const commercialProject = projects.find(p => p.id === 'proj-2') || projects[1] || projects[0];
 
@@ -137,11 +139,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
           className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
         >
-          <div className="w-6 h-6 rounded-md bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
+          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
             <DollarSign className="w-3.5 h-3.5" />
           </div>
           <div>
-            <span className="text-xs font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+            <span className="text-sm font-bold text-[#0F172A] block leading-tight mt-1 truncate">
               $4.65M
             </span>
             <span className="text-[10px] text-[#64748B] font-medium block truncate">
@@ -153,24 +155,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </span>
         </div>
 
-        {/* Card 4: Weather Advisory (Standardized: Zero Clipping, Zero Overflow) */}
+        {/* Card 4: Weather & Jobsite Atmospheric Advisory */}
         <div 
-          onClick={() => onOpenLatti('What is the weather radar and delay risk for Thursday?')}
+          onClick={() => setIsWeatherModalOpen(true)}
           className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
         >
           <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
             <CloudRain className="w-3.5 h-3.5" />
           </div>
           <div>
-            <span className="text-xs font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-              Rain Thu
+            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+              82°F
             </span>
             <span className="text-[10px] text-[#64748B] font-medium block truncate">
-              Thu, Sep 7
+              Site weather
             </span>
           </div>
-          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FFF7E6] text-[#F59E0B] w-fit max-w-full truncate">
-            Rain risk
+          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FFF7E6] text-[#D97706] w-fit max-w-full truncate">
+            Rain Thu
           </span>
         </div>
       </div>
@@ -426,6 +428,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           />
         </div>
       </div>
+
+      {/* Weather Impact Modal */}
+      <WeatherImpactModal
+        isOpen={isWeatherModalOpen}
+        onClose={() => setIsWeatherModalOpen(false)}
+        project={snellProject}
+        onOpenSchedule={() => {
+          setIsWeatherModalOpen(false);
+          if (onOpenCalendar) onOpenCalendar();
+        }}
+        onOpenDailyLog={() => {
+          setIsWeatherModalOpen(false);
+          if (onOpenTasks) onOpenTasks();
+        }}
+      />
 
     </div>
   );
