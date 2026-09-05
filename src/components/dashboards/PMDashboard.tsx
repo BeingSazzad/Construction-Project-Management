@@ -57,7 +57,7 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
             <h2 className="text-base sm:text-lg font-bold text-white tracking-tight leading-none">
               Project Operations Hub
             </h2>
-            <p className="text-[11px] text-slate-400 font-medium mt-1">Senior Project Manager Oversight</p>
+            <p className="text-xs text-slate-400 font-medium mt-1">Senior Project Manager Oversight</p>
           </div>
           <button 
             onClick={onOpenSchedule}
@@ -250,7 +250,7 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
                   </h4>
                   <StatusBadge status={t.priority} size="xs" />
                 </div>
-                <p className="text-[11px] text-slate-400 truncate mt-1 font-medium">
+                <p className="text-xs text-slate-400 truncate mt-1 font-medium">
                   {t.projectName} · {t.assignee?.name}
                 </p>
               </div>
@@ -277,12 +277,12 @@ export const PMDashboard: React.FC<PMDashboardProps> = ({
               className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] flex items-center gap-3"
             >
               <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex flex-col items-center justify-center flex-shrink-0">
-                <span className="text-[9px] font-extrabold uppercase leading-none">{m.month}</span>
+                <span className="text-[10px] font-extrabold uppercase leading-none">{m.month}</span>
                 <span className="text-sm font-black leading-none mt-0.5">{m.day}</span>
               </div>
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-bold text-white truncate">{m.title}</h4>
-                <p className="text-[11px] text-slate-400 truncate mt-0.5">{m.project}</p>
+                <p className="text-xs text-slate-400 truncate mt-0.5">{m.project}</p>
               </div>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-shrink-0">
                 {m.type}

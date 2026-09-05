@@ -113,8 +113,8 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
               <Award className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-[15px] font-black text-[#171A1F] leading-tight truncate">{currentUser.name}</p>
-              <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Foundation III · 1,250 XP</p>
+              <p className="text-base font-black text-[#171A1F] leading-tight truncate">{currentUser.name}</p>
+              <p className="text-xs text-[#68707C] font-medium mt-0.5">Foundation III · 1,250 XP</p>
             </div>
           </div>
 
@@ -132,18 +132,18 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[17px] font-black text-[#171A1F] leading-none">{SCORE}</span>
-                <span className="text-[9px] text-[#68707C] font-semibold">/100</span>
+                <span className="text-base font-black text-[#171A1F] leading-none">{SCORE}</span>
+                <span className="text-[10px] text-[#68707C] font-semibold">/100</span>
               </div>
             </div>
-            <span className="text-[9px] font-black uppercase tracking-widest text-[#68707C] mt-1">Verified Score</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#68707C] mt-1">Verified Score</span>
           </div>
         </div>
 
         {/* Risk Banner */}
         <div className="mx-3 mt-3 px-3 py-2 rounded-2xl flex items-center gap-2 bg-rose-50 border border-rose-200">
           <ShieldAlert className="w-3.5 h-3.5 text-rose-600 flex-shrink-0" />
-          <span className="text-[11px] font-bold text-rose-700">High Risk · 52 points needed for Verified™</span>
+          <span className="text-xs font-bold text-rose-700">High Risk · 52 points needed for Verified™</span>
         </div>
 
         {/* KPI Strip */}
@@ -156,7 +156,7 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
           ].map(({ Icon, value, label, color }) => (
             <div key={label} className="flex flex-col items-center py-3 gap-0.5">
               <Icon className={`w-3.5 h-3.5 mb-1 ${color}`} />
-              <span className="text-[13px] font-black text-[#171A1F] leading-none">{value}</span>
+              <span className="text-sm font-black text-[#171A1F] leading-none">{value}</span>
               <span className="text-[10px] text-[#68707C] font-medium">{label}</span>
             </div>
           ))}
@@ -169,7 +169,7 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`py-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer truncate px-1 ${
+            className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer truncate px-1 ${
               activeTab === tab.id
                 ? 'bg-white text-[#171A1F] shadow-xs'
                 : 'text-[#68707C] hover:text-[#171A1F]'
@@ -185,12 +185,12 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
         <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs divide-y divide-[#EAEDF1]">
           <div className="px-4 py-3 flex items-center gap-2">
             <TrendingUp className="w-3.5 h-3.5 text-[#68707C]" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Performance Metrics</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#68707C]">Performance Metrics</span>
           </div>
           {METRICS.map((m) => (
             <div key={m.label} className="px-4 py-3 flex items-center justify-between">
-              <span className="text-[13px] text-[#171A1F] font-medium">{m.label}</span>
-              <span className={`text-[13px] font-black ${m.good ? 'text-emerald-600' : 'text-rose-600'}`}>{m.raw}</span>
+              <span className="text-sm text-[#171A1F] font-medium">{m.label}</span>
+              <span className={`text-sm font-black ${m.good ? 'text-emerald-600' : 'text-rose-600'}`}>{m.raw}</span>
             </div>
           ))}
         </div>
@@ -201,17 +201,17 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
         <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs">
           <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center gap-2">
             <ShieldCheck className="w-3.5 h-3.5 text-[#68707C]" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Score Breakdown</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#68707C]">Score Breakdown</span>
           </div>
           <div className="px-4 py-4 flex flex-col gap-4">
             {BREAKDOWN.map(item => (
               <div key={item.label}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[13px] text-[#171A1F] font-medium">
+                  <span className="text-sm text-[#171A1F] font-medium">
                     {item.label}
-                    <span className="text-[#68707C] ml-1.5 text-[11px]">{item.weight}</span>
+                    <span className="text-[#68707C] ml-1.5 text-xs">{item.weight}</span>
                   </span>
-                  <span className={`text-[13px] font-black ${textColor(item.value)}`}>{item.value}%</span>
+                  <span className={`text-sm font-black ${textColor(item.value)}`}>{item.value}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-[#E5E7EB] overflow-hidden">
                   <div className={`h-full rounded-full ${barColor(item.value)} transition-all duration-700`} style={{ width: `${item.value}%` }} />
@@ -229,7 +229,7 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
           <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs">
             <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center gap-2">
               <Sparkles className="w-3.5 h-3.5 text-[#68707C]" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Current vs Target</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#68707C]">Current vs Target</span>
             </div>
             <div className="px-4 py-4 flex flex-col gap-3.5">
               {PATH.map(item => {
@@ -237,12 +237,12 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
                 return (
                   <div key={item.label}>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[13px] text-[#171A1F] font-medium">
+                      <span className="text-sm text-[#171A1F] font-medium">
                         {item.label}
-                        <span className="text-[#68707C] ml-1.5 text-[11px]">{item.weight}</span>
+                        <span className="text-[#68707C] ml-1.5 text-xs">{item.weight}</span>
                       </span>
-                      <span className="text-[13px] font-bold text-[#171A1F]">
-                        {item.current}<span className="text-[#68707C] font-normal text-[11px]">/{item.target}</span>
+                      <span className="text-sm font-bold text-[#171A1F]">
+                        {item.current}<span className="text-[#68707C] font-normal text-xs">/{item.target}</span>
                       </span>
                     </div>
                     <div className="h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
@@ -259,15 +259,15 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
 
           <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs divide-y divide-[#EAEDF1]">
             <div className="px-4 py-3">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Biggest Gains Available</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#68707C]">Biggest Gains Available</span>
             </div>
             {GAINS.map((g) => (
               <div key={g.title} className="px-4 py-3 flex items-start gap-3 justify-between">
                 <div className="min-w-0">
-                  <p className="text-[13px] font-bold text-[#171A1F]">{g.title}</p>
-                  <p className="text-[11px] text-[#68707C] mt-0.5 leading-relaxed">{g.desc}</p>
+                  <p className="text-sm font-bold text-[#171A1F]">{g.title}</p>
+                  <p className="text-xs text-[#68707C] mt-0.5 leading-relaxed">{g.desc}</p>
                 </div>
-                <span className="flex-shrink-0 text-[11px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                <span className="flex-shrink-0 text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
                   {g.pts}
                 </span>
               </div>
@@ -284,8 +284,8 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
           <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs">
             <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center gap-2">
               <Trophy className="w-3.5 h-3.5 text-amber-600" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Unlocked</span>
-              <span className="ml-auto text-[11px] font-black text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">4</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#68707C]">Unlocked</span>
+              <span className="ml-auto text-xs font-black text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">4</span>
             </div>
             <div className="grid grid-cols-2 gap-px bg-[#EAEDF1]">
               {UNLOCKED.map(({ title, desc, Icon, ring }) => (
@@ -306,15 +306,15 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
           <div className="rounded-3xl overflow-hidden border border-[#DDE1E7] bg-white shadow-xs divide-y divide-[#EAEDF1]">
             <div className="px-4 py-3 flex items-center gap-2">
               <Lock className="w-3.5 h-3.5 text-[#68707C]" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">Locked</span>
-              <span className="ml-auto text-[11px] font-bold text-[#68707C] bg-[#F2F2F7] border border-[#DDE1E7] px-2 py-0.5 rounded-full">{LOCKED.length}</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#68707C]">Locked</span>
+              <span className="ml-auto text-xs font-bold text-[#68707C] bg-[#F2F2F7] border border-[#DDE1E7] px-2 py-0.5 rounded-full">{LOCKED.length}</span>
             </div>
             {LOCKED.map((name) => (
               <div key={name} className="px-4 py-2.5 flex items-center gap-3 opacity-60">
                 <div className="w-7 h-7 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex items-center justify-center flex-shrink-0">
                   <Lock className="w-3 h-3 text-[#9DA5B1]" />
                 </div>
-                <span className="text-[13px] text-[#68707C] font-medium">{name}</span>
+                <span className="text-sm text-[#68707C] font-medium">{name}</span>
               </div>
             ))}
           </div>

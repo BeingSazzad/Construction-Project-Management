@@ -265,18 +265,18 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         </button>
       </div>
 
-      {/* ─── 2. SECONDARY TOOLBAR ─── */}
-      <div className="flex items-center justify-between gap-2 p-1.5 bg-white rounded-2xl border border-[#DDE1E7] shadow-xs">
+      {/* ─── 2. SECONDARY ACTIONS (Clean Inline Actions, No Outer Box) ─── */}
+      <div className="flex items-center justify-between px-0.5">
         <button
           onClick={() => setIsViewAll(!isViewAll)}
-          className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#1677FF] hover:bg-[#EAF3FF] transition-colors cursor-pointer"
+          className="text-xs font-bold text-[#1677FF] hover:underline cursor-pointer"
         >
           {isViewAll ? 'Collapse All' : 'Expand All'}
         </button>
 
         <button
           onClick={handleImportBudget}
-          className="px-3 py-1.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#171A1F] text-xs font-semibold flex items-center gap-1.5 border border-[#DDE1E7] cursor-pointer transition-colors"
+          className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#F2F2F7] text-[#171A1F] text-xs font-semibold flex items-center gap-1.5 border border-[#DDE1E7] cursor-pointer transition-colors"
           title="Import line items from project budget"
         >
           <Download className="w-3.5 h-3.5 text-[#1677FF]" />
@@ -295,29 +295,29 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
           return (
             <div
               key={group.id}
-              className="rounded-2xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs transition-all"
+              className="rounded-3xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs transition-all"
             >
               {/* Accordion Group Header */}
               <button
                 type="button"
                 onClick={() => toggleGroup(group.id)}
-                className="w-full p-3.5 flex items-center justify-between bg-white hover:bg-[#F2F2F7] transition-colors cursor-pointer"
+                className="w-full p-4 flex items-center justify-between bg-white hover:bg-[#F9FAFB] transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] flex items-center justify-center flex-shrink-0">
                     {getStageIcon(group.iconType)}
                   </div>
                   <div className="text-left">
                     <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">{group.name}</h3>
-                    <p className="text-[12px] text-[#68707C] font-medium mt-0.5">{totalCount} items in phase</p>
+                    <p className="text-xs text-[#68707C] font-medium mt-0.5">{totalCount} items in phase</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  <span className={`text-[12px] font-bold px-2 py-0.5 rounded-full border ${
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                     isAllDone
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30'
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : 'bg-[#EAF3FF] text-[#1677FF]'
                   }`}>
                     {doneCount}/{totalCount}
                   </span>
@@ -329,29 +329,29 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                 </div>
               </button>
 
-              {/* Task Items List */}
+              {/* Task Items List (Clean divided list, NO nested gray boxes!) */}
               {!isCollapsed && (
-                <div className="flex flex-col gap-1.5 p-3 pt-0 border-t border-[#EAEDF1]">
+                <div className="divide-y divide-[#F2F2F7] border-t border-[#EAEDF1]">
                   {group.tasks.length === 0 ? (
                     <p className="text-xs text-[#68707C] py-3 text-center">No tasks in this stage.</p>
                   ) : (
                     group.tasks.map((task) => (
                       <div
                         key={task.id}
-                        className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 flex items-center justify-between gap-2.5 transition-colors group"
+                        className="px-4 py-3 hover:bg-[#F9FAFB] flex items-center justify-between gap-3 transition-colors group"
                       >
                         <div 
                           onClick={() => toggleTaskStatus(group.id, task.id)}
-                          className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer select-none"
+                          className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer select-none"
                         >
+                          <div className={`w-4.5 h-4.5 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
+                            task.status === 'done' ? 'bg-emerald-600 text-white' : 'border-2 border-[#DDE1E7] bg-white'
+                          }`}>
+                            {task.status === 'done' && <Check className="w-3 h-3 stroke-[3]" />}
+                          </div>
                           <span 
-                            className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                              task.status === 'done' ? 'bg-emerald-500 ring-2 ring-emerald-500/20' : 'bg-amber-400'
-                            }`} 
-                          />
-                          <span 
-                            className={`text-xs font-medium truncate ${
-                              task.status === 'done' ? 'text-[#68707C] line-through' : 'text-[#171A1F] group-hover:text-[#1677FF]'
+                            className={`text-xs truncate ${
+                              task.status === 'done' ? 'text-[#9DA5B1] line-through' : 'font-medium text-[#171A1F] group-hover:text-[#1677FF]'
                             }`}
                           >
                             {task.title}
@@ -363,19 +363,16 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                           <button
                             type="button"
                             onClick={() => toggleTaskStatus(group.id, task.id)}
-                            className={`px-3 py-1 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1.5 ${
+                            className={`px-2.5 py-0.5 rounded-full text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1 ${
                               task.status === 'done'
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-xs'
+                                ? 'bg-emerald-50 text-emerald-700'
                                 : task.status === 'in-progress'
-                                ? 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30 shadow-xs'
-                                : 'bg-white text-amber-700 border border-amber-300 hover:bg-amber-50'
+                                ? 'bg-[#EAF3FF] text-[#1677FF]'
+                                : 'bg-[#F2F2F7] text-[#68707C] hover:bg-[#EAEDF1]'
                             }`}
                           >
                             {task.status === 'done' ? (
-                              <>
-                                <Check className="w-3 h-3 stroke-[2.5]" />
-                                <span>Done</span>
-                              </>
+                              <span>Done</span>
                             ) : task.status === 'in-progress' ? (
                               <>
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
@@ -389,7 +386,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                           {/* Delete Task */}
                           <button
                             onClick={() => deleteTask(group.id, task.id)}
-                            className="w-7 h-7 rounded-lg text-[#68707C] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors"
+                            className="w-7 h-7 rounded-lg text-[#9DA5B1] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors opacity-0 group-hover:opacity-100"
                             title="Delete task"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

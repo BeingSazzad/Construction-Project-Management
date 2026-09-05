@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserRole, Task, PunchItem } from '../../types';
 import { 
   Send, AlertTriangle, FileText, Calendar, CloudRain, ChevronRight, CheckSquare, Sparkles 
@@ -11,6 +11,7 @@ interface LattiAssistantProps {
   punchItems?: PunchItem[];
   onNavigate?: (tab: string) => void;
   onClose?: () => void;
+  initialQuery?: string;
 }
 
 // Faceted Blue Diamond Latti Icon from Figma Screen 5
@@ -37,9 +38,16 @@ interface ChatMessage {
 
 export const LattiAssistant: React.FC<LattiAssistantProps> = ({
   onNavigate,
+  initialQuery,
 }) => {
   const [inputQuery, setInputQuery] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+
+  useEffect(() => {
+    if (initialQuery && initialQuery.trim()) {
+      handleSend(initialQuery);
+    }
+  }, [initialQuery]);
 
   const insights = [
     {

@@ -247,7 +247,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
             <div className="p-6 rounded-2xl bg-[#070D1A] border border-[#142036] text-center flex flex-col items-center justify-center gap-2">
               <CheckCircle2 className="w-8 h-8 text-emerald-400" />
               <p className="text-xs font-bold text-white">All caught up!</p>
-              <p className="text-[11px] text-slate-400">No tasks matching the selected filter.</p>
+              <p className="text-xs text-slate-400">No tasks matching the selected filter.</p>
             </div>
           ) : (
             displayTasks.slice(0, 5).map((t) => {
@@ -291,7 +291,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
                         <StatusBadge status={t.status} size="xs" />
                       </div>
 
-                      <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-400 flex-wrap">
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-400 flex-wrap">
                         <span className="font-medium text-slate-300">{t.projectName}</span>
                         {t.location && (
                           <>
@@ -346,7 +346,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
           </div>
           <button 
             onClick={onOpenSchedule}
-            className="text-[11px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
           >
             <span>Full Schedule</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -365,12 +365,12 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-xs font-bold text-white truncate">{item.title}</h4>
-                  <p className="text-[11px] text-slate-400 truncate mt-0.5">{item.project}</p>
+                  <p className="text-xs text-slate-400 truncate mt-0.5">{item.project}</p>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                <span className="text-[11px] font-bold text-amber-400">{item.time}</span>
-                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-blue-500/15 text-blue-300 border border-blue-500/20">
+                <span className="text-xs font-bold text-amber-400">{item.time}</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-500/15 text-blue-300 border border-blue-500/20">
                   {item.badge}
                 </span>
               </div>
@@ -403,7 +403,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
                   </div>
                   <div className="min-w-0">
                     <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-300">{proj.name}</h4>
-                    <p className="text-[11px] text-slate-400 truncate flex items-center gap-1 mt-0.5">
+                    <p className="text-xs text-slate-400 truncate flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3 text-slate-500" />
                       {proj.location}
                     </p>
@@ -413,7 +413,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <div className="text-right">
                     <span className="text-xs font-bold text-white">{proj.progress}%</span>
-                    <p className="text-[9px] text-slate-400">Progress</p>
+                    <p className="text-[10px] text-slate-400">Progress</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
                 </div>
@@ -444,7 +444,7 @@ export const FieldDashboard: React.FC<FieldDashboardProps> = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 p-3 flex flex-col justify-between">
             <div className="text-xs font-bold text-white drop-shadow">Riverside West Wing Pour</div>
-            <div className="flex items-center justify-between text-[11px] text-slate-200">
+            <div className="flex items-center justify-between text-xs text-slate-200">
               <span>24 Workers Active</span>
               <span className="text-emerald-400 font-bold">100% Inspection Passed</span>
             </div>

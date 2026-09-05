@@ -237,9 +237,9 @@ export const Header: React.FC<HeaderProps> = ({
                 />
                 <div className="min-w-0">
                   <h1 className="text-xs sm:text-sm font-bold text-[#171A1F] tracking-tight leading-tight truncate group-hover:text-[#1677FF] transition-colors">
-                    Good morning, {firstName}! 👋
+                    Good morning, {firstName}
                   </h1>
-                  <p className="text-[10px] text-[#68707C] mt-0.5 font-medium truncate">
+                  <p className="text-xs text-[#525866] mt-0.5 font-medium truncate">
                     Avery &amp; Marsh Construction
                   </p>
                 </div>

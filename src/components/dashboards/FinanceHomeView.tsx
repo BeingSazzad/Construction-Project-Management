@@ -72,7 +72,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
             <h2 className="text-base sm:text-lg font-bold text-white tracking-tight leading-none">
               Capital Control Center
             </h2>
-            <p className="text-[11px] text-slate-400 font-medium mt-1">Portfolio Liquidity &amp; Draws Oversight</p>
+            <p className="text-xs text-slate-400 font-medium mt-1">Portfolio Liquidity &amp; Draws Oversight</p>
           </div>
           <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold text-emerald-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -160,8 +160,8 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
               <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${color} ${bg} group-hover:scale-110 transition-transform`}>
                 <Icon className="w-4 h-4" />
               </div>
-              <span className="text-[11px] font-bold text-slate-200 group-hover:text-white transition-colors leading-tight">{label}</span>
-              <span className="text-[9px] text-slate-500 font-medium leading-none">{sub}</span>
+              <span className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors leading-tight">{label}</span>
+              <span className="text-[10px] text-slate-500 font-medium leading-none">{sub}</span>
             </button>
           ))}
         </div>
@@ -194,7 +194,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                     Draw #{d.drawNumber}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1 font-medium truncate">
+                <p className="text-xs text-slate-400 mt-1 font-medium truncate">
                   {d.lenderName} · Requested <strong className="text-white">${(d.requestedAmount / 1000).toFixed(0)}K</strong>
                 </p>
               </div>
@@ -216,7 +216,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                     {w.trade}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1 font-medium">
+                <p className="text-xs text-slate-400 mt-1 font-medium">
                   {w.type} · Amount: <strong className="text-white">${(w.amount / 1000).toFixed(0)}K</strong>
                 </p>
               </div>
@@ -244,7 +244,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                 <p className="text-[10px] text-slate-400 mt-0.5 font-medium">{m.trade}</p>
               </div>
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#131D31]">
-                <span className="text-[11px] font-extrabold text-white">{m.rate}</span>
+                <span className="text-xs font-extrabold text-white">{m.rate}</span>
                 <span className={`text-[10px] font-black flex items-center gap-0.5 ${m.isUp ? 'text-rose-400' : 'text-emerald-400'}`}>
                   {m.isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                   {m.change}
@@ -300,7 +300,7 @@ export const FinanceHomeView: React.FC<FinanceHomeViewProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between mt-2 text-[10px] text-slate-400">
-                  <span>Spent: <strong className="text-slate-200">${(actualSpent / 1000000).toFixed(2)}M</strong></span>
+                  <span>Actual Spend: <strong className="text-slate-200">${(actualSpent / 1000000).toFixed(2)}M</strong></span>
                   <span>Remaining: <strong className="text-emerald-400">${((budgetTotal - actualSpent) / 1000000).toFixed(2)}M</strong></span>
                 </div>
               </div>

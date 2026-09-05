@@ -195,23 +195,26 @@ export const TeamHubView: React.FC = () => {
         </div>
       )}
 
-      {/* ── KPI Stats Bar ── */}
-      <div className="grid grid-cols-4 gap-2 text-center">
-        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
-          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Total</span>
-          <span className="text-base font-black text-[#171A1F] tabular-nums">{stats.total}</span>
+      {/* ── Single Unified KPI Stats Bar (No 4 Floating Mini Boxes) ── */}
+      <div className="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs text-center">
+        <div className="flex-1">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider block">Total</span>
+          <span className="text-sm font-black text-[#171A1F] tabular-nums mt-0.5 block">{stats.total}</span>
         </div>
-        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
-          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">PM</span>
-          <span className="text-base font-black text-[#1677FF] tabular-nums">{stats.pm}</span>
+        <div className="w-[1px] h-6 bg-[#EAEDF1]" />
+        <div className="flex-1">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider block">PM</span>
+          <span className="text-sm font-black text-[#1677FF] tabular-nums mt-0.5 block">{stats.pm}</span>
         </div>
-        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
-          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Finance</span>
-          <span className="text-base font-black text-emerald-700 tabular-nums">{stats.finance}</span>
+        <div className="w-[1px] h-6 bg-[#EAEDF1]" />
+        <div className="flex-1">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider block">Finance</span>
+          <span className="text-sm font-black text-emerald-700 tabular-nums mt-0.5 block">{stats.finance}</span>
         </div>
-        <div className="p-2.5 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col justify-between h-[64px] shadow-xs">
-          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Field</span>
-          <span className="text-base font-black text-amber-700 tabular-nums">{stats.field}</span>
+        <div className="w-[1px] h-6 bg-[#EAEDF1]" />
+        <div className="flex-1">
+          <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider block">Field</span>
+          <span className="text-sm font-black text-amber-700 tabular-nums mt-0.5 block">{stats.field}</span>
         </div>
       </div>
 
@@ -278,7 +281,7 @@ export const TeamHubView: React.FC = () => {
                   )}
                 </div>
 
-                <p className="text-[11px] text-[#68707C] font-medium truncate leading-tight">
+                <p className="text-xs text-[#68707C] font-medium truncate leading-tight">
                   {member.role}
                 </p>
               </div>
@@ -456,7 +459,7 @@ export const TeamHubView: React.FC = () => {
               </span>
               <button
                 onClick={() => alert(`Editing permissions for ${selectedMember.name}...`)}
-                className="px-3 py-1.5 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#171A1F] font-bold text-[11px] transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#171A1F] font-bold text-xs transition-colors cursor-pointer"
               >
                 Manage Permissions
               </button>
@@ -472,7 +475,7 @@ export const TeamHubView: React.FC = () => {
             <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
               <div>
                 <h3 className="text-sm font-bold text-[#171A1F]">Invite Team Member</h3>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Add a new staff member to company directory</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Add a new staff member to company directory</p>
               </div>
               <button
                 onClick={() => setIsInviteOpen(false)}

@@ -226,11 +226,11 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
             <h2 className="text-sm md:text-base font-bold text-[#171A1F] tracking-tight">
               {isMilestoneView ? 'Milestone Gates' : 'Master Schedule'}
             </h2>
-            <span className="text-[11px] text-[#68707C] font-medium">
+            <span className="text-xs text-[#68707C] font-medium">
               ({completedCount} of {phases.length} complete)
             </span>
           </div>
-          <p className="text-[11px] text-[#68707C] font-medium mt-0.5">{project.name}</p>
+          <p className="text-xs text-[#68707C] font-medium mt-0.5">{project.name}</p>
         </div>
 
         <button
@@ -265,77 +265,58 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
         })}
       </div>
 
-      {/* ─── 3. REAL CONSTRUCTION SCHEDULE / MILESTONE CARDS ─── */}
-      <div className="flex flex-col gap-2.5">
+      {/* ─── 3. SCHEDULE MILESTONE CARDS ─── */}
+      <div className="flex flex-col gap-2">
         {filtered.map((phase) => {
           const isDone = phase.status === 'Completed';
           const isInProgress = phase.status === 'In Progress';
           const taskMetrics = getMilestoneTaskMetrics(phase);
 
           return (
-            <div
+            <button
               key={phase.id}
               onClick={() => setSelectedMilestone(phase)}
-              className="p-4 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/50 cursor-pointer transition-all active:scale-[0.99] flex flex-col gap-3 shadow-xs group"
+              className="w-full p-4 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 cursor-pointer transition-all active:scale-[0.99] text-left flex flex-col gap-2.5 shadow-sm group"
             >
-              {/* Row 1: Code + Phase Title + Status Pill */}
+              {/* Row 1: Name + Status */}
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    {phase.code && (
-                      <span className="text-[10px] font-mono font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-md border border-[#1677FF]/20">
-                        {phase.code}
-                      </span>
-                    )}
-                    <span className="text-xs md:text-sm font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
-                      {phase.name}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">{phase.subcontractor}</p>
+                  <p className="text-sm font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate leading-tight">
+                    {phase.name}
+                  </p>
+                  <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
+                    {phase.subcontractor}
+                  </p>
                 </div>
-
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1 border ${
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 flex items-center gap-1 ${
                   isDone
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                     : isInProgress
-                    ? 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30'
+                    ? 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/20'
                     : 'bg-[#F2F2F7] text-[#68707C] border-[#DDE1E7]'
                 }`}>
                   {isDone && <Check className="w-3 h-3 stroke-[3]" />}
-                  <span>{isDone ? 'Completed' : isInProgress ? `${taskMetrics.progress}%` : 'Upcoming'}</span>
+                  {isDone ? 'Done' : isInProgress ? `${taskMetrics.progress}%` : 'Upcoming'}
                 </span>
               </div>
 
-              {/* Row 2: Dates, Tasks Count, Draw Allocation */}
-              <div className="flex items-center justify-between text-[11px] text-[#68707C] pt-1.5 border-t border-[#EAEDF1]">
-                <span className="text-[#171A1F] font-medium">{phase.dates}</span>
-                
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-[#68707C] font-medium bg-[#F2F2F7] px-2 py-0.5 rounded-md border border-[#DDE1E7]">
-                    {taskMetrics.completedTasks}/{taskMetrics.totalTasks} Tasks
-                  </span>
-                  {phase.budgetAllocation && (
-                    <span className="text-emerald-600 font-bold tabular-nums">
-                      ${phase.budgetAllocation.toLocaleString()}
-                    </span>
-                  )}
+              {/* Row 2: Progress bar + tasks */}
+              <div className="flex items-center gap-2.5">
+                <div className="flex-1 h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      isDone        ? 'bg-emerald-500' :
+                      isInProgress  ? 'bg-[#1677FF]'   :
+                                      'bg-transparent'
+                    }`}
+                    style={{ width: `${taskMetrics.progress}%` }}
+                  />
                 </div>
+                <span className="text-[10px] font-medium text-[#68707C] flex-shrink-0">
+                  {taskMetrics.completedTasks}/{taskMetrics.totalTasks}
+                </span>
               </div>
-
-              {/* Row 3: Progress Bar */}
-              <div className="w-full h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-300 ${
-                    isDone
-                      ? 'bg-emerald-500'
-                      : isInProgress
-                      ? 'bg-[#1677FF]'
-                      : 'bg-transparent'
-                  }`}
-                  style={{ width: `${taskMetrics.progress}%` }}
-                />
-              </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -350,7 +331,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
                   <Flag className="w-4 h-4 text-[#1677FF]" />
                   <span>Add Project Milestone Gate</span>
                 </h3>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Define schedule gate, trade subcontractor & draw value</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Define schedule gate, trade subcontractor & draw value</p>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
@@ -443,7 +424,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
                       key={s}
                       type="button"
                       onClick={() => setNewStatus(s)}
-                      className={`h-9 rounded-xl text-center font-bold text-[11px] transition-all border cursor-pointer ${
+                      className={`h-9 rounded-xl text-center font-bold text-xs transition-all border cursor-pointer ${
                         newStatus === s
                           ? 'bg-[#1677FF] border-[#1677FF] text-white'
                           : 'bg-[#F7F8FA] border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F]'

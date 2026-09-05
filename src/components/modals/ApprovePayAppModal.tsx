@@ -57,7 +57,7 @@ export const ApprovePayAppModal: React.FC<ApprovePayAppModalProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-[#171A1F]">Process Pay Application</h3>
-              <p className="text-[11px] text-[#68707C]">Subcontractor billing & disbursement audit</p>
+              <p className="text-xs text-[#68707C]">Subcontractor billing & disbursement audit</p>
             </div>
           </div>
           <button

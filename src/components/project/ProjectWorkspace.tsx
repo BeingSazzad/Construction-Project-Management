@@ -66,6 +66,7 @@ interface ProjectWorkspaceProps {
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   project,
   currentRole,
+  currentUser,
   activeSubTab,
   onSubTabChange,
   tasks,
@@ -115,43 +116,29 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
   return (
     <div className="w-full flex flex-col flex-1 bg-[#F2F2F7]">
-      {/* Sub-navigation bar with light theme pills */}
-      {isQuickActionPage ? (
-        <div className="w-full bg-white border-b border-[#DDE1E7] sticky top-0 z-20 px-5 py-2">
-          <div className="flex items-center justify-between max-w-[430px] mx-auto">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className="flex items-center gap-1.5 text-xs font-bold text-[#171A1F] hover:text-[#1677FF] cursor-pointer transition-all bg-[#F2F2F7] hover:bg-[#EAEDF1] px-3 py-1.5 rounded-xl border border-[#DDE1E7] active:scale-95 shadow-sm"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Overview</span>
-            </button>
-          </div>
+      {/* Sub-navigation bar with persistent light theme pills */}
+      <div className="w-full bg-white border-b border-[#E2E8F0] sticky top-0 z-20 shadow-2xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-5 py-2.5 max-w-[430px] mx-auto">
+          {allTabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap cursor-pointer flex-shrink-0 active:scale-95 ${
+                  isActive
+                    ? 'bg-[#1677FF] text-white font-bold shadow-xs'
+                    : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
-      ) : (
-        <div className="w-full bg-white border-b border-[#DDE1E7] sticky top-0 z-20">
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-5 py-2.5 max-w-[430px] mx-auto">
-            {allTabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0 active:scale-95 ${
-                    isActive
-                      ? 'bg-[#1677FF] text-white shadow-sm'
-                      : 'bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7]'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      </div>
 
       {/* Main Workspace Body Content */}
       <div className="flex-1 overflow-y-auto">
@@ -166,14 +153,17 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onNavigate={(subTab) => setActiveTab(subTab)}
             changeOrders={changeOrders}
             onCreateChangeOrder={onCreateChangeOrder}
+            onCreateTask={onCreateTask}
+            onUploadPhoto={onUploadPhoto}
+            onAddDailyLog={onAddDailyLog}
           />
         )}
 
         {activeTab === 'updates' && (
           <ProjectUpdatesTab
             project={project}
+            currentUser={currentUser}
             updates={MOCK_PROJECT_UPDATES.filter(u => u.projectId === project.id)}
-            onAddUpdate={() => alert("Post update to feed")}
           />
         )}
 
@@ -191,6 +181,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             categories={categories}
             onAddCostItem={() => alert("Add Cost Code Line Item")}
             onImportBudget={onImportBudget}
+            onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}
           />
         )}
 

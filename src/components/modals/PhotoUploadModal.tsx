@@ -141,7 +141,7 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
                 <span className="text-xs font-bold text-[#171A1F] block group-hover:text-[#1677FF] transition-colors">
                   Tap or Drag to Upload Photo
                 </span>
-                <span className="text-[11px] text-[#68707C] font-medium block mt-0.5">
+                <span className="text-xs text-[#68707C] font-medium block mt-0.5">
                   Supports JPG, PNG, WEBP image files
                 </span>
               </div>

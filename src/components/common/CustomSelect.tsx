@@ -56,7 +56,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   const selectedOption = normalizedOptions.find(opt => opt.value === value);
 
   const sizeClasses = {
-    sm: 'h-8 px-3 text-[11px] rounded-lg',
+    sm: 'h-8 px-3 text-xs rounded-lg',
     md: 'h-10 px-3.5 text-xs rounded-xl',
     lg: 'h-12 px-4 text-sm rounded-2xl'
   }[size];
@@ -64,7 +64,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'inline-block'} ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="block text-[11px] font-bold text-[#171A1F] uppercase tracking-wider mb-1.5">
+        <label className="block text-xs font-bold text-[#171A1F] uppercase tracking-wider mb-1.5">
           {label} {required && <span className="text-rose-500">*</span>}
         </label>
       )}

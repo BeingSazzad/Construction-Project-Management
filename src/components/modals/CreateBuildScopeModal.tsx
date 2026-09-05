@@ -51,7 +51,7 @@ export const CreateBuildScopeModal: React.FC<CreateBuildScopeModalProps> = ({
               <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">
                 New BuildScope Takeoff
               </h3>
-              <p className="text-[11px] text-[#68707C] font-medium">Plan takeoff & scope analysis</p>
+              <p className="text-xs text-[#68707C] font-medium">Plan takeoff & scope analysis</p>
             </div>
           </div>
 

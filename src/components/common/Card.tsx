@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'surface' | 'elevated' | 'inset';
+  variant?: 'surface' | 'summary' | 'compact' | 'elevated' | 'inset';
   title?: string;
   subtitle?: string;
   action?: React.ReactNode;
@@ -23,35 +23,39 @@ export const Card: React.FC<CardProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    surface: 'bg-white border border-[#DDE1E7] shadow-xs',
-    elevated: 'bg-white border border-[#DDE1E7] shadow-sm',
-    inset: 'bg-[#F7F8FA] border border-[#EAEDF1]',
+    surface: 'bg-white border border-[#E2E8F0] rounded-2xl shadow-xs',
+    summary: 'bg-white border border-[#E2E8F0] rounded-[20px] shadow-xs',
+    compact: 'bg-white border border-[#E2E8F0] rounded-xl',
+    elevated: 'bg-white border border-[#CBD5E1] rounded-2xl shadow-sm',
+    inset: 'bg-[#F1F5F9] border border-[#E2E8F0] rounded-xl',
   }[variant];
+
+  const defaultPadding = variant === 'summary' ? 'p-5' : variant === 'compact' ? 'p-3.5' : 'p-4';
 
   return (
     <div
-      className={`rounded-2xl flex flex-col transition-all ${variantStyles} ${className}`}
+      className={`flex flex-col transition-all ${variantStyles} ${className}`}
       {...props}
     >
       {(title || action || icon) && (
-        <div className="flex items-center justify-between p-4 pb-3 border-b border-[#EAEDF1]">
+        <div className="flex items-center justify-between p-4 pb-3 border-b border-[#F1F5F9]">
           <div className="flex items-center gap-2.5">
             {icon && <span className="text-[#1677FF] flex-shrink-0">{icon}</span>}
             <div>
-              {title && <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">{title}</h3>}
-              {subtitle && <p className="text-[11px] text-[#68707C] font-medium">{subtitle}</p>}
+              {title && <h3 className="text-sm font-semibold text-[#0F172A] tracking-tight">{title}</h3>}
+              {subtitle && <p className="text-xs text-[#475569] font-normal">{subtitle}</p>}
             </div>
           </div>
           {action && <div className="flex items-center gap-2">{action}</div>}
         </div>
       )}
 
-      <div className={noPadding ? '' : 'p-4'}>
+      <div className={noPadding ? '' : defaultPadding}>
         {children}
       </div>
 
       {footer && (
-        <div className="p-3.5 bg-[#F7F8FA] border-t border-[#EAEDF1] rounded-b-2xl">
+        <div className="p-3.5 bg-[#F1F5F9] border-t border-[#E2E8F0] rounded-b-2xl">
           {footer}
         </div>
       )}

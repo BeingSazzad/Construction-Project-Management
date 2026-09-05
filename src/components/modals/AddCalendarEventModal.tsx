@@ -78,7 +78,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           {/* Title */}
           <div>
-            <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+            <label className="text-xs font-bold text-[#68707C] block mb-1">
               Title <span className="text-rose-500">*</span>
             </label>
             <input
@@ -94,7 +94,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+              <label className="text-xs font-bold text-[#68707C] block mb-1">
                 Date <span className="text-rose-500">*</span>
               </label>
               <input
@@ -106,7 +106,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
               />
             </div>
             <div>
-              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+              <label className="text-xs font-bold text-[#68707C] block mb-1">
                 Time
               </label>
               <input
@@ -122,7 +122,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
           {/* Type & Priority */}
           <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+              <label className="text-xs font-bold text-[#68707C] block mb-1">
                 Type
               </label>
               <select
@@ -137,7 +137,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+              <label className="text-xs font-bold text-[#68707C] block mb-1">
                 Priority
               </label>
               <select
@@ -154,7 +154,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
 
           {/* Project Association */}
           <div>
-            <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+            <label className="text-xs font-bold text-[#68707C] block mb-1">
               Project <span className="text-[#9DA5B1] font-normal">(Optional)</span>
             </label>
             <select
@@ -171,7 +171,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="text-[11px] font-bold text-[#68707C] block mb-1">
+            <label className="text-xs font-bold text-[#68707C] block mb-1">
               Notes / Location
             </label>
             <input

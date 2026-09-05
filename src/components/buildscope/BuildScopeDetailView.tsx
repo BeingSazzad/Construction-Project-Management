@@ -484,7 +484,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
   const inputClass = "w-full h-10 bg-[#060B17] border border-[#172540] focus:border-[#2563EB] rounded-xl px-3 text-xs text-white placeholder-slate-500 outline-none transition-all font-medium";
   const selectClass = "w-full h-10 bg-[#060B17] border border-[#172540] focus:border-[#2563EB] rounded-xl px-3 text-xs text-white outline-none transition-all font-medium appearance-none cursor-pointer";
-  const labelClass = "text-[11px] font-semibold text-slate-400 mb-1.5 block";
+  const labelClass = "text-xs font-semibold text-slate-400 mb-1.5 block";
 
   // ═══════════════════════════════════════════
   // STEP RENDERERS
@@ -638,7 +638,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
           >
             <div className={`w-4 h-4 rounded-full bg-white transition-transform shadow ${details.occupiedProject ? 'translate-x-4' : 'translate-x-0'}`} />
           </button>
-          <span className="text-[11px] font-bold text-slate-300">Occupied project</span>
+          <span className="text-xs font-bold text-slate-300">Occupied project</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -649,7 +649,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
           >
             <div className={`w-4 h-4 rounded-full bg-white transition-transform shadow ${details.unionLabor ? 'translate-x-4' : 'translate-x-0'}`} />
           </button>
-          <span className="text-[11px] font-bold text-slate-300">Union labor</span>
+          <span className="text-xs font-bold text-slate-300">Union labor</span>
         </div>
       </div>
     </div>
@@ -773,13 +773,13 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
       {/* File List */}
       <div className="flex flex-col gap-0.5">
-        <p className="text-[11px] text-slate-400 font-medium mb-1">{uploadedFiles.length} file(s) · label any Latti can't identify</p>
+        <p className="text-xs text-slate-400 font-medium mb-1">{uploadedFiles.length} file(s) · label any Latti can't identify</p>
         {uploadedFiles.map(file => (
           <div key={file.id} className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#060B17] border border-[#142036]">
             <div className="flex items-center gap-2.5 min-w-0">
               <FileText className="w-4 h-4 text-slate-500 flex-shrink-0" />
               <div className="min-w-0">
-                <p className="text-[11px] font-bold text-white truncate">{file.name}</p>
+                <p className="text-xs font-bold text-white truncate">{file.name}</p>
                 <p className="text-[10px] text-slate-500">{file.type} · {file.size} · Uploaded</p>
               </div>
             </div>
@@ -807,8 +807,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
 
       {/* Re-review banner */}
       <div className="flex items-center justify-between p-3 rounded-xl bg-[#060B17] border border-[#142036]">
-        <p className="text-[11px] text-slate-400">Want Latti to re-analyze after adding or removing sheets?</p>
-        <button className="flex items-center gap-1.5 text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors cursor-pointer whitespace-nowrap">
+        <p className="text-xs text-slate-400">Want Latti to re-analyze after adding or removing sheets?</p>
+        <button className="flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors cursor-pointer whitespace-nowrap">
           Re-review Plans
         </button>
       </div>
@@ -834,7 +834,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
         {/* Lead Project Title & Meta */}
         <div className="pb-2 border-b border-[#142036]">
           <p className="text-xs font-bold text-white">2-Story High-End Residence & Detached ADU</p>
-          <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+          <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">
             Comprehensive residential takeoff generated from uploaded architectural, structural, and MEP plan set.
           </p>
         </div>
@@ -846,8 +846,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <Building2 className="w-3.5 h-3.5 text-blue-400" />
             </div>
             <div className="min-w-0">
-              <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Structure</p>
-              <p className="text-[11px] font-bold text-white leading-tight mt-0.5">5,220 Under Roof</p>
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Structure</p>
+              <p className="text-xs font-bold text-white leading-tight mt-0.5">5,220 Under Roof</p>
             </div>
           </div>
 
@@ -856,8 +856,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <Layers className="w-3.5 h-3.5 text-amber-400" />
             </div>
             <div className="min-w-0">
-              <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Framing & Shell</p>
-              <p className="text-[11px] font-bold text-white leading-tight mt-0.5">8" CMU & Wood</p>
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Framing & Shell</p>
+              <p className="text-xs font-bold text-white leading-tight mt-0.5">8" CMU & Wood</p>
             </div>
           </div>
 
@@ -866,8 +866,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             </div>
             <div className="min-w-0">
-              <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Roof & Insulation</p>
-              <p className="text-[11px] font-bold text-white leading-tight mt-0.5">Metal & Spray Foam</p>
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Roof & Insulation</p>
+              <p className="text-xs font-bold text-white leading-tight mt-0.5">Metal & Spray Foam</p>
             </div>
           </div>
 
@@ -876,8 +876,8 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <Sparkles className="w-3.5 h-3.5 text-purple-400" />
             </div>
             <div className="min-w-0">
-              <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Finishes</p>
-              <p className="text-[11px] font-bold text-white leading-tight mt-0.5">Level 5 Drywall</p>
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Finishes</p>
+              <p className="text-xs font-bold text-white leading-tight mt-0.5">Level 5 Drywall</p>
             </div>
           </div>
         </div>
@@ -905,9 +905,9 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             { label: 'Patio/Porch SF', value: '0 SF' },
             { label: 'Ceiling Heights', value: "9'-0\", 9'-6\", 10'-0\"" },
           ].map((spec, i) => (
-            <div key={i} className="flex items-center justify-between py-1 border-b border-[#142036]/60 text-[11px]">
+            <div key={i} className="flex items-center justify-between py-1 border-b border-[#142036]/60 text-xs">
               <span className="text-slate-400 font-medium text-[10px]">{spec.label}</span>
-              <span className="text-white font-bold text-[11px] text-right truncate max-w-[110px]" title={spec.value}>
+              <span className="text-white font-bold text-xs text-right truncate max-w-[110px]" title={spec.value}>
                 {spec.value}
               </span>
             </div>
@@ -949,7 +949,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                 key={i} 
                 className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#0A1328]/70 border border-[#142036] hover:border-[#1E3050] transition-all"
               >
-                <span className="text-[11px] text-slate-300 font-semibold">{item.name}</span>
+                <span className="text-xs text-slate-300 font-semibold">{item.name}</span>
                 
                 {isComplete && (
                   <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
@@ -988,7 +988,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
         </div>
         <ul className="flex flex-col gap-1 ml-3">
           {['Architectural Floor Plans', 'Exterior Elevations', 'Door and Window Schedules', 'Finish Schedule'].map((item, i) => (
-            <li key={i} className="text-[11px] text-slate-400 list-disc">{item}</li>
+            <li key={i} className="text-xs text-slate-400 list-disc">{item}</li>
           ))}
         </ul>
       </div>
@@ -1002,7 +1002,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             { q: 'Exterior elevations are missing. What are the exact building heights and cladding boundaries?', assumption: 'Assumed an average wall height of 20 feet for the 2-story structure.' },
           ].map((item, i) => (
             <div key={i} className="p-3 rounded-xl bg-[#0A1328] border border-[#1A2744]">
-              <p className="text-[11px] font-bold text-white leading-relaxed">{i + 1}. {item.q}</p>
+              <p className="text-xs font-bold text-white leading-relaxed">{i + 1}. {item.q}</p>
               <p className="text-[10px] text-slate-500 mt-1">Latti assumption: {item.assumption}</p>
               <div className="flex items-center gap-2 mt-2">
                 <input className="flex-1 h-7 bg-[#060B17] border border-[#142036] rounded-lg px-2.5 text-[10px] text-white placeholder-slate-500 outline-none" placeholder="Your answer..." />
@@ -1059,7 +1059,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             <input 
               value={qtySearch}
               onChange={e => setQtySearch(e.target.value)}
-              className="w-full h-8 bg-[#060B17] border border-[#142036] rounded-xl pl-8 pr-3 text-[11px] text-white placeholder-slate-500 outline-none" 
+              className="w-full h-8 bg-[#060B17] border border-[#142036] rounded-xl pl-8 pr-3 text-xs text-white placeholder-slate-500 outline-none" 
               placeholder="Search items..." 
             />
           </div>
@@ -1160,7 +1160,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                     {/* Ref / Loc */}
                     <div className="pl-1 pr-1 min-w-0">
                       <p className="text-[10px] text-slate-300 font-medium truncate">{item.refLoc.split('·')[0] || item.refLoc}</p>
-                      <p className="text-[9px] text-slate-500 truncate">{item.refLoc.split('·')[1] || ''}</p>
+                      <p className="text-[10px] text-slate-500 truncate">{item.refLoc.split('·')[1] || ''}</p>
                     </div>
 
                     {/* Confidence */}
@@ -1245,7 +1245,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   {/* Editable Trade & Scope */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Trade</label>
+                      <label className="text-[10px] font-semibold text-slate-500 uppercase">Trade</label>
                       <input
                         type="text"
                         value={selectedQtyItem.trade}
@@ -1255,7 +1255,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Scope Category</label>
+                      <label className="text-[10px] font-semibold text-slate-500 uppercase">Scope Category</label>
                       <input
                         type="text"
                         value={selectedQtyItem.scope}
@@ -1279,7 +1279,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <div className="p-3.5 rounded-2xl bg-blue-950/20 border border-blue-500/25 flex flex-col gap-1.5">
                 <div className="flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                  <h4 className="text-[11px] font-bold text-blue-300">AI Takeoff Insight & Heuristics</h4>
+                  <h4 className="text-xs font-bold text-blue-300">AI Takeoff Insight & Heuristics</h4>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   {selectedQtyItem.info || "Derived directly from structural and foundation plan schedules with standard building code tolerances."}
@@ -1480,7 +1480,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             <input
               value={materialSearch}
               onChange={e => setMaterialSearch(e.target.value)}
-              className="w-full h-8 bg-[#060B17] border border-[#142036] rounded-xl pl-8 pr-3 text-[11px] text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
+              className="w-full h-8 bg-[#060B17] border border-[#142036] rounded-xl pl-8 pr-3 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
               placeholder="Search materials..."
             />
           </div>
@@ -1647,7 +1647,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                   {/* Editable Scope & Qty */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Scope Category</label>
+                      <label className="text-[10px] font-semibold text-slate-500 uppercase">Scope Category</label>
                       <input
                         type="text"
                         value={selectedMaterialItem.scope}
@@ -1657,7 +1657,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-semibold text-slate-500 uppercase">Quantity (with Unit)</label>
+                      <label className="text-[10px] font-semibold text-slate-500 uppercase">Quantity (with Unit)</label>
                       <input
                         type="text"
                         value={selectedMaterialItem.qty}
@@ -1679,17 +1679,17 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               {/* Price Benchmarks Grid */}
               <div className="p-3.5 rounded-2xl bg-[#0A1328] border border-[#1A2744] flex flex-col gap-2.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[11px] font-bold text-white">Unit Price Benchmarks</h4>
+                  <h4 className="text-xs font-bold text-white">Unit Price Benchmarks</h4>
                   <span className="text-[10px] text-slate-400">Current Market Index</span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="p-2 rounded-xl bg-[#060B17] border border-[#142036]">
-                    <p className="text-[9px] text-slate-500 font-medium">Low Unit</p>
+                    <p className="text-[10px] text-slate-500 font-medium">Low Unit</p>
                     <p className="text-xs font-bold text-slate-300 mt-0.5">${selectedMaterialItem.lowUnit}</p>
                   </div>
                   <div className="p-2 rounded-xl bg-[#0E1B30] border border-blue-500/30">
-                    <p className="text-[9px] text-blue-400 font-medium">Expected Unit</p>
+                    <p className="text-[10px] text-blue-400 font-medium">Expected Unit</p>
                     <input
                       type="number"
                       value={selectedMaterialItem.expUnit}
@@ -1698,7 +1698,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
                     />
                   </div>
                   <div className="p-2 rounded-xl bg-[#060B17] border border-[#142036]">
-                    <p className="text-[9px] text-slate-500 font-medium">High Unit</p>
+                    <p className="text-[10px] text-slate-500 font-medium">High Unit</p>
                     <p className="text-xs font-bold text-slate-300 mt-0.5">${selectedMaterialItem.highUnit}</p>
                   </div>
                 </div>
@@ -1716,7 +1716,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
               <div className="p-3.5 rounded-2xl bg-blue-950/20 border border-blue-500/25 flex flex-col gap-1.5">
                 <div className="flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                  <h4 className="text-[11px] font-bold text-blue-300">Supplier Sourcing Index</h4>
+                  <h4 className="text-xs font-bold text-blue-300">Supplier Sourcing Index</h4>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed font-medium">
                   {selectedMaterialItem.source}
@@ -2022,7 +2022,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
       </div>
 
       {/* Accuracy Standard Badge */}
-      <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#060B17] border border-[#142036] text-[11px]">
+      <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#060B17] border border-[#142036] text-xs">
         <span className="font-semibold text-white flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
           Accuracy-First Standard
@@ -2047,7 +2047,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             { label: 'Human Review', value: '0%' },
           ].map((item, i) => (
             <div key={i} className="p-2 rounded-xl bg-[#0A1328] border border-[#1A2744]">
-              <p className="text-[9px] text-slate-400 font-semibold">{item.label}</p>
+              <p className="text-[10px] text-slate-400 font-semibold">{item.label}</p>
               <p className="text-xs font-black text-white mt-0.5">{item.value}</p>
             </div>
           ))}
@@ -2067,7 +2067,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
             '9 factor-based allowance quantities',
             'Scale not verified'
           ].map((w, i) => (
-            <li key={i} className="text-[11px] text-slate-400 list-disc">{w}</li>
+            <li key={i} className="text-xs text-slate-400 list-disc">{w}</li>
           ))}
         </ul>
       </div>
@@ -2111,7 +2111,7 @@ export const BuildScopeDetailView: React.FC<BuildScopeDetailViewProps> = ({ anal
         </div>
         <button 
           onClick={() => showToast("Takeoff details saved successfully!")}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#060B17] border border-[#142036] text-[11px] font-bold text-slate-400 hover:text-white transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#060B17] border border-[#142036] text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer"
         >
           <Save className="w-3.5 h-3.5" /> Save
         </button>

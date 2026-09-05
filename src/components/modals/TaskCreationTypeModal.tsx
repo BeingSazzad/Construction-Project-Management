@@ -1,6 +1,6 @@
 import React from 'react';
 import { Task, Project } from '../../types';
-import { X, CheckSquare, Sliders, ChevronRight } from 'lucide-react';
+import { X, CheckSquare, ChevronRight, Plus } from 'lucide-react';
 
 interface TaskCreationTypeModalProps {
   isOpen: boolean;
@@ -19,37 +19,41 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const TASK_PRESETS: { title: string; desc: string; milestone: string; priority: 'High' | 'Medium' | 'Critical'; costCode: string; subtasks: string[] }[] = [
+  const TASK_PRESETS = [
     {
-      title: 'Concrete Slump & Pour Quality Inspection',
+      title: 'Concrete Slump & Pour Inspection',
       desc: 'Verify truck delivery tickets, slump test compliance, and rebar clearance before pour.',
       milestone: 'Substructure & Foundation',
-      priority: 'Critical',
+      priority: 'Critical' as const,
       costCode: '03-3000',
+      trade: 'Concrete',
       subtasks: ['Check truck delivery time & slump specs', 'Verify rebar clearance & dowel positioning', 'Take 3 cylinder test samples']
     },
     {
-      title: 'Structural Framing & Shear Wall Sign-off',
+      title: 'Structural Framing Sign-off',
       desc: 'Audit post-to-beam connectors, hold-downs, and shear panel nailing schedule.',
       milestone: 'Superstructure Framing',
-      priority: 'High',
+      priority: 'High' as const,
       costCode: '06-1000',
+      trade: 'Framing',
       subtasks: ['Inspect Simpson tie connectors', 'Verify shear wall edge nailing (6" o.c.)', 'Structural engineer sign-off']
     },
     {
-      title: 'MEP Rough-In Quality & Pressure Audit',
+      title: 'MEP Rough-In Pressure Audit',
       desc: 'Hydrostatic pressure test on plumbing rough-in & electrical conduit clearance.',
       milestone: 'MEP Rough-In Phase',
-      priority: 'High',
+      priority: 'High' as const,
       costCode: '22-0000',
+      trade: 'MEP',
       subtasks: ['Hold 100 PSI pressure test for 30 mins', 'Check fire-stopping penetrations', 'Inspector sign-off']
     },
     {
-      title: 'OSHA Daily Site Safety & Toolbox Talk',
+      title: 'OSHA Daily Site Safety Briefing',
       desc: 'Conduct daily morning safety alignment, PPE check, and fall protection audit.',
       milestone: 'Site Safety Operations',
-      priority: 'Medium',
+      priority: 'Medium' as const,
       costCode: '01-3100',
+      trade: 'Safety',
       subtasks: ['Conduct morning crew safety briefing', 'Inspect harness & lanyard anchor points', 'Record headcount in daily log']
     }
   ];
@@ -67,7 +71,7 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
       costCode: preset.costCode,
       subtasks: preset.subtasks.map((st, idx) => ({ id: `st-preset-${Date.now()}-${idx}`, title: st, completed: false })),
       projectId: project?.id || 'proj-1',
-      projectName: project?.name || 'Riverside Office Complex',
+      projectName: project?.name || 'Snell Isle Residence',
     });
     onClose();
   };
@@ -75,95 +79,98 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs animate-fade-in font-sans"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/45 backdrop-blur-xs animate-fade-in font-sans p-0 sm:p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[430px] bg-white border-t border-x border-[#DDE1E7] rounded-t-[28px] p-5 pb-8 shadow-2xl flex flex-col gap-3 text-[#171A1F] animate-slide-up max-h-[85vh] overflow-y-auto"
+        className="w-full max-w-[420px] bg-white border border-[#E2E8F0] rounded-t-[28px] sm:rounded-3xl p-5 pb-7 shadow-2xl flex flex-col gap-4 text-[#0F172A] animate-slide-up max-h-[85vh] overflow-y-auto"
       >
-        {/* Pull Bar */}
-        <div className="w-10 h-1.5 rounded-full bg-[#DDE1E7] mx-auto -mt-1 mb-1" />
+        {/* Pull Bar for mobile */}
+        <div className="w-10 h-1 rounded-full bg-[#CBD5E1] mx-auto sm:hidden -mt-1" />
 
-        {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between pb-2 border-b border-[#F1F5F9]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center">
-              <CheckSquare className="w-4.5 h-4.5" />
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <CheckSquare className="w-4 h-4 stroke-[2.2]" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">Create Task Mode</h3>
-              <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Select a template preset or custom form</p>
+              <h3 className="text-sm font-bold text-[#0F172A] tracking-tight">New Task</h3>
+              <p className="text-xs text-[#64748B] mt-0.5">
+                {project?.name || 'Snell Isle Residence'} · Choose method
+              </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer"
+            className="w-7 h-7 rounded-full bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A] flex items-center justify-center cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Custom Task Option Button */}
+        {/* 1. Primary Action: Custom / Blank Task Form */}
         <button
           onClick={() => {
             onClose();
             onSelectCustom();
           }}
-          className="p-3.5 bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/50 rounded-2xl flex items-center justify-between gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-xs"
+          className="p-3.5 bg-[#F8FAFC] hover:bg-[#EAF3FF]/60 border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-2xl flex items-center justify-between gap-3 transition-all cursor-pointer text-left active:scale-[0.99] group shadow-xs"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-              <Sliders className="w-4.5 h-4.5" />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-[#1677FF] text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+              <Plus className="w-4.5 h-4.5 stroke-[2.5]" />
             </div>
-            <div>
-              <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                Custom Task Form
+            <div className="min-w-0">
+              <h4 className="text-xs font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors">
+                Blank Task (Custom Form)
               </h4>
-              <p className="text-[11px] text-[#68707C] mt-0.5 font-medium">
-                Create task from scratch with custom scope & assignees
+              <p className="text-xs text-[#64748B] mt-0.5 font-medium truncate">
+                Set title, due date, trade assignment & scope
               </p>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] flex-shrink-0" />
+          <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] shrink-0" />
         </button>
 
-        {/* Section Divider */}
+        {/* 2. Presets Section Header (Clean & Uncluttered) */}
         <div className="flex items-center justify-between pt-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#68707C]">
-            Or Pick a Pre-Con Task Template
+          <span className="text-xs font-bold text-[#64748B] tracking-tight">
+            Standard Field Checklists
           </span>
-          <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-            Instant Presets
+          <span className="text-[10px] text-[#64748B] font-medium">
+            1-Tap Preset
           </span>
         </div>
 
-        {/* Presets List */}
-        <div className="flex flex-col gap-2">
+        {/* 3. Compact Single-Layer Presets List (No Card Bloat) */}
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] divide-y divide-[#F1F5F9] overflow-hidden shadow-xs">
           {TASK_PRESETS.map((preset, idx) => (
             <div
               key={idx}
               onClick={() => handlePresetClick(preset)}
-              className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 cursor-pointer flex flex-col gap-1.5 transition-all group active:scale-[0.99]"
+              className="p-3 hover:bg-[#F8FAFC] cursor-pointer flex items-center justify-between gap-2.5 transition-colors group active:bg-[#F1F5F9]"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">
-                  {preset.title}
+              <div className="flex items-center gap-2.5 min-w-0">
+                {/* CSI Code Badge */}
+                <span className="font-mono text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-1 rounded-md shrink-0">
+                  {preset.costCode}
                 </span>
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${preset.priority === 'Critical'
-                    ? 'text-rose-700 bg-rose-50 border-rose-200'
-                    : preset.priority === 'High'
-                      ? 'text-amber-700 bg-amber-50 border-amber-200'
-                      : 'text-[#1677FF] bg-[#EAF3FF] border-[#1677FF]/20'
-                  }`}>
-                  {preset.priority}
-                </span>
+                <div className="min-w-0">
+                  <h5 className="text-xs font-semibold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">
+                    {preset.title}
+                  </h5>
+                  <span className="text-[10px] text-[#64748B] block mt-0.5 truncate">
+                    {preset.milestone}
+                  </span>
+                </div>
               </div>
-              <p className="text-[11px] text-[#68707C] line-clamp-2 leading-relaxed">
-                {preset.desc}
-              </p>
-              <div className="flex items-center justify-between text-[11px] text-[#68707C] pt-1 border-t border-[#EAEDF1]">
-                <span>Code: <strong className="text-[#171A1F]">{preset.costCode}</strong></span>
-                <span>Subtasks: <strong className="text-emerald-700">{preset.subtasks.length} items</strong></span>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="text-[10px] font-semibold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-full">
+                  {preset.subtasks.length} checks
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
               </div>
             </div>
           ))}

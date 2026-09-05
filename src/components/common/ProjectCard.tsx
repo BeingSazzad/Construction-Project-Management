@@ -1,73 +1,108 @@
 import React from 'react';
-import { MapPin } from 'lucide-react';
 import { Project } from '../../types';
-import { StatusBadge } from './StatusBadge';
+import { ChevronRight } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
   onClick: () => void;
+  className?: string;
 }
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
-  const spentM = (project.budget.actual / 1000000).toFixed(2);
-  const totalM = (project.budget.total / 1000000).toFixed(2);
+export const ProjectCard: React.FC<ProjectCardProps> = ({
+  project,
+  onClick,
+  className = ''
+}) => {
+  // Determine active stage name
+  const activeStage = 
+    project.stages?.find(s => s.status === 'In Progress')?.name || 
+    (project.id === 'proj-1' ? 'Construction' : project.id === 'proj-2' ? 'Foundation' : project.type || 'Construction');
+
+  // Format budget total
+  const formatBudget = (amount?: number) => {
+    if (!amount) return '$4.65M';
+    if (amount >= 1000000) {
+      return `$${(amount / 1000000).toFixed(2)}M`;
+    }
+    return `$${(amount / 1000).toFixed(0)}k`;
+  };
+
+  // Status badge logic
+  const getStatusBadge = () => {
+    const s = project.status?.toLowerCase() || '';
+    if (s.includes('complete')) {
+      return {
+        label: '• Completed',
+        classes: 'bg-[#E9F9F3] text-[#10A976]'
+      };
+    }
+    if (s.includes('attention') || s.includes('risk') || s.includes('hold') || project.id === 'proj-2') {
+      return {
+        label: '• Needs Attention',
+        classes: 'bg-[#FFF7E6] text-[#F59E0B]'
+      };
+    }
+    return {
+      label: '• On Schedule',
+      classes: 'bg-[#E9F9F3] text-[#10A976]'
+    };
+  };
+
+  const statusBadge = getStatusBadge();
+  const fallbackThumbnail = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&auto=format&fit=crop&q=80";
 
   return (
-    <div
+    <div 
       onClick={onClick}
-      className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-xs group active:scale-[0.99]"
+      className={`bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99] font-sans ${className}`}
     >
-      {/* Top Header Row: Thumbnail + Full-Width Title & Status Badge */}
-      <div className="flex items-start gap-3">
-        <img
-          src={project.thumbnail || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80'}
+      {/* Left: Thumbnail & Project Info */}
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        <img 
+          src={project.thumbnail || project.coverImage || fallbackThumbnail}
           alt={project.name}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80';
-          }}
-          className="w-10 h-10 rounded-xl object-cover border border-[#EAEDF1] flex-shrink-0 group-hover:scale-105 transition-transform mt-0.5 shadow-xs"
+          className="w-14 h-14 rounded-xl object-cover shrink-0 border border-[#E2E8F0]"
+          loading="lazy"
         />
+        <div className="min-w-0 flex-1">
+          <h3 className="text-xs md:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate leading-tight">
+            {project.name}
+          </h3>
+          <p className="text-xs text-[#64748B] mt-0.5 truncate font-normal">
+            {project.cityState || 'Tampa, FL'} • {activeStage}
+          </p>
 
-        <div className="min-w-0 flex-1 flex flex-col gap-1">
-          {/* Line 1: Title + Status Badge */}
-          <div className="flex items-center justify-between gap-2 min-w-0">
-            <h3 className="text-sm font-bold text-[#1677FF] group-hover:underline leading-tight min-w-0 flex-1 truncate whitespace-nowrap">
-              {project.name}
-            </h3>
-            <StatusBadge status={project.status} size="xs" />
-          </div>
-
-          {/* Line 2: Location & PM */}
-          <div className="flex items-center gap-1.5 text-xs text-[#68707C] font-medium">
-            <MapPin className="w-3.5 h-3.5 text-[#68707C] flex-shrink-0" />
-            <span className="truncate">{project.cityState}</span>
-            <span className="text-[#DDE1E7]">•</span>
-            <span className="truncate font-semibold text-[#171A1F]">{project.projectManager.name}</span>
+          {/* Progress bar */}
+          <div className="mt-1.5 flex items-center gap-2">
+            <span className="text-[10px] font-semibold text-[#1677FF] shrink-0">
+              {project.progress}% complete
+            </span>
+            <div className="flex-1 max-w-[120px] h-1.5 rounded-full bg-[#F1F5F9] overflow-hidden">
+              <div 
+                className="h-full bg-[#1677FF] rounded-full transition-all duration-300"
+                style={{ width: `${Math.max(project.progress, 2)}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Middle Row: Budget Spent + Gold Accent + Raw Percentage */}
-      <div className="flex flex-col gap-1.5 pt-0.5">
-        <div className="flex items-center justify-between text-xs font-medium">
-          <span className="text-[#68707C] truncate">
-            Spent <strong className="text-[#D97706] font-bold">${spentM}M</strong> of <strong className="text-[#171A1F] font-bold">${totalM}M</strong>
+      {/* Right: Status, Budget & Chevron */}
+      <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-col items-end shrink-0">
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusBadge.classes}`}>
+            {statusBadge.label}
           </span>
-
-          <span className="text-xs font-bold text-[#171A1F] flex-shrink-0">
-            {project.progress}%
+          <span className="text-xs font-bold text-[#0F172A] mt-1.5 block">
+            {formatBudget(project.budget?.total)}
+          </span>
+          <span className="text-[10px] text-[#64748B] font-medium block">
+            Budget
           </span>
         </div>
 
-        {/* Linear Progress Bar Track */}
-        <div className="w-full h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-[#1677FF] rounded-full transition-all duration-500"
-            style={{ width: `${project.progress}%` }}
-          />
-        </div>
+        <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all shrink-0" />
       </div>
     </div>
   );
 };
-

@@ -23,23 +23,23 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  // Height strictly 48px, font size 16px bold for default
-  const baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-200 select-none active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 rounded-xl cursor-pointer';
+  // Height strictly 48px, font size 15px semibold, radius 12px (rounded-xl)
+  const baseStyles = 'inline-flex items-center justify-center font-semibold transition-all duration-200 select-none active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 rounded-xl cursor-pointer';
 
   const sizeStyles = {
-    default: 'h-12 px-5 text-[16px] leading-tight', // 48px height, 16px bold
+    default: 'h-12 px-5 text-base leading-tight', // 48px height, 15px semibold
     sm: 'h-9 px-3.5 text-xs font-semibold rounded-lg',
-    lg: 'h-14 px-7 text-lg font-bold rounded-2xl',
-    icon: 'h-11 w-11 p-0 rounded-xl'
+    lg: 'h-12 px-6 text-base font-semibold rounded-xl',
+    icon: 'h-11 w-11 min-h-[44px] min-w-[44px] p-0 rounded-xl' // 44x44px minimum touch area
   };
 
   const variantStyles = {
-    primary: 'bg-[#1677FF] hover:bg-[#0958D9] text-white shadow-xs',
-    gradient: 'bg-[#1677FF] hover:bg-[#0958D9] text-white shadow-xs',
-    secondary: 'bg-[#F2F2F7] text-[#171A1F] hover:bg-[#EAEDF1] border border-[#DDE1E7]',
+    primary: 'bg-[#1677FF] hover:bg-[#0F5FD7] text-white shadow-xs',
+    gradient: 'bg-[#1677FF] hover:bg-[#0F5FD7] text-white shadow-xs',
+    secondary: 'bg-white text-[#0F172A] hover:bg-[#F1F5F9] border border-[#E2E8F0]',
     outline: 'bg-white text-[#1677FF] border border-[#1677FF] hover:bg-[#EAF3FF]',
-    ghost: 'bg-transparent text-[#68707C] hover:bg-[#F2F2F7] hover:text-[#171A1F]',
-    danger: 'bg-rose-600 text-white hover:bg-rose-700 shadow-xs'
+    ghost: 'bg-transparent text-[#475569] hover:bg-[#F1F5F9] hover:text-[#0F172A]',
+    danger: 'bg-[#E5484D] text-white hover:bg-[#D03A3F] shadow-xs'
   };
 
   const widthStyle = fullWidth && size !== 'icon' ? 'w-full' : '';

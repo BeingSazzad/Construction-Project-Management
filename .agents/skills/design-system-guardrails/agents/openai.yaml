@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design System Guardrails"
+  short_description: "Enforce typography, spacing, and token consistency"
+  default_prompt: "Use $design-system-guardrails to align this UI with our global design system and prevent random text sizing."

@@ -140,7 +140,7 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
               <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600" />
               <div>
                 <p className="font-bold text-[#171A1F]">Support Request Sent</p>
-                <p className="text-[11px] text-emerald-700 mt-0.5">Ticket #8492 created. Our team will respond within 15 minutes.</p>
+                <p className="text-xs text-emerald-700 mt-0.5">Ticket #8492 created. Our team will respond within 15 minutes.</p>
               </div>
             </div>
           ) : (

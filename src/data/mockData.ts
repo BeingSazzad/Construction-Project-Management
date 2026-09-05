@@ -69,13 +69,13 @@ export const MOCK_PROJECTS: Project[] = [
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
     },
     budget: {
-      total: 1840000,
-      committed: 1420000,
-      actual: 980000,
-      paid: 820000,
-      remaining: 860000,
-      variance: -60000,
-      costToComplete: 860000
+      total: 4650000,
+      committed: 4370000,
+      actual: 3250000,
+      paid: 2860000,
+      remaining: 1400000,
+      variance: -280000,
+      costToComplete: 1400000
     },
     metrics: {
       totalTasks: 48,
@@ -642,121 +642,193 @@ export const MOCK_GANTT: GanttItem[] = [
 
 export const MOCK_BUDGET_CATEGORIES: TradeCategory[] = [
   {
-    id: 'cat-03',
-    name: '03 - Concrete & Formwork',
+    id: 'cat-01',
+    name: '01 – Site Preparation',
+    icon: 'Boxes',
+    estimatedCost: 450000,
+    committedCost: 430000,
+    actualCost: 320000,
+    costCodes: [
+      {
+        code: '01-1000',
+        name: 'Excavation & Site Earthwork',
+        estimatedCost: 250000,
+        committedCost: 240000,
+        actualCost: 180000,
+        variance: -10000,
+        items: [
+          { id: 'ci-1', code: '01-1001', name: 'Cat 336 Excavator & Dozer Rental', type: 'Equipment', unit: 'DAYS', quantity: 24, unitPrice: 4583, estimatedCost: 130000, committedCost: 125000, actualCost: 110000, paidCost: 100000, remaining: 15000, variance: -5000 },
+          { id: 'ci-2', code: '01-1002', name: 'Earthwork Operators & Labor Crew', type: 'Labor', unit: 'HRS', quantity: 1200, unitPrice: 65, estimatedCost: 80000, committedCost: 75000, actualCost: 70000, paidCost: 65000, remaining: 5000, variance: -5000 }
+        ]
+      },
+      {
+        code: '01-2000',
+        name: 'Utilities Clearing & Demolition',
+        estimatedCost: 200000,
+        committedCost: 190000,
+        actualCost: 140000,
+        variance: -10000,
+        items: [
+          { id: 'ci-3', code: '01-2001', name: 'Culvert & Site Drainage Materials', type: 'Materials', unit: 'LF', quantity: 1600, unitPrice: 50, estimatedCost: 90000, committedCost: 85000, actualCost: 80000, paidCost: 75000, remaining: 5000, variance: -5000 },
+          { id: 'ci-4', code: '01-2002', name: 'Underground Trenching Subcontract', type: 'Subcontractor', unit: 'LUMP', quantity: 1, unitPrice: 60000, estimatedCost: 70000, committedCost: 65000, actualCost: 60000, paidCost: 55000, remaining: 5000, variance: -5000 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cat-02',
+    name: '02 – Foundation & Structure',
     icon: 'Hammer',
     estimatedCost: 1450000,
     committedCost: 1380000,
     actualCost: 1120000,
     costCodes: [
       {
-        code: '03-1000',
+        code: '02-1000',
         name: 'Concrete Formwork & Shoring',
         estimatedCost: 420000,
         committedCost: 405000,
         actualCost: 360000,
         variance: -15000,
         items: [
-          { id: 'ci-1', code: '03-1001', name: 'Column & Wall Formwork Rental', type: 'Equipment', unit: 'SQFT', quantity: 45000, unitPrice: 4.5, estimatedCost: 202500, committedCost: 200000, actualCost: 185000, paidCost: 160000, remaining: 17500, variance: -2500 },
-          { id: 'ci-2', code: '03-1002', name: 'Formwork Carpentry Labor', type: 'Labor', unit: 'HRS', quantity: 3200, unitPrice: 65, estimatedCost: 208000, committedCost: 205000, actualCost: 175000, paidCost: 155000, remaining: 33000, variance: -3000 }
+          { id: 'ci-5', code: '02-1001', name: 'Column & Wall Formwork Rental', type: 'Equipment', unit: 'SQFT', quantity: 45000, unitPrice: 4.5, estimatedCost: 202500, committedCost: 200000, actualCost: 185000, paidCost: 160000, remaining: 17500, variance: -2500 },
+          { id: 'ci-6', code: '02-1002', name: 'Formwork Carpentry Labor', type: 'Labor', unit: 'HRS', quantity: 3200, unitPrice: 65, estimatedCost: 208000, committedCost: 205000, actualCost: 175000, paidCost: 155000, remaining: 33000, variance: -3000 }
         ]
       },
       {
-        code: '03-2000',
+        code: '02-2000',
         name: 'Concrete Reinforcing (Rebar & PT)',
         estimatedCost: 380000,
         committedCost: 375000,
         actualCost: 320000,
         variance: -5000,
         items: [
-          { id: 'ci-3', code: '03-2001', name: 'Grade 60 Epoxy Rebar Supply', type: 'Materials', unit: 'TON', quantity: 240, unitPrice: 1100, estimatedCost: 264000, committedCost: 260000, actualCost: 240000, paidCost: 220000, remaining: 24000, variance: -4000 },
-          { id: 'ci-4', code: '03-2002', name: 'Ironworker Iron-Tying Labor', type: 'Subcontractor', unit: 'LUMP', quantity: 1, unitPrice: 116000, estimatedCost: 116000, committedCost: 115000, actualCost: 80000, paidCost: 70000, remaining: 36000, variance: -1000 }
+          { id: 'ci-7', code: '02-2001', name: 'Grade 60 Epoxy Rebar Supply', type: 'Materials', unit: 'TON', quantity: 240, unitPrice: 1100, estimatedCost: 264000, committedCost: 260000, actualCost: 240000, paidCost: 220000, remaining: 24000, variance: -4000 },
+          { id: 'ci-8', code: '02-2002', name: 'Ironworker Rebar Tying Labor', type: 'Labor', unit: 'HRS', quantity: 1150, unitPrice: 70, estimatedCost: 116000, committedCost: 115000, actualCost: 80000, paidCost: 70000, remaining: 36000, variance: -1000 }
         ]
       },
       {
-        code: '03-3000',
+        code: '02-3000',
         name: 'Cast-in-Place Ready Mix',
         estimatedCost: 650000,
         committedCost: 600000,
         actualCost: 440000,
         variance: -50000,
         items: [
-          { id: 'ci-5', code: '03-3001', name: '5000 PSI High-Early Concrete Batch', type: 'Materials', unit: 'CY', quantity: 3600, unitPrice: 150, estimatedCost: 540000, committedCost: 500000, actualCost: 380000, paidCost: 340000, remaining: 160000, variance: -40000 },
-          { id: 'ci-6', code: '03-3002', name: 'Boom Pump Truck 42m', type: 'Equipment', unit: 'DAYS', quantity: 32, unitPrice: 2800, estimatedCost: 89600, committedCost: 85000, actualCost: 60000, paidCost: 50000, remaining: 29600, variance: -4600 }
+          { id: 'ci-9', code: '02-3001', name: '5000 PSI High-Early Ready Mix', type: 'Materials', unit: 'CY', quantity: 3600, unitPrice: 150, estimatedCost: 540000, committedCost: 500000, actualCost: 380000, paidCost: 340000, remaining: 160000, variance: -40000 },
+          { id: 'ci-10', code: '02-3002', name: 'Boom Pump Truck 42m Rental', type: 'Equipment', unit: 'DAYS', quantity: 32, unitPrice: 2800, estimatedCost: 89600, committedCost: 85000, actualCost: 60000, paidCost: 50000, remaining: 29600, variance: -4600 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cat-03',
+    name: '03 – MEP (Mechanical, Electrical, Plumbing)',
+    icon: 'Flame',
+    estimatedCost: 900000,
+    committedCost: 850000,
+    actualCost: 640000,
+    costCodes: [
+      {
+        code: '03-1000',
+        name: 'Plumbing & Hydronic Distribution',
+        estimatedCost: 400000,
+        committedCost: 380000,
+        actualCost: 290000,
+        variance: -20000,
+        items: [
+          { id: 'ci-11', code: '03-1001', name: 'Copper & PEX Piping Supply', type: 'Materials', unit: 'LF', quantity: 4500, unitPrice: 38, estimatedCost: 190000, committedCost: 180000, actualCost: 170000, paidCost: 150000, remaining: 10000, variance: -10000 },
+          { id: 'ci-12', code: '03-1002', name: 'Master Licensed Plumber Labor', type: 'Labor', unit: 'HRS', quantity: 1500, unitPrice: 80, estimatedCost: 130000, committedCost: 125000, actualCost: 120000, paidCost: 110000, remaining: 5000, variance: -5000 }
+        ]
+      },
+      {
+        code: '03-2000',
+        name: 'Electrical Distribution & Low Voltage',
+        estimatedCost: 500000,
+        committedCost: 470000,
+        actualCost: 350000,
+        variance: -30000,
+        items: [
+          { id: 'ci-13', code: '03-2001', name: '3000A Switchgear & Transformers', type: 'Equipment', unit: 'EA', quantity: 2, unitPrice: 90000, estimatedCost: 200000, committedCost: 190000, actualCost: 180000, paidCost: 160000, remaining: 10000, variance: -10000 },
+          { id: 'ci-14', code: '03-2002', name: 'Rough-in Conduit & Wire Installation', type: 'Subcontractor', unit: 'LUMP', quantity: 1, unitPrice: 170000, estimatedCost: 190000, committedCost: 180000, actualCost: 170000, paidCost: 150000, remaining: 10000, variance: -10000 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'cat-04',
+    name: '04 – Finishes',
+    icon: 'Layers',
+    estimatedCost: 650000,
+    committedCost: 600000,
+    actualCost: 420000,
+    costCodes: [
+      {
+        code: '04-1000',
+        name: 'Drywall & Light Gauge Framing',
+        estimatedCost: 350000,
+        committedCost: 320000,
+        actualCost: 230000,
+        variance: -20000,
+        items: [
+          { id: 'ci-15', code: '04-1001', name: '5/8 Type X Drywall & Metal Studs', type: 'Materials', unit: 'BD', quantity: 3200, unitPrice: 44, estimatedCost: 150000, committedCost: 145000, actualCost: 140000, paidCost: 120000, remaining: 5000, variance: -5000 },
+          { id: 'ci-16', code: '04-1002', name: 'Drywall Tapers & Finishers Labor', type: 'Labor', unit: 'HRS', quantity: 1400, unitPrice: 65, estimatedCost: 100000, committedCost: 95000, actualCost: 90000, paidCost: 80000, remaining: 5000, variance: -5000 }
+        ]
+      },
+      {
+        code: '04-2000',
+        name: 'Paint & Architectural Coatings',
+        estimatedCost: 300000,
+        committedCost: 280000,
+        actualCost: 190000,
+        variance: -20000,
+        items: [
+          { id: 'ci-17', code: '04-2001', name: 'Low-VOC Commercial Primer & Paint', type: 'Materials', unit: 'GAL', quantity: 850, unitPrice: 130, estimatedCost: 120000, committedCost: 115000, actualCost: 110000, paidCost: 95000, remaining: 5000, variance: -5000 },
+          { id: 'ci-18', code: '04-2002', name: 'Exterior Stucco Finish Subcontract', type: 'Subcontractor', unit: 'LUMP', quantity: 1, unitPrice: 80000, estimatedCost: 90000, committedCost: 85000, actualCost: 80000, paidCost: 70000, remaining: 5000, variance: -5000 }
         ]
       }
     ]
   },
   {
     id: 'cat-05',
-    name: '05 - Metals & Structural Steel',
+    name: '05 – Other Costs',
     icon: 'Boxes',
-    estimatedCost: 1150000,
-    committedCost: 1120000,
-    actualCost: 950000,
+    estimatedCost: 250000,
+    committedCost: 230000,
+    actualCost: 120000,
     costCodes: [
       {
-        code: '05-1200',
-        name: 'Structural Steel Framing',
-        estimatedCost: 920000,
-        committedCost: 900000,
-        actualCost: 780000,
-        variance: -20000,
+        code: '05-1000',
+        name: 'Site Logistics & Safety Equipment',
+        estimatedCost: 250000,
+        committedCost: 230000,
+        actualCost: 120000,
+        variance: -10000,
         items: [
-          { id: 'ci-7', code: '05-1201', name: 'Wide Flange Beams & Columns Fabricated', type: 'Materials', unit: 'TON', quantity: 380, unitPrice: 2100, estimatedCost: 798000, committedCost: 780000, actualCost: 690000, paidCost: 620000, remaining: 108000, variance: -18000 }
+          { id: 'ci-19', code: '05-1001', name: 'Perimeter Fencing & Scaffolding', type: 'Equipment', unit: 'MO', quantity: 6, unitPrice: 9167, estimatedCost: 70000, committedCost: 60000, actualCost: 55000, paidCost: 50000, remaining: 5000, variance: -5000 },
+          { id: 'ci-20', code: '05-1002', name: 'Waste Management & Disposal Hauling', type: 'Subcontractor', unit: 'LUMP', quantity: 1, unitPrice: 65000, estimatedCost: 80000, committedCost: 70000, actualCost: 65000, paidCost: 60000, remaining: 5000, variance: -5000 }
         ]
       }
     ]
   },
   {
-    id: 'cat-15',
-    name: '15 - Mechanical & HVAC',
-    icon: 'Flame',
-    estimatedCost: 1250000,
-    committedCost: 1150000,
-    actualCost: 780000,
-    costCodes: [
-      {
-        code: '15-4000',
-        name: 'Plumbing & Hydronics',
-        estimatedCost: 520000,
-        committedCost: 480000,
-        actualCost: 350000,
-        variance: -40000,
-        items: [
-          { id: 'ci-8', code: '15-4001', name: 'Chilled Water Piping & Valves', type: 'Subcontractor', unit: 'LF', quantity: 6200, unitPrice: 65, estimatedCost: 403000, committedCost: 380000, actualCost: 280000, paidCost: 240000, remaining: 123000, variance: -23000 }
-        ]
-      },
-      {
-        code: '15-7000',
-        name: 'HVAC Air Distribution & Chillers',
-        estimatedCost: 730000,
-        committedCost: 670000,
-        actualCost: 430000,
-        variance: -60000,
-        items: [
-          { id: 'ci-9', code: '15-7001', name: '350-Ton Water-Cooled Chillers (2 Units)', type: 'Equipment', unit: 'EA', quantity: 2, unitPrice: 210000, estimatedCost: 420000, committedCost: 400000, actualCost: 300000, paidCost: 280000, remaining: 120000, variance: -20000 }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'cat-16',
-    name: '16 - Electrical & Low Voltage',
+    id: 'cat-06',
+    name: '06 – Contingency & Structural Frame',
     icon: 'Zap',
-    estimatedCost: 800000,
-    committedCost: 720000,
-    actualCost: 400000,
+    estimatedCost: 950000,
+    committedCost: 880000,
+    actualCost: 630000,
     costCodes: [
       {
-        code: '16-1000',
-        name: 'Service Distribution & Gear',
-        estimatedCost: 500000,
-        committedCost: 450000,
-        actualCost: 280000,
+        code: '06-1000',
+        name: 'Structural Beams & Contingency',
+        estimatedCost: 950000,
+        committedCost: 880000,
+        actualCost: 630000,
         variance: -50000,
         items: [
-          { id: 'ci-10', code: '16-1001', name: '3000A Main Switchgear & Transformers', type: 'Equipment', unit: 'LUMP', quantity: 1, unitPrice: 320000, estimatedCost: 320000, committedCost: 300000, actualCost: 200000, paidCost: 180000, remaining: 120000, variance: -20000 }
+          { id: 'ci-21', code: '06-1001', name: 'Wide Flange Structural Steel Supply', type: 'Materials', unit: 'TON', quantity: 180, unitPrice: 2500, estimatedCost: 500000, committedCost: 480000, actualCost: 450000, paidCost: 400000, remaining: 30000, variance: -30000 },
+          { id: 'ci-22', code: '06-1002', name: 'Structural Framing Certified Riggers', type: 'Labor', unit: 'HRS', quantity: 2400, unitPrice: 75, estimatedCost: 200000, committedCost: 190000, actualCost: 180000, paidCost: 160000, remaining: 10000, variance: -10000 }
         ]
       }
     ]
@@ -1226,7 +1298,7 @@ export const MOCK_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'notif-1',
     type: 'task',
-    title: 'Concrete Pour - L12 completed pre-inspection',
+    title: 'Concrete Pour Approved',
     message: 'City inspector signed off on rebar clearance for Level 12 deck pour.',
     timeAgo: '10 min ago',
     read: false,
@@ -1236,18 +1308,18 @@ export const MOCK_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'notif-2',
     type: 'ai',
-    title: 'Latti AI Risk Alert: Downtown Commercial Tower',
-    message: 'Curtain wall glazing anchor torque discrepancy may delay facade installation by 4 days.',
+    title: 'Latti AI Risk Alert',
+    message: 'Downtown Commercial Tower structural schedule variance flagged.',
     timeAgo: '1 hr ago',
     read: false,
     projectId: 'proj-2',
-    targetView: 'latti'
+    targetView: 'tasks'
   },
   {
     id: 'notif-3',
     type: 'budget',
-    title: 'Budget Threshold Passed: Structural Steel',
-    message: '90% of committed cost for Division 05 has been invoiced and approved.',
+    title: 'Budget Threshold Passed',
+    message: 'Structural steel trade exceeded contingency reserve by $45,000.',
     timeAgo: '2 hrs ago',
     read: false,
     projectId: 'proj-1',
@@ -1256,18 +1328,18 @@ export const MOCK_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'notif-4',
     type: 'photo',
-    title: 'Site photo uploaded by Lead Superintendent',
-    message: 'John Smith added 3 photos of Level 12 deck formwork inspection.',
+    title: 'Site Photo Uploaded',
+    message: 'Lead Superintendent uploaded 4 inspection photos for east foundation wall.',
     timeAgo: '3 hrs ago',
     read: true,
     projectId: 'proj-1',
-    targetView: 'photos'
+    targetView: 'daily-logs'
   },
   {
     id: 'notif-5',
     type: 'punch',
-    title: 'Punch Item Resolved: Level 4 Office 401',
-    message: 'Prime Electrical installed ground screw and verified continuity test.',
+    title: 'Punch Item Resolved',
+    message: 'Level 4 Office 401 dry-wall patch completed and verified by site foreman.',
     timeAgo: '5 hrs ago',
     read: true,
     projectId: 'proj-1',

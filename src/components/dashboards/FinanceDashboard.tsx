@@ -46,7 +46,7 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">Draws &amp; Compliance Hub</h2>
-          <p className="text-[11px] text-slate-400 font-medium">Lender Draws, AIA G702 &amp; Lien Security</p>
+          <p className="text-xs text-slate-400 font-medium">Lender Draws, AIA G702 &amp; Lien Security</p>
         </div>
       </div>
 
@@ -127,7 +127,7 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
                           Draw #{d.drawNumber}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                      <p className="text-xs text-slate-400 font-medium mt-0.5">
                         {d.lenderName} · Requested: {d.requestDate}
                       </p>
                     </div>
@@ -135,23 +135,23 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
                   </div>
 
                   {/* Financial Details Row */}
-                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-2xl bg-[#050A14] border border-[#131D31] text-[11px]">
+                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-2xl bg-[#050A14] border border-[#131D31] text-xs">
                     <div>
-                      <span className="text-slate-500 block text-[9px] font-semibold uppercase">Gross Billing</span>
+                      <span className="text-slate-500 block text-[10px] font-semibold uppercase">Gross Billing</span>
                       <span className="font-extrabold text-white">${d.requestedAmount.toLocaleString()}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block text-[9px] font-semibold uppercase">Retainage (10%)</span>
+                      <span className="text-slate-500 block text-[10px] font-semibold uppercase">Retainage (10%)</span>
                       <span className="font-bold text-amber-400">-${retainage10.toLocaleString()}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block text-[9px] font-semibold uppercase">Net Draw Request</span>
+                      <span className="text-slate-500 block text-[10px] font-semibold uppercase">Net Draw Request</span>
                       <span className="font-black text-emerald-400">${netPayable.toLocaleString()}</span>
                     </div>
                   </div>
 
                   {/* Inspector / Verification Status */}
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+                  <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
                     <span className="flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Bank Inspector: {d.inspectorName || 'David Vance (Verified)'}</span>
@@ -185,7 +185,7 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
                 100% Risk Shield
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-400 leading-relaxed">
               Unconditional &amp; Conditional lien releases must be executed prior to disbursing project funds to prevent mechanic's liens.
             </p>
           </div>
@@ -200,7 +200,7 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <span className="text-xs font-bold text-white">{l.subcontractorName}</span>
-                    <p className="text-[11px] text-slate-400 font-medium mt-0.5">{l.trade} · Ref: {l.invoiceRef}</p>
+                    <p className="text-xs text-slate-400 font-medium mt-0.5">{l.trade} · Ref: {l.invoiceRef}</p>
                   </div>
                   <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
                     {l.type}
@@ -233,7 +233,7 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
               <div key={idx} className="p-3 rounded-2xl bg-[#050A14] border border-[#131D31] flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <span className="text-xs font-bold text-white block truncate">{m.name}</span>
-                  <span className="text-[11px] text-slate-400 font-medium block mt-0.5">{m.trade}</span>
+                  <span className="text-xs text-slate-400 font-medium block mt-0.5">{m.trade}</span>
                 </div>
 
                 <div className="flex items-center gap-3 flex-shrink-0">
@@ -258,12 +258,12 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
         <div className="flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-2.5">
             <div className="p-3.5 rounded-2xl bg-[#080E1C] border border-[#14223E]">
-              <div className="text-[11px] font-semibold text-slate-400">Total Portfolio Budget</div>
+              <div className="text-xs font-semibold text-slate-400">Total Portfolio Budget</div>
               <div className="text-lg font-black text-white mt-1">$46.80M</div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-[#080E1C] border border-[#14223E]">
-              <div className="text-[11px] font-semibold text-slate-400">Actual Spent to Date</div>
+              <div className="text-xs font-semibold text-slate-400">Actual Spend to Date</div>
               <div className="text-lg font-black text-blue-400 mt-1">$18.69M</div>
             </div>
           </div>
@@ -290,7 +290,7 @@ export const FinanceDashboard: React.FC<FinanceDashboardProps> = ({
                       <h4 className="text-xs font-bold text-white truncate group-hover:text-blue-400 transition-colors">
                         {p.name}
                       </h4>
-                      <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                      <p className="text-xs text-slate-400 mt-0.5 font-medium">
                         Spent ${actualM}M of ${totalM}M
                       </p>
                     </div>

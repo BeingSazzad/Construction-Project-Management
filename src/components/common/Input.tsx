@@ -28,17 +28,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   return (
     <div className={`flex flex-col gap-1.5 w-full ${containerClassName}`}>
       {label && (
-        <label htmlFor={inputId} className="text-xs font-semibold text-[#171A1F] flex items-center justify-between">
+        <label htmlFor={inputId} className="text-xs md:text-sm font-medium text-[#0F172A] flex items-center justify-between">
           <span>
             {label}
-            {required && <span className="text-rose-500 ml-0.5">*</span>}
+            {required && <span className="text-[#E5484D] ml-0.5">*</span>}
           </span>
         </label>
       )}
 
       <div className="relative flex items-center w-full">
         {leftIcon && (
-          <span className="absolute left-3.5 flex items-center pointer-events-none text-[#68707C]">
+          <span className="absolute left-4 flex items-center pointer-events-none text-[#64748B]">
             {leftIcon}
           </span>
         )}
@@ -47,23 +47,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
           id={inputId}
           ref={ref}
           disabled={disabled}
-          className={`w-full h-11 bg-white border ${
-            error ? 'border-rose-500 focus:border-rose-500' : 'border-[#DDE1E7] focus:border-[#1677FF]'
-          } rounded-xl ${leftIcon ? 'pl-10' : 'pl-3.5'} ${rightIcon ? 'pr-10' : 'pr-3.5'} text-xs font-medium text-[#171A1F] placeholder-[#8F95B2] outline-none transition-all focus:ring-2 focus:ring-[#1677FF]/15 disabled:opacity-50 disabled:bg-[#F2F2F7] disabled:cursor-not-allowed ${className}`}
+          className={`w-full h-12 bg-white border ${
+            error ? 'border-[#E5484D] focus:border-[#E5484D]' : 'border-[#E2E8F0] focus:border-[#1677FF]'
+          } rounded-xl ${leftIcon ? 'pl-11' : 'px-4'} ${rightIcon ? 'pr-11' : 'pr-4'} text-[16px] text-[#0F172A] placeholder-[#94A3B8] outline-none transition-all focus:ring-1 focus:ring-[#1677FF] disabled:opacity-50 disabled:bg-[#F1F5F9] disabled:cursor-not-allowed ${className}`}
           {...props}
         />
 
         {rightIcon && (
-          <span className="absolute right-3.5 flex items-center text-[#68707C]">
+          <span className="absolute right-4 flex items-center text-[#64748B]">
             {rightIcon}
           </span>
         )}
       </div>
 
       {error ? (
-        <span className="text-[11px] font-semibold text-rose-500 mt-0.5">{error}</span>
+        <span className="text-xs font-medium text-[#E5484D] mt-0.5">{error}</span>
       ) : helperText ? (
-        <span className="text-[11px] font-medium text-[#68707C] mt-0.5">{helperText}</span>
+        <span className="text-xs text-[#64748B] mt-0.5">{helperText}</span>
       ) : null}
     </div>
   );

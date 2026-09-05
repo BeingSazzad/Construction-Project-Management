@@ -1,7 +1,6 @@
 import React from 'react';
 import { Task, TaskStatus } from '../../types';
 import { StatusBadge } from '../common/StatusBadge';
-import { Button } from '../common/Button';
 import { 
   X, CheckCircle2, Check 
 } from 'lucide-react';
@@ -25,12 +24,17 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F]">
+      <div className="w-full max-w-[440px] bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col gap-4 text-[#171A1F]">
+        
         {/* Header */}
-        <div className="flex items-start justify-between pb-3 border-b border-[#EAEDF1] mb-3">
+        <div className="flex items-start justify-between pb-3 border-b border-[#EAEDF1]">
           <div className="min-w-0 flex-1 pr-2">
-            <span className="text-[10px] uppercase font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded">{task.projectName}</span>
-            <h3 className="text-base font-bold text-[#171A1F] tracking-tight mt-1.5">{task.title}</h3>
+            <span className="text-[10px] uppercase font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded">
+              {task.projectName}
+            </span>
+            <h3 className="text-base font-bold text-[#171A1F] tracking-tight mt-1.5">
+              {task.title}
+            </h3>
           </div>
           <button
             onClick={onClose}
@@ -40,8 +44,8 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
           </button>
         </div>
 
-        {/* Status and Priority Pill */}
-        <div className="flex items-center justify-between mb-4">
+        {/* Status and Priority Row */}
+        <div className="flex items-center justify-between">
           <StatusBadge status={task.status} size="sm" />
           <div className="flex items-center gap-2">
             <span className="text-xs text-[#68707C]">Priority:</span>
@@ -49,74 +53,72 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
           </div>
         </div>
 
-        {/* Description Box */}
+        {/* Clean Metadata Details (Single Row, No Inner Gray Box) */}
+        <div className="grid grid-cols-3 gap-2 py-2.5 border-y border-[#EAEDF1]">
+          <div>
+            <span className="text-xs text-[#525866] uppercase font-bold tracking-wider block">Assignee</span>
+            <span className="text-xs sm:text-sm font-bold text-[#171A1F] mt-0.5 block truncate">{task.assignee.name}</span>
+          </div>
+          <div>
+            <span className="text-xs text-[#525866] uppercase font-bold tracking-wider block">Due Date</span>
+            <span className="text-xs sm:text-sm font-bold text-amber-700 mt-0.5 block">{task.dueDate}</span>
+          </div>
+          <div>
+            <span className="text-xs text-[#525866] uppercase font-bold tracking-wider block">Location</span>
+            <span className="text-xs sm:text-sm font-bold text-[#171A1F] mt-0.5 block truncate">{task.location || 'Site Area'}</span>
+          </div>
+        </div>
+
+        {/* Description Text (Clean typography, no inner gray box) */}
         {task.description && (
-          <div className="mb-4">
-            <h4 className="text-[11px] font-bold uppercase text-[#68707C] mb-1">Scope & Instructions</h4>
-            <p className="text-xs text-[#171A1F] bg-[#F7F8FA] p-3 rounded-xl border border-[#EAEDF1] leading-relaxed">
+          <div>
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#525866] mb-1.5">Scope & Instructions</h4>
+            <p className="text-xs sm:text-sm text-[#171A1F] leading-relaxed font-normal">
               {task.description}
             </p>
           </div>
         )}
 
-        {/* Subtask Checklist */}
+        {/* Subtask Checklist (Clean divider list, not individual boxes) */}
         {task.subtasks && task.subtasks.length > 0 && (
-          <div className="mb-4">
+          <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-[11px] font-bold uppercase text-[#68707C]">Subtask Checklist</h4>
-              <span className="text-[11px] text-[#1677FF] font-bold">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#525866]">Subtasks</h4>
+              <span className="text-xs text-[#1677FF] font-extrabold">
                 {task.subtasks.filter(s => s.completed).length}/{task.subtasks.length} Completed
               </span>
             </div>
 
-            <div className="space-y-2">
+            <div className="rounded-2xl border border-[#EAEDF1] bg-white divide-y divide-[#EAEDF1] overflow-hidden">
               {task.subtasks.map((st) => (
                 <div
                   key={st.id}
                   onClick={() => onToggleSubtask(task.id, st.id)}
-                  className={`p-2.5 rounded-xl border cursor-pointer flex items-center gap-2.5 transition-all ${
-                    st.completed ? 'bg-[#F7F8FA] border-[#EAEDF1] text-[#68707C]' : 'bg-white border-[#DDE1E7] text-[#171A1F] hover:border-[#1677FF]/40'
-                  }`}
+                  className="px-3.5 py-2.5 flex items-center gap-3 hover:bg-[#F9FAFB] cursor-pointer transition-colors"
                 >
-                  <div className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 ${
-                    st.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#DDE1E7] bg-white'
+                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors ${
+                    st.completed ? 'bg-[#1677FF] border-[#1677FF] text-white' : 'border-[#DDE1E7] bg-white'
                   }`}>
                     {st.completed && <Check className="w-3 h-3 stroke-[3]" />}
                   </div>
-                  <span className={`text-xs ${st.completed ? 'line-through text-[#68707C]' : 'font-medium'}`}>{st.title}</span>
+                  <span className={`text-xs flex-1 ${st.completed ? 'line-through text-[#9DA5B1]' : 'font-medium text-[#171A1F]'}`}>
+                    {st.title}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Metadata Details */}
-        <div className="grid grid-cols-2 gap-2 text-xs mb-4 p-3 bg-[#F7F8FA] rounded-xl border border-[#EAEDF1]">
-          <div>
-            <span className="text-[10px] text-[#68707C] block font-semibold">Assignee</span>
-            <span className="font-bold text-[#171A1F] mt-0.5 block">{task.assignee.name}</span>
-          </div>
-          <div>
-            <span className="text-[10px] text-[#68707C] block font-semibold">Due Date</span>
-            <span className="font-bold text-amber-700 mt-0.5 block">{task.dueDate}</span>
-          </div>
-          {task.location && (
-            <div className="col-span-2 pt-1 border-t border-[#EAEDF1]">
-              <span className="text-[10px] text-[#68707C] block font-semibold">Location</span>
-              <span className="font-semibold text-[#171A1F] mt-0.5 block">{task.location}</span>
-            </div>
-          )}
-        </div>
-
         {/* Action Button */}
-        <div className="mt-auto pt-2 flex gap-2">
+        <div className="pt-2 flex gap-2">
           {!isDone ? (
             <button
               onClick={() => {
                 onUpdateStatus(task.id, 'Completed');
                 onClose();
               }}
-              className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all"
+              className="w-full h-10 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Mark Task Complete</span>
@@ -127,7 +129,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                 onUpdateStatus(task.id, 'In Progress');
                 onClose();
               }}
-              className="w-full py-2.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#171A1F] font-bold text-xs border border-[#DDE1E7] cursor-pointer active:scale-95 transition-all"
+              className="w-full h-10 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#171A1F] font-bold text-xs border border-[#DDE1E7] cursor-pointer active:scale-95 transition-all"
             >
               Reopen Task
             </button>

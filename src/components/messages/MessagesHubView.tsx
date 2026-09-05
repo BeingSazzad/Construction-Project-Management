@@ -326,7 +326,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 setAddMemberSearchQuery('');
                 setIsAddMemberModalOpen(true);
               }}
-              className="h-7 px-2.5 bg-[#1677FF] hover:bg-[#0958D9] active:scale-95 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+              className="h-7 px-2.5 bg-[#1677FF] hover:bg-[#0958D9] active:scale-95 text-white text-xs font-bold rounded-lg flex items-center gap-1 shadow-xs transition-all cursor-pointer"
               title="Add member to channel"
             >
               <UserPlus className="w-3 h-3" />

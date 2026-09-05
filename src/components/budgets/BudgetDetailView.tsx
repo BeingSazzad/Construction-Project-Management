@@ -262,7 +262,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
             BDG-3200
           </span>
 
-          <span className="text-[11px] font-bold text-[#68707C] truncate">
+          <span className="text-xs font-bold text-[#68707C] truncate">
             {totalItemsCount} items
           </span>
         </div>
@@ -352,7 +352,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
             {/* Total Est Label below Pie Chart */}
             <div className="flex flex-col items-center justify-center mt-1 text-center">
-              <span className="text-[9px] font-bold text-[#68707C] uppercase tracking-wider">Total Est.</span>
+              <span className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider">Total Est.</span>
               <span className="text-xs font-black text-[#171A1F]">$78.5k</span>
             </div>
           </div>
@@ -360,28 +360,28 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           {/* Right Side: 4 Core Non-Duplicate Executive Financial Cards */}
           <div className="flex-1 grid grid-cols-2 gap-2 text-xs">
             <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-[#68707C] uppercase flex items-center gap-1 truncate">
+              <span className="text-[10px] font-bold text-[#68707C] uppercase flex items-center gap-1 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                 Spent
               </span>
-              <span className="text-xs font-black text-blue-400 mt-1 block">$18.4k <span className="text-[9px] text-[#68707C] font-normal">(23.5%)</span></span>
+              <span className="text-xs font-black text-blue-400 mt-1 block">$18.4k <span className="text-[10px] text-[#68707C] font-normal">(23.5%)</span></span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-[#68707C] uppercase flex items-center gap-1 truncate">
+              <span className="text-[10px] font-bold text-[#68707C] uppercase flex items-center gap-1 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 Remaining
               </span>
-              <span className="text-xs font-black text-emerald-400 mt-1 block">$60.1k <span className="text-[9px] text-[#68707C] font-normal">(76.5%)</span></span>
+              <span className="text-xs font-black text-emerald-400 mt-1 block">$60.1k <span className="text-[10px] text-[#68707C] font-normal">(76.5%)</span></span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Net Profit</span>
-              <span className="text-xs font-black text-emerald-400 mt-1 block">+$22.0k <span className="text-[9px] text-[#68707C] font-normal">(28.0%)</span></span>
+              <span className="text-[10px] font-bold text-[#68707C] uppercase block truncate">Net Profit</span>
+              <span className="text-xs font-black text-emerald-400 mt-1 block">+$22.0k <span className="text-[10px] text-[#68707C] font-normal">(28.0%)</span></span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between shadow-sm">
-              <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Revenue / ARV</span>
+              <span className="text-[10px] font-bold text-[#68707C] uppercase block truncate">Revenue / ARV</span>
               <span className="text-xs font-black text-[#171A1F] mt-1 block">$100.4k</span>
             </div>
           </div>
@@ -390,19 +390,19 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
         {/* Bottom Executive Secondary Strip (4 Essential Metrics) */}
         <div className="grid grid-cols-4 gap-1.5 pt-3 border-t border-[#DDE1E7] text-center text-xs">
           <div>
-            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Cost / SF</span>
+            <span className="text-[10px] font-bold text-[#68707C] uppercase block truncate">Cost / SF</span>
             <span className="text-xs font-bold text-blue-400 block mt-0.5">$185.40</span>
           </div>
           <div>
-            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Sale / SF</span>
+            <span className="text-[10px] font-bold text-[#68707C] uppercase block truncate">Sale / SF</span>
             <span className="text-xs font-bold text-blue-400 block mt-0.5">$245.00</span>
           </div>
           <div>
-            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Revised</span>
+            <span className="text-[10px] font-bold text-[#68707C] uppercase block truncate">Revised</span>
             <span className="text-xs font-bold text-[#171A1F] block mt-0.5">$82.4k</span>
           </div>
           <div>
-            <span className="text-[9px] font-bold text-[#68707C] uppercase block truncate">Contingency</span>
+            <span className="text-[10px] font-bold text-[#68707C] uppercase block truncate">Contingency</span>
             <span className="text-xs font-bold text-[#171A1F] block mt-0.5">$12.5k</span>
           </div>
         </div>
@@ -461,7 +461,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[11px] text-[#68707C] font-medium">
+                    <span className="text-xs text-[#68707C] font-medium">
                       {sec.items.length} items
                     </span>
                     <span className="text-xs font-bold text-blue-400">
@@ -728,7 +728,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   </span>
                   <span>Budget Team Roster ({teamMembers.length})</span>
                 </h3>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Assigned Project Leadership & Subcontractor Leads</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Assigned Project Leadership & Subcontractor Leads</p>
               </div>
 
               <button
@@ -824,7 +824,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <h4 className="text-xs font-bold text-[#171A1F] truncate">{member.name}</h4>
-                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
                           member.type === 'gc'
                             ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                             : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
@@ -832,7 +832,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                           {member.type === 'gc' ? 'GC' : 'Sub'}
                         </span>
                       </div>
-                      <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
+                      <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
                         {member.role} • <span className="text-[#9DA5B1]">{member.company}</span>
                       </p>
                     </div>
@@ -1019,15 +1019,15 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                 {/* Selling Calculation Strip */}
                 <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#DDE1E7] text-center text-xs">
                   <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7]">
-                    <span className="text-[9px] text-[#68707C] font-bold block uppercase">Closing Costs</span>
+                    <span className="text-[10px] text-[#68707C] font-bold block uppercase">Closing Costs</span>
                     <span className="text-xs font-bold text-[#68707C] block mt-0.5">${(salePrice * closingCostsPct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                   <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7]">
-                    <span className="text-[9px] text-[#68707C] font-bold block uppercase">Commission</span>
+                    <span className="text-[10px] text-[#68707C] font-bold block uppercase">Commission</span>
                     <span className="text-xs font-bold text-[#68707C] block mt-0.5">${(salePrice * agentCommissionPct / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                   <div className="p-2 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7]">
-                    <span className="text-[9px] text-[#68707C] font-bold block uppercase">Net Proceeds</span>
+                    <span className="text-[10px] text-[#68707C] font-bold block uppercase">Net Proceeds</span>
                     <span className="text-xs font-black text-emerald-400 block mt-0.5">${(salePrice - (salePrice * (closingCostsPct + agentCommissionPct) / 100) - otherSellingCosts).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                   </div>
                 </div>
@@ -1085,17 +1085,17 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col gap-2">
                     <div className="flex items-center justify-between border-b border-[#DDE1E7] pb-2">
                       <span className="text-xs font-extrabold text-blue-400">LTV Option</span>
-                      <span className="text-[9px] font-bold text-[#68707C] uppercase">65% ARV</span>
+                      <span className="text-[10px] font-bold text-[#68707C] uppercase">65% ARV</span>
                     </div>
-                    <div className="flex justify-between items-center text-[11px]">
+                    <div className="flex justify-between items-center text-xs">
                       <span className="text-[#68707C]">Max Loan:</span>
                       <span className="font-bold text-[#171A1F]">${(salePrice * 0.65).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
-                    <div className="flex justify-between items-center text-[11px]">
+                    <div className="flex justify-between items-center text-xs">
                       <span className="text-[#68707C]">Avg Monthly:</span>
                       <span className="font-bold text-blue-400">${((salePrice * 0.65 * (interestRate / 100)) / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
-                    <div className="flex justify-between items-center text-[11px]">
+                    <div className="flex justify-between items-center text-xs">
                       <span className="text-[#68707C]">Total Interest:</span>
                       <span className="font-extrabold text-[#171A1F]">${((salePrice * 0.65 * (interestRate / 100)) / 12 * carryingMonths).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
@@ -1105,17 +1105,17 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col gap-2">
                     <div className="flex items-center justify-between border-b border-[#DDE1E7] pb-2">
                       <span className="text-xs font-extrabold text-emerald-400">LTC Option</span>
-                      <span className="text-[9px] font-bold text-[#68707C] uppercase">80% Cost</span>
+                      <span className="text-[10px] font-bold text-[#68707C] uppercase">80% Cost</span>
                     </div>
-                    <div className="flex justify-between items-center text-[11px]">
+                    <div className="flex justify-between items-center text-xs">
                       <span className="text-[#68707C]">Max Loan:</span>
                       <span className="font-bold text-[#171A1F]">${((lotPrice + totalCost) * 0.80).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
-                    <div className="flex justify-between items-center text-[11px]">
+                    <div className="flex justify-between items-center text-xs">
                       <span className="text-[#68707C]">Avg Monthly:</span>
                       <span className="font-bold text-emerald-400">${(((lotPrice + totalCost) * 0.80 * (interestRate / 100)) / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
-                    <div className="flex justify-between items-center text-[11px]">
+                    <div className="flex justify-between items-center text-xs">
                       <span className="text-[#68707C]">Total Interest:</span>
                       <span className="font-extrabold text-[#171A1F]">${(((lotPrice + totalCost) * 0.80 * (interestRate / 100)) / 12 * carryingMonths).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
@@ -1133,7 +1133,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
               </div>
               <div>
                 <h4 className="text-xs font-extrabold text-[#171A1F]">Deal Score Analysis</h4>
-                <p className="text-[11px] text-emerald-400 font-bold mt-0.5">88/100 · High Profit Potential</p>
+                <p className="text-xs text-emerald-400 font-bold mt-0.5">88/100 · High Profit Potential</p>
               </div>
             </div>
             <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
@@ -1160,7 +1160,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   </span>
                   <span>Team Chat & Activity Log ({chatMessages.length})</span>
                 </h3>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Real-time project discussions and team updates</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Real-time project discussions and team updates</p>
               </div>
 
               <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
@@ -1238,7 +1238,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   <Download className="w-4 h-4 text-white" />
                   <span>Detailed Budget PDF</span>
                 </div>
-                <span className="text-[9px] bg-blue-700 px-2 py-0.5 rounded-full font-bold uppercase">PDF</span>
+                <span className="text-[10px] bg-blue-700 px-2 py-0.5 rounded-full font-bold uppercase">PDF</span>
               </button>
 
               {/* 2. Budget Summary CSV */}
@@ -1250,7 +1250,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   <Download className="w-4 h-4 text-[#68707C]" />
                   <span>Budget Summary CSV</span>
                 </div>
-                <span className="text-[9px] bg-slate-800 text-[#68707C] px-2 py-0.5 rounded-full font-bold uppercase">CSV</span>
+                <span className="text-[10px] bg-slate-800 text-[#68707C] px-2 py-0.5 rounded-full font-bold uppercase">CSV</span>
               </button>
 
               
@@ -1264,7 +1264,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                   <TrendingUp className="w-4 h-4 text-[#68707C]" />
                   <span>Cash-Flow Forecast</span>
                 </div>
-                <span className="text-[9px] bg-slate-800 text-[#68707C] px-2 py-0.5 rounded-full font-bold uppercase">Forecast</span>
+                <span className="text-[10px] bg-slate-800 text-[#68707C] px-2 py-0.5 rounded-full font-bold uppercase">Forecast</span>
               </button>
             </div>
           </div>

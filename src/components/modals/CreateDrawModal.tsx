@@ -56,7 +56,7 @@ export const CreateDrawModal: React.FC<CreateDrawModalProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-[#171A1F]">Request Lender Draw</h3>
-              <p className="text-[11px] text-[#68707C]">Initiate capital draw with lender</p>
+              <p className="text-xs text-[#68707C]">Initiate capital draw with lender</p>
             </div>
           </div>
           <button

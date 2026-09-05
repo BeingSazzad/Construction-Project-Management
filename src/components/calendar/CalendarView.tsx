@@ -208,7 +208,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     } ${isSelected ? 'bg-[#EAF3FF] ring-2 ring-[#1677FF] z-10' : isToday ? 'bg-[#F0F7FF]' : ''} hover:bg-[#F2F2F7] cursor-pointer`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className={`text-[11px] font-bold ${
+                      <span className={`text-xs font-bold ${
                         isToday 
                           ? 'w-5 h-5 rounded-full bg-[#1677FF] text-white flex items-center justify-center text-[10px]' 
                           : isSelected ? 'text-[#1677FF]' : cell.isCurrentMonth ? 'text-[#171A1F]' : 'text-[#9DA5B1]'
@@ -228,7 +228,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                           />
                         ))}
                         {dayEvents.length > 3 && (
-                          <span className="text-[9px] font-bold text-[#1677FF] leading-none">
+                          <span className="text-[10px] font-bold text-[#1677FF] leading-none">
                             +{dayEvents.length - 3}
                           </span>
                         )}
@@ -240,44 +240,44 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             </div>
           </div>
 
-          {/* ─── Selected Day Events Agenda Panel ─── */}
-          <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] flex flex-col gap-2.5 shadow-xs">
-            <div className="flex items-center justify-between">
+          {/* ─── Selected Day Events Agenda Panel (Clean Divided List, No Box Inception) ─── */}
+          <div className="rounded-3xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs">
+            <div className="p-4 border-b border-[#EAEDF1] flex items-center justify-between">
               <h3 className="text-xs font-bold text-[#171A1F] uppercase tracking-wider flex items-center gap-1.5">
                 <CalendarIcon className="w-3.5 h-3.5 text-[#1677FF]" />
                 <span>Events for {selectedDateStr}</span>
               </h3>
-              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] border border-[#1677FF]/20 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
                 {selectedDayEvents.length} {selectedDayEvents.length === 1 ? 'Event' : 'Events'}
               </span>
             </div>
 
             {selectedDayEvents.length === 0 ? (
-              <div className="p-3 text-center text-xs text-[#68707C] font-medium">
+              <div className="p-4 text-center text-xs text-[#68707C] font-medium">
                 No events scheduled on this date. Tap <strong className="text-[#1677FF]">+ Add</strong> to create one.
               </div>
             ) : (
-              <div className="flex flex-col gap-2 mt-0.5">
+              <div className="divide-y divide-[#F2F2F7]">
                 {selectedDayEvents.map(evt => (
                   <div
                     key={evt.id}
                     onClick={() => setSelectedEvent(evt)}
-                    className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] hover:border-[#1677FF]/40 transition-all cursor-pointer flex items-center justify-between gap-3 group shadow-xs active:scale-[0.99]"
+                    className="px-4 py-3 hover:bg-[#F9FAFB] transition-colors cursor-pointer flex items-center justify-between gap-3 group"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${getEventDotColor(evt.type)}`} />
+                      <span className={`w-2 h-2 rounded-full flex-shrink-0 ${getEventDotColor(evt.type)}`} />
                       <div className="min-w-0">
                         <h4 className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
                           {evt.title}
                         </h4>
                         {evt.time && (
-                          <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
+                          <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
                             {evt.time}
                           </p>
                         )}
                       </div>
                     </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${getEventBadgeColor(evt.type)}`}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${getEventBadgeColor(evt.type)}`}>
                       {evt.type}
                     </span>
                   </div>
@@ -293,7 +293,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <div className="p-8 text-center rounded-3xl bg-white border border-[#DDE1E7] text-[#68707C] shadow-xs">
               <CalendarIcon className="w-8 h-8 mx-auto mb-2 text-[#9DA5B1]" />
               <p className="text-xs font-semibold text-[#171A1F]">No events found</p>
-              <p className="text-[11px] text-[#68707C] mt-0.5">Add an inspection or milestone to the calendar</p>
+              <p className="text-xs text-[#68707C] mt-0.5">Add an inspection or milestone to the calendar</p>
             </div>
           ) : (
             eventsList.map(evt => (
@@ -308,7 +308,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     <h4 className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
                       {evt.title}
                     </h4>
-                    <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
+                    <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
                       <span className="text-[#171A1F] font-semibold">{evt.date}</span>
                       {evt.time ? ` · ${evt.time}` : ''}
                     </p>
@@ -372,7 +372,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 </div>
               )}
               {selectedEvent.notes && (
-                <div className="pt-2 border-t border-[#EAEDF1] text-[11px] text-[#68707C]">
+                <div className="pt-2 border-t border-[#EAEDF1] text-xs text-[#68707C]">
                   {selectedEvent.notes}
                 </div>
               )}

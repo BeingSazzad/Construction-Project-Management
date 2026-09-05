@@ -30,7 +30,7 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-[#1677FF]" />
           <span className="text-xs font-black tracking-wider text-[#171A1F] uppercase">LATTICE</span>
-          <span className="hidden sm:inline text-[11px] text-[#68707C] font-semibold">· Construction Platform</span>
+          <span className="hidden sm:inline text-xs text-[#68707C] font-semibold">· Construction Platform</span>
         </div>
 
         {/* Action Controls */}
@@ -71,7 +71,7 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
 
           <button
             onClick={() => setFrameMode(frameMode === 'mobile' ? 'fluid' : 'mobile')}
-            className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#F2F2F7] border border-[#DDE1E7] text-[#171A1F] hover:bg-[#EAF3FF] hover:border-[#1677FF]/40 cursor-pointer transition-colors"
+            className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F2F2F7] border border-[#DDE1E7] text-[#171A1F] hover:bg-[#EAF3FF] hover:border-[#1677FF]/40 cursor-pointer transition-colors"
           >
             {frameMode === 'mobile' ? '🖥️ Desktop View' : '📱 Mobile Frame'}
           </button>
@@ -90,7 +90,7 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
           {/* iOS Top Notch / Status Bar matching Figma */}
           {frameMode === 'mobile' && (
             <div className="w-full bg-white px-7 pt-3 pb-1 flex items-center justify-between select-none z-50 text-[#171A1F] text-xs font-semibold">
-              <span className="font-bold tracking-tight text-[13px]">9:41</span>
+              <span className="font-bold tracking-tight text-sm">9:41</span>
               {/* Dynamic Island Pill */}
               <div className="w-24 h-4 bg-[#171A1F] rounded-full mx-auto" />
               <div className="flex items-center gap-1.5 text-[#171A1F]">

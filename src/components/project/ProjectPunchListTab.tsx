@@ -94,7 +94,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           <Folder className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
           <span className="text-xs font-bold text-[#171A1F] truncate">{project.name}</span>
         </div>
-        <span className="text-[11px] font-bold text-[#68707C] bg-white px-2 py-0.5 rounded-md border border-[#DDE1E7] flex-shrink-0">
+        <span className="text-xs font-bold text-[#68707C] bg-white px-2 py-0.5 rounded-md border border-[#DDE1E7] flex-shrink-0">
           {filteredItems.length} items
         </span>
       </div>
@@ -150,18 +150,21 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                   </p>
                 )}
 
-                {/* Line 3: Clean Metadata Row */}
+                {/* Line 3: Clean Metadata Row (Clean inline typography, no nested boxes) */}
                 <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#EAEDF1]">
-                  <div className="flex items-center gap-2 flex-wrap text-xs min-w-0 flex-1">
-                    <span className="px-2.5 py-0.5 rounded-lg bg-[#F7F8FA] text-[#171A1F] border border-[#EAEDF1] font-semibold text-[11px] truncate">
+                  <div className="flex items-center gap-2 text-xs min-w-0 flex-1">
+                    <span className="font-semibold text-xs text-[#171A1F] truncate">
                       {item.assignedTo?.trade || 'General Trade'}
                     </span>
 
                     {item.location && (
-                      <span className="flex items-center gap-1 text-[#68707C] font-medium text-[11px] bg-[#F7F8FA] px-2.5 py-0.5 rounded-lg border border-[#EAEDF1] truncate">
-                        <MapPin className="w-3 h-3 text-rose-500 flex-shrink-0" />
-                        <span className="truncate">{item.location}</span>
-                      </span>
+                      <>
+                        <span className="text-[#DDE1E7]">·</span>
+                        <span className="flex items-center gap-1 text-[#68707C] font-medium text-xs truncate">
+                          <MapPin className="w-3 h-3 text-rose-500 flex-shrink-0" />
+                          <span className="truncate">{item.location}</span>
+                        </span>
+                      </>
                     )}
                   </div>
 

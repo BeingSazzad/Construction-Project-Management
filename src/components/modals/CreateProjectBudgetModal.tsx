@@ -137,7 +137,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
               }`}
             >
               <h4 className="text-xs font-bold text-[#171A1F]">{m.title}</h4>
-              <p className="text-[11px] text-[#68707C] mt-0.5">{m.desc}</p>
+              <p className="text-xs text-[#68707C] mt-0.5">{m.desc}</p>
             </button>
           ))}
         </div>

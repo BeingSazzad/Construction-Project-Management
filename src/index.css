@@ -8,12 +8,50 @@
   --content-padding: 20px;
   --btn-height: 48px;
 
-  /* Global Border Radius Architecture Tokens */
-  --radius-container: 24px;  /* rounded-3xl: Main Container Cards, Sheet Modals & Hub Headers */
-  --radius-card: 16px;       /* rounded-2xl: Content Cards, Feeds, Items & Large Buttons */
-  --radius-element: 12px;    /* rounded-xl:  Inputs, Dropdowns, Medium Action Buttons */
-  --radius-sm: 8px;          /* rounded-lg:  Table Cells, Small Badges, Tooltips */
-  --radius-pill: 9999px;     /* rounded-full: Pill Triggers & Avatar Badges */
+  /* ── Lattice Master Color System ────────────────────────────────── */
+  /* Neutrals & Surfaces */
+  --color-bg:               #F7F9FC;   /* App background canvas */
+  --color-surface:          #FFFFFF;   /* Primary Cards, Panels */
+  --color-surface-secondary:#F1F5F9;   /* Inset controls, headers */
+  --color-subtle:           #F1F5F9;   /* Hover states, secondary fill */
+  --color-border:           #E2E8F0;   /* Clean 1px borders & dividers */
+  --color-border-strong:    #CBD5E1;   /* Strong active borders */
+  --color-border-light:     #F1F5F9;   /* Very light dividers */
+
+  /* Text & Typography */
+  --color-text-primary:     #0F172A;   /* High-contrast headings & body */
+  --color-text-secondary:   #475569;   /* Labels, supporting descriptions */
+  --color-text-muted:       #64748B;   /* Metadata, subtext */
+  --color-text-subtle:      #94A3B8;   /* Placeholders, disabled text */
+  --color-text-tertiary:    #94A3B8;   /* Fallback alias */
+
+  /* Brand Blue (Blue-First) */
+  --color-blue:             #1677FF;   /* Primary accent, CTA buttons */
+  --color-blue-dark:        #0F5FD7;   /* Hover state for blue */
+  --color-blue-hover:       #0F5FD7;   /* Alias */
+  --color-blue-soft:        #EAF3FF;   /* Blue tint background / active chip */
+  --color-blue-light:       #EAF3FF;   /* Alias */
+  --color-blue-surface:     #F5F9FF;   /* Highlight card background */
+  --color-blue-border:      rgba(22, 119, 255, 0.2);
+
+  /* Functional Status Colors */
+  --color-success:          #10A976;   /* Green — on track, healthy, completed */
+  --color-success-bg:       #E9F9F3;   /* Soft success background */
+  --color-success-soft:     #E9F9F3;
+  --color-warning:          #F59E0B;   /* Amber — needs attention, warning */
+  --color-warning-bg:       #FFF7E6;   /* Soft warning background */
+  --color-warning-soft:     #FFF7E6;
+  --color-danger:           #E5484D;   /* Red — critical, overdue, blocker */
+  --color-danger-bg:        #FFF0F0;   /* Soft danger background */
+  --color-danger-soft:      #FFF0F0;
+
+  /* Global Border Radius Hierarchy Tokens */
+  --radius-hero:      20px;   /* rounded-[20px]: Hero cards & executive summary */
+  --radius-container: 20px;   /* rounded-[20px] */
+  --radius-card:      16px;   /* rounded-2xl: Standard cards, sheets */
+  --radius-element:   12px;   /* rounded-xl:  Buttons, inputs, controls */
+  --radius-sm:        8px;    /* rounded-lg:  Badges, micro chips */
+  --radius-pill:      9999px; /* rounded-full: Status pills, filter chips */
 }
 
 /* Global Border Radius Helper Utility Classes */
@@ -42,11 +80,11 @@
   background: #C4C9D2;
 }
 
-/* Base Typography & Background - Apple-inspired Light Monochrome */
+/* Base Typography & Background - Lattice Master Mobile Design System */
 body {
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #F2F2F7;
-  color: #171A1F;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif;
+  background-color: #F7F9FC;
+  color: #0F172A;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;

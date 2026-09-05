@@ -56,23 +56,23 @@ export const ReportsHubView: React.FC<ReportsHubViewProps> = ({ onNavigateToAnal
     return (
       <div key={card.id} className="relative p-4 rounded-2xl bg-[#060B17] border border-[#142036] flex flex-col gap-3 hover:border-[#1E3058] transition-all">
         {isSoon && (
-          <span className="absolute top-3 right-3 text-[9px] font-black tracking-widest text-slate-500 border border-[#1A2744] bg-[#0A1328] px-1.5 py-0.5 rounded-full uppercase">Soon</span>
+          <span className="absolute top-3 right-3 text-[10px] font-black tracking-widest text-slate-500 border border-[#1A2744] bg-[#0A1328] px-1.5 py-0.5 rounded-full uppercase">Soon</span>
         )}
         <div className={`w-9 h-9 rounded-xl border flex items-center justify-center flex-shrink-0 ${card.color}`}>
           <Icon className="w-4 h-4" strokeWidth={2} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-bold text-white leading-tight">{card.title}</p>
-          <p className="text-[11px] text-slate-400 font-medium mt-1 leading-snug">{card.desc}</p>
+          <p className="text-sm font-bold text-white leading-tight">{card.title}</p>
+          <p className="text-xs text-slate-400 font-medium mt-1 leading-snug">{card.desc}</p>
         </div>
         {isSoon ? (
-          <div className="flex items-center gap-1.5 h-8 px-3 rounded-xl bg-[#0A1328] border border-[#1A2744] text-[11px] font-bold text-slate-500">
+          <div className="flex items-center gap-1.5 h-8 px-3 rounded-xl bg-[#0A1328] border border-[#1A2744] text-xs font-bold text-slate-500">
             <Clock className="w-3.5 h-3.5" /> Coming Soon
           </div>
         ) : (
           <button
             onClick={() => handleGenerate(card, section)}
-            className="flex items-center justify-center gap-1.5 h-8 px-3 rounded-xl bg-[#0A1328] border border-[#1A2744] text-[11px] font-bold text-slate-300 hover:border-blue-500/40 hover:text-blue-400 transition-all cursor-pointer"
+            className="flex items-center justify-center gap-1.5 h-8 px-3 rounded-xl bg-[#0A1328] border border-[#1A2744] text-xs font-bold text-slate-300 hover:border-blue-500/40 hover:text-blue-400 transition-all cursor-pointer"
           >
             <FileText className="w-3.5 h-3.5" /> Generate Report
           </button>
@@ -90,7 +90,7 @@ export const ReportsHubView: React.FC<ReportsHubViewProps> = ({ onNavigateToAnal
         </div>
         <div>
           <h1 className="text-base font-black text-white tracking-tight">Reports</h1>
-          <p className="text-[11px] text-slate-400 font-medium">Company and project reports to help you make decisions</p>
+          <p className="text-xs text-slate-400 font-medium">Company and project reports to help you make decisions</p>
         </div>
       </div>
 
@@ -98,7 +98,7 @@ export const ReportsHubView: React.FC<ReportsHubViewProps> = ({ onNavigateToAnal
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center gap-2">
           <div className="w-0.5 h-4 rounded-full bg-blue-500" />
-          <p className="text-[13px] font-black text-white tracking-tight">Company Reports</p>
+          <p className="text-sm font-black text-white tracking-tight">Company Reports</p>
         </div>
         <div className="grid grid-cols-1 gap-2">
           {COMPANY_REPORTS.map(card => renderCard(card, 'company'))}
@@ -109,7 +109,7 @@ export const ReportsHubView: React.FC<ReportsHubViewProps> = ({ onNavigateToAnal
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center gap-2">
           <div className="w-0.5 h-4 rounded-full bg-blue-500" />
-          <p className="text-[13px] font-black text-white tracking-tight">Project Reports</p>
+          <p className="text-sm font-black text-white tracking-tight">Project Reports</p>
         </div>
         <div className="grid grid-cols-1 gap-2">
           {PROJECT_REPORTS.map(card => renderCard(card, 'project'))}
@@ -130,7 +130,7 @@ export const ReportsHubView: React.FC<ReportsHubViewProps> = ({ onNavigateToAnal
             <p className="text-[10px] text-slate-400 font-medium">Calculated from actual project contract values across all completed and active projects.</p>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-[11px] font-bold text-blue-400 group-hover:text-blue-300 whitespace-nowrap pl-2">
+        <div className="flex items-center gap-1 text-xs font-bold text-blue-400 group-hover:text-blue-300 whitespace-nowrap pl-2">
           View Analytics <ArrowUpRight className="w-3.5 h-3.5" />
         </div>
       </button>

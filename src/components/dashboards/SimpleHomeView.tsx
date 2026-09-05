@@ -189,7 +189,7 @@ export const SimpleHomeView: React.FC<SimpleHomeViewProps> = ({
               <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${color} ${bg} group-hover:scale-110 transition-transform`}>
                 <Icon className="w-4 h-4" />
               </div>
-              <span className="text-[11px] font-semibold text-[#171A1F] transition-colors text-center leading-tight truncate w-full">{label}</span>
+              <span className="text-xs font-semibold text-[#171A1F] transition-colors text-center leading-tight truncate w-full">{label}</span>
             </button>
           ))}
         </div>

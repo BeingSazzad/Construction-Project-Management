@@ -109,7 +109,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
           <div className="py-12 flex flex-col items-center gap-2 text-center bg-white border border-[#DDE1E7] rounded-3xl p-8 shadow-xs">
             <Calendar className="w-8 h-8 text-[#9DA5B1]" />
             <p className="text-xs font-semibold text-[#171A1F]">No logs found</p>
-            <p className="text-[11px] text-[#68707C] max-w-[220px]">
+            <p className="text-xs text-[#68707C] max-w-[220px]">
               No logs recorded for this filter. Tap "New Log" to create one.
             </p>
           </div>
@@ -129,7 +129,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
                     <h3 className="text-xs sm:text-sm font-bold text-[#171A1F] truncate leading-tight">
                       {log.projectName}
                     </h3>
-                    <p className="text-[11px] text-[#68707C] font-medium leading-tight mt-0.5">
+                    <p className="text-xs text-[#68707C] font-medium leading-tight mt-0.5">
                       {log.date}
                     </p>
                   </div>
@@ -152,7 +152,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
               </div>
 
               {/* Row 2: Weather & Quick Tags */}
-              <div className="flex items-center gap-2 text-[11px] text-[#68707C]">
+              <div className="flex items-center gap-2 text-xs text-[#68707C]">
                 <div className="flex items-center gap-1 bg-[#F7F8FA] px-2 py-0.5 rounded-lg border border-[#EAEDF1]">
                   {log.weather.condition.toLowerCase().includes('rain') ? (
                     <CloudRain className="w-3 h-3 text-[#1677FF]" />
@@ -173,7 +173,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
               </p>
 
               {/* Row 4: Author Footer */}
-              <div className="flex items-center justify-between text-[11px] text-[#68707C] pt-1 border-t border-[#EAEDF1]">
+              <div className="flex items-center justify-between text-xs text-[#68707C] pt-1 border-t border-[#EAEDF1]">
                 <span>By: {log.author}</span>
                 <span className="text-emerald-700 font-semibold">{log.safetyIncidents}</span>
               </div>

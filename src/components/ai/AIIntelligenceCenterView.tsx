@@ -89,7 +89,7 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
           </div>
           <div>
             <h1 className="text-base font-extrabold text-[#171A1F] tracking-tight">Latti Intelligence Center</h1>
-            <p className="text-[11px] text-[#68707C] font-medium">Lattice AI-Powered Construction Cost Baseline & Knowledge Engine</p>
+            <p className="text-xs text-[#68707C] font-medium">Lattice AI-Powered Construction Cost Baseline & Knowledge Engine</p>
           </div>
         </div>
       </div>
@@ -128,7 +128,7 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-[#1677FF] border border-[#1677FF]/30">Monthly Cycle</span>
               </div>
               <h2 className="text-sm font-black text-[#171A1F]">Latti Cost Baseline — August 2026</h2>
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1677FF]/15 text-[11px]">
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1677FF]/15 text-xs">
                 <div className="p-2.5 rounded-xl bg-white border border-[#DDE1E7] shadow-xs">
                   <span className="text-[#68707C] text-[10px] font-bold block uppercase">Last Refresh</span>
                   <span className="font-extrabold text-[#171A1F] mt-0.5 block">7/16/2026</span>
@@ -281,7 +281,7 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
                   <h4 className="text-xs font-extrabold text-[#171A1F]">{rec.name}</h4>
                   <span className="text-xs font-black text-[#1677FF]">{rec.rate}</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-[#68707C]">
+                <div className="flex items-center justify-between text-xs text-[#68707C]">
                   <span>{rec.trade}</span>
                   <span className="font-bold text-[#389E0D]">Conf: {rec.confidence}</span>
                 </div>
@@ -343,7 +343,7 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xs font-bold text-[#171A1F]">Market Refresh Engine</h3>
-                <span className="text-[11px] text-[#68707C] block mt-0.5">Cost Baseline v1 · August 2026</span>
+                <span className="text-xs text-[#68707C] block mt-0.5">Cost Baseline v1 · August 2026</span>
               </div>
               <button
                 onClick={handleRunMarketRefresh}
@@ -369,7 +369,7 @@ export const AIIntelligenceCenterView: React.FC<AIIntelligenceCenterViewProps> =
                   <span className="font-extrabold text-[#171A1F]">{log.action}</span>
                   <span className="text-[10px] text-[#9DA5B1]">{log.time}</span>
                 </div>
-                <span className="text-[11px] text-[#1677FF] font-bold">{log.user}</span>
+                <span className="text-xs text-[#1677FF] font-bold">{log.user}</span>
                 <p className="text-xs text-[#68707C] mt-0.5 leading-relaxed">{log.detail}</p>
               </div>
             ))}

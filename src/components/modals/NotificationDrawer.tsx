@@ -49,7 +49,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">Notifications</h3>
-              <p className="text-[11px] text-[#68707C] font-medium">
+              <p className="text-xs text-[#68707C] font-medium">
                 {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
               </p>
             </div>
@@ -59,7 +59,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
             {unreadCount > 0 && (
               <button
                 onClick={onMarkAllRead}
-                className="text-[11px] font-bold text-[#1677FF] hover:text-[#0958D9] transition-colors cursor-pointer"
+                className="text-xs font-bold text-[#1677FF] hover:text-[#0958D9] transition-colors cursor-pointer"
               >
                 Mark all read
               </button>
@@ -131,7 +131,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
                     )}
                   </div>
 
-                  <p className="text-[11px] text-[#68707C] leading-snug mt-0.5 line-clamp-2">
+                  <p className="text-xs text-[#68707C] leading-snug mt-0.5 line-clamp-2">
                     {notif.message}
                   </p>
 

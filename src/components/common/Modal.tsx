@@ -60,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
             )}
             <div>
               <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">{title}</h2>
-              {subtitle && <p className="text-[11px] text-[#68707C] font-medium">{subtitle}</p>}
+              {subtitle && <p className="text-xs text-[#68707C] font-medium">{subtitle}</p>}
             </div>
           </div>
 

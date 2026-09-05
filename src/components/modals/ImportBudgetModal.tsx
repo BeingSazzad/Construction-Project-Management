@@ -148,7 +148,7 @@ export const ImportBudgetModal: React.FC<ImportBudgetModalProps> = ({
                   </div>
 
                   {/* Change File Hover Overlay Pill */}
-                  <div className="absolute top-2 right-2 bg-white px-2.5 py-0.5 rounded-full text-[11px] font-bold text-[#1677FF] border border-[#1677FF]/30 flex items-center gap-1 shadow-xs group-hover:bg-[#1677FF] group-hover:text-white transition-all">
+                  <div className="absolute top-2 right-2 bg-white px-2.5 py-0.5 rounded-full text-xs font-bold text-[#1677FF] border border-[#1677FF]/30 flex items-center gap-1 shadow-xs group-hover:bg-[#1677FF] group-hover:text-white transition-all">
                     <RefreshCw className="w-3 h-3 group-hover:rotate-180 transition-transform" />
                     <span>Change</span>
                   </div>
@@ -174,7 +174,7 @@ export const ImportBudgetModal: React.FC<ImportBudgetModalProps> = ({
 
           {/* Compact Preset Selection Pills */}
           <div className="flex flex-col gap-1.5">
-            <span className="text-[11px] font-bold text-[#68707C]">Or select preset template:</span>
+            <span className="text-xs font-bold text-[#68707C]">Or select preset template:</span>
             <div className="flex flex-col gap-1.5">
               {PRESET_FILES.map((preset) => {
                 const isSelected = !customFile && selectedPreset.id === preset.id;

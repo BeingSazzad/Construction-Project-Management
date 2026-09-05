@@ -65,7 +65,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
             <p className="text-xs font-bold text-[#171A1F] truncate leading-tight">
               {currentUser.name || 'Avery Scott'}
             </p>
-            <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
+            <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
               {currentUser.roleTitle || 'Managing Principal'}
             </p>
             <p className="text-[10px] text-[#1677FF] font-semibold truncate">

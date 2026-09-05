@@ -102,7 +102,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
               </div>
               <div className="min-w-0">
                 <h3 className="text-xs sm:text-sm font-bold text-[#171A1F] leading-tight truncate max-w-[200px]">{rep.title}</h3>
-                <div className="flex items-center gap-1.5 text-[11px] text-[#68707C] font-medium mt-1">
+                <div className="flex items-center gap-1.5 text-xs text-[#68707C] font-medium mt-1">
                   <span className="bg-[#F2F2F7] px-1.5 py-0.2 rounded text-[10px] text-[#1677FF] font-bold uppercase tracking-wider">{rep.type}</span>
                   <span>•</span>
                   <span>By: {rep.author}</span>
@@ -113,7 +113,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[11px] text-[#68707C] font-semibold">{rep.fileSize}</span>
+              <span className="text-xs text-[#68707C] font-semibold">{rep.fileSize}</span>
               <button
                 onClick={() => {
                   if (onExportReport) onExportReport(rep);

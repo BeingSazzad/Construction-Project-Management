@@ -1,54 +1,23 @@
 import React from 'react';
 import { Project, Task } from '../../types';
 import { 
-  ChevronRight, Calendar, Wrench, Sparkles, CloudRain, AlertTriangle
+  CheckSquare, Calendar, DollarSign, CloudRain, Sparkles, 
+  ArrowRight, FileText, TrendingUp, Cloud, AlertCircle, 
+  ChevronRight 
 } from 'lucide-react';
+import { ProjectCard } from '../common/ProjectCard';
 
 interface HomeScreenProps {
   projects: Project[];
   tasks: Task[];
   onSelectProject: (project: Project) => void;
   onOpenProjects: () => void;
-  onOpenLatti: () => void;
+  onOpenLatti: (query?: string) => void;
   onOpenTask: (task: Task) => void;
   onOpenTasks: () => void;
+  onOpenCalendar?: () => void;
+  onOpenBudget?: (project: Project) => void;
 }
-
-// Architectural elevation wireframe illustration component matching Figma Screen 1
-const ArchitecturalBlueprintArt = () => (
-  <svg 
-    viewBox="0 0 160 120" 
-    fill="none" 
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-36 h-28 opacity-75 stroke-[#1677FF]"
-  >
-    {/* Foundation & Grid */}
-    <line x1="10" y1="105" x2="150" y2="105" strokeWidth="1.5" strokeDasharray="3 2" />
-    <line x1="20" y1="105" x2="20" y2="40" strokeWidth="1" opacity="0.6" />
-    <line x1="140" y1="105" x2="140" y2="40" strokeWidth="1" opacity="0.6" />
-    
-    {/* Main House Outline */}
-    <rect x="25" y="45" width="110" height="60" strokeWidth="1.2" opacity="0.85" />
-    <rect x="35" y="25" width="70" height="20" strokeWidth="1.2" opacity="0.85" />
-    
-    {/* Roof & Cantilevers */}
-    <line x1="15" y1="25" x2="115" y2="25" strokeWidth="1.5" />
-    <line x1="20" y1="45" x2="145" y2="45" strokeWidth="1.5" />
-    
-    {/* Glass Windows & Sliders */}
-    <rect x="35" y="55" width="30" height="35" strokeWidth="0.8" opacity="0.7" />
-    <line x1="50" y1="55" x2="50" y2="90" strokeWidth="0.8" opacity="0.7" />
-    <rect x="80" y="55" width="45" height="40" strokeWidth="0.8" opacity="0.7" />
-    <line x1="95" y1="55" x2="95" y2="95" strokeWidth="0.8" opacity="0.7" />
-    <line x1="110" y1="55" x2="110" y2="95" strokeWidth="0.8" opacity="0.7" />
-    
-    {/* Landscape sketch palm */}
-    <path d="M12 105C12 90 8 75 14 65" strokeWidth="1" opacity="0.5" />
-    <path d="M14 65C10 60 5 62 2 66" strokeWidth="0.8" opacity="0.5" />
-    <path d="M14 65C18 58 24 60 26 65" strokeWidth="0.8" opacity="0.5" />
-    <path d="M14 65C12 55 16 50 14 45" strokeWidth="0.8" opacity="0.5" />
-  </svg>
-);
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   projects,
@@ -58,202 +27,404 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenLatti,
   onOpenTask,
   onOpenTasks,
+  onOpenCalendar,
+  onOpenBudget,
 }) => {
   const snellProject = projects.find(p => p.id === 'proj-1') || projects[0];
+  const commercialProject = projects.find(p => p.id === 'proj-2') || projects[1] || projects[0];
 
-  const todayTasks = tasks.filter(t => t.projectId === snellProject.id).slice(0, 2);
+  // Current formatted date
+  const todayDateFormatted = 'Fri, Sep 5, 2026';
+
+  // Specific schedule items matching the reference specification
+  const scheduleItems = [
+    {
+      id: 'sch-1',
+      time: '10:00 AM',
+      title: 'Framing Inspection',
+      subtitle: 'Snell Isle Residence • Building A',
+      status: 'In Progress',
+      statusColor: 'bg-[#EAF3FF] text-[#1677FF]',
+      dotColor: 'bg-[#1677FF]',
+      task: tasks.find(t => t.title.toLowerCase().includes('framing')) || tasks[0]
+    },
+    {
+      id: 'sch-2',
+      time: '1:30 PM',
+      title: 'MEP Rough-In',
+      subtitle: 'Snell Isle Residence • Building A',
+      status: 'In Progress',
+      statusColor: 'bg-[#EAF3FF] text-[#1677FF]',
+      dotColor: 'bg-[#1677FF]',
+      task: tasks.find(t => t.title.toLowerCase().includes('mep')) || tasks[1] || tasks[0]
+    },
+    {
+      id: 'sch-3',
+      time: '4:00 PM',
+      title: 'Site Walk',
+      subtitle: 'Harbor View Villas',
+      status: 'Upcoming',
+      statusColor: 'bg-[#F1F5F9] text-[#64748B]',
+      dotColor: 'bg-[#94A3B8]',
+      task: tasks.find(t => t.title.toLowerCase().includes('walk')) || tasks[2] || tasks[0]
+    }
+  ];
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
-      {/* ── 1. Greeting Headline ── */}
-      <div className="pt-1">
-        <h1 className="text-2xl font-bold tracking-tight text-[#171A1F]">
-          Good morning, Avery
-        </h1>
+      {/* ── 1. GREETING & DATE ── */}
+      <div className="flex items-start justify-between gap-2 pt-1">
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-[#0F172A] tracking-tight leading-tight">
+            Good morning, Avery
+          </h1>
+          <p className="text-xs text-[#64748B] mt-0.5 font-normal">
+            Let's keep your projects moving forward.
+          </p>
+        </div>
+        <span className="text-xs font-medium text-[#64748B] text-right shrink-0 mt-0.5">
+          {todayDateFormatted}
+        </span>
       </div>
 
-      {/* ── 2. Primary Hero Project Card (Snell Isle Residence) ── */}
-      <div 
-        onClick={() => onSelectProject(snellProject)}
-        className="w-full p-5 rounded-3xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/50 shadow-sm transition-all cursor-pointer active:scale-[0.99] relative overflow-hidden group"
-      >
-        <div className="flex items-start justify-between relative z-10">
-          <div className="flex-1 pr-2">
-            {/* Tag */}
-            <span className="text-[10px] font-bold tracking-wider text-[#1677FF] uppercase">
-              PROJECT
+      {/* ── 2. TOP 4-KPI SUITE (Standardized Lattice System) ── */}
+      <div className="grid grid-cols-4 gap-2">
+        {/* Card 1: Tasks Due */}
+        <div 
+          onClick={onOpenTasks}
+          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+        >
+          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <CheckSquare className="w-3.5 h-3.5" />
+          </div>
+          <div>
+            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
+              5
             </span>
-
-            {/* Title & Chevron */}
-            <div className="flex items-center gap-1.5 mt-0.5 group-hover:text-[#1677FF] transition-colors">
-              <h2 className="text-lg font-bold text-[#171A1F] tracking-tight truncate">
-                {snellProject.name}
-              </h2>
-              <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
-            </div>
-
-            {/* Phase */}
-            <p className="text-xs text-[#68707C] font-medium mt-0.5">
-              Construction
-            </p>
-
-            {/* Progress Percentage */}
-            <div className="mt-4">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black text-[#1677FF] tracking-tight">
-                  {snellProject.progress}%
-                </span>
-                <span className="text-xs font-semibold text-[#68707C]">
-                  On Schedule
-                </span>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="w-36 h-2 bg-[#EAEDF1] rounded-full overflow-hidden mt-1.5">
-                <div 
-                  className="h-full bg-[#1677FF] rounded-full transition-all duration-500"
-                  style={{ width: `${snellProject.progress}%` }}
-                />
-              </div>
-            </div>
+            <span className="text-[10px] text-[#64748B] font-medium block truncate">
+              Tasks due
+            </span>
           </div>
+          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FFF0F0] text-[#E5484D] w-fit max-w-full truncate">
+            1 overdue
+          </span>
+        </div>
 
-          {/* Architectural Drawing Illustration */}
-          <div className="absolute right-0 bottom-0 pointer-events-none translate-x-2 translate-y-1">
-            <ArchitecturalBlueprintArt />
+        {/* Card 2: Inspections */}
+        <div 
+          onClick={onOpenCalendar || onOpenTasks}
+          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+        >
+          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <Calendar className="w-3.5 h-3.5" />
           </div>
+          <div>
+            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
+              2
+            </span>
+            <span className="text-[10px] text-[#64748B] font-medium block truncate">
+              Inspections
+            </span>
+          </div>
+          <span className="text-[10px] text-[#64748B] font-medium block truncate">
+            This week
+          </span>
+        </div>
+
+        {/* Card 3: Total Budget */}
+        <div 
+          onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
+          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+        >
+          <div className="w-6 h-6 rounded-md bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
+            <DollarSign className="w-3.5 h-3.5" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+              $4.65M
+            </span>
+            <span className="text-[10px] text-[#64748B] font-medium block truncate">
+              Total budget
+            </span>
+          </div>
+          <span className="text-[10px] text-[#64748B] font-medium block truncate">
+            2 projects
+          </span>
+        </div>
+
+        {/* Card 4: Weather Advisory (Standardized: Zero Clipping, Zero Overflow) */}
+        <div 
+          onClick={() => onOpenLatti('What is the weather radar and delay risk for Thursday?')}
+          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+        >
+          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <CloudRain className="w-3.5 h-3.5" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+              Rain Thu
+            </span>
+            <span className="text-[10px] text-[#64748B] font-medium block truncate">
+              Thu, Sep 7
+            </span>
+          </div>
+          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FFF7E6] text-[#F59E0B] w-fit max-w-full truncate">
+            Rain risk
+          </span>
         </div>
       </div>
 
-      {/* ── 3. Twin Macro Metric Cards (2x Grid) ── */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Budget Metric */}
-        <div 
-          onClick={() => onSelectProject(snellProject)}
-          className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-sm hover:border-[#1677FF]/40 transition-all cursor-pointer"
-        >
-          <div className="text-xl font-bold text-[#171A1F] tracking-tight">
-            ${(snellProject.budget.total / 1000000).toFixed(2)}M
-          </div>
-          <div className="text-xs font-medium text-[#68707C] mt-0.5">
-            Budget
-          </div>
-        </div>
-
-        {/* Schedule Metric */}
-        <div 
-          onClick={() => onSelectProject(snellProject)}
-          className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-sm hover:border-[#1677FF]/40 transition-all cursor-pointer"
-        >
-          <div className="text-xl font-bold text-[#1677FF] tracking-tight">
-            92%
-          </div>
-          <div className="text-xs font-medium text-[#68707C] mt-0.5">
-            On Schedule
-          </div>
-        </div>
-      </div>
-
-      {/* ── 4. Latti AI Attention Insight Card ── */}
-      <div 
-        onClick={onOpenLatti}
-        className="p-4 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/50 shadow-sm transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99]"
-      >
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-            <Sparkles className="w-5 h-5 text-[#1677FF]" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-xs font-bold text-[#1677FF]">
-              Latti AI
-            </div>
-            <div className="text-xs font-semibold text-[#171A1F] truncate mt-0.5">
-              Three cost items need your attention
-            </div>
-          </div>
-        </div>
-        <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
-      </div>
-
-      {/* ── 4.5 Weather Radar Impact Card (Jobsite Intelligence) ── */}
-      {snellProject.weather?.forecastRisk && (
-        <div 
-          onClick={onOpenLatti}
-          className="p-3.5 rounded-2xl bg-[#FFFBEB] border border-[#FDE68A] flex items-start gap-3 transition-all cursor-pointer active:scale-[0.99]"
-        >
-          <div className="w-8 h-8 rounded-lg bg-[#FEF3C7] text-[#D97706] flex items-center justify-center flex-shrink-0 mt-0.5">
-            <CloudRain className="w-4 h-4" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-[11px] font-bold text-[#B45309]">
-                Weather Warning · Tampa, FL
-              </span>
-              <span className="text-[10px] font-semibold text-[#D97706]">
-                82°F · Thursday
-              </span>
-            </div>
-            <p className="text-xs text-[#92400E] font-medium leading-tight mt-0.5">
-              {snellProject.weather.forecastRisk}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* ── 5. "Today" Schedule Section ── */}
-      <div className="flex flex-col gap-2.5 mt-1">
+      {/* ── 3. LATTI BRIEFING (AI HERO CARD) ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3 relative overflow-hidden">
+        {/* Header line */}
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-[#171A1F] tracking-tight">
-            Today
-          </h3>
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-[#1677FF]" />
+            <span className="text-xs font-bold text-[#1677FF]">
+              Latti Briefing
+            </span>
+            <span className="px-1.5 py-0.2 text-[10px] font-extrabold bg-[#EAF3FF] text-[#1677FF] rounded-md tracking-wider">
+              BETA
+            </span>
+          </div>
+
           <button 
-            onClick={onOpenTasks}
-            className="text-xs font-semibold text-[#1677FF] hover:underline cursor-pointer"
+            onClick={() => onOpenLatti()}
+            className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
           >
-            View all &gt;
+            <span>View all</span>
+            <ChevronRight className="w-3 h-3" />
           </button>
         </div>
 
-        {/* Task Item 1: Framing Inspection */}
-        {todayTasks.length > 0 ? (
-          todayTasks.map((t, idx) => {
-            const Icon = idx === 0 ? Calendar : Wrench;
-            return (
-              <div
-                key={t.id}
-                onClick={() => onOpenTask(t)}
-                className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 shadow-sm transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99]"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <Icon className="w-4 h-4 text-[#1677FF]" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">
-                      {t.title}
-                    </h4>
-                    <p className="text-[11px] text-[#68707C] font-medium mt-0.5 truncate">
-                      {t.location || t.dueDate}
-                    </p>
-                  </div>
-                </div>
+        {/* Headline & Summary with Floating Action Arrow */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-sm md:text-base font-bold text-[#0F172A] leading-snug">
+              2 projects need attention today.
+            </h2>
+            <p className="text-xs text-[#475569] leading-relaxed mt-1">
+              Snell Isle has an inspection tomorrow, and one framing invoice is over budget. Heavy rain is expected Thursday and may affect the scheduled concrete pour.
+            </p>
+          </div>
 
-                <div className="flex items-center gap-1.5 flex-shrink-0">
-                  <span className="text-[11px] font-semibold text-[#10B981] flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-                    On Time
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+          <button
+            onClick={() => onOpenLatti()}
+            className="w-8 h-8 rounded-full bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center hover:bg-[#1677FF] hover:text-white transition-all shrink-0 cursor-pointer shadow-xs active:scale-95 mt-1"
+            title="Open Latti Assistant"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* 3 Quick Action Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto pt-1 no-scrollbar">
+          <button
+            onClick={() => onOpenLatti("Summarize today's activity across projects")}
+            className="h-7 px-2.5 rounded-full bg-[#F5F9FF] border border-[#EAF3FF] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 hover:bg-[#EAF3FF] transition-all cursor-pointer shrink-0 whitespace-nowrap active:scale-95"
+          >
+            <FileText className="w-3.5 h-3.5 text-[#1677FF]" />
+            <span>Summarize today's activity</span>
+          </button>
+
+          <button
+            onClick={() => onOpenLatti("Show budget risks, variances, and pending invoices")}
+            className="h-7 px-2.5 rounded-full bg-[#F5F9FF] border border-[#EAF3FF] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 hover:bg-[#EAF3FF] transition-all cursor-pointer shrink-0 whitespace-nowrap active:scale-95"
+          >
+            <TrendingUp className="w-3.5 h-3.5 text-[#1677FF]" />
+            <span>Show budget risks</span>
+          </button>
+
+          <button
+            onClick={() => onOpenLatti("Check weather radar and Thursday concrete pour impact")}
+            className="h-7 px-2.5 rounded-full bg-[#F5F9FF] border border-[#EAF3FF] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 hover:bg-[#EAF3FF] transition-all cursor-pointer shrink-0 whitespace-nowrap active:scale-95"
+          >
+            <Cloud className="w-3.5 h-3.5 text-[#1677FF]" />
+            <span>Check weather impact</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── 4. NEEDS ATTENTION (RISK FEED) ── */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between px-0.5">
+          <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">
+            Needs Attention
+          </h2>
+          <button 
+            onClick={() => onOpenLatti()}
+            className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
+          >
+            <span>View all</span>
+            <ChevronRight className="w-3 h-3" />
+          </button>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] divide-y divide-[#F1F5F9] shadow-card overflow-hidden">
+          {/* Item 1: Framing invoice over budget */}
+          <div 
+            onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
+            className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F1F5F9]/50 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFF0F0] text-[#E5484D] flex items-center justify-center shrink-0">
+                <AlertCircle className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-xs md:text-sm font-semibold text-[#0F172A] truncate">
+                  Framing invoice over budget
+                </h3>
+                <p className="text-xs text-[#64748B] mt-0.5 truncate">
+                  Snell Isle Residence • $8,400 over category
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-xs font-semibold text-[#E5484D]">
+                Today
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+            </div>
+          </div>
+
+          {/* Item 2: Heavy rain expected Thursday */}
+          <div 
+            onClick={() => onOpenLatti("Heavy rain expected Thursday delay impact on concrete pour")}
+            className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F1F5F9]/50 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFF7E6] text-[#F59E0B] flex items-center justify-center shrink-0">
+                <CloudRain className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-xs md:text-sm font-semibold text-[#0F172A] truncate">
+                  Heavy rain expected Thursday
+                </h3>
+                <p className="text-xs text-[#64748B] mt-0.5 truncate">
+                  May affect scheduled concrete pour • Snell Isle Residence
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-xs font-semibold text-[#F59E0B]">
+                Thu, Sep 7
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+            </div>
+          </div>
+
+          {/* Item 3: Inspection tomorrow */}
+          <div 
+            onClick={() => onOpenTask(scheduleItems[0].task)}
+            className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F1F5F9]/50 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFF7E6] text-[#F59E0B] flex items-center justify-center shrink-0">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-xs md:text-sm font-semibold text-[#0F172A] truncate">
+                  Inspection tomorrow
+                </h3>
+                <p className="text-xs text-[#64748B] mt-0.5 truncate">
+                  Snell Isle Residence • 10:00 AM
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-xs font-semibold text-[#1677FF]">
+                Tomorrow
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 5. TODAY'S SCHEDULE (TIMELINE FEED) ── */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between px-0.5">
+          <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">
+            Today's Schedule
+          </h2>
+          <button 
+            onClick={onOpenCalendar || onOpenTasks}
+            className="text-xs font-semibold text-[#1677FF] hover:underline cursor-pointer"
+          >
+            View calendar
+          </button>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card p-3.5 flex flex-col gap-3">
+          {scheduleItems.map((item, idx) => (
+            <div 
+              key={item.id}
+              onClick={() => onOpenTask(item.task)}
+              className="flex items-center justify-between gap-3 hover:bg-[#F1F5F9]/50 p-1 rounded-xl transition-colors cursor-pointer relative"
+            >
+              {/* Left Time & Timeline Connector */}
+              <div className="flex items-center gap-2.5 shrink-0">
+                <span className="text-xs font-bold text-[#0F172A] w-16">
+                  {item.time}
+                </span>
+                <div className="relative flex flex-col items-center">
+                  <span className={`w-2 h-2 rounded-full ${item.dotColor} shrink-0 z-10`} />
+                  {idx !== scheduleItems.length - 1 && (
+                    <span className="absolute top-2 w-px h-8 bg-[#E2E8F0]" />
+                  )}
                 </div>
               </div>
-            );
-          })
-        ) : (
-          <div className="p-4 text-center text-xs text-[#68707C] bg-white rounded-2xl border border-[#DDE1E7]">
-            No scheduled items for today.
-          </div>
-        )}
+
+              {/* Middle Title & Subtitle */}
+              <div className="flex-1 min-w-0 pl-1">
+                <h3 className="text-xs md:text-sm font-semibold text-[#0F172A] truncate">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-[#64748B] mt-0.5 truncate">
+                  {item.subtitle}
+                </p>
+              </div>
+
+              {/* Trailing Status & Chevron */}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${item.statusColor}`}>
+                  • {item.status}
+                </span>
+                <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 6. MY PROJECTS (MULTI-PROJECT PREVIEW) ── */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between px-0.5">
+          <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">
+            My Projects
+          </h2>
+          <button 
+            onClick={onOpenProjects}
+            className="text-xs font-semibold text-[#1677FF] hover:underline cursor-pointer"
+          >
+            View all
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-2.5">
+          <ProjectCard
+            project={snellProject}
+            onClick={() => onSelectProject(snellProject)}
+          />
+          <ProjectCard
+            project={commercialProject}
+            onClick={() => onSelectProject(commercialProject)}
+          />
+        </div>
       </div>
 
     </div>

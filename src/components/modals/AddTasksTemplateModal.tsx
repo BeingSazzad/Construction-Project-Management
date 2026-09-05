@@ -340,7 +340,7 @@ export const AddTasksTemplateModal: React.FC<AddTasksTemplateModalProps> = ({
 
                           <div className="flex-1 min-w-0">
                             <h4 className="text-xs font-semibold leading-snug text-[#171A1F]">{task.title}</h4>
-                            <p className="text-[11px] text-[#68707C] mt-0.5 line-clamp-1">{task.description}</p>
+                            <p className="text-xs text-[#68707C] mt-0.5 line-clamp-1">{task.description}</p>
                           </div>
 
                           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 ${

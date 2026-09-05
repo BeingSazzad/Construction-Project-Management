@@ -113,7 +113,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
                   <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
                     {act.label}
                   </h4>
-                  <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
+                  <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
                     {act.subtitle}
                   </p>
                 </div>

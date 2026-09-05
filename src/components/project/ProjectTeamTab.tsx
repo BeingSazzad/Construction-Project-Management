@@ -242,7 +242,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
             <Crown className="w-3.5 h-3.5 text-amber-500" />
             <span>Project Lead</span>
           </div>
-          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
             🟢 Active Lead
           </span>
         </div>
@@ -488,12 +488,12 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
                             />
                             <div className="min-w-0">
                               <h4 className="text-xs font-bold text-[#171A1F] truncate">{member.name}</h4>
-                              <p className="text-[11px] text-[#68707C] truncate">{member.role} · {member.company}</p>
+                              <p className="text-xs text-[#68707C] truncate">{member.role} · {member.company}</p>
                             </div>
                           </div>
 
                           {isAlreadyAssigned ? (
-                            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex-shrink-0">
+                            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex-shrink-0">
                               Assigned
                             </span>
                           ) : (

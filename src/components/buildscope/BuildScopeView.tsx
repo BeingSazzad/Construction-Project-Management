@@ -178,11 +178,11 @@ export const BuildScopeView: React.FC = () => {
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
               <h3 className="text-xs font-bold text-white truncate">Build Trade Team with Latti</h3>
-              <span className="text-[9px] font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase">
+              <span className="text-[10px] font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase">
                 SOON
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 truncate mt-0.5 font-medium">
+            <p className="text-xs text-slate-400 truncate mt-0.5 font-medium">
               Auto-identify trade scopes and match qualified subs.
             </p>
           </div>
@@ -219,7 +219,7 @@ export const BuildScopeView: React.FC = () => {
                     {card.projectName}
                   </h3>
 
-                  <span className={`text-[9px] font-bold px-2 py-[2px] rounded-full flex-shrink-0 flex items-center gap-1 ${
+                  <span className={`text-[10px] font-bold px-2 py-[2px] rounded-full flex-shrink-0 flex items-center gap-1 ${
                     isReady
                       ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
                       : 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
@@ -230,7 +230,7 @@ export const BuildScopeView: React.FC = () => {
                 </div>
 
                 {/* Row 2: Address Subtext */}
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
                   <MapPin className="w-3 h-3 text-slate-500 flex-shrink-0" />
                   <span className="truncate">{card.address}</span>
                 </div>

@@ -123,7 +123,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div className="flex items-center justify-between pb-2.5 border-b border-[#EAEDF1]">
           <div>
             <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Create New Project</h2>
-            <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Initialize a new project workspace</p>
+            <p className="text-xs text-[#68707C] font-medium mt-0.5">Initialize a new project workspace</p>
           </div>
 
           <button

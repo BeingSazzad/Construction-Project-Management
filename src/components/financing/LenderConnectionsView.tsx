@@ -136,7 +136,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-1.5 h-8 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[11px] font-bold cursor-pointer transition-all shadow-sm shadow-blue-500/20 flex-shrink-0"
+          className="flex items-center gap-1.5 h-8 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm shadow-blue-500/20 flex-shrink-0"
         >
           <Plus className="w-3.5 h-3.5" /> Share with lender
         </button>
@@ -164,7 +164,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
           </div>
           <div className="text-center">
             <p className="text-sm font-bold text-white">No lender connections yet</p>
-            <p className="text-[11px] text-slate-400 mt-0.5">Share a financing packet with a lender to start building your lending relationships.</p>
+            <p className="text-xs text-slate-400 mt-0.5">Share a financing packet with a lender to start building your lending relationships.</p>
           </div>
         </div>
       ) : (
@@ -179,24 +179,24 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
                     {/* Left */}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-[13px] font-bold text-white leading-tight">{conn.lenderName}</p>
-                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full border uppercase tracking-wider ${statusColor(conn.status)}`}>
+                        <p className="text-sm font-bold text-white leading-tight">{conn.lenderName}</p>
+                        <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full border uppercase tracking-wider ${statusColor(conn.status)}`}>
                           {conn.status}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 font-medium mt-0.5">{conn.lenderCompany}</p>
-                      <p className="text-[11px] font-bold text-slate-300 mt-0.5">{conn.projectName}</p>
+                      <p className="text-xs text-slate-400 font-medium mt-0.5">{conn.lenderCompany}</p>
+                      <p className="text-xs font-bold text-slate-300 mt-0.5">{conn.projectName}</p>
                     </div>
                     {/* Right readiness */}
                     <div className="text-right flex-shrink-0">
                       <p className="text-[22px] font-black text-white leading-none">{conn.readiness}%</p>
-                      <p className="text-[9px] font-black text-slate-400 tracking-widest uppercase">Ready</p>
+                      <p className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Ready</p>
                     </div>
                   </div>
 
                   {/* Sub row */}
                   <div className="flex items-center justify-between mt-2">
-                    <div className="flex items-center gap-1.5 text-[11px]">
+                    <div className="flex items-center gap-1.5 text-xs">
                       <AlertTriangle className="w-3 h-3 text-current flex-shrink-0" />
                       <span className={`font-semibold ${conn.riskColor}`}>{conn.riskLabel}</span>
                       <span className="text-slate-600">·</span>
@@ -208,7 +208,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
                   {/* Expand toggle */}
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : conn.id)}
-                    className="flex items-center gap-1 mt-2 text-[11px] font-bold text-blue-400 hover:text-blue-300 cursor-pointer transition-colors"
+                    className="flex items-center gap-1 mt-2 text-xs font-bold text-blue-400 hover:text-blue-300 cursor-pointer transition-colors"
                   >
                     <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                     {isExpanded ? 'Hide' : 'View'} packet summary
@@ -216,7 +216,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
 
                   {/* Expanded detail */}
                   {isExpanded && (
-                    <div className="mt-3 p-3 rounded-xl bg-[#0A1328] border border-[#1A2744] text-[11px] text-slate-300 space-y-1">
+                    <div className="mt-3 p-3 rounded-xl bg-[#0A1328] border border-[#1A2744] text-xs text-slate-300 space-y-1">
                       <p><span className="text-slate-500 font-medium">Project:</span> {conn.projectName}</p>
                       <p><span className="text-slate-500 font-medium">Readiness:</span> {conn.readiness}%</p>
                       <p><span className="text-slate-500 font-medium">Lattice Score:</span> {conn.verifiedScore}/100</p>
@@ -229,7 +229,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
                 <div className="border-t border-[#142036] px-3.5 py-2 flex justify-end">
                   <button
                     onClick={() => handleArchive(conn.id)}
-                    className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
                   >
                     <Archive className="w-3.5 h-3.5" /> Archive
                   </button>
@@ -252,7 +252,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">Share with lender</h3>
-                  <p className="text-[11px] text-slate-400 font-medium mt-0.5">Generate a Lattice Verified financing packet for a project and record this lender connection.</p>
+                  <p className="text-xs text-slate-400 font-medium mt-0.5">Generate a Lattice Verified financing packet for a project and record this lender connection.</p>
                 </div>
               </div>
               <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-full bg-[#0E1A33] border border-[#1E325A] hover:bg-[#1E325A] flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer flex-shrink-0">
@@ -264,7 +264,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
             <form onSubmit={handleShare} className="flex flex-col gap-3">
               {/* Project select */}
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-slate-300">Project</label>
+                <label className="text-xs font-bold text-slate-300">Project</label>
                 <div className="relative">
                   <select
                     value={selectedProject}
@@ -281,7 +281,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
 
               {/* Lender name */}
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-slate-300">Lender name *</label>
+                <label className="text-xs font-bold text-slate-300">Lender name *</label>
                 <input
                   type="text"
                   required
@@ -294,7 +294,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
 
               {/* Lender company */}
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-slate-300">Lender company</label>
+                <label className="text-xs font-bold text-slate-300">Lender company</label>
                 <input
                   type="text"
                   value={lenderCompany}
@@ -306,7 +306,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
 
               {/* Contact email */}
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-slate-300">Contact email</label>
+                <label className="text-xs font-bold text-slate-300">Contact email</label>
                 <input
                   type="email"
                   value={contactEmail}
@@ -318,7 +318,7 @@ export const LenderConnectionsView: React.FC<LenderConnectionsViewProps> = ({
 
               {/* Notes */}
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-slate-300">Notes (optional)</label>
+                <label className="text-xs font-bold text-slate-300">Notes (optional)</label>
                 <textarea
                   value={notes}
                   onChange={e => setNotes(e.target.value)}

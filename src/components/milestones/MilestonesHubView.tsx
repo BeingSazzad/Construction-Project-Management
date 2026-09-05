@@ -251,7 +251,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           {/* UPCOMING SECTION */}
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center justify-between px-1">
-              <h2 className="text-[11px] font-bold text-[#68707C] uppercase tracking-wider">
+              <h2 className="text-xs font-bold text-[#68707C] uppercase tracking-wider">
                 UPCOMING ({upcomingMilestones.length})
               </h2>
             </div>
@@ -280,7 +280,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                         <span className="px-2 py-0.5 rounded-full bg-[#EAF3FF] text-[10px] font-bold text-[#1677FF]">
                           {ms.code || 'Milestone'}
                         </span>
-                        <span className="text-[11px] text-[#68707C] font-medium truncate">
+                        <span className="text-xs text-[#68707C] font-medium truncate">
                           {ms.projectName}
                         </span>
                       </div>
@@ -288,7 +288,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[11px] font-medium text-[#68707C]">
+                    <span className="text-xs font-medium text-[#68707C]">
                       {ms.dates}
                     </span>
                     <ChevronRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-[#1677FF] transition-colors" />
@@ -302,7 +302,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           {completedMilestones.length > 0 && (
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center justify-between px-1">
-                <h2 className="text-[11px] font-bold text-[#68707C] uppercase tracking-wider">
+                <h2 className="text-xs font-bold text-[#68707C] uppercase tracking-wider">
                   COMPLETED ({completedMilestones.length})
                 </h2>
               </div>
@@ -324,7 +324,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                         <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-[10px] font-bold text-emerald-700 border border-emerald-200">
                           Completed
                         </span>
-                        <span className="text-[11px] text-[#68707C] font-medium truncate">
+                        <span className="text-xs text-[#68707C] font-medium truncate">
                           {ms.projectName}
                         </span>
                       </div>
@@ -332,7 +332,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[11px] font-medium text-[#68707C]">
+                    <span className="text-xs font-medium text-[#68707C]">
                       {ms.dates}
                     </span>
                     <ChevronRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-emerald-700 transition-colors" />
@@ -371,7 +371,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-[#68707C] font-medium">
+                <div className="flex items-center justify-between text-xs text-[#68707C] font-medium">
                   <span>{task.projectName}</span>
                   <span>Due: {task.dueDate || '2025-06-15'}</span>
                 </div>

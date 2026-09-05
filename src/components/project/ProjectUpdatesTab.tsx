@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
-import { Project, ProjectUpdate } from '../../types';
+import { Project, ProjectUpdate, User } from '../../types';
 import { 
   CheckCircle2, AlertCircle, FileText, Camera, Plus, Check, Clock 
 } from 'lucide-react';
+import { CreateProjectUpdateModal } from '../modals/CreateProjectUpdateModal';
 
 interface ProjectUpdatesTabProps {
   project: Project;
   updates?: ProjectUpdate[];
+  currentUser?: User;
   onAddUpdate?: () => void;
 }
 
 export const ProjectUpdatesTab: React.FC<ProjectUpdatesTabProps> = ({
   project,
   updates = [],
+  currentUser,
   onAddUpdate,
 }) => {
   const [localUpdates, setLocalUpdates] = useState<ProjectUpdate[]>(updates);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleResolveDecision = (updateId: string) => {
     setLocalUpdates(prev => prev.map(u => {
@@ -42,15 +46,16 @@ export const ProjectUpdatesTab: React.FC<ProjectUpdatesTabProps> = ({
             Chronological field stream
           </p>
         </div>
-        {onAddUpdate && (
-          <button
-            onClick={onAddUpdate}
-            className="px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Post</span>
-          </button>
-        )}
+        <button
+          onClick={() => {
+            if (onAddUpdate) onAddUpdate();
+            setIsCreateModalOpen(true);
+          }}
+          className="px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>Post</span>
+        </button>
       </div>
 
       {/* Feed List */}
@@ -96,7 +101,7 @@ export const ProjectUpdatesTab: React.FC<ProjectUpdatesTabProps> = ({
                       {isApproved ? 'Decision Approved' : 'Decision Needed'}
                     </span>
                   )}
-                  <span className="text-[11px] text-[#68707C] font-medium">
+                  <span className="text-xs text-[#68707C] font-medium">
                     {item.timestamp}
                   </span>
                 </div>
@@ -137,7 +142,7 @@ export const ProjectUpdatesTab: React.FC<ProjectUpdatesTabProps> = ({
                   {item.attachments.map((att, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[11px] font-medium text-[#171A1F]"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-xs font-medium text-[#171A1F]"
                     >
                       {att.type === 'photo' ? (
                         <Camera className="w-3 h-3 text-[#1677FF]" />
@@ -157,10 +162,21 @@ export const ProjectUpdatesTab: React.FC<ProjectUpdatesTabProps> = ({
           <div className="py-12 flex flex-col items-center justify-center text-center gap-2 text-[#68707C] bg-white rounded-3xl border border-[#DDE1E7]">
             <Clock className="w-8 h-8 text-[#DDE1E7]" />
             <p className="text-xs font-semibold text-[#171A1F]">No updates posted yet</p>
-            <p className="text-[11px]">Field updates and changes will appear here in chronological order.</p>
+            <p className="text-xs">Field updates and changes will appear here in chronological order.</p>
           </div>
         )}
       </div>
+
+      {/* CREATE PROJECT UPDATE MODAL */}
+      <CreateProjectUpdateModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        project={project}
+        currentUser={currentUser}
+        onSaveUpdate={(newUpdate) => {
+          setLocalUpdates(prev => [newUpdate, ...prev]);
+        }}
+      />
 
     </div>
   );

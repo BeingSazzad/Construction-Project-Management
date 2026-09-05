@@ -67,7 +67,7 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">New Change Order</h3>
-              <p className="text-[11px] text-[#68707C] font-medium mt-0.5">Record client scope or site directive</p>
+              <p className="text-xs text-[#68707C] font-medium mt-0.5">Record client scope or site directive</p>
             </div>
           </div>
 

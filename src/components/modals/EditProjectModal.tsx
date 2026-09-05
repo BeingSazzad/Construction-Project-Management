@@ -86,7 +86,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div>
             <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Project Info</h2>
-            <p className="text-[11px] text-[#68707C] mt-0.5 font-medium">Code: {project.code}</p>
+            <p className="text-xs text-[#68707C] mt-0.5 font-medium">Code: {project.code}</p>
           </div>
 
           <button

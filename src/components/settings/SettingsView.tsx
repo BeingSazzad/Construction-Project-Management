@@ -160,7 +160,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </div>
               <div>
                 <h3 className="text-xs font-bold text-[#171A1F]">Local Field Cache</h3>
-                <p className="text-[11px] text-[#68707C]">18 Photos Queued · 42.8 MB</p>
+                <p className="text-xs text-[#68707C]">18 Photos Queued · 42.8 MB</p>
               </div>
             </div>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center gap-1">
@@ -192,7 +192,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-[#171A1F]">Enable Basement Caching</h4>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Keep blueprints & tasks available offline without cell signal</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Keep blueprints & tasks available offline without cell signal</p>
               </div>
               <button
                 type="button"
@@ -214,7 +214,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-[#171A1F]">Sync Over Cellular Data</h4>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Upload photos instantly via 5G/LTE when outside</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Upload photos instantly via 5G/LTE when outside</p>
               </div>
               <button
                 type="button"
@@ -242,7 +242,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-[#171A1F]">Embed GPS Coordinates</h4>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Burn latitude & longitude watermark on resolution photos</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Burn latitude & longitude watermark on resolution photos</p>
               </div>
               <button
                 type="button"
@@ -264,7 +264,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-[#171A1F]">Embed Date & Timestamp</h4>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Stamp exact hour/minute for punch list audit trails</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Stamp exact hour/minute for punch list audit trails</p>
               </div>
               <button
                 type="button"
@@ -286,12 +286,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div>
                 <h4 className="text-xs font-semibold text-[#171A1F]">Upload Compression</h4>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Choose speed vs original detail</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Choose speed vs original detail</p>
               </div>
               <div className="flex items-center gap-1 bg-[#F2F2F7] p-0.5 rounded-xl border border-[#DDE1E7]">
                 <button
                   onClick={() => setPhotoQuality('optimized')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                     photoQuality === 'optimized' ? 'bg-white text-[#171A1F] shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
                   }`}
                 >
@@ -299,7 +299,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </button>
                 <button
                   onClick={() => setPhotoQuality('high')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                     photoQuality === 'high' ? 'bg-white text-[#171A1F] shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
                   }`}
                 >
@@ -317,7 +317,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="p-3.5 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-semibold text-[#171A1F]">Auto-Save Drafts Every 2 Mins</h4>
-                <p className="text-[11px] text-[#68707C] mt-0.5">Prevent loss of end-of-day site logs and notes</p>
+                <p className="text-xs text-[#68707C] mt-0.5">Prevent loss of end-of-day site logs and notes</p>
               </div>
               <button
                 type="button"
@@ -381,7 +381,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-xs font-bold text-[#171A1F] truncate">{cert.title}</h4>
-                  <p className="text-[11px] font-mono text-[#68707C] mt-0.5">{cert.id} · {cert.exp}</p>
+                  <p className="text-xs font-mono text-[#68707C] mt-0.5">{cert.id} · {cert.exp}</p>
                 </div>
               </div>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
@@ -426,7 +426,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-xs font-bold text-[#171A1F] truncate">{item.name}</h4>
-                  <p className="text-[11px] text-[#68707C] mt-0.5">Tag: <span className="text-[#171A1F] font-mono font-semibold">{item.tag}</span> · {item.lastCalibrated}</p>
+                  <p className="text-xs text-[#68707C] mt-0.5">Tag: <span className="text-[#171A1F] font-mono font-semibold">{item.tag}</span> · {item.lastCalibrated}</p>
                 </div>
               </div>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700">
@@ -463,7 +463,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
             <div>
               <h3 className="text-xs font-bold text-rose-900">Emergency Services</h3>
-              <p className="text-[11px] text-rose-700">Police · Fire · Medical Dispatch</p>
+              <p className="text-xs text-rose-700">Police · Fire · Medical Dispatch</p>
             </div>
           </div>
           <a
@@ -485,7 +485,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <div className="min-w-0">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#1677FF]">{contact.role}</span>
                 <h4 className="text-xs font-bold text-[#171A1F] mt-0.5">{contact.name}</h4>
-                <p className="text-[11px] text-[#68707C] font-mono mt-0.5">{contact.phone}</p>
+                <p className="text-xs text-[#68707C] font-mono mt-0.5">{contact.phone}</p>
               </div>
               <a
                 href={`tel:${contact.phone}`}

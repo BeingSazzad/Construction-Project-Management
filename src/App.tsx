@@ -93,6 +93,7 @@ export function App() {
   const [projectSubTab, setProjectSubTab] = useState<string>('overview');
   const [activeBudgetName, setActiveBudgetName] = useState<string | null>(null);
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false);
+  const [lattiInitialQuery, setLattiInitialQuery] = useState<string>('');
 
   // Entities state
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
@@ -124,6 +125,7 @@ export function App() {
   const [isImportBudgetOpen, setIsImportBudgetOpen] = useState(false);
   const [isDealAnalyzerOpen, setIsDealAnalyzerOpen] = useState(false);
   const [isTaskTypeSelectOpen, setIsTaskTypeSelectOpen] = useState(false);
+  const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
   const [isCreatePunchOpen, setIsCreatePunchOpen] = useState(false);
   const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
@@ -593,45 +595,47 @@ export function App() {
         />
       ) : (
         /* 3. MAIN WORKSPACE APP */
-        <div className="w-full h-full flex flex-col justify-between relative bg-[#F2F2F7] text-[#171A1F] font-sans">
+        <div className="w-full h-full flex flex-col justify-between relative bg-[#F7F9FC] text-[#0F172A] font-sans">
           {/* Top Sticky Header */}
-          <Header
-            currentUser={currentUser}
-            activeProject={activeProject}
-            activeTab={activeTab}
-            customTitle={activeBudgetName || undefined}
-            unreadNotifsCount={unreadNotifsCount}
-            unreadMessagesCount={2}
-            onBack={handleHeaderBack}
-            onBackToHome={handleHeaderBack}
-            onOpenNotifications={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('notifications'); }}
-            onOpenMessages={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('messages'); }}
-            onOpenLatti={() => {
-              setActiveBudgetName(null);
-              setActiveProject(null);
-              setActiveTab('latti');
-            }}
-            onOpenSettings={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('more'); }}
-            onOpenDrawer={() => setIsSideDrawerOpen(true)}
-            onNavigateTab={(tab) => {
-              setActiveBudgetName(null);
-              if (tab === 'home' || tab === 'projects' || tab === 'calendar' || tab === 'daily-logs' || tab === 'budgets' || tab === 'team' || tab === 'latti' || tab === 'more') {
+          {activeTab !== 'notifications' && activeTab !== 'budgets' && (
+            <Header
+              currentUser={currentUser}
+              activeProject={activeProject}
+              activeTab={activeTab}
+              customTitle={activeBudgetName || undefined}
+              unreadNotifsCount={unreadNotifsCount}
+              unreadMessagesCount={2}
+              onBack={handleHeaderBack}
+              onBackToHome={handleHeaderBack}
+              onOpenNotifications={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('notifications'); }}
+              onOpenMessages={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('messages'); }}
+              onOpenLatti={() => {
+                setActiveBudgetName(null);
                 setActiveProject(null);
-                setActiveTab(tab);
-              } else {
-                setActiveProject(projects[0]);
-                setActiveTab(tab);
-                setProjectSubTab(tab);
-              }
-            }}
-            onQuickAction={() => setIsQuickActionSheetOpen(true)}
-            onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
-            onOpenEditProject={() => setIsEditProjectOpen(true)}
-            onDeleteProject={handleDeleteProject}
-          />
+                setActiveTab('latti');
+              }}
+              onOpenSettings={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('more'); }}
+              onOpenDrawer={() => setIsSideDrawerOpen(true)}
+              onNavigateTab={(tab) => {
+                setActiveBudgetName(null);
+                if (tab === 'home' || tab === 'projects' || tab === 'calendar' || tab === 'daily-logs' || tab === 'budgets' || tab === 'team' || tab === 'latti' || tab === 'more') {
+                  setActiveProject(null);
+                  setActiveTab(tab);
+                } else {
+                  setActiveProject(projects[0]);
+                  setActiveTab(tab);
+                  setProjectSubTab(tab);
+                }
+              }}
+              onQuickAction={() => setIsQuickActionSheetOpen(true)}
+              onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
+              onOpenEditProject={() => setIsEditProjectOpen(true)}
+              onDeleteProject={handleDeleteProject}
+            />
+          )}
 
           {/* Body Content Area */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden bg-[#F2F2F7]">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden bg-[#F7F9FC]">
             {/* FULL-SCREEN DEDICATED CREATION & ANALYZER PAGES */}
             {isCreateProjectOpen ? (
               <CreateProjectView
@@ -687,7 +691,7 @@ export function App() {
                 planPins={planPins}
                 chatMessages={chatMessages}
                 onOpenTask={(t) => setSelectedTask(t)}
-                onCreateTask={() => setIsTaskTypeSelectOpen(true)}
+                onCreateTask={() => setIsCreateTaskModalOpen(true)}
                 onOpenPunch={(p) => setSelectedTask(null)}
                 onCreatePunch={() => setIsCreatePunchOpen(true)}
                 onUpdatePunchStatus={handleUpdatePunchStatus}
@@ -718,11 +722,22 @@ export function App() {
                     tasks={tasks}
                     onSelectProject={handleSelectProject}
                     onOpenProjects={() => setActiveTab('projects')}
-                    onOpenLatti={() => setActiveTab('latti')}
+                    onOpenLatti={(query) => {
+                      setLattiInitialQuery(query || '');
+                      setActiveTab('latti');
+                    }}
                     onOpenTask={(t) => setSelectedTask(t)}
                     onOpenTasks={() => {
                       handleSelectProject(projects[0]);
                       setProjectSubTab('tasks');
+                    }}
+                    onOpenCalendar={() => {
+                      handleSelectProject(projects[0]);
+                      setProjectSubTab('schedule');
+                    }}
+                    onOpenBudget={(proj) => {
+                      handleSelectProject(proj);
+                      setProjectSubTab('budget');
                     }}
                   />
                 )}
@@ -743,9 +758,20 @@ export function App() {
                     activeProject={activeProject}
                     tasks={tasks}
                     punchItems={punchItems}
+                    initialQuery={lattiInitialQuery}
                     onNavigate={(tab) => {
                       if (tab === 'projects' || tab === 'overview') {
                         handleSelectProject(projects[0]);
+                        setProjectSubTab('overview');
+                      } else if (tab === 'budget') {
+                        handleSelectProject(projects[0]);
+                        setProjectSubTab('budget');
+                      } else if (tab === 'schedule') {
+                        handleSelectProject(projects[0]);
+                        setProjectSubTab('schedule');
+                      } else if (tab === 'tasks') {
+                        handleSelectProject(projects[0]);
+                        setProjectSubTab('tasks');
                       } else {
                         setActiveTab(tab);
                       }
@@ -782,6 +808,7 @@ export function App() {
                     onBack={() => setActiveTab('home')}
                     onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
                     onSelectNotification={(n) => {
+                      setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, read: true } : item));
                       if (n.projectId) {
                         const proj = projects.find(p => p.id === n.projectId) || projects[0];
                         setActiveProject(proj);
@@ -796,7 +823,7 @@ export function App() {
                     project={projects[0]}
                     tasks={tasks}
                     onOpenTask={(t) => setSelectedTask(t)}
-                    onCreateTask={() => setIsTaskTypeSelectOpen(true)}
+                    onCreateTask={() => setIsCreateTaskModalOpen(true)}
                     onUpdateStatus={handleUpdateTaskStatus}
                   />
                 )}
@@ -815,6 +842,7 @@ export function App() {
                     project={activeProject || projects[0]}
                     categories={categories}
                     onImportBudget={() => setIsImportBudgetOpen(true)}
+                    onBack={() => setActiveTab('home')}
                   />
                 )}
 
@@ -833,7 +861,7 @@ export function App() {
                     projects={projects}
                     tasks={tasks}
                     onSelectProject={handleSelectProject}
-                    onCreateTask={() => setIsTaskTypeSelectOpen(true)}
+                    onCreateTask={() => setIsCreateTaskModalOpen(true)}
                   />
                 )}
 
@@ -914,7 +942,7 @@ export function App() {
         isOpen={isQuickActionSheetOpen}
         onClose={() => setIsQuickActionSheetOpen(false)}
         onAddTask={() => {
-          setIsTaskTypeSelectOpen(true);
+          setIsCreateTaskModalOpen(true);
         }}
         onAddUpdate={() => {
           if (!activeProject) setActiveProject(projects[0]);
@@ -932,6 +960,14 @@ export function App() {
         }}
       />
 
+      {/* DIRECT CUSTOM TASK MODAL */}
+      <CreateTaskModal
+        isOpen={isCreateTaskModalOpen}
+        onClose={() => setIsCreateTaskModalOpen(false)}
+        project={activeProject}
+        onCreate={handleCreateTask}
+      />
+
       {/* TASK CREATION TYPE SELECTION MODAL */}
       <TaskCreationTypeModal
         isOpen={isTaskTypeSelectOpen}
@@ -941,7 +977,7 @@ export function App() {
           handleCreateTask(tpl);
         }}
         onSelectCustom={() => {
-          setIsCreateTaskOpen(true);
+          setIsCreateTaskModalOpen(true);
         }}
       />
 

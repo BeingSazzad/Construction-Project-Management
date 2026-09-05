@@ -154,7 +154,7 @@ const BudgetDonutChart = ({ paidPct, committedPct, remainingPct }: { paidPct: nu
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#52C41A" strokeWidth={strokeWidth} strokeDasharray={`${remainingDash} ${circumference - remainingDash}`} strokeDashoffset={-(paidDash + committedDash)} strokeLinecap="round" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-[9px] text-[#68707C] font-bold uppercase tracking-wider">Paid</span>
+        <span className="text-[10px] text-[#68707C] font-bold uppercase tracking-wider">Paid</span>
         <span className="text-xs font-black text-[#171A1F]">{paidPct.toFixed(0)}%</span>
       </div>
     </div>
@@ -444,30 +444,24 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onSelectBudgetNa
                 </span>
               </div>
 
-              {/* 4-Metric Grid */}
-              <div className="grid grid-cols-4 gap-2 pt-2.5 border-t border-[#EAEDF1] text-center">
-                <div className="p-1.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
-                  <span className="text-[9px] text-[#68707C] font-bold uppercase tracking-wider block">Total</span>
-                  <span className="text-xs font-black text-[#171A1F] block mt-0.5">
+              {/* Clean Metric Strip (No 4 Mini Gray Boxes) */}
+              <div className="grid grid-cols-3 gap-2 pt-2.5 border-t border-[#EAEDF1] text-left">
+                <div>
+                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Budget</span>
+                  <span className="text-xs font-bold text-[#171A1F] block mt-0.5">
                     ${b.totalBudget > 0 ? (b.totalBudget / 1000000).toFixed(2) + 'M' : '0'}
                   </span>
                 </div>
-                <div className="p-1.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
-                  <span className="text-[9px] text-[#68707C] font-bold uppercase tracking-wider block">Estimated</span>
-                  <span className="text-xs font-black text-[#1677FF] block mt-0.5">
-                    ${b.estimated > 0 ? (b.estimated > 1000000 ? (b.estimated / 1000000).toFixed(2) + 'M' : b.estimated.toLocaleString()) : '0'}
-                  </span>
-                </div>
-                <div className="p-1.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
-                  <span className="text-[9px] text-[#68707C] font-bold uppercase tracking-wider block">Committed</span>
-                  <span className="text-xs font-black text-[#13C2C2] block mt-0.5">
-                    ${b.committed > 0 ? (b.committed / 1000000).toFixed(2) + 'M' : '0'}
-                  </span>
-                </div>
-                <div className="p-1.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
-                  <span className="text-[9px] text-[#68707C] font-bold uppercase tracking-wider block">Actual</span>
-                  <span className="text-xs font-black text-[#171A1F] block mt-0.5">
+                <div>
+                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Actual Spend</span>
+                  <span className="text-xs font-bold text-[#1677FF] block mt-0.5">
                     ${b.actual > 0 ? (b.actual / 1000000).toFixed(2) + 'M' : '0'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Remaining</span>
+                  <span className="text-xs font-bold text-emerald-700 block mt-0.5">
+                    ${((b.totalBudget - b.actual) / 1000000).toFixed(2)}M
                   </span>
                 </div>
               </div>

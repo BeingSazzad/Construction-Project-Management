@@ -59,7 +59,7 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-[#171A1F]">Record Lien Waiver</h3>
-              <p className="text-[11px] text-[#68707C]">Verify sub-trade mechanic lien release</p>
+              <p className="text-xs text-[#68707C]">Verify sub-trade mechanic lien release</p>
             </div>
           </div>
           <button
@@ -174,7 +174,7 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-11 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-2"
+            className="w-full h-11 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-2"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Verify & Log Lien Waiver</span>
