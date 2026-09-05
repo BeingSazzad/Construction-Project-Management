@@ -1,172 +1,40 @@
 import React from 'react';
-import { User } from '../../types';
+import { User, Project } from '../../types';
 import { 
-  X, Users, FileText, Sparkles, TrendingUp,
-  Settings, LogOut, ChevronRight,
-  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare, 
-  FolderKanban, LayoutDashboard, DollarSign
+  X, Users, Settings, LogOut, ChevronRight,
+  FolderKanban, LayoutDashboard, Plus, Bell
 } from 'lucide-react';
 
 interface SideDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   currentUser: User;
+  projects?: Project[];
+  activeProject?: Project | null;
+  onSelectProject?: (project: Project) => void;
   onNavigateTab: (tab: string) => void;
   onOpenCreateProject?: () => void;
-  onOpenCreateBudget?: () => void;
   onSignOut: () => void;
-}
-
-interface NavItem {
-  id: string;
-  label: string;
-  icon: React.ElementType;
-  badge?: string;
-  badgeStyle?: string;
+  unreadNotifsCount?: number;
 }
 
 export const SideDrawer: React.FC<SideDrawerProps> = ({
   isOpen,
   onClose,
   currentUser,
+  projects = [],
+  activeProject,
+  onSelectProject,
   onNavigateTab,
+  onOpenCreateProject,
   onSignOut,
+  unreadNotifsCount = 0,
 }) => {
   if (!isOpen) return null;
 
   const go = (tab: string) => {
     onNavigateTab(tab);
     onClose();
-  };
-
-  const CORE_ITEMS: NavItem[] = [
-    {
-      id: 'home',
-      label: 'Dashboard Overview',
-      icon: LayoutDashboard,
-    },
-    {
-      id: 'projects',
-      label: 'Projects Portfolio',
-      icon: FolderKanban,
-      badge: '3 Active',
-      badgeStyle: 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30',
-    },
-    {
-      id: 'calendar',
-      label: 'Schedule & Calendar',
-      icon: CalendarDays,
-      badge: 'May 16',
-      badgeStyle: 'bg-[#F2F2F7] text-[#171A1F] border-[#DDE1E7]',
-    },
-    {
-      id: 'tasks',
-      label: 'Tasks & Inspections',
-      icon: CheckSquare,
-      badge: '4 Today',
-      badgeStyle: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    },
-  ];
-
-  const FIELD_ITEMS: NavItem[] = [
-    {
-      id: 'daily-logs',
-      label: 'Daily Field Logs',
-      icon: Calendar,
-      badge: 'Rain Alert',
-      badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200',
-    },
-    {
-      id: 'photos',
-      label: 'Jobsite Photos',
-      icon: Camera,
-    },
-    {
-      id: 'documents',
-      label: 'Plans & Permits',
-      icon: FileText,
-      badge: '28 Files',
-      badgeStyle: 'bg-[#F2F2F7] text-[#68707C] border-[#DDE1E7]',
-    },
-    {
-      id: 'punch',
-      label: 'Punch List & Quality',
-      icon: AlertCircle,
-    },
-  ];
-
-  const FINANCE_ITEMS: NavItem[] = [
-    {
-      id: 'budgets',
-      label: 'Project Budgets & Costs',
-      icon: DollarSign,
-      badge: '$1.84M',
-      badgeStyle: 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30',
-    },
-    {
-      id: 'change-orders',
-      label: 'Change Orders & Draws',
-      icon: TrendingUp,
-    },
-  ];
-
-  const COLLAB_ITEMS: NavItem[] = [
-    {
-      id: 'team',
-      label: 'Team Directory',
-      icon: Users,
-    },
-    {
-      id: 'messages',
-      label: 'Messages & Updates',
-      icon: MessageSquare,
-      badge: '2 New',
-      badgeStyle: 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30',
-    },
-    {
-      id: 'latti',
-      label: 'Latti AI Assistant',
-      icon: Sparkles,
-      badge: 'Active',
-      badgeStyle: 'bg-purple-50 text-purple-700 border-purple-200',
-    },
-    {
-      id: 'more',
-      label: 'Company & Settings',
-      icon: Settings,
-    },
-  ];
-
-  const SectionLabel = ({ label }: { label: string }) => (
-    <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-3 pb-1 pt-1.5 block">
-      {label}
-    </span>
-  );
-
-  const NavButton = ({ item }: { item: NavItem }) => {
-    const Icon = item.icon;
-    return (
-      <button
-        onClick={() => go(item.id)}
-        className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
-      >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform text-[#1677FF]">
-            <Icon className="w-3.5 h-3.5" />
-          </div>
-          <span className="text-xs font-semibold truncate text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-            {item.label}
-          </span>
-        </div>
-        {item.badge ? (
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${item.badgeStyle}`}>
-            {item.badge}
-          </span>
-        ) : (
-          <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
-        )}
-      </button>
-    );
   };
 
   const getInitials = (name?: string) => {
@@ -198,7 +66,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
               {currentUser.name || 'Avery Scott'}
             </p>
             <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
-              {currentUser.roleTitle || 'Owner & General Contractor'}
+              {currentUser.roleTitle || 'Managing Principal'}
             </p>
             <p className="text-[10px] text-[#1677FF] font-semibold truncate">
               Avery &amp; Marsh Construction
@@ -213,42 +81,182 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
           </button>
         </div>
 
-        {/* ─── Navigation Sections ─── */}
-        <div className="flex-1 overflow-y-auto px-2.5 py-3 flex flex-col gap-2.5">
+        {/* ─── Navigation Body ─── */}
+        <div className="flex-1 overflow-y-auto px-3 py-3.5 flex flex-col gap-4">
 
-          {/* SECTION 1: CORE WORKSPACES */}
-          <div className="flex flex-col gap-0.5">
-            <SectionLabel label="Core Workspaces" />
-            {CORE_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
+          {/* 1. WORKSPACES */}
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2.5 pb-1 block">
+              Workspaces
+            </span>
+
+            {/* Overview */}
+            <button
+              onClick={() => go('home')}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+                  Overview
+                </span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+            </button>
+
+            {/* Projects */}
+            <button
+              onClick={() => go('projects')}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
+                  <FolderKanban className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+                  Projects
+                </span>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30">
+                {projects.length > 0 ? `${projects.length} Active` : 'All'}
+              </span>
+            </button>
           </div>
 
-          <div className="h-px bg-[#EAEDF1] mx-2" />
+          <div className="h-px bg-[#EAEDF1] mx-1" />
 
-          {/* SECTION 2: FIELD OPERATIONS */}
-          <div className="flex flex-col gap-0.5">
-            <SectionLabel label="Field Operations" />
-            {FIELD_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
+          {/* 2. ACTIVE PROJECTS SWITCHER */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between px-2.5 pb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">
+                Active Projects
+              </span>
+              {onOpenCreateProject && (
+                <button
+                  onClick={() => {
+                    onClose();
+                    onOpenCreateProject();
+                  }}
+                  className="text-[10px] font-bold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>New</span>
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              {projects.slice(0, 4).map((p) => {
+                const isActive = activeProject?.id === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      if (onSelectProject) {
+                        onSelectProject(p);
+                      } else {
+                        go('projects');
+                      }
+                      onClose();
+                    }}
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group ${
+                      isActive 
+                        ? 'bg-[#EAF3FF] border border-[#1677FF]/30 text-[#1677FF]' 
+                        : 'hover:bg-[#F2F2F7] text-[#171A1F] border border-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                        isActive ? 'bg-[#1677FF] shadow-xs shadow-blue-500/50' : 'bg-[#DDE1E7] group-hover:bg-[#68707C]'
+                      }`} />
+                      <div className="min-w-0 flex-1">
+                        <p className={`text-xs font-semibold truncate ${
+                          isActive ? 'text-[#1677FF]' : 'text-[#171A1F] group-hover:text-[#1677FF]'
+                        }`}>
+                          {p.name}
+                        </p>
+                        <p className="text-[10px] text-[#68707C] truncate">
+                          {p.status || 'In Progress'}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold text-[#68707C] ml-2 flex-shrink-0">
+                      {p.progress}%
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="h-px bg-[#EAEDF1] mx-2" />
+          <div className="h-px bg-[#EAEDF1] mx-1" />
 
-          {/* SECTION 3: FINANCIAL CONTROL */}
-          <div className="flex flex-col gap-0.5">
-            <SectionLabel label="Financial Control" />
-            {FINANCE_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
-          </div>
+          {/* 3. COMPANY & ADMIN */}
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2.5 pb-1 block">
+              Company
+            </span>
 
-          <div className="h-px bg-[#EAEDF1] mx-2" />
+            {/* Team */}
+            <button
+              onClick={() => go('team')}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
+                  <Users className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+                  Team
+                </span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+            </button>
 
-          {/* SECTION 4: COLLABORATION & SYSTEM */}
-          <div className="flex flex-col gap-0.5">
-            <SectionLabel label="Collaboration & System" />
-            {COLLAB_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
+            {/* Notifications */}
+            <button
+              onClick={() => go('notifications')}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
+                  <Bell className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+                  Notifications
+                </span>
+              </div>
+              {unreadNotifsCount > 0 ? (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200">
+                  {unreadNotifsCount} New
+                </span>
+              ) : (
+                <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+              )}
+            </button>
+
+            {/* Settings */}
+            <button
+              onClick={() => go('more')}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
+                  <Settings className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+                  Settings
+                </span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+            </button>
           </div>
 
         </div>
 
-        {/* ─── Footer ─── */}
+        {/* ─── Footer: Sign Out ─── */}
         <div className="p-3 border-t border-[#EAEDF1] bg-[#F7F8FA]">
           <button
             onClick={() => { onSignOut(); onClose(); }}

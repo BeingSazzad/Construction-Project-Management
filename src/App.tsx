@@ -889,23 +889,21 @@ export function App() {
             isOpen={isSideDrawerOpen}
             onClose={() => setIsSideDrawerOpen(false)}
             currentUser={currentUser}
-            onNavigateTab={(tab) => {
-              if (['calendar', 'team', 'daily-logs', 'budgets', 'more', 'latti', 'home', 'projects', 'milestones'].includes(tab)) {
-                setActiveProject(null);
-                setActiveTab(tab);
-              } else if (['tasks', 'schedule', 'messages', 'photos', 'documents', 'punch'].includes(tab)) {
-                if (!activeProject) {
-                  setActiveProject(projects[0]);
-                }
-                setActiveTab(tab);
-                setProjectSubTab(tab);
-              } else {
-                setActiveProject(null);
-                setActiveTab(tab);
-              }
+            projects={projects}
+            activeProject={activeProject}
+            onSelectProject={(proj) => {
+              handleSelectProject(proj);
+              setIsSideDrawerOpen(false);
             }}
-            onOpenCreateProject={() => setIsCreateProjectOpen(true)}
-            onOpenCreateBudget={() => setIsCreateBudgetOpen(true)}
+            unreadNotifsCount={unreadNotifsCount}
+            onNavigateTab={(tab) => {
+              setActiveProject(null);
+              setActiveTab(tab);
+            }}
+            onOpenCreateProject={() => {
+              setIsSideDrawerOpen(false);
+              setIsCreateProjectOpen(true);
+            }}
             onSignOut={() => setAppView('auth')}
           />
         </div>

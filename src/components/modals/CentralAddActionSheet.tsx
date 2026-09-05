@@ -27,7 +27,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
   const actions = [
     {
       id: 'task',
-      label: 'Add Task',
+      label: 'Task',
       subtitle: 'Create a deadline, inspection, or trade assignment',
       icon: CheckSquare,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
@@ -35,7 +35,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     },
     {
       id: 'update',
-      label: 'Add Project Update',
+      label: 'Project Update',
       subtitle: 'Post daily field progress, changes, or needed decisions',
       icon: MessageSquarePlus,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
@@ -43,7 +43,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     },
     {
       id: 'expense',
-      label: 'Add Expense / Invoice',
+      label: 'Expense',
       subtitle: 'Record cost items, vendor receipts, or change orders',
       icon: DollarSign,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
@@ -51,7 +51,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     },
     {
       id: 'photo',
-      label: 'Add Jobsite Photo',
+      label: 'Photo',
       subtitle: 'Upload progress or punch verification photos',
       icon: Camera,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
@@ -59,7 +59,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     },
     {
       id: 'document',
-      label: 'Add Document / Plan',
+      label: 'Document',
       subtitle: 'Attach architectural sets, permits, or contracts',
       icon: FileText,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
