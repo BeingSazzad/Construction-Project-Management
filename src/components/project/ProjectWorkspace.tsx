@@ -16,11 +16,13 @@ import { ProjectTeamTab } from './ProjectTeamTab';
 import { ProjectReportsTab } from './ProjectReportsTab';
 import { ProjectScheduleTab } from './ProjectScheduleTab';
 import { ProjectUpdatesTab } from './ProjectUpdatesTab';
+import { ProjectFilesTab } from './ProjectFilesTab';
 import { MOCK_PROJECT_UPDATES } from '../../data/mockData';
 import { 
   Layers, DollarSign, CheckSquare, 
   Camera, FileText, Users2, 
-  Calendar, ArrowLeft, Activity 
+  Calendar, ArrowLeft, Activity,
+  FolderClosed, ClipboardList
 } from 'lucide-react';
 
 interface ProjectWorkspaceProps {
@@ -105,24 +107,25 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
   const allTabs = [
     { id: 'overview', label: 'Overview', icon: Layers },
-    { id: 'budget', label: 'Budget', icon: DollarSign },
     { id: 'schedule', label: 'Schedule', icon: Calendar },
+    { id: 'budget', label: 'Budget', icon: DollarSign },
     { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-    { id: 'daily-logs', label: 'Daily Logs', icon: FileText },
-    { id: 'updates', label: 'Updates', icon: Activity },
-    { id: 'documents', label: 'Documents', icon: FileText },
-    { id: 'photos', label: 'Photos', icon: Camera },
-    { id: 'team', label: 'Team', icon: Users2 },
+    { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+    { id: 'files', label: 'Files', icon: FolderClosed },
   ];
 
   return (
-    <div className="w-full flex flex-col flex-1 bg-[#F2F2F7]">
+    <div className="w-full flex flex-col flex-1 bg-[#F8FAFC]">
       {/* Sub-navigation bar with clean tab underline indicator matching spec */}
       <div className="w-full bg-white border-b border-[#E2E8F0] sticky top-0 z-20 shadow-2xs">
         <div className="flex items-center gap-6 overflow-x-auto scrollbar-none px-5 pt-3 pb-0 max-w-[430px] mx-auto">
           {allTabs.map((tab) => {
             const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+            const isActive = activeTab === tab.id || 
+              (tab.id === 'files' && (activeTab === 'documents' || activeTab === 'photos')) ||
+              (tab.id === 'daily-logs' && activeTab === 'updates') ||
+              (tab.id === 'tasks' && activeTab === 'punch');
+
             return (
               <button
                 key={tab.id}
@@ -143,7 +146,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
       {/* Main Workspace Body Content */}
       <div className="flex-1 overflow-y-auto">
-        {(activeTab === 'overview' || !['updates', 'daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule'].includes(activeTab)) && (
+        {(activeTab === 'overview' || !['updates', 'daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule', 'files'].includes(activeTab)) && (
           <ProjectOverviewTab
             project={project}
             tasks={tasks}
@@ -160,19 +163,27 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {activeTab === 'updates' && (
-          <ProjectUpdatesTab
-            project={project}
-            currentUser={currentUser}
-            updates={MOCK_PROJECT_UPDATES.filter(u => u.projectId === project.id)}
-          />
-        )}
-
-        {activeTab === 'daily-logs' && (
+        {(activeTab === 'daily-logs' || activeTab === 'updates') && (
           <ProjectDailyLogsTab
             project={project}
             dailyLogs={project.dailyLogs || []}
+            updates={MOCK_PROJECT_UPDATES.filter(u => u.projectId === project.id)}
+            currentUser={currentUser}
+            initialView={activeTab === 'updates' ? 'updates' : 'logs'}
             onAddDailyLog={onAddDailyLog}
+          />
+        )}
+
+        {(activeTab === 'files' || activeTab === 'documents' || activeTab === 'photos') && (
+          <ProjectFilesTab
+            project={project}
+            documents={documents}
+            photos={photos}
+            initialSubTab={activeTab === 'photos' ? 'photos' : 'documents'}
+            onUploadDocument={onUploadDocument}
+            onPreviewDocument={onPreviewDocument}
+            onUploadPhoto={onUploadPhoto}
+            onPreviewPhoto={onPreviewPhoto}
           />
         )}
 
@@ -201,41 +212,13 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {activeTab === 'tasks' && (
+        {(activeTab === 'tasks' || activeTab === 'punch') && (
           <ProjectTasksTab
             project={project}
             tasks={tasks}
             onOpenTask={onOpenTask}
             onCreateTask={onCreateTask}
             onUpdateStatus={onUpdateTaskStatus}
-          />
-        )}
-
-        {activeTab === 'punch' && (
-          <ProjectPunchListTab
-            project={project}
-            punchItems={punchItems}
-            onCreatePunch={onCreatePunch}
-            onOpenPunchDetails={onOpenPunch}
-            onUpdatePunchStatus={onUpdatePunchStatus}
-          />
-        )}
-
-        {activeTab === 'photos' && (
-          <ProjectPhotosTab
-            project={project}
-            photos={photos}
-            onUploadPhoto={onUploadPhoto}
-            onPreviewPhoto={onPreviewPhoto}
-          />
-        )}
-
-        {activeTab === 'documents' && (
-          <ProjectDocumentsTab
-            project={project}
-            documents={documents}
-            onUploadDocument={onUploadDocument}
-            onPreviewDocument={onPreviewDocument}
           />
         )}
 

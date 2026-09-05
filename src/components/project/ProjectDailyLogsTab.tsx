@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
-import { Project, DailyLogItem } from '../../types';
+import { Project, DailyLogItem, ProjectUpdate, User } from '../../types';
 import { 
   Sun, CloudRain, Users, ShieldCheck, 
   Plus, Calendar, HardHat, 
-  FileText, Truck, Camera, Wrench
+  FileText, Truck, Camera, Wrench, Activity 
 } from 'lucide-react';
 import { CreateDailyLogModal } from '../modals/CreateDailyLogModal';
+import { ProjectUpdatesTab } from './ProjectUpdatesTab';
 
 interface ProjectDailyLogsTabProps {
   project: Project;
   dailyLogs?: DailyLogItem[];
+  updates?: ProjectUpdate[];
+  currentUser?: User;
+  initialView?: 'logs' | 'updates';
   onAddDailyLog?: (log: DailyLogItem) => void;
 }
 
 export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
   project,
   dailyLogs = project.dailyLogs || [],
+  updates = [],
+  currentUser,
+  initialView = 'logs',
   onAddDailyLog
 }) => {
+  const [activeView, setActiveView] = useState<'logs' | 'updates'>(initialView);
   const [selectedLogId, setSelectedLogId] = useState<string>(dailyLogs[0]?.id || '');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -32,25 +40,62 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-3 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] bg-[#F8FAFC] animate-fade-in">
       
-      {/* 1. Top Header & Action */}
-      <div className="flex items-center justify-between pb-1">
-        <div>
-          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Daily Field Logs</h2>
-          <p className="text-xs text-[#68707C] mt-0.5 font-medium">
-            {project.name} · Field progress
-          </p>
-        </div>
+      {/* ─── Top Segmented Switcher: Daily Logs vs Live Updates ─── */}
+      <div className="flex items-center p-1 rounded-2xl bg-[#E2E8F0]/70 border border-[#E2E8F0]">
+        <button
+          onClick={() => setActiveView('logs')}
+          className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            activeView === 'logs'
+              ? 'bg-white text-[#1677FF] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          <span>Daily Logs ({dailyLogs.length})</span>
+        </button>
 
         <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          onClick={() => setActiveView('updates')}
+          className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            activeView === 'updates'
+              ? 'bg-white text-[#1677FF] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
+          }`}
         >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New Log</span>
+          <Activity className="w-3.5 h-3.5" />
+          <span>Live Updates ({updates.length})</span>
         </button>
       </div>
+
+      {activeView === 'updates' ? (
+        <div className="-mx-5 -my-2">
+          <ProjectUpdatesTab
+            project={project}
+            currentUser={currentUser}
+            updates={updates}
+          />
+        </div>
+      ) : (
+        <>
+          {/* 1. Top Header & Action */}
+          <div className="flex items-center justify-between pt-1">
+            <div>
+              <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Daily Field Logs</h2>
+              <p className="text-xs text-[#64748B] mt-0.5 font-medium">
+                {project.name} · Superintendent reports
+              </p>
+            </div>
+
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Log</span>
+            </button>
+          </div>
 
       {/* 2. Date Selector Pills */}
       {dailyLogs.length > 0 ? (
@@ -238,6 +283,8 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
           )}
 
         </div>
+      )}
+        </>
       )}
 
       {/* 4. Create Daily Log Modal */}
