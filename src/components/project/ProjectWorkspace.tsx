@@ -116,9 +116,9 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
   return (
     <div className="w-full flex flex-col flex-1 bg-[#F2F2F7]">
-      {/* Sub-navigation bar with persistent light theme pills */}
+      {/* Sub-navigation bar with clean tab underline indicator matching spec */}
       <div className="w-full bg-white border-b border-[#E2E8F0] sticky top-0 z-20 shadow-2xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none px-5 py-2.5 max-w-[430px] mx-auto">
+        <div className="flex items-center gap-6 overflow-x-auto scrollbar-none px-5 pt-3 pb-0 max-w-[430px] mx-auto">
           {allTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -126,10 +126,10 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap cursor-pointer flex-shrink-0 active:scale-95 ${
+                className={`flex items-center gap-1.5 pb-2.5 text-xs transition-all whitespace-nowrap cursor-pointer flex-shrink-0 relative ${
                   isActive
-                    ? 'bg-[#1677FF] text-white font-bold shadow-xs'
-                    : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9]'
+                    ? 'text-[#1677FF] font-bold border-b-2 border-[#1677FF]'
+                    : 'text-[#64748B] font-medium hover:text-[#0F172A]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
