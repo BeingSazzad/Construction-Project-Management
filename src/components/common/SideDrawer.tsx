@@ -1,8 +1,7 @@
 import React from 'react';
 import { User, Project } from '../../types';
 import { 
-  X, Users, Settings, LogOut, ChevronRight,
-  FolderKanban, LayoutDashboard, Plus, Bell
+  X, Users, Settings, LogOut, Plus, Check, ArrowRight, Building2
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -28,7 +27,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   onNavigateTab,
   onOpenCreateProject,
   onSignOut,
-  unreadNotifsCount = 0,
 }) => {
   if (!isOpen) return null;
 
@@ -52,103 +50,67 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
         className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
       />
 
-      {/* Drawer Panel (Apple Light Theme) */}
+      {/* Minimal MVP Drawer Panel */}
       <div
-        className="relative w-[300px] max-w-[85%] bg-white border-r border-[#DDE1E7] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-[#171A1F] animate-slide-in"
+        className="relative w-[310px] max-w-[85%] bg-white border-r border-[#DDE1E7] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-[#171A1F] animate-slide-in"
       >
         {/* ─── Profile Header ─── */}
         <div className="flex items-center gap-3 p-4 border-b border-[#EAEDF1] bg-[#F7F8FA]">
-          <div className="w-10 h-10 rounded-full bg-[#1677FF] text-white font-bold text-sm flex items-center justify-center shadow-sm flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#1677FF] text-white font-bold text-sm flex items-center justify-center shadow-xs flex-shrink-0">
             {getInitials(currentUser.name)}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-[#171A1F] truncate leading-tight">
               {currentUser.name || 'Avery Scott'}
             </p>
-            <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
+            <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
               {currentUser.roleTitle || 'Managing Principal'}
             </p>
-            <p className="text-[10px] text-[#1677FF] font-semibold truncate">
+            <p className="text-[10px] text-[#1677FF] font-semibold truncate mt-0.5 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
               Avery &amp; Marsh Construction
             </p>
           </div>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-white border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer flex-shrink-0 active:scale-95 shadow-2xs"
-            title="Close Menu"
+            title="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* ─── Navigation Body ─── */}
-        <div className="flex-1 overflow-y-auto px-3 py-3.5 flex flex-col gap-4">
+        {/* ─── Body Content ─── */}
+        <div className="flex-1 overflow-y-auto px-3.5 py-4 flex flex-col gap-4">
 
-          {/* 1. WORKSPACES */}
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2.5 pb-1 block">
-              Workspaces
-            </span>
-
-            {/* Overview */}
-            <button
-              onClick={() => go('home')}
-              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
-                  <LayoutDashboard className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                  Overview
-                </span>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
-            </button>
-
-            {/* Projects */}
-            <button
-              onClick={() => go('projects')}
-              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
-                  <FolderKanban className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+          {/* 1. PROJECTS SWITCHER (Primary Core Feature) */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">
                   Projects
                 </span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#F2F2F7] text-[#68707C]">
+                  {projects.length}
+                </span>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30">
-                {projects.length > 0 ? `${projects.length} Active` : 'All'}
-              </span>
-            </button>
-          </div>
-
-          <div className="h-px bg-[#EAEDF1] mx-1" />
-
-          {/* 2. ACTIVE PROJECTS SWITCHER */}
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between px-2.5 pb-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">
-                Active Projects
-              </span>
               {onOpenCreateProject && (
                 <button
                   onClick={() => {
                     onClose();
                     onOpenCreateProject();
                   }}
-                  className="text-[10px] font-bold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
+                  className="text-[11px] font-semibold text-[#1677FF] hover:text-[#0958D9] flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  <Plus className="w-3 h-3" />
-                  <span>New</span>
+                  <Plus className="w-3 h-3 stroke-[2.5]" />
+                  <span>New Project</span>
                 </button>
               )}
             </div>
 
-            <div className="flex flex-col gap-1">
-              {projects.slice(0, 4).map((p) => {
+            {/* Clean Project Items */}
+            <div className="flex flex-col gap-1.5">
+              {projects.map((p) => {
                 const isActive = activeProject?.id === p.id;
                 return (
                   <button
@@ -161,45 +123,60 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
                       }
                       onClose();
                     }}
-                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group ${
                       isActive 
-                        ? 'bg-[#EAF3FF] border border-[#1677FF]/30 text-[#1677FF]' 
+                        ? 'bg-[#EAF3FF] border border-[#1677FF]/30 text-[#1677FF] shadow-2xs' 
                         : 'hover:bg-[#F2F2F7] text-[#171A1F] border border-transparent'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                        isActive ? 'bg-[#1677FF] shadow-xs shadow-blue-500/50' : 'bg-[#DDE1E7] group-hover:bg-[#68707C]'
+                    <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                      <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                        isActive ? 'bg-[#1677FF] ring-2 ring-blue-200' : 'bg-[#DDE1E7] group-hover:bg-[#68707C]'
                       }`} />
                       <div className="min-w-0 flex-1">
-                        <p className={`text-xs font-semibold truncate ${
+                        <p className={`text-xs font-semibold leading-snug break-words ${
                           isActive ? 'text-[#1677FF]' : 'text-[#171A1F] group-hover:text-[#1677FF]'
                         }`}>
                           {p.name}
                         </p>
-                        <p className="text-[10px] text-[#68707C] truncate">
-                          {p.status || 'In Progress'}
-                        </p>
+                        <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[#68707C]">
+                          <span className="truncate">{p.status || 'In Progress'}</span>
+                          <span>•</span>
+                          <span className="font-medium text-[#171A1F]">{p.progress}%</span>
+                        </div>
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold text-[#68707C] ml-2 flex-shrink-0">
-                      {p.progress}%
-                    </span>
+
+                    {isActive && (
+                      <div className="ml-2 flex-shrink-0 w-5 h-5 rounded-full bg-[#1677FF]/10 text-[#1677FF] flex items-center justify-center">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                    )}
                   </button>
                 );
               })}
             </div>
+
+            {/* View All Projects Link */}
+            <button
+              onClick={() => go('projects')}
+              className="w-full flex items-center justify-center gap-1.5 py-2 text-[11px] font-semibold text-[#68707C] hover:text-[#1677FF] transition-colors cursor-pointer mt-1"
+            >
+              <Building2 className="w-3.5 h-3.5" />
+              <span>All Projects Overview</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
 
           <div className="h-px bg-[#EAEDF1] mx-1" />
 
-          {/* 3. COMPANY & ADMIN */}
+          {/* 2. ESSENTIAL QUICK SHORTCUTS */}
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2.5 pb-1 block">
-              Company
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-1 pb-1 block">
+              Quick Shortcuts
             </span>
 
-            {/* Team */}
+            {/* Team Directory */}
             <button
               onClick={() => go('team')}
               className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
@@ -209,32 +186,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
                   <Users className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                  Team
+                  Team Directory
                 </span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
-            </button>
-
-            {/* Notifications */}
-            <button
-              onClick={() => go('notifications')}
-              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
-                  <Bell className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                  Notifications
-                </span>
-              </div>
-              {unreadNotifsCount > 0 ? (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200">
-                  {unreadNotifsCount} New
-                </span>
-              ) : (
-                <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
-              )}
+              <span className="text-[10px] font-bold text-[#68707C]">
+                12
+              </span>
             </button>
 
             {/* Settings */}
@@ -243,24 +200,26 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
               className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
+                <div className="w-7 h-7 rounded-lg bg-[#F2F2F7] border border-[#DDE1E7] flex items-center justify-center flex-shrink-0 text-[#68707C] group-hover:text-[#171A1F]">
                   <Settings className="w-3.5 h-3.5" />
                 </div>
                 <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                  Settings
+                  Settings &amp; App Info
                 </span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
             </button>
           </div>
 
         </div>
 
-        {/* ─── Footer: Sign Out ─── */}
-        <div className="p-3 border-t border-[#EAEDF1] bg-[#F7F8FA]">
+        {/* ─── Minimal Footer ─── */}
+        <div className="p-3.5 border-t border-[#EAEDF1] bg-[#F7F8FA] flex items-center justify-between">
+          <span className="text-[10px] font-medium text-[#68707C]">
+            Lattice MVP • v1.0
+          </span>
           <button
             onClick={() => { onSignOut(); onClose(); }}
-            className="w-full h-9 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 shadow-2xs"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#68707C] hover:text-rose-600 transition-colors cursor-pointer py-1 px-2 rounded-lg hover:bg-rose-50"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
