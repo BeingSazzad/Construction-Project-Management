@@ -2,8 +2,9 @@ import React from 'react';
 import { User } from '../../types';
 import { 
   X, Users, FileText, Sparkles, TrendingUp,
-  Award, Settings, LogOut, Shield, ChevronRight,
-  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare, Ruler, Cpu, Flag
+  Settings, LogOut, ChevronRight,
+  CalendarDays, Camera, AlertCircle, Calendar, CheckSquare, MessageSquare, 
+  FolderKanban, LayoutDashboard, DollarSign
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -13,10 +14,7 @@ interface SideDrawerProps {
   onNavigateTab: (tab: string) => void;
   onOpenCreateProject?: () => void;
   onOpenCreateBudget?: () => void;
-  onOpenDealAnalyzer?: () => void;
   onSignOut: () => void;
-  currentRole?: string;
-  onRoleChange?: (role: any) => void;
 }
 
 interface NavItem {
@@ -33,8 +31,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   currentUser,
   onNavigateTab,
   onSignOut,
-  currentRole = 'admin',
-  onRoleChange
 }) => {
   if (!isOpen) return null;
 
@@ -43,102 +39,106 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     onClose();
   };
 
-  const ROLES = [
-    { id: 'admin', title: 'Company Owner', name: 'Alex Chen' },
-    { id: 'finance', title: 'Finance Director', name: 'Michael Chang' },
-    { id: 'pm', title: 'Senior PM', name: 'Sarah Johnson' },
-    { id: 'field', title: 'Field Super', name: 'John Smith' },
-  ];
-
-  const ORG_ITEMS: NavItem[] = [
+  const CORE_ITEMS: NavItem[] = [
     {
-      id: 'team',
-      label: 'Team Staff & Directory',
-      icon: Users,
+      id: 'home',
+      label: 'Dashboard Overview',
+      icon: LayoutDashboard,
     },
     {
-      id: 'milestones',
-      label: 'Company Milestone Tracker',
-      icon: Flag,
+      id: 'projects',
+      label: 'Projects Portfolio',
+      icon: FolderKanban,
+      badge: '3 Active',
+      badgeStyle: 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30',
     },
-  ];
-
-  const TOOLS_ITEMS: NavItem[] = [
     {
       id: 'calendar',
-      label: 'Calendar',
+      label: 'Schedule & Calendar',
       icon: CalendarDays,
+      badge: 'May 16',
+      badgeStyle: 'bg-[#F2F2F7] text-[#171A1F] border-[#DDE1E7]',
     },
     {
-      id: 'messages',
-      label: 'Messages',
-      icon: MessageSquare,
-      badge: '2 New',
-      badgeStyle: 'bg-[#3875F6]/15 text-[#3875F6] border-[#3875F6]/30',
+      id: 'tasks',
+      label: 'Tasks & Inspections',
+      icon: CheckSquare,
+      badge: '4 Today',
+      badgeStyle: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    },
+  ];
+
+  const FIELD_ITEMS: NavItem[] = [
+    {
+      id: 'daily-logs',
+      label: 'Daily Field Logs',
+      icon: Calendar,
+      badge: 'Rain Alert',
+      badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200',
     },
     {
       id: 'photos',
-      label: 'Photos',
+      label: 'Jobsite Photos',
       icon: Camera,
     },
     {
       id: 'documents',
-      label: 'Documents',
+      label: 'Plans & Permits',
       icon: FileText,
+      badge: '28 Files',
+      badgeStyle: 'bg-[#F2F2F7] text-[#68707C] border-[#DDE1E7]',
     },
     {
       id: 'punch',
-      label: 'Punch List',
+      label: 'Punch List & Quality',
       icon: AlertCircle,
     },
-    {
-      id: 'daily-logs',
-      label: 'Daily Logs',
-      icon: Calendar,
-    },
   ];
 
-  const EXTRA_ITEMS: NavItem[] = [
+  const FINANCE_ITEMS: NavItem[] = [
     {
-      id: 'intelligence-center',
-      label: 'AI Intelligence Center',
-      icon: Cpu,
-      badge: '96.8% Acc',
-      badgeStyle: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+      id: 'budgets',
+      label: 'Project Budgets & Costs',
+      icon: DollarSign,
+      badge: '$1.84M',
+      badgeStyle: 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30',
     },
     {
-      id: 'buildscope',
-      label: 'BuildScope AI',
-      icon: Ruler,
-      badge: 'PlanGrid',
-      badgeStyle: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
-    },
-    {
-      id: 'trade-network',
-      label: 'Trade Network',
-      icon: Award,
-      badge: 'Soon',
-      badgeStyle: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
-    },
-    {
-      id: 'opportunities',
-      label: 'Opportunities',
+      id: 'change-orders',
+      label: 'Change Orders & Draws',
       icon: TrendingUp,
-      badge: '$3.77M',
-      badgeStyle: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
     },
   ];
 
-  const ACCOUNT_ITEMS: NavItem[] = [
+  const COLLAB_ITEMS: NavItem[] = [
+    {
+      id: 'team',
+      label: 'Team Directory',
+      icon: Users,
+    },
+    {
+      id: 'messages',
+      label: 'Messages & Updates',
+      icon: MessageSquare,
+      badge: '2 New',
+      badgeStyle: 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30',
+    },
+    {
+      id: 'latti',
+      label: 'Latti AI Assistant',
+      icon: Sparkles,
+      badge: 'Active',
+      badgeStyle: 'bg-purple-50 text-purple-700 border-purple-200',
+    },
     {
       id: 'more',
-      label: 'Settings',
+      label: 'Company & Settings',
       icon: Settings,
     },
   ];
 
   const SectionLabel = ({ label }: { label: string }) => (
-    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 pb-1 block">
+    <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-3 pb-1 pt-1.5 block">
       {label}
     </span>
   );
@@ -148,135 +148,111 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     return (
       <button
         onClick={() => go(item.id)}
-        className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-blue-600/10 text-slate-300 hover:text-white font-medium transition-all text-left cursor-pointer group active:scale-[0.98]"
+        className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform text-[#60A5FA]">
+          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform text-[#1677FF]">
             <Icon className="w-3.5 h-3.5" />
           </div>
-          <span className="text-xs font-semibold truncate">{item.label}</span>
+          <span className="text-xs font-semibold truncate text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+            {item.label}
+          </span>
         </div>
         {item.badge ? (
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${item.badgeStyle}`}>
             {item.badge}
           </span>
         ) : (
-          <ChevronRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-blue-400 transition-colors" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
         )}
       </button>
     );
   };
 
+  const getInitials = (name?: string) => {
+    if (!name) return 'AS';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  };
+
   return (
-    <div className="absolute inset-0 z-50 flex font-sans overflow-hidden animate-fade-in">
+    <div className="fixed inset-0 z-50 flex font-sans overflow-hidden animate-fade-in">
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
       />
 
-      {/* Drawer Panel */}
+      {/* Drawer Panel (Apple Light Theme) */}
       <div
-        className="relative w-[280px] max-w-[85%] bg-[#070D1A] border-r border-[#142036] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-slate-100 animate-slide-in"
+        className="relative w-[300px] max-w-[85%] bg-white border-r border-[#DDE1E7] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-[#171A1F] animate-slide-in"
       >
-
         {/* ─── Profile Header ─── */}
-        <div className="flex items-center gap-3 p-3.5 border-b border-[#142036] bg-[#0A1020]">
-          <div className="relative flex-shrink-0">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="w-9 h-9 rounded-full object-cover border border-blue-500/40 shadow"
-            />
-            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0A1020]" />
+        <div className="flex items-center gap-3 p-4 border-b border-[#EAEDF1] bg-[#F7F8FA]">
+          <div className="w-10 h-10 rounded-full bg-[#1677FF] text-white font-bold text-sm flex items-center justify-center shadow-sm flex-shrink-0">
+            {getInitials(currentUser.name)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-white truncate leading-tight">{currentUser.name}</p>
-            <p className="text-[10px] text-blue-400 font-medium truncate mt-0.5">
-              {currentUser.roleTitle || 'Company Owner'}
+            <p className="text-xs font-bold text-[#171A1F] truncate leading-tight">
+              {currentUser.name || 'Avery Scott'}
+            </p>
+            <p className="text-[11px] text-[#68707C] font-medium truncate mt-0.5">
+              {currentUser.roleTitle || 'Owner & General Contractor'}
+            </p>
+            <p className="text-[10px] text-[#1677FF] font-semibold truncate">
+              Avery &amp; Marsh Construction
             </p>
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-lg bg-[#0E1A33] border border-[#1E325A] text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer flex-shrink-0"
+            className="w-8 h-8 rounded-full bg-white border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer flex-shrink-0 active:scale-95 shadow-2xs"
+            title="Close Menu"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* ─── Role Switcher Selector ─── */}
-        {onRoleChange && (
-          <div className="mx-3 mt-3 p-2.5 rounded-2xl bg-[#091122] border border-[#142036] flex flex-col gap-1.5">
-            <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold px-0.5">
-              Active User Role
-            </span>
-            <div className="grid grid-cols-2 gap-1.5">
-              {ROLES.map((r) => {
-                const isActive = currentRole === r.id;
-                return (
-                  <button
-                    key={r.id}
-                    onClick={() => {
-                      onRoleChange(r.id);
-                      onClose();
-                    }}
-                    className={`py-1.5 px-2 rounded-xl text-[10px] font-bold transition-all text-left truncate cursor-pointer ${
-                      isActive
-                        ? 'bg-[#2563EB] text-white shadow-sm'
-                        : 'bg-[#050811] text-slate-400 hover:text-slate-200 border border-[#142036]'
-                    }`}
-                  >
-                    {r.title}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        {/* ─── Navigation Sections ─── */}
+        <div className="flex-1 overflow-y-auto px-2.5 py-3 flex flex-col gap-2.5">
 
-        {/* ─── Compact Navigation Sections ─── */}
-        <div className="flex-1 overflow-y-auto px-2 py-3 flex flex-col gap-3">
-
-          {/* SECTION: ORGANIZATION & HUBS */}
+          {/* SECTION 1: CORE WORKSPACES */}
           <div className="flex flex-col gap-0.5">
-            <SectionLabel label="ORGANIZATION & DIRECTORY" />
-            {ORG_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
+            <SectionLabel label="Core Workspaces" />
+            {CORE_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-[#142036] mx-3" />
+          <div className="h-px bg-[#EAEDF1] mx-2" />
 
-          {/* SECTION: TOOLS */}
+          {/* SECTION 2: FIELD OPERATIONS */}
           <div className="flex flex-col gap-0.5">
-            <SectionLabel label="TOOLS" />
-            {TOOLS_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
+            <SectionLabel label="Field Operations" />
+            {FIELD_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-[#142036] mx-3" />
+          <div className="h-px bg-[#EAEDF1] mx-2" />
 
-          {/* SECTION: AI & Intelligence Center */}
+          {/* SECTION 3: FINANCIAL CONTROL */}
           <div className="flex flex-col gap-0.5">
-            <SectionLabel label="AI & INTELLIGENCE CENTER" />
-            {EXTRA_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
+            <SectionLabel label="Financial Control" />
+            {FINANCE_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-[#142036] mx-3" />
+          <div className="h-px bg-[#EAEDF1] mx-2" />
 
-          {/* SECTION: Account */}
+          {/* SECTION 4: COLLABORATION & SYSTEM */}
           <div className="flex flex-col gap-0.5">
-            <SectionLabel label="Account & Setup" />
-            {ACCOUNT_ITEMS.map(item => <NavButton key={`${item.id}-${item.label}`} item={item} />)}
+            <SectionLabel label="Collaboration & System" />
+            {COLLAB_ITEMS.map(item => <NavButton key={item.id} item={item} />)}
           </div>
 
         </div>
 
         {/* ─── Footer ─── */}
-        <div className="p-3 border-t border-[#142036] bg-[#050811]">
+        <div className="p-3 border-t border-[#EAEDF1] bg-[#F7F8FA]">
           <button
             onClick={() => { onSignOut(); onClose(); }}
-            className="w-full h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/15 text-rose-400 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
+            className="w-full h-9 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 shadow-2xs"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>

@@ -71,21 +71,21 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
 
           <button
             onClick={() => setFrameMode(frameMode === 'mobile' ? 'fluid' : 'mobile')}
-            className="px-2 py-1 rounded-lg text-[11px] font-semibold bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] cursor-pointer"
+            className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#F2F2F7] border border-[#DDE1E7] text-[#171A1F] hover:bg-[#EAF3FF] hover:border-[#1677FF]/40 cursor-pointer transition-colors"
           >
-            {frameMode === 'mobile' ? 'Expand' : 'Mobile'}
+            {frameMode === 'mobile' ? '🖥️ Desktop View' : '📱 Mobile Frame'}
           </button>
         </div>
       </header>
 
-      {/* Main Container - Apple iPhone Bezel Frame */}
+      {/* Main Container - Apple iPhone Bezel Frame or Responsive Desktop */}
       <main className={`w-full flex-1 flex flex-col items-center justify-start transition-all duration-300 ${
-        frameMode === 'mobile' ? 'max-w-[430px]' : 'max-w-4xl'
+        frameMode === 'mobile' ? 'max-w-[430px]' : 'max-w-5xl w-full'
       }`}>
         <div className={`w-full flex-1 flex flex-col bg-[#F2F2F7] overflow-x-hidden min-h-[880px] relative transition-all ${
           frameMode === 'mobile' 
             ? 'md:rounded-[44px] md:border-[10px] md:border-[#FFFFFF] md:shadow-[0_20px_50px_rgba(0,0,0,0.12)]' 
-            : 'rounded-2xl border border-[#DDE1E7] shadow-md'
+            : 'rounded-2xl border border-[#DDE1E7] shadow-xl'
         }`}>
           {/* iOS Top Notch / Status Bar matching Figma */}
           {frameMode === 'mobile' && (

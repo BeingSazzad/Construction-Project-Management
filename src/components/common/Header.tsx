@@ -1,6 +1,8 @@
 import React from 'react';
 import { User, Project } from '../../types';
-import { Bell, ChevronLeft } from 'lucide-react';
+import { 
+  Bell, ChevronLeft, Menu, Plus, Sparkles 
+} from 'lucide-react';
 
 interface HeaderProps {
   currentUser: User;
@@ -16,6 +18,8 @@ interface HeaderProps {
   onOpenLatti: () => void;
   onOpenSettings: () => void;
   onOpenDrawer?: () => void;
+  onNavigateTab?: (tab: string) => void;
+  onQuickAction?: () => void;
   onMarkAllRead?: () => void;
   onOpenEditProject?: () => void;
   onDeleteProject?: (projectId: string) => void;
@@ -41,7 +45,11 @@ export const Header: React.FC<HeaderProps> = ({
   onBackToHome,
   onBack,
   onOpenNotifications,
-  onOpenSettings
+  onOpenLatti,
+  onOpenSettings,
+  onOpenDrawer,
+  onNavigateTab,
+  onQuickAction
 }) => {
   const handleBackClick = onBack || onBackToHome;
 
@@ -56,30 +64,66 @@ export const Header: React.FC<HeaderProps> = ({
 
   const initials = getInitials(currentUser?.name || 'Avery Scott');
 
+  const navPills = [
+    { id: 'home', label: 'Dashboard' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'calendar', label: 'Schedule' },
+    { id: 'daily-logs', label: 'Daily Logs' },
+    { id: 'budgets', label: 'Budgets' },
+  ];
+
   return (
-    <header className="w-full flex-shrink-0 z-40 bg-white border-b border-[#DDE1E7] sticky top-0 font-sans">
-      <div className="px-5 py-3 flex items-center justify-between gap-3 max-w-[430px] mx-auto">
+    <header className="w-full flex-shrink-0 z-40 bg-white border-b border-[#DDE1E7] sticky top-0 font-sans shadow-xs">
+      <div className="w-full max-w-5xl mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between gap-3">
         {activeProject ? (
           // Project Workspace Top Bar (Figma Screen 2)
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              {/* Drawer Toggle */}
+              {onOpenDrawer && (
+                <button
+                  onClick={onOpenDrawer}
+                  className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] flex items-center justify-center text-[#171A1F] transition-all flex-shrink-0 cursor-pointer active:scale-95"
+                  title="Open Navigation Menu"
+                >
+                  <Menu className="w-4 h-4 text-[#171A1F]" />
+                </button>
+              )}
+
+              {/* Back to Projects */}
               <button
                 onClick={handleBackClick}
-                className="w-9 h-9 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] flex items-center justify-center text-[#171A1F] transition-all flex-shrink-0 cursor-pointer active:scale-95"
+                className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] flex items-center justify-center text-[#171A1F] transition-all flex-shrink-0 cursor-pointer active:scale-95"
                 title="Back to Projects"
               >
                 <ChevronLeft className="w-5 h-5 text-[#171A1F]" />
               </button>
-              <h1 className="text-base font-bold text-[#171A1F] truncate tracking-tight">
-                {activeProject.name}
-              </h1>
+
+              <div className="min-w-0 flex-1">
+                <h1 className="text-sm md:text-base font-bold text-[#171A1F] truncate tracking-tight">
+                  {activeProject.name}
+                </h1>
+                <p className="text-[10px] text-[#68707C] font-medium truncate hidden sm:block">
+                  {activeProject.cityState} · Status: {activeProject.status}
+                </p>
+              </div>
             </div>
 
-            {/* Right: Bell & Avatar */}
-            <div className="flex items-center gap-2.5 flex-shrink-0">
+            {/* Right: Quick Action, Bell & Avatar */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {onQuickAction && (
+                <button
+                  onClick={onQuickAction}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Action</span>
+                </button>
+              )}
+
               <button
                 onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-full bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                className="w-9 h-9 rounded-xl bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4 text-[#171A1F]" />
@@ -90,39 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={onOpenSettings}
-                className="w-9 h-9 rounded-full bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] font-bold text-xs flex items-center justify-center cursor-pointer hover:border-[#1677FF] transition-all active:scale-95"
-                title="Account Settings"
-              >
-                {initials}
-              </button>
-            </div>
-          </div>
-        ) : activeTab === 'home' ? (
-          // Home Top Bar (Figma Screen 1)
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2">
-              <LatticeLogoIcon className="w-7 h-7 flex-shrink-0" />
-              <span className="text-base font-black tracking-wider text-[#171A1F] uppercase font-sans">
-                LATTICE
-              </span>
-            </div>
-
-            {/* Right: Bell & Avatar */}
-            <div className="flex items-center gap-2.5 flex-shrink-0">
-              <button
-                onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-full bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
-                title="Notifications"
-              >
-                <Bell className="w-4 h-4 text-[#171A1F]" />
-                {unreadNotifsCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1677FF]" />
-                )}
-              </button>
-
-              <button
-                onClick={onOpenSettings}
-                className="w-9 h-9 rounded-full bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] font-bold text-xs flex items-center justify-center cursor-pointer hover:border-[#1677FF] transition-all active:scale-95"
+                className="w-9 h-9 rounded-xl bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] font-bold text-xs flex items-center justify-center cursor-pointer hover:border-[#1677FF] transition-all active:scale-95"
                 title="Account Settings"
               >
                 {initials}
@@ -130,28 +142,79 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
         ) : (
-          // Subpage Top Bar (Latti AI, More, Projects List)
+          // Global App Header with Hamburger Drawer, Logo, Desktop Pills, & Right Tools
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2.5 min-w-0">
-              {handleBackClick && (
+            {/* Left: Hamburger Drawer + Brand */}
+            <div className="flex items-center gap-2.5">
+              {onOpenDrawer && (
                 <button
-                  onClick={handleBackClick}
-                  className="w-9 h-9 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] flex items-center justify-center text-[#171A1F] transition-all flex-shrink-0 cursor-pointer active:scale-95"
-                  title="Back"
+                  onClick={onOpenDrawer}
+                  className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] flex items-center justify-center text-[#171A1F] transition-all flex-shrink-0 cursor-pointer active:scale-95"
+                  title="Open Navigation Menu"
                 >
-                  <ChevronLeft className="w-5 h-5 text-[#171A1F]" />
+                  <Menu className="w-4 h-4 text-[#171A1F]" />
                 </button>
               )}
-              <h1 className="text-base font-bold text-[#171A1F] tracking-tight">
-                {customTitle || (activeTab === 'latti' ? 'Latti AI' : activeTab === 'projects' ? 'Projects' : activeTab === 'more' ? 'More' : activeTab)}
-              </h1>
+
+              {/* Logo & Name */}
+              <div 
+                onClick={() => onNavigateTab ? onNavigateTab('home') : (onBackToHome && onBackToHome())}
+                className="flex items-center gap-2 cursor-pointer select-none group"
+              >
+                <LatticeLogoIcon className="w-7 h-7 flex-shrink-0 group-hover:scale-105 transition-transform" />
+                <span className="text-base font-black tracking-wider text-[#171A1F] uppercase font-sans">
+                  LATTICE
+                </span>
+              </div>
             </div>
 
-            {/* Right: Bell & Avatar */}
-            <div className="flex items-center gap-2.5 flex-shrink-0">
+            {/* Center: Desktop Navigation Pills (Visible on md/lg screens) */}
+            {onNavigateTab && (
+              <nav className="hidden md:flex items-center gap-1 bg-[#F2F2F7] p-1 rounded-2xl border border-[#DDE1E7]">
+                {navPills.map((pill) => {
+                  const isActive = activeTab === pill.id;
+                  return (
+                    <button
+                      key={pill.id}
+                      onClick={() => onNavigateTab(pill.id)}
+                      className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-[#1677FF] text-white shadow-xs'
+                          : 'text-[#68707C] hover:text-[#171A1F] hover:bg-white/70'
+                      }`}
+                    >
+                      {pill.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            )}
+
+            {/* Right: Quick Action, Latti AI, Notifications & Avatar */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {onQuickAction && (
+                <button
+                  onClick={onQuickAction}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>New</span>
+                </button>
+              )}
+
+              {/* Latti AI Assistant trigger */}
+              <button
+                onClick={onOpenLatti}
+                className="w-9 h-9 rounded-xl bg-[#EAF3FF] hover:bg-[#1677FF] text-[#1677FF] hover:text-white border border-[#1677FF]/25 flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                title="Latti AI Assistant"
+              >
+                <Sparkles className="w-4 h-4" />
+              </button>
+
+              {/* Notifications */}
               <button
                 onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-full bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
+                className="w-9 h-9 rounded-xl bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-sm"
                 title="Notifications"
               >
                 <Bell className="w-4 h-4 text-[#171A1F]" />
@@ -160,9 +223,10 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
 
+              {/* Profile Avatar */}
               <button
                 onClick={onOpenSettings}
-                className="w-9 h-9 rounded-full bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] font-bold text-xs flex items-center justify-center cursor-pointer hover:border-[#1677FF] transition-all active:scale-95"
+                className="w-9 h-9 rounded-xl bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] font-bold text-xs flex items-center justify-center cursor-pointer hover:border-[#1677FF] transition-all active:scale-95"
                 title="Account Settings"
               >
                 {initials}

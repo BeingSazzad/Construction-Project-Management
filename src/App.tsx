@@ -593,7 +593,7 @@ export function App() {
         />
       ) : (
         /* 3. MAIN WORKSPACE APP */
-        <div className="w-full h-full flex flex-col justify-between relative bg-[#070A12] text-slate-100 font-sans">
+        <div className="w-full h-full flex flex-col justify-between relative bg-[#F2F2F7] text-[#171A1F] font-sans">
           {/* Top Sticky Header */}
           <Header
             currentUser={currentUser}
@@ -607,13 +607,24 @@ export function App() {
             onOpenNotifications={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('notifications'); }}
             onOpenMessages={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('messages'); }}
             onOpenLatti={() => {
-              if (!activeProject) {
-                setActiveBudgetName(null);
-                setActiveTab('latti');
-              }
+              setActiveBudgetName(null);
+              setActiveProject(null);
+              setActiveTab('latti');
             }}
             onOpenSettings={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('more'); }}
             onOpenDrawer={() => setIsSideDrawerOpen(true)}
+            onNavigateTab={(tab) => {
+              setActiveBudgetName(null);
+              if (tab === 'home' || tab === 'projects' || tab === 'calendar' || tab === 'daily-logs' || tab === 'budgets' || tab === 'team' || tab === 'latti' || tab === 'more') {
+                setActiveProject(null);
+                setActiveTab(tab);
+              } else {
+                setActiveProject(projects[0]);
+                setActiveTab(tab);
+                setProjectSubTab(tab);
+              }
+            }}
+            onQuickAction={() => setIsQuickActionSheetOpen(true)}
             onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
             onOpenEditProject={() => setIsEditProjectOpen(true)}
             onDeleteProject={handleDeleteProject}
@@ -790,11 +801,30 @@ export function App() {
                   />
                 )}
 
-                {activeTab === 'schedule' && (
-                  <ProjectScheduleTab
-                    project={projects[0]}
-                    ganttItems={ganttItems}
-                    onCreateTask={() => setIsTaskTypeSelectOpen(true)}
+                {(activeTab === 'calendar' || activeTab === 'schedule') && (
+                  <CalendarView
+                    projects={projects}
+                    events={calendarEvents}
+                    onSelectProject={handleSelectProject}
+                    onAddEvent={(evt) => setCalendarEvents(prev => [evt, ...prev])}
+                  />
+                )}
+
+                {activeTab === 'budgets' && (
+                  <ProjectBudgetTab
+                    project={activeProject || projects[0]}
+                    categories={categories}
+                    onImportBudget={() => setIsImportBudgetOpen(true)}
+                  />
+                )}
+
+                {activeTab === 'messages' && (
+                  <MessagesHubView
+                    currentUser={currentUser}
+                    projects={projects}
+                    chatMessages={chatMessages}
+                    onSendMessage={handleSendMessage}
+                    onSelectProject={handleSelectProject}
                   />
                 )}
 
@@ -844,7 +874,7 @@ export function App() {
             )}
           </div>
 
-          {/* Bottom Navigation (5 Unified Launch Tabs) */}
+          {/* Bottom Navigation (5 Core Launch Tabs) */}
           <BottomNav
             activeTab={activeTab}
             onTabChange={(tab) => {
@@ -854,15 +884,13 @@ export function App() {
             onQuickAction={() => setIsQuickActionSheetOpen(true)}
           />
 
-          {/* SIDE DRAWER NAVIGATION */}
+          {/* SIDE DRAWER NAVIGATION (Triggered from Top-Left Header ☰) */}
           <SideDrawer
             isOpen={isSideDrawerOpen}
             onClose={() => setIsSideDrawerOpen(false)}
             currentUser={currentUser}
             onNavigateTab={(tab) => {
-              if (tab === 'trade-network') {
-                alert('Trade Network platform coming soon!');
-              } else if (['calendar', 'team', 'milestones', 'daily-logs', 'buildscope', 'intelligence-center', 'opportunities', 'budgets', 'more'].includes(tab)) {
+              if (['calendar', 'team', 'daily-logs', 'budgets', 'more', 'latti', 'home', 'projects', 'milestones'].includes(tab)) {
                 setActiveProject(null);
                 setActiveTab(tab);
               } else if (['tasks', 'schedule', 'messages', 'photos', 'documents', 'punch'].includes(tab)) {
@@ -878,7 +906,6 @@ export function App() {
             }}
             onOpenCreateProject={() => setIsCreateProjectOpen(true)}
             onOpenCreateBudget={() => setIsCreateBudgetOpen(true)}
-            onOpenDealAnalyzer={() => setIsDealAnalyzerOpen(true)}
             onSignOut={() => setAppView('auth')}
           />
         </div>
