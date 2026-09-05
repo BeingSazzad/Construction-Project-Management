@@ -14,6 +14,7 @@ import { BetaAgreement } from '../legal/BetaAgreement';
 import { HelpSupport } from './HelpSupport';
 import { EditProfileView } from './EditProfileView';
 import { SecurityPasswordView } from './SecurityPasswordView';
+import { CompanyProfileView } from './CompanyProfileView';
 
 interface MoreHubViewProps {
   currentUser: User;
@@ -77,7 +78,7 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
 }) => {
   const [userData, setUserData] = useState<User>(currentUser);
   const [subView, setSubView] = useState<
-    'main' | 'profile' | 'security' | 'notifications' | 'workspace' |
+    'main' | 'profile' | 'security' | 'notifications' | 'workspace' | 'edit-workspace' |
     'terms' | 'privacy' | 'ai-disclaimer' | 'subscription-terms' | 'beta' | 'support'
   >('main');
 
@@ -117,13 +118,45 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
   if (subView === 'subscription-terms') return <SubscriptionTerms onBack={() => setSubView('main')} />;
   if (subView === 'beta')               return <BetaAgreement onBack={() => setSubView('main')} />;
 
+  // ── Edit Workspace (Company Profile) ──────────────────────────
+  if (subView === 'edit-workspace') {
+    return (
+      <CompanyProfileView
+        currentUser={userData}
+        onBack={() => setSubView('workspace')}
+        onSave={(data) => setUserData(prev => ({ ...prev, company: data.company }))}
+      />
+    );
+  }
+
   // ── Workspace sub-view (Company Info) ─────────────────────────
   if (subView === 'workspace') {
     return (
-      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
-        <BackHeader title="Workspace" onBack={() => setSubView('main')} />
+      <div className="w-full flex flex-col gap-3 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+        {/* Header with Edit button */}
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSubView('main')}
+              className="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <div>
+              <h1 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight">Workspace</h1>
+              <p className="text-xs text-[#68707C] font-medium mt-0.5">Company information</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setSubView('edit-workspace')}
+            className="h-8 px-3 rounded-xl bg-[#EAF3FF] hover:bg-[#1677FF] border border-[#1677FF]/30 hover:border-[#1677FF] text-[#1677FF] hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Edit</span>
+          </button>
+        </div>
 
-        <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#EAEDF1]">
+        <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
           {[
             { icon: <Building2 className="w-4 h-4" />, label: 'Company', value: userData?.company || 'Avery & Marsh Construction' },
             { icon: <MapPin className="w-4 h-4" />, label: 'Address', value: '1200 Bayshore Blvd, Suite 400, Tampa, FL 33606' },
@@ -131,11 +164,11 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
             { icon: <Mail className="w-4 h-4" />, label: 'Email', value: 'operations@averymarsh.com', href: 'mailto:operations@averymarsh.com' },
           ].map((item, i) => (
             <div key={i} className="px-4 py-3.5 flex items-start gap-3">
-              <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF] flex-shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF] flex-shrink-0">
                 {item.icon}
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">{item.label}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#9DA5B1]">{item.label}</p>
                 {item.href ? (
                   <a href={item.href} className="text-xs font-semibold text-[#1677FF] hover:underline mt-0.5 block">{item.value}</a>
                 ) : (
@@ -145,6 +178,15 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
             </div>
           ))}
         </div>
+
+        {/* Edit CTA at bottom */}
+        <button
+          onClick={() => setSubView('edit-workspace')}
+          className="w-full h-11 rounded-2xl bg-white hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 text-xs font-bold text-[#1677FF] flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
+        >
+          <Edit3 className="w-3.5 h-3.5" />
+          <span>Edit Company Information</span>
+        </button>
       </div>
     );
   }

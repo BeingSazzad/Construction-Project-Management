@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   ChevronLeft, Phone, Mail, HelpCircle, ChevronDown,
-  CheckCircle2, Send 
+  CheckCircle2, Send, MessageSquare, BookOpen, Clock,
+  Zap, ChevronRight, Headphones, ArrowUpRight
 } from 'lucide-react';
 
 interface HelpSupportProps {
@@ -17,20 +18,20 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
 
   const faqs = [
     {
-      q: 'How do I add a new CSI cost code line item to my budget?',
-      a: 'Navigate to the project Budget tab, click "+ Add Code" at the top right, select the MasterFormat division (e.g. Division 03 Concrete), enter estimated cost, and click save.'
+      q: 'How do I add a new CSI cost code to my budget?',
+      a: 'Navigate to the project Budget tab, click "+ Add Code", select the MasterFormat division (e.g. Division 03 Concrete), enter estimated cost, and save.'
     },
     {
-      q: 'Can field superintendents log site photos without cellular signal?',
-      a: 'Yes! The mobile app automatically caches uploaded site photos and punch list entries locally, syncing them to the cloud as soon as network connectivity is restored.'
+      q: 'Can field supers log photos without cell signal?',
+      a: 'Yes! The app caches site photos and punch list entries locally, syncing to the cloud automatically once network is restored.'
     },
     {
-      q: 'How do I export weekly executive project reports to PDF?',
-      a: 'Go to the Reports tab in any project workspace, select "Project Progress Report", and click the "Export PDF" button to download a formatted handoff report.'
+      q: 'How do I export a weekly executive report to PDF?',
+      a: 'Go to the Reports tab in any project workspace, select "Project Progress Report", and tap "Export PDF" to download a formatted handoff report.'
     },
     {
-      q: 'How does Latti AI detect schedule critical path risks?',
-      a: 'Latti AI analyzes task dependencies in your Gantt chart, tracking daily crew check-ins and inspection signoffs to alert you when predecessor milestones risk slipping.'
+      q: 'How does Latti AI detect critical path risks?',
+      a: 'Latti AI analyses task dependencies, tracking crew check-ins and inspection signoffs to alert you when predecessor milestones risk slipping.'
     }
   ];
 
@@ -43,7 +44,7 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
       setTicketCategory('Other');
       setTicketMsg('');
       setTicketSent(false);
-    }, 4000);
+    }, 5000);
   };
 
   const toggleFaq = (idx: number) => {
@@ -51,125 +52,211 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
-      {/* Top Header */}
-      <div className="flex items-center gap-3 pb-3 border-b border-[#EAEDF1]">
+    <div className="w-full flex flex-col gap-3 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+
+      {/* ─── Header ─── */}
+      <div className="flex items-center gap-3 mb-1">
         <button
           onClick={onBack}
-          className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-all active:scale-95"
+          className="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors flex-shrink-0"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
         <div>
-          <h1 className="text-base sm:text-lg font-bold text-[#171A1F] tracking-tight">Help & Support</h1>
-          <p className="text-xs text-[#68707C] font-medium">24/7 Enterprise Jobsite Assistance</p>
+          <h1 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight">Help & Support</h1>
+          <p className="text-xs text-[#68707C] font-medium mt-0.5">24/7 Enterprise Jobsite Assistance</p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {/* Contact Hotline & Support Email */}
-        <div className="grid grid-cols-2 gap-2.5">
-          <a
-            href="tel:+18005558900"
-            className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF] flex flex-col items-center text-center cursor-pointer transition-all active:scale-95 shadow-xs group"
-          >
-            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-blue-200 flex items-center justify-center text-[#1677FF] mb-1.5 group-hover:scale-110 transition-transform">
-              <Phone className="w-4 h-4" />
+      {/* ─── Hero Support Banner ─── */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#1677FF] via-[#2E8BFF] to-[#60A5FA] p-5 shadow-lg">
+        {/* Decorative circles */}
+        <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/10" />
+        <div className="absolute -bottom-8 -left-4 w-20 h-20 rounded-full bg-white/8" />
+
+        <div className="relative z-10 flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm animate-pulse" />
+              <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest">Support Online</span>
             </div>
-            <span className="text-xs font-bold text-[#171A1F]">Call Hotline</span>
-            <span className="text-xs text-[#68707C] mt-0.5 font-medium">1-800-555-8900</span>
-          </a>
-
-          <a
-            href="mailto:support@latticebuild.com"
-            className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF] flex flex-col items-center text-center cursor-pointer transition-all active:scale-95 shadow-xs group"
-          >
-            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-blue-200 flex items-center justify-center text-[#1677FF] mb-1.5 group-hover:scale-110 transition-transform">
-              <Mail className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-bold text-[#171A1F]">Email Support</span>
-            <span className="text-xs text-[#68707C] mt-0.5 font-medium">support@latticebuild.com</span>
-          </a>
-        </div>
-
-        {/* Hairline Accordion FAQs */}
-        <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[#68707C] px-0.5">
-            Frequently Asked Questions
-          </h2>
-
-          <div className="flex flex-col border-t border-[#EAEDF1]">
-            {faqs.map((faq, idx) => {
-              const isExpanded = expandedFaq === idx;
-              return (
-                <div 
-                  key={idx} 
-                  className="border-b border-[#EAEDF1] last:border-b-0 py-2.5 transition-all"
-                >
-                  <button
-                    onClick={() => toggleFaq(idx)}
-                    className="w-full px-2 py-1.5 text-left flex items-start justify-between gap-3 hover:bg-[#F7F8FA] rounded-xl transition-colors cursor-pointer group"
-                  >
-                    <div className="flex items-start gap-2.5 min-w-0 flex-1">
-                      <HelpCircle className="w-4 h-4 text-[#1677FF] flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                      <span className="text-xs sm:text-sm font-medium text-[#171A1F] leading-snug">
-                        {faq.q}
-                      </span>
-                    </div>
-
-                    <ChevronDown className={`w-4 h-4 text-[#9DA5B1] flex-shrink-0 transition-transform duration-200 mt-0.5 ${
-                      isExpanded ? 'rotate-180 text-[#1677FF]' : ''
-                    }`} />
-                  </button>
-
-                  {isExpanded && (
-                    <div className="px-8 pt-1.5 pb-2 text-xs text-[#68707C] leading-relaxed font-normal animate-fade-in">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            <h2 className="text-sm font-bold text-white leading-snug mb-1">
+              Need help? We're here.
+            </h2>
+            <p className="text-xs text-white/70 leading-relaxed">
+              Average response time under 15 minutes for enterprise accounts.
+            </p>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center flex-shrink-0">
+            <Headphones className="w-6 h-6 text-white" />
           </div>
         </div>
 
-        {/* Submit Ticket Form */}
-        <div className="p-4 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-3.5">
+        {/* Stats row */}
+        <div className="relative z-10 flex items-center gap-4 mt-4 pt-3 border-t border-white/20">
+          {[
+            { label: 'Avg. Response', value: '<15 min' },
+            { label: 'Uptime', value: '99.9%' },
+            { label: 'Tickets Resolved', value: '4,821' },
+          ].map(({ label, value }) => (
+            <div key={label} className="flex flex-col gap-0.5">
+              <span className="text-[10px] text-white/60 font-medium">{label}</span>
+              <span className="text-xs font-bold text-white">{value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ─── Contact Actions ─── */}
+      <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
+        <div className="px-4 pt-3 pb-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#9DA5B1]">Contact Us</p>
+        </div>
+
+        <a
+          href="tel:+18005558900"
+          className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+              <Phone className="w-4 h-4 text-[#1677FF]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-xs font-semibold text-[#171A1F] block">Call Hotline</span>
+              <span className="text-[10px] text-[#68707C]">1-800-555-8900 · Mon–Fri 6am–10pm</span>
+            </div>
+          </div>
+          <ArrowUpRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+        </a>
+
+        <a
+          href="mailto:support@latticebuild.com"
+          className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+              <Mail className="w-4 h-4 text-[#1677FF]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-xs font-semibold text-[#171A1F] block">Email Support</span>
+              <span className="text-[10px] text-[#68707C]">support@latticebuild.com</span>
+            </div>
+          </div>
+          <ArrowUpRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+        </a>
+
+        <div className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+              <MessageSquare className="w-4 h-4 text-[#1677FF]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-xs font-semibold text-[#171A1F] block">Live Chat</span>
+              <span className="text-[10px] text-[#68707C]">Chat with an agent now</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Online</span>
+            <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
+          </div>
+        </div>
+
+        <div className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-4 h-4 text-[#1677FF]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-xs font-semibold text-[#171A1F] block">Knowledge Base</span>
+              <span className="text-[10px] text-[#68707C]">Guides, tutorials & docs</span>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+        </div>
+      </div>
+
+      {/* ─── FAQ Accordion ─── */}
+      <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
+        <div className="px-4 pt-3 pb-2 flex items-center justify-between">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#9DA5B1]">Frequently Asked Questions</p>
+          <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">{faqs.length}</span>
+        </div>
+
+        {faqs.map((faq, idx) => {
+          const isExpanded = expandedFaq === idx;
+          return (
+            <div key={idx} className="transition-all">
+              <button
+                onClick={() => toggleFaq(idx)}
+                className="w-full px-4 py-3 text-left flex items-start justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
+              >
+                <div className="flex items-start gap-3 min-w-0 flex-1">
+                  <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">{idx + 1}</span>
+                  <span className="text-xs font-semibold text-[#171A1F] leading-snug">
+                    {faq.q}
+                  </span>
+                </div>
+                <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 mt-0.5 ${
+                  isExpanded ? 'rotate-180 text-[#1677FF]' : 'text-[#DDE1E7]'
+                }`} />
+              </button>
+
+              {isExpanded && (
+                <div className="px-4 pb-3 animate-fade-in">
+                  <div className="ml-8 p-3 bg-[#F7F8FA] rounded-xl border border-[#EAEDF1]">
+                    <p className="text-xs text-[#68707C] leading-relaxed">{faq.a}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ─── Submit Ticket ─── */}
+      <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden">
+        <div className="px-4 pt-3 pb-2 border-b border-[#EAEDF1]">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#9DA5B1]">Submit a Support Ticket</p>
+        </div>
+
+        <div className="p-4">
           {ticketSent ? (
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs font-semibold flex items-center gap-2.5 animate-fade-in">
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600" />
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-3 animate-fade-in">
+              <div className="w-9 h-9 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              </div>
               <div>
-                <p className="font-bold text-[#171A1F]">Support Request Sent</p>
-                <p className="text-xs text-emerald-700 mt-0.5">Ticket #8492 created. Our team will respond within 15 minutes.</p>
+                <p className="text-xs font-bold text-[#171A1F]">Ticket Submitted!</p>
+                <p className="text-xs text-emerald-700 mt-0.5">Ticket #8492 created. We'll respond within 15 minutes.</p>
+                <div className="flex items-center gap-1.5 mt-2">
+                  <Clock className="w-3 h-3 text-emerald-600" />
+                  <span className="text-[10px] text-emerald-700 font-semibold">Avg. response: &lt;15 min</span>
+                </div>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmitTicket} className="flex flex-col gap-3.5">
-              {/* 1. Subject */}
+            <form onSubmit={handleSubmitTicket} className="flex flex-col gap-3">
+              {/* Subject */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[#68707C]">
-                  Subject
-                </label>
+                <label className="text-xs font-semibold text-[#68707C]">Subject <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   required
                   value={ticketSubject}
                   onChange={(e) => setTicketSubject(e.target.value)}
                   placeholder="Brief summary of your request"
-                  className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
+                  className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
                 />
               </div>
 
-              {/* 2. Category */}
+              {/* Category */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[#68707C]">
-                  Category
-                </label>
+                <label className="text-xs font-semibold text-[#68707C]">Category</label>
                 <div className="relative">
                   <select
                     value={ticketCategory}
                     onChange={(e) => setTicketCategory(e.target.value)}
-                    className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl pl-3.5 pr-9 text-xs text-[#171A1F] outline-none appearance-none cursor-pointer transition-colors"
+                    className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl pl-3 pr-9 text-xs text-[#171A1F] outline-none appearance-none cursor-pointer transition-colors"
                   >
                     <option value="Other">Other</option>
                     <option value="General Inquiry">General Inquiry</option>
@@ -183,11 +270,9 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
                 </div>
               </div>
 
-              {/* 3. Message */}
+              {/* Message */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[#68707C]">
-                  Message
-                </label>
+                <label className="text-xs font-semibold text-[#68707C]">Message <span className="text-red-500">*</span></label>
                 <textarea
                   required
                   rows={4}
@@ -198,18 +283,24 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
                 />
               </div>
 
-              {/* 4. Submit Request Button */}
+              {/* Response time notice */}
+              <div className="flex items-center gap-2 p-2.5 bg-[#F7F8FA] rounded-xl border border-[#EAEDF1]">
+                <Zap className="w-3.5 h-3.5 text-[#1677FF] flex-shrink-0" />
+                <span className="text-[10px] text-[#68707C]">Enterprise accounts typically receive responses within <strong className="text-[#171A1F]">15 minutes</strong>.</span>
+              </div>
+
               <button
                 type="submit"
                 className="w-full h-11 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] transition-all"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>Submit request</span>
+                <span>Submit Request</span>
               </button>
             </form>
           )}
         </div>
       </div>
+
     </div>
   );
 };

@@ -779,9 +779,9 @@ export function App() {
                   />
                 )}
 
-                {/* 4. MORE HUB (Company Profile, Contacts, Settings) */}
+                {/* 4. SETTINGS & PROFILE HUB */}
                 {activeTab === 'more' && (
-                  <MoreHubView
+                  <SettingsView
                     currentUser={currentUser}
                     onSignOut={() => setAppView('auth')}
                     onNavigateTab={(t) => {
