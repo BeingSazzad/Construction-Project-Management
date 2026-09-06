@@ -90,23 +90,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return (
       <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
         
-        {/* Portfolio Overview Hero Card */}
-        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F4F8FF] to-white p-4 sm:p-5 shadow-xs">
+        {/* Today's Operational Focus & Site Pulse */}
+        <div 
+          onClick={() => onSelectProject(snellProject)}
+          className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F4F8FF] to-white p-4 sm:p-5 shadow-xs hover:border-[#1677FF]/40 transition-all cursor-pointer group"
+        >
           <div className="flex items-start justify-between gap-3">
-            {/* Left: Portfolio Overview & Status */}
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
-                Portfolio Overview
-              </span>
-              <div className="flex items-center gap-2 mt-1.5">
-                <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight">
-                  On track
-                </h2>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#10A976] inline-block shadow-xs" />
+            {/* Left: Today's Focus & Live Headcount */}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
+                  Today's Focus
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#10A976]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#10A976] animate-pulse" />
+                  94 on site
+                </span>
               </div>
-              <p className="text-xs text-[#64748B] font-medium mt-1">
-                Your projects are performing well.
-              </p>
+
+              <div className="mt-1.5">
+                <h2 className="text-base sm:text-lg font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors tracking-tight truncate leading-snug">
+                  City Framing Walkthrough
+                </h2>
+                <p className="text-xs text-[#64748B] font-medium mt-0.5 truncate leading-snug">
+                  Snell Isle Residence · Inspector arriving 10:00 AM
+                </p>
+              </div>
             </div>
 
             {/* Right: Date & Weather */}
@@ -115,7 +124,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 {todayDateFormatted}
               </span>
               <button
-                onClick={() => setIsWeatherModalOpen(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsWeatherModalOpen(true);
+                }}
                 className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white border border-[#DCE8F8] text-xs font-medium transition-all cursor-pointer shadow-xs active:scale-95 group/w"
                 title="View weather radar & delay impact"
               >
