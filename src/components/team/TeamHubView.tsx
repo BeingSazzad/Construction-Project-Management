@@ -3,7 +3,7 @@ import {
   Users, Plus, Search, Shield, ChevronRight, Mail,
   Phone, Crown, X, CheckCircle2, MessageSquare, Building2,
   UserMinus, ShieldCheck, AlertTriangle, ChevronLeft, ChevronDown,
-  Briefcase, DollarSign, HardHat
+  Briefcase, DollarSign, HardHat, MapPin, Calendar
 } from 'lucide-react';
 import { UserRole } from '../../types';
 
@@ -11,6 +11,7 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
+  designation?: string;
   department: string;
   roleGroup: 'Owner' | 'PM' | 'Finance' | 'Field';
   email: string;
@@ -26,6 +27,7 @@ export interface TeamMember {
     phone: string;
   };
   location: string;
+  address?: string;
   hireDate: string;
 }
 
@@ -41,6 +43,7 @@ const INITIAL_TEAM: TeamMember[] = [
     id: 't-1',
     name: 'Avery Scott',
     role: 'Principal General Contractor & Owner',
+    designation: 'Managing Principal & Founder',
     department: 'Executive Management',
     roleGroup: 'Owner',
     email: 'avery@averymarsh.com',
@@ -52,12 +55,14 @@ const INITIAL_TEAM: TeamMember[] = [
     certifications: ['Class A General Contractor License', 'OSHA 30', 'LEED AP BD+C'],
     emergencyContact: { name: 'Elena Scott', relation: 'Spouse', phone: '+1 (720) 555-0199' },
     location: 'Tampa HQ',
+    address: '401 E Jackson St, Suite 2200, Tampa, FL 33602',
     hireDate: 'Jan 2018'
   },
   {
     id: 't-2',
     name: 'Sarah Johnson',
     role: 'Lead Project Manager',
+    designation: 'Lead Project Manager',
     department: 'Project Operations',
     roleGroup: 'PM',
     email: 'sarah.j@averymarsh.com',
@@ -69,12 +74,14 @@ const INITIAL_TEAM: TeamMember[] = [
     certifications: ['PMP® Certified', 'OSHA 30 Construction', 'Procore Certified: PM'],
     emergencyContact: { name: 'Mark Johnson', relation: 'Spouse', phone: '+1 (720) 555-0188' },
     location: 'Snell Isle Field Trailer',
+    address: '1840 Brightwaters Blvd NE, Tampa, FL 33704',
     hireDate: 'Mar 2021'
   },
   {
     id: 't-3',
     name: 'Marcus Chen',
     role: 'Chief Financial Controller',
+    designation: 'Chief Financial Controller',
     department: 'Finance & Accounting',
     roleGroup: 'Finance',
     email: 'marcus.c@averymarsh.com',
@@ -86,12 +93,14 @@ const INITIAL_TEAM: TeamMember[] = [
     certifications: ['CPA Certified', 'CCIFP (Construction Financial Pro)', 'AIA G702/G703 Specialist'],
     emergencyContact: { name: 'Vivian Chen', relation: 'Spouse', phone: '+1 (720) 555-0177' },
     location: 'Tampa HQ',
+    address: '401 E Jackson St, Suite 2200, Tampa, FL 33602',
     hireDate: 'Jun 2020'
   },
   {
     id: 't-4',
     name: 'John Smith',
     role: 'Lead Field Superintendent',
+    designation: 'Lead Field Superintendent',
     department: 'Field Operations',
     roleGroup: 'Field',
     email: 'john.s@averymarsh.com',
@@ -103,6 +112,7 @@ const INITIAL_TEAM: TeamMember[] = [
     certifications: ['OSHA 30', 'SWPPP Stormwater Inspector', 'First Aid / CPR'],
     emergencyContact: { name: 'Mary Smith', relation: 'Spouse', phone: '+1 (720) 555-0166' },
     location: 'Snell Isle Field Trailer',
+    address: '1840 Brightwaters Blvd NE, Tampa, FL 33704',
     hireDate: 'Aug 2019'
   }
 ];
@@ -234,7 +244,9 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
                   <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
                 )}
               </div>
-              <p className="text-xs text-[#1677FF] font-semibold truncate mt-0.5">{selectedMember.role}</p>
+              <p className="text-xs text-[#1677FF] font-semibold truncate mt-0.5">
+                {selectedMember.designation || selectedMember.role}
+              </p>
               <p className="text-[11px] text-[#64748B] font-medium truncate mt-0.5">{selectedMember.department} · {selectedMember.location}</p>
             </div>
           </div>
@@ -277,24 +289,55 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
         <div className="flex flex-col gap-1.5">
           <p className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] px-1">Contact Information</p>
           <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#F1F5F9]">
+            {/* Designation */}
             <div className="px-4 py-3 flex items-center justify-between text-xs">
-              <span className="text-[#64748B] font-medium">Direct Phone</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Briefcase className="w-4 h-4 text-[#1677FF] shrink-0" />
+                <span className="text-[#64748B] font-medium">Designation</span>
+              </div>
+              <span className="font-bold text-[#0F172A] truncate max-w-[200px]">
+                {selectedMember.designation || selectedMember.role}
+              </span>
+            </div>
+            <div className="px-4 py-3 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                <Phone className="w-4 h-4 text-[#64748B] shrink-0" />
+                <span className="text-[#64748B] font-medium">Direct Phone</span>
+              </div>
               <a href={`tel:${selectedMember.phone}`} className="font-bold text-[#1677FF] hover:underline">
                 {selectedMember.phone}
               </a>
             </div>
             <div className="px-4 py-3 flex items-center justify-between text-xs">
-              <span className="text-[#64748B] font-medium">Work Email</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Mail className="w-4 h-4 text-[#64748B] shrink-0" />
+                <span className="text-[#64748B] font-medium">Work Email</span>
+              </div>
               <a href={`mailto:${selectedMember.email}`} className="font-semibold text-[#0F172A] hover:text-[#1677FF] transition-colors truncate max-w-[200px]">
                 {selectedMember.email}
               </a>
             </div>
+            <div className="px-4 py-3 flex items-start justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 shrink-0 mt-0.5">
+                <MapPin className="w-4 h-4 text-[#64748B] shrink-0" />
+                <span className="text-[#64748B] font-medium">Office / Work Address</span>
+              </div>
+              <span className="font-semibold text-[#0F172A] text-right leading-snug">
+                {selectedMember.address || `${selectedMember.location}, Tampa, FL`}
+              </span>
+            </div>
             <div className="px-4 py-3 flex items-center justify-between text-xs">
-              <span className="text-[#64748B] font-medium">Current Station</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Building2 className="w-4 h-4 text-[#64748B] shrink-0" />
+                <span className="text-[#64748B] font-medium">Current Station</span>
+              </div>
               <span className="font-semibold text-[#0F172A]">{selectedMember.location}</span>
             </div>
             <div className="px-4 py-3 flex items-center justify-between text-xs">
-              <span className="text-[#64748B] font-medium">Joined Lattice</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Calendar className="w-4 h-4 text-[#64748B] shrink-0" />
+                <span className="text-[#64748B] font-medium">Joined Lattice</span>
+              </div>
               <span className="font-semibold text-[#0F172A]">{selectedMember.hireDate}</span>
             </div>
           </div>
@@ -505,7 +548,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search team member by name or role..."
-          className="w-full h-10 bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl pl-9 pr-8 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none transition-colors shadow-xs font-medium"
+          className="w-full h-12 min-h-[48px] bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl pl-9 pr-8 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none transition-colors shadow-xs font-medium"
         />
         {search && (
           <button
@@ -602,7 +645,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
                   value={inviteName}
                   onChange={e => setInviteName(e.target.value)}
                   placeholder="e.g. David Vance"
-                  className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF]"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF]"
                   required
                 />
               </div>
@@ -614,7 +657,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
                   value={inviteEmail}
                   onChange={e => setInviteEmail(e.target.value)}
                   placeholder="e.g. david.v@averymarsh.com"
-                  className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF]"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF]"
                   required
                 />
               </div>
@@ -626,7 +669,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
                   value={invitePhone}
                   onChange={e => setInvitePhone(e.target.value)}
                   placeholder="+1 (720) 555-0199"
-                  className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF]"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF]"
                 />
               </div>
 
@@ -652,7 +695,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
                         setInviteDepartment('Executive Management');
                       }
                     }}
-                    className="w-full h-10 bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl pl-3.5 pr-9 text-xs font-semibold text-[#0F172A] outline-none appearance-none cursor-pointer transition-colors shadow-2xs"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl pl-3.5 pr-9 text-xs font-semibold text-[#0F172A] outline-none appearance-none cursor-pointer transition-colors shadow-2xs"
                   >
                     <option value="PM">Project Manager (PM)</option>
                     <option value="Field">Site Superintendent (Field)</option>

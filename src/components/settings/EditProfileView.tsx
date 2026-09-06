@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User } from '../../types';
 import { 
   ChevronLeft, User as UserIcon, Mail, Briefcase, 
-  Camera, Check
+  Camera, Check, ShieldCheck
 } from 'lucide-react';
 
 interface EditProfileViewProps {
@@ -16,17 +16,35 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
   onBack,
   onSave
 }) => {
-  const [name, setName] = useState(currentUser.name || 'Alex Chen');
-  const [roleTitle, setRoleTitle] = useState(currentUser.roleTitle || 'Company Owner & Principal');
-  const [email, setEmail] = useState(currentUser.email || 'alex.chen@averymarsh.com');
+  const [name, setName] = useState(currentUser.name || 'Avery Scott');
+  const [designation, setDesignation] = useState(currentUser.designation || currentUser.roleTitle || 'Managing Principal & Founder');
+  const [email, setEmail] = useState(currentUser.email || 'avery.scott@averymarsh.com');
   const [phone, setPhone] = useState(currentUser.phone || '(555) 234-5678');
   const [savedToast, setSavedToast] = useState(false);
+
+  const getRoleInfo = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return { title: 'Company Owner & Admin', badge: 'Full Workspace Access' };
+      case 'pm':
+        return { title: 'Lead Project Manager', badge: 'Project Controls & Execution' };
+      case 'finance':
+        return { title: 'Finance Controller', badge: 'Draws & Accounting' };
+      case 'field':
+        return { title: 'Lead Field Superintendent', badge: 'Daily Logs & Site Safety' };
+      default:
+        return { title: 'Team Member', badge: 'Standard Access' };
+    }
+  };
+
+  const roleInfo = getRoleInfo(currentUser.role);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     onSave({
       name,
-      roleTitle,
+      designation,
+      roleTitle: designation,
       email,
       phone
     });
@@ -103,7 +121,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -115,7 +133,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -127,19 +145,44 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(555) 234-5678"
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
-          {/* Role / Title */}
+          {/* Designation Input Field */}
           <div>
-            <label className="block text-[12px] font-semibold text-[#68707C] mb-1">Role / Position</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-[12px] font-semibold text-[#171A1F]">Designation</label>
+              <span className="text-[10px] text-[#68707C] font-medium">Business Title</span>
+            </div>
             <input
               type="text"
-              value={roleTitle}
-              onChange={(e) => setRoleTitle(e.target.value)}
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
+              required
+              placeholder="e.g. Managing Principal & Founder"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
+            <p className="text-[11px] text-[#68707C] mt-1">
+              Official job designation displayed across project workspaces, contracts, and team reports.
+            </p>
+          </div>
+
+          {/* System Access Role (Permissions separation) */}
+          <div className="p-3.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-1.5 mt-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-[#68707C]">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#1677FF]" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#171A1F]">System Role</span>
+              </div>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF3FF] border border-[#1677FF]/30 text-[#1677FF]">
+                {roleInfo.badge}
+              </span>
+            </div>
+            <p className="text-xs font-bold text-[#171A1F]">{roleInfo.title}</p>
+            <p className="text-[11px] text-[#68707C]">
+              Access privileges are assigned at the organization level to govern approvals and permissions.
+            </p>
           </div>
         </div>
 

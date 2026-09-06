@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { User, Project } from '../../types';
 import { 
-  Bell, ChevronLeft, Sparkles, Menu, MessageSquare, MoreVertical, Edit3, Trash2 
+  Bell, ChevronLeft, Menu, MessageSquare, MoreVertical, Edit3, Trash2 
 } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
 
@@ -16,7 +16,7 @@ interface HeaderProps {
   onBack?: () => void;
   onOpenNotifications: () => void;
   onOpenMessages?: () => void;
-  onOpenLatti: () => void;
+  onOpenLatti?: () => void;
   onOpenSettings: () => void;
   onOpenDrawer?: () => void;
   onNavigateTab?: (tab: string) => void;
@@ -227,15 +227,6 @@ export const Header: React.FC<HeaderProps> = ({
                 {unreadNotifsCount > 0 && (
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1677FF]" />
                 )}
-              </button>
-
-              <button
-                onClick={onOpenLatti}
-                className="w-9 h-9 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95 relative"
-                title="Latti AI Assistant"
-              >
-                <Sparkles className="w-4 h-4 text-white" />
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#1677FF]" />
               </button>
             </div>
           </div>

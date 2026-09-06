@@ -6,6 +6,7 @@ export interface User {
   email: string;
   role: UserRole;
   roleTitle: string;
+  designation?: string;
   avatar: string;
   company: string;
   phone?: string;
@@ -256,9 +257,9 @@ export interface DocumentItem {
   id: string;
   projectId: string;
   title: string;
-  category: 'Plans' | 'Drawings' | 'PDFs' | 'Contracts' | 'Reports' | 'Site Logistics';
+  category: 'Plans' | 'Drawings' | 'PDFs' | 'Contracts' | 'Reports' | 'Site Logistics' | 'Permits' | 'Selections' | 'Receipts & Invoices' | string;
   fileSize: string;
-  fileType: 'PDF' | 'DWG' | 'DOCX' | 'XLSX';
+  fileType: 'PDF' | 'DWG' | 'DOCX' | 'XLSX' | string;
   version: string;
   uploadedBy: string;
   uploadDate: string;

@@ -12,6 +12,7 @@ export const CURRENT_USERS: Record<string, User> = {
     email: 'avery.scott@averymarsh.com',
     role: 'admin',
     roleTitle: 'Managing Principal & Founder',
+    designation: 'Managing Principal & Founder',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     company: 'Avery & Marsh Construction',
     phone: '+1 (555) 234-5678',
@@ -23,6 +24,7 @@ export const CURRENT_USERS: Record<string, User> = {
     email: 'sarah.j@averymarsh.com',
     role: 'pm',
     roleTitle: 'Senior Project Manager',
+    designation: 'Senior Project Manager',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
     company: 'Avery & Marsh Construction',
     phone: '+1 (555) 345-6789',
@@ -34,6 +36,7 @@ export const CURRENT_USERS: Record<string, User> = {
     email: 'm.chang@averymarsh.com',
     role: 'finance',
     roleTitle: 'Director of Project Finance',
+    designation: 'Director of Project Finance',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     company: 'Avery & Marsh Construction',
     phone: '+1 (555) 456-7890',
@@ -45,6 +48,7 @@ export const CURRENT_USERS: Record<string, User> = {
     email: 'john.smith@averymarsh.com',
     role: 'field',
     roleTitle: 'Lead Field Superintendent',
+    designation: 'Lead Field Superintendent',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     company: 'Avery & Marsh Construction',
     phone: '+1 (555) 567-8901',
@@ -87,8 +91,8 @@ export const MOCK_PROJECTS: Project[] = [
     },
     stages: [
       { id: 'stg-1', name: 'Design', status: 'Complete' },
-      { id: 'stg-2', name: 'Permitting', status: 'Complete' },
-      { id: 'stg-3', name: 'Preconstruction', status: 'Complete' },
+      { id: 'stg-2', name: 'Permits', status: 'Complete' },
+      { id: 'stg-3', name: 'Pre-Con', status: 'Complete' },
       { id: 'stg-4', name: 'Construction', status: 'In Progress' },
       { id: 'stg-5', name: 'Closeout', status: 'Upcoming' }
     ],
@@ -1705,6 +1709,54 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
     version: 'Final Signed',
     uploadedBy: 'Alex Chen',
     uploadDate: 'May 02, 2025',
+    url: '#'
+  },
+  {
+    id: 'doc-7',
+    projectId: 'proj-1',
+    title: 'City Building Permit #BLD-2026-8941 & Approved Set',
+    category: 'Permits',
+    fileSize: '6.2 MB',
+    fileType: 'PDF',
+    version: 'Approved',
+    uploadedBy: 'City Building Dept',
+    uploadDate: 'May 05, 2025',
+    url: '#'
+  },
+  {
+    id: 'doc-8',
+    projectId: 'proj-1',
+    title: 'Interior Millwork, Tile & Plumbing Selections Sheet',
+    category: 'Selections',
+    fileSize: '4.5 MB',
+    fileType: 'PDF',
+    version: 'Rev C',
+    uploadedBy: 'Arthur Vance (Client)',
+    uploadDate: 'May 12, 2025',
+    url: '#'
+  },
+  {
+    id: 'doc-9',
+    projectId: 'proj-1',
+    title: 'Ready-Mix Concrete Batch Invoice #INV-8832',
+    category: 'Receipts & Invoices',
+    fileSize: '840 KB',
+    fileType: 'PDF',
+    version: 'Paid',
+    uploadedBy: 'CEMEX Materials',
+    uploadDate: 'May 16, 2025',
+    url: '#'
+  },
+  {
+    id: 'doc-10',
+    projectId: 'proj-1',
+    title: 'Structural Steel Column Mill Test & Delivery Receipt',
+    category: 'Receipts & Invoices',
+    fileSize: '1.2 MB',
+    fileType: 'PDF',
+    version: 'Verified',
+    uploadedBy: 'Steel Masters LLC',
+    uploadDate: 'May 18, 2025',
     url: '#'
   }
 ];

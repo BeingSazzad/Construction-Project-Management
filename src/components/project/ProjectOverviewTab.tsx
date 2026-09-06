@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project, Task, SitePhoto, DocumentItem, PunchItem, ChangeOrder } from '../../types';
 import { 
   Calendar, Check, ChevronRight, Users, FileText, CloudRain, 
-  Landmark, Camera, CheckSquare, MapPin, Clock, User 
+  Landmark, Camera, CheckSquare, MapPin, User 
 } from 'lucide-react';
 import { CreateDailyLogModal } from '../modals/CreateDailyLogModal';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
-import { MilestoneDetailsModal, MilestoneItem } from '../modals/MilestoneDetailsModal';
 import { EmployeeProfileModal, EmployeeProfileData } from '../modals/EmployeeProfileModal';
 import { ProjectStageModal } from '../modals/ProjectStageModal';
 
@@ -24,6 +23,7 @@ interface ProjectOverviewTabProps {
   onCreateTask?: () => void;
   onUploadPhoto?: () => void;
   onAddDailyLog?: (log?: any) => void;
+  onOpenEditProject?: () => void;
 }
 
 export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
@@ -36,10 +36,10 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   onCreateTask,
   onUploadPhoto,
   onAddDailyLog,
+  onOpenEditProject,
 }) => {
   const [isCreateDailyLogOpen, setIsCreateDailyLogOpen] = useState(false);
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
-  const [selectedMilestone, setSelectedMilestone] = useState<MilestoneItem | null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<EmployeeProfileData | null>(null);
   const [isStageModalOpen, setIsStageModalOpen] = useState(false);
   const [selectedStageModalId, setSelectedStageModalId] = useState('stg-4');
@@ -51,6 +51,12 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
     { id: 'stg-5', name: 'Closeout', status: 'Upcoming' as const }
   ]);
 
+  useEffect(() => {
+    if (project.stages && project.stages.length > 0) {
+      setProjectStages(project.stages);
+    }
+  }, [project.stages]);
+
   const handleTabChange = (tabId: string) => {
     if (onSelectTab) onSelectTab(tabId);
     else if (onNavigate) onNavigate(tabId);
@@ -60,6 +66,10 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
     setSelectedStageModalId(stageId);
     setIsStageModalOpen(true);
   };
+
+  const currentStageIndex = projectStages.findIndex(s => s.status === 'In Progress');
+  const activeStage = currentStageIndex !== -1 ? projectStages[currentStageIndex] : projectStages[3];
+  const stageNumber = currentStageIndex !== -1 ? currentStageIndex + 1 : 4;
 
   const fallbackCover = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80";
 
@@ -76,6 +86,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             className="w-full h-full object-cover"
             loading="lazy"
           />
+
           {/* Floating "View Photos >" Button */}
           <button
             onClick={() => handleTabChange('photos')}
@@ -87,7 +98,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           </button>
         </div>
 
-        {/* Progress & Current Phase Info */}
+        {/* Progress & Current Stage Info */}
         <div className="p-3.5 sm:p-4 flex items-center justify-between gap-4">
           {/* Left: Progress */}
           <div className="flex-1 min-w-0">
@@ -108,17 +119,18 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             </div>
           </div>
 
-          {/* Right: Construction Phase */}
+          {/* Right: Current Stage */}
           <div 
-            onClick={() => handleTabChange('schedule')}
-            className="flex items-center gap-1 text-right shrink-0 cursor-pointer group pl-2"
+            onClick={() => handleStageClick(activeStage?.id || 'stg-4')}
+            className="flex items-center gap-1 text-right shrink-0 cursor-pointer group pl-2 py-1 px-2 rounded-xl hover:bg-[#F8FAFC] transition-colors border border-transparent hover:border-[#E2E8F0]"
+            title="Click to view stage details"
           >
             <div>
-              <span className="text-xs font-bold text-[#0F172A] block group-hover:text-[#1677FF] transition-colors leading-tight">
-                Construction Phase
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+                Stage {stageNumber} of {projectStages.length}
               </span>
-              <span className="text-xs text-[#64748B] block mt-0.5 font-normal leading-tight">
-                Structural Framing
+              <span className="text-xs sm:text-sm font-bold text-[#0F172A] block group-hover:text-[#1677FF] transition-colors leading-tight mt-0.5">
+                {activeStage?.name || 'Construction'}
               </span>
             </div>
             <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors shrink-0" />
@@ -126,320 +138,176 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ── 2. Project Specifications (Lattice Level 3 Global Card) ── */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card">
-        <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-[#F1F5F9]">
+      {/* ── 2. Project Specifications (Vertical Stacked Card strictly following Lattice System) ── */}
+      <div 
+        onClick={onOpenEditProject}
+        className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3.5 cursor-pointer hover:border-[#1677FF]/40 transition-all group"
+      >
+        {/* Header with Title and Chevron */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF]" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">
+            <FileText className="w-4 h-4 text-[#1677FF]" />
+            <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] tracking-tight group-hover:text-[#1677FF] transition-colors">
               Project Specifications
             </h3>
           </div>
-          <span className="text-[10px] font-mono text-[#64748B] bg-[#F8FAFC] px-2 py-0.5 rounded-md border border-[#E2E8F0]">
-            {project.code || 'PRJ-SPEC'}
-          </span>
+          <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors" />
         </div>
 
-        {/* 2-Column Grid strictly following 4px grid and Lattice tokens */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        {/* Vertical Stacked Rows ("lamba kore") */}
+        <div className="flex flex-col gap-3.5 pt-1">
           {/* 1. Address */}
-          <div className="flex items-start gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
               <MapPin className="w-4 h-4 stroke-[2]" />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+              <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
                 Address
               </span>
-              <p className="text-xs font-bold text-[#0F172A] leading-snug line-clamp-2 mt-0.5">
-                {project.location || '400 Lakeview Blvd'}
-              </p>
-              <p className="text-[11px] text-[#64748B] truncate leading-tight mt-0.5">
-                {project.cityState || 'Orlando, FL'}
+              <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug">
+                {project.location || '1840 Brightwaters Blvd NE'}{project.cityState ? `, ${project.cityState}` : ''}
               </p>
             </div>
           </div>
 
-          {/* 2. Lead PM & GC Owner */}
-          <div className="flex items-start gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+          {/* 2. Client / Owner */}
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
               <User className="w-4 h-4 stroke-[2]" />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
-                Lead PM
+              <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
+                Client / Owner
               </span>
-              <p className="text-xs font-bold text-[#0F172A] leading-tight truncate mt-0.5">
-                {project.projectManager?.name || 'Elena Rossi'}
-              </p>
-              <p className="text-[11px] text-[#64748B] truncate leading-tight mt-0.5">
-                Client: {project.clientName || 'Texas Commercial LLC'}
+              <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-tight">
+                {project.clientName || 'Arthur & Evelyn Vance'}
               </p>
             </div>
           </div>
 
-          {/* 3. Start Date */}
-          <div className="flex items-start gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+          {/* 3. Lead PM */}
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+              <Users className="w-4 h-4 stroke-[2]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
+                Lead PM
+              </span>
+              <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-tight">
+                {project.projectManager?.name || 'Sarah Johnson'}
+              </p>
+            </div>
+          </div>
+
+          {/* 4. Target Date */}
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
               <Calendar className="w-4 h-4 stroke-[2]" />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
-                Start Date
+              <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
+                Target Date
               </span>
-              <p className="text-xs font-bold text-[#0F172A] leading-tight font-mono mt-0.5">
-                {project.startDate || '2024-11-01'}
-              </p>
-            </div>
-          </div>
-
-          {/* 4. Target End Date */}
-          <div className="flex items-start gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
-              <Clock className="w-4 h-4 stroke-[2]" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
-                Target End
-              </span>
-              <p className="text-xs font-bold text-[#0F172A] leading-tight font-mono mt-0.5">
-                {project.targetEndDate || '2026-05-30'}
+              <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-tight">
+                {project.targetEndDate 
+                  ? new Date(project.targetEndDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                  : 'Aug 30, 2025'}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── 3. 4-Column Metric Suite Card ── */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3 sm:p-3.5 shadow-card">
-        <div className="grid grid-cols-4 divide-x divide-[#F1F5F9]">
+      {/* ── 3. Project Scope & Notes Card ── */}
+      <div 
+        onClick={onOpenEditProject}
+        className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-2 cursor-pointer hover:border-[#1677FF]/40 transition-all group"
+      >
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <FileText className="w-4 h-4 stroke-[2]" />
+          </div>
+          <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] tracking-tight group-hover:text-[#1677FF] transition-colors">
+            Project Scope & Notes
+          </h3>
+        </div>
+        <p className="text-xs text-[#475569] leading-relaxed font-normal mt-0.5">
+          {project.description || 'Luxury coastal modern waterfront residence featuring post-tension concrete foundation, impact glass curtain walls, and high-performance building envelope.'}
+        </p>
+      </div>
+
+      {/* ── 4. 3-Column Metric Suite Card (Clean, Spacious, Non-redundant) ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card">
+        <div className="grid grid-cols-3 divide-x divide-[#F1F5F9]">
           {/* Metric 1: Budget */}
           <div 
             onClick={() => handleTabChange('budget')}
-            className="flex flex-col items-start pr-2 sm:pr-3 cursor-pointer group"
+            className="flex flex-col items-start pr-3 cursor-pointer group"
           >
             <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
               <Landmark className="w-4 h-4 stroke-[2]" />
             </div>
-            <span className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
+            <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
               ${(project.budget?.total ? project.budget.total / 1000000 : 4.65).toFixed(2)}M
             </span>
-            <span className="text-[10px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
+            <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
               Total Budget
             </span>
           </div>
 
-          {/* Metric 2: Target Date */}
-          <div 
-            onClick={() => handleTabChange('schedule')}
-            className="flex flex-col items-start px-2 sm:px-3 cursor-pointer group"
-          >
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
-              <Calendar className="w-4 h-4 stroke-[2]" />
-            </div>
-            <span className="text-xs sm:text-xs font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full tracking-tight">
-              {project.targetEndDate
-                ? new Date(project.targetEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                : 'TBD'}
-            </span>
-            <span className="text-[10px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
-              Target Date
-            </span>
-          </div>
-
-          {/* Metric 3: Active Tasks */}
+          {/* Metric 2: Active Tasks */}
           <div 
             onClick={() => handleTabChange('tasks')}
-            className="flex flex-col items-start px-2 sm:px-3 cursor-pointer group"
+            className="flex flex-col items-start px-3 cursor-pointer group"
           >
             <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
               <CheckSquare className="w-4 h-4 stroke-[2]" />
             </div>
-            <span className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
+            <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
               {tasks.filter(t => t.projectId === project.id && t.status !== 'Completed').length || 10}
             </span>
-            <span className="text-[10px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
+            <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
               Active Tasks
             </span>
           </div>
 
-          {/* Metric 4: Documents */}
+          {/* Metric 3: Documents */}
           <div 
             onClick={() => handleTabChange('documents')}
-            className="flex flex-col items-start pl-2 sm:pl-3 cursor-pointer group"
+            className="flex flex-col items-start pl-3 cursor-pointer group"
           >
             <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
               <FileText className="w-4 h-4 stroke-[2]" />
             </div>
-            <span className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
+            <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
               {documents.length || 6}
             </span>
-            <span className="text-[10px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
+            <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
               Documents
             </span>
           </div>
         </div>
       </div>
 
-      {/* ── 3. Weather / Delay Warning Banner ── */}
+      {/* ── 5. Weather Warning (Clean Neutral Lattice Strip - Zero Yellow Bloat) ── */}
       <div 
         onClick={() => setIsWeatherModalOpen(true)}
-        className="bg-[#FFF7E6] border border-[#F59E0B]/25 rounded-2xl p-3.5 flex items-center justify-between gap-3 cursor-pointer hover:border-[#F59E0B]/50 transition-all shadow-card group"
+        className="bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all group shadow-card"
       >
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-8 h-8 rounded-full bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shrink-0">
-            <CloudRain className="w-4 h-4 text-[#D97706]" />
-          </div>
-          <div className="min-w-0">
-            <h4 className="text-xs font-bold text-[#0F172A] truncate">
-              Heavy rain expected Thursday
-            </h4>
-            <p className="text-xs text-[#B45309] truncate mt-0.5 font-medium">
-              May affect scheduled concrete pour.
-            </p>
-          </div>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse shrink-0" />
+          <p className="text-xs text-[#0F172A] truncate">
+            <span className="font-bold">Weather Risk:</span>{' '}
+            <span className="text-[#64748B]">Rain expected Thursday (concrete pour)</span>
+          </p>
         </div>
-        <div className="flex items-center gap-0.5 text-xs font-semibold text-[#D97706] shrink-0">
-          <span>View Details</span>
+        <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
+          <span>Details</span>
           <ChevronRight className="w-3.5 h-3.5" />
         </div>
       </div>
-
-      {/* ── 4. Project Stages (Horizontal Stepper) ── */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold text-[#0F172A] tracking-tight">
-            Project Stages
-          </h3>
-          <button 
-            onClick={() => handleTabChange('schedule')}
-            className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
-          >
-            <span>View Schedule</span>
-            <ChevronRight className="w-3 h-3" />
-          </button>
-        </div>
-
-        {/* Horizontal Stepper */}
-        <div className="relative flex items-start justify-between pt-1">
-          {/* Background Connecting Line */}
-          <div className="absolute top-[15px] left-6 right-6 h-[2px] bg-[#E2E8F0] z-0" />
-          
-          {/* Active Fill Line - Lattice Blue up to current stage */}
-          <div 
-            className="absolute top-[15px] left-6 h-[2px] bg-[#1677FF] z-0 transition-all duration-500"
-            style={{ 
-              width: `${Math.max(12, Math.min(92, ((projectStages.findIndex(s => s.status === 'In Progress') !== -1 ? projectStages.findIndex(s => s.status === 'In Progress') : 4) / 4) * 88))}%` 
-            }}
-          />
-
-          {projectStages.map((stage) => {
-            const isComplete = stage.status === 'Complete';
-            const isInProgress = stage.status === 'In Progress';
-
-            return (
-              <div 
-                key={stage.id} 
-                onClick={() => handleStageClick(stage.id)}
-                className="flex flex-col items-center text-center relative z-10 flex-1 min-w-0 px-0.5 cursor-pointer group active:scale-95 transition-transform"
-                title={`View ${stage.name} Phase Details`}
-              >
-                {/* Circle Indicator */}
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all shrink-0 ${
-                  isComplete
-                    ? 'bg-[#1677FF] text-white shadow-xs'
-                    : isInProgress
-                    ? 'border-2 border-[#1677FF] bg-white text-[#1677FF] shadow-xs ring-2 ring-[#1677FF]/20'
-                    : 'border-2 border-[#CBD5E1] bg-[#F8FAFC]'
-                }`}>
-                  {isComplete && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
-                  {isInProgress && <div className="w-2 h-2 rounded-full bg-[#1677FF] animate-pulse" />}
-                </div>
-
-                {/* Stage Name */}
-                <span className="text-xs font-bold text-[#0F172A] mt-2 leading-tight tracking-tight text-center">
-                  {stage.name}
-                </span>
-
-                {/* Stage Status */}
-                <span className={`text-[10px] mt-0.5 leading-tight ${
-                  isInProgress
-                    ? 'font-bold text-[#1677FF]'
-                    : isComplete
-                    ? 'text-[#64748B] font-medium'
-                    : 'text-[#94A3B8] font-normal'
-                }`}>
-                  {stage.status}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── 5. Dual Milestone & Site Weather Cards (2 Columns) ── */}
-      <div className="grid grid-cols-2 gap-2.5">
-        {/* Upcoming Milestone */}
-        <div 
-          onClick={() => setSelectedMilestone({
-            id: `${project.id}-ms-3`,
-            code: 'MS-03',
-            name: 'Framing & Structural Inspection',
-            subcontractor: 'Apex Framing Specialists',
-            dates: 'Sep 18, 2026 · 10:00 AM',
-            duration: '1 day',
-            progress: 40,
-            status: 'In Progress',
-            budgetAllocation: 380000,
-            inspectionPassed: false,
-            tasksCount: { completed: 2, total: 5 }
-          })}
-          className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer group min-h-[104px]"
-        >
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center">
-                <Calendar className="w-3.5 h-3.5" />
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#1677FF]" />
-            </div>
-            <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mt-2">
-              Upcoming Milestone
-            </span>
-            <h4 className="text-xs font-bold text-[#0F172A] mt-0.5 truncate group-hover:text-[#1677FF] transition-colors">
-              Framing & Structural Inspection
-            </h4>
-          </div>
-          <p className="text-xs text-[#64748B] font-medium mt-1">
-            Sep 18, 2026 • 10:00 AM
-          </p>
-        </div>
-
-        {/* Site Weather */}
-        <div 
-          onClick={() => setIsWeatherModalOpen(true)}
-          className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#F59E0B]/50 transition-all cursor-pointer group min-h-[104px]"
-        >
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="w-6 h-6 rounded-md bg-[#FEF3C7] text-[#D97706] flex items-center justify-center">
-                <CloudRain className="w-3.5 h-3.5" />
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#D97706]" />
-            </div>
-            <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block mt-2">
-              Site Weather
-            </span>
-            <h4 className="text-xs font-bold text-[#0F172A] mt-0.5 truncate">
-              {project.weather?.locationName || project.cityState || 'Tampa, FL'} • {project.weather?.temperature || '82°F'}
-            </h4>
-          </div>
-          <p className="text-[10px] text-[#64748B] font-medium mt-1 line-clamp-2 leading-tight">
-            Sunny • Rain expected Thursday may affect concrete pour.
-          </p>
-        </div>
-      </div>
-
       {/* ── 6. Dedicated Assigned Team (Horizontal Headshots Only) ── */}
       <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card flex flex-col gap-2.5">
         <div className="flex items-center justify-between">
@@ -450,8 +318,8 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             <h3 className="text-xs font-bold text-[#0F172A] tracking-tight">
               Assigned Team
             </h3>
-            <span className="text-[10px] font-semibold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
-              4 On-Site
+            <span className="text-[10px] font-semibold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-full">
+              4 Members
             </span>
           </div>
 
@@ -471,49 +339,53 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               id: 'emp-1',
               name: project.projectManager?.name || 'Sarah Johnson',
               role: 'Lead Project Manager',
+              designation: 'Lead Project Manager',
               company: 'Lattice Construction',
               phone: '+1 (555) 345-6789',
               email: 'sarah.j@averymarsh.com',
               avatar: project.projectManager?.avatar || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-              isOnSite: true,
               type: 'gc' as const,
-              projectName: project.name
+              projectName: project.name,
+              address: '1840 Brightwaters Blvd NE, Tampa, FL 33704'
             },
             {
               id: 'emp-2',
               name: 'John Smith',
               role: 'Lead Field Superintendent',
+              designation: 'Lead Field Superintendent',
               company: 'Lattice Construction',
               phone: '+1 (555) 567-8901',
               email: 'john.s@averymarsh.com',
               avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-              isOnSite: true,
               type: 'gc' as const,
-              projectName: project.name
+              projectName: project.name,
+              address: '1840 Brightwaters Blvd NE, Tampa, FL 33704'
             },
             {
               id: 'emp-3',
               name: 'Emily Brown',
               role: 'Site Safety Officer',
+              designation: 'Site Safety Officer',
               company: 'Lattice Construction',
               phone: '+1 (555) 789-0123',
               email: 'emily.b@averymarsh.com',
               avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
-              isOnSite: false,
               type: 'gc' as const,
-              projectName: project.name
+              projectName: project.name,
+              address: '401 E Jackson St, Tampa, FL 33602'
             },
             {
               id: 'emp-5',
               name: 'Carlos Ortiz',
               role: 'Earthwork Site Foreman',
+              designation: 'Earthwork Site Foreman',
               company: 'Earthworks Pro LLC',
               phone: '+1 (555) 234-5678',
               email: 'carlos@earthworkspro.com',
               avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-              isOnSite: true,
               type: 'trade' as const,
-              projectName: project.name
+              projectName: project.name,
+              address: '4102 W Hillsborough Ave, Tampa, FL 33614'
             }
           ].map((member) => (
             <button
@@ -522,24 +394,11 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer focus:outline-none"
               title={`${member.name} (${member.role}) - Click for profile`}
             >
-              <div className="relative">
-                <img 
-                  src={member.avatar} 
-                  alt={member.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-xs ring-1 ring-[#E2E8F0] group-hover:ring-2 group-hover:ring-[#1677FF] group-hover:scale-105 transition-all"
-                />
-                {member.isOnSite ? (
-                  <span 
-                    className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#10B981] border-2 border-white shadow-xs" 
-                    title="Currently On Site" 
-                  />
-                ) : (
-                  <span 
-                    className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#94A3B8] border-2 border-white shadow-xs" 
-                    title="Off-Site" 
-                  />
-                )}
-              </div>
+              <img 
+                src={member.avatar} 
+                alt={member.name}
+                className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-xs ring-1 ring-[#E2E8F0] group-hover:ring-2 group-hover:ring-[#1677FF] group-hover:scale-105 transition-all"
+              />
               <span className="text-[11px] font-semibold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate max-w-[66px] text-center leading-tight">
                 {member.name.split(' ')[0]}
               </span>
@@ -653,41 +512,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ── 7. Bottom Quick Action Bar (3 Balanced Actions) ── */}
-      <div className="grid grid-cols-3 gap-2 pt-1 pb-6">
-        {/* 1. Add Task */}
-        <button
-          onClick={onCreateTask || (() => handleTabChange('tasks'))}
-          className="h-11 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 hover:bg-[#F8FAFC] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-card hover:shadow-card-hover active:scale-[0.98] cursor-pointer group"
-        >
-          <div className="w-6 h-6 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <CheckSquare className="w-3.5 h-3.5" />
-          </div>
-          <span className="truncate">Add Task</span>
-        </button>
 
-        {/* 2. Add Update */}
-        <button
-          onClick={() => setIsCreateDailyLogOpen(true)}
-          className="h-11 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#10A976]/40 hover:bg-[#F8FAFC] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-card hover:shadow-card-hover active:scale-[0.98] cursor-pointer group"
-        >
-          <div className="w-6 h-6 rounded-lg bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <FileText className="w-3.5 h-3.5" />
-          </div>
-          <span className="truncate">Add Update</span>
-        </button>
-
-        {/* 3. Add Photo */}
-        <button
-          onClick={onUploadPhoto || (() => handleTabChange('photos'))}
-          className="h-11 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#6366F1]/40 hover:bg-[#F8FAFC] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-card hover:shadow-card-hover active:scale-[0.98] cursor-pointer group"
-        >
-          <div className="w-6 h-6 rounded-lg bg-[#EEF2FF] text-[#6366F1] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <Camera className="w-3.5 h-3.5" />
-          </div>
-          <span className="truncate">Add Photo</span>
-        </button>
-      </div>
 
       {/* CREATE DAILY LOG / UPDATE MODAL */}
       <CreateDailyLogModal
@@ -710,18 +535,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         onOpenDailyLog={() => setIsCreateDailyLogOpen(true)}
       />
 
-      {/* MILESTONE DETAILS MODAL */}
-      {selectedMilestone && (
-        <MilestoneDetailsModal
-          milestone={selectedMilestone}
-          projectName={project.name}
-          projectTasks={tasks}
-          onClose={() => setSelectedMilestone(null)}
-          onUpdateStatus={(mId, status) => {
-            setSelectedMilestone(prev => prev ? ({ ...prev, status }) : null);
-          }}
-        />
-      )}
+
 
       {/* EMPLOYEE PROFILE DETAIL MODAL */}
       <EmployeeProfileModal

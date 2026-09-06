@@ -3,7 +3,7 @@ import { UserRole, Task, PunchItem } from '../../types';
 import { 
   Send, Calendar, CloudRain, 
   ArrowRight, Bot, RefreshCw,
-  BarChart2, PieChart, Paperclip
+  BarChart2, PieChart, Paperclip, ChevronRight
 } from 'lucide-react';
 
 interface LattiAssistantProps {
@@ -74,10 +74,11 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
   }, [chatHistory, isThinking]);
 
   const QUICK_PROMPTS = [
+    { text: "Draft client project update", icon: Send },
     { text: "Summarize site activity today", icon: BarChart2 },
+    { text: "Any weather risks this week?", icon: CloudRain },
     { text: "Show budget variances", icon: PieChart },
-    { text: "What are upcoming inspections?", icon: Calendar },
-    { text: "Any weather risks this week?", icon: CloudRain }
+    { text: "What are upcoming inspections?", icon: Calendar }
   ];
 
   const handleSend = (queryText?: string) => {
@@ -102,7 +103,11 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
 
       const lower = q.toLowerCase();
 
-      if (lower.includes('budget') || lower.includes('cost') || lower.includes('variance') || lower.includes('money')) {
+      if (lower.includes('draft') || lower.includes('message') || lower.includes('client update') || lower.includes('email') || lower.includes('update draft')) {
+        replyText = `Here is a drafted project update ready for the client:\n\n"Dear Arthur & Evelyn,\n\nHere is your weekly progress briefing for 1840 Brightwaters Blvd:\n• Stage 4 (Structural Framing & Slabs) is 68% complete.\n• Pre-pour framing inspection is scheduled with the City for tomorrow at 10:00 AM.\n• Weather coordination: With rain expected Thursday afternoon, our team has staged crane lifts for Friday to ensure uninterrupted progress.\n• Total budget and critical-path timeline remain fully on schedule for Aug 30, 2025 delivery.\n\nWarm regards,\nSarah Johnson, Lead PM\nLattice Construction"`;
+        badge = { label: 'Draft Ready', value: 'Client Update', variant: 'success' };
+        actionBtn = { label: 'Post to Daily Logs', targetTab: 'daily-logs' };
+      } else if (lower.includes('budget') || lower.includes('cost') || lower.includes('variance') || lower.includes('money')) {
         replyText = "Portfolio committed spend is $16.8M against $34.85M total. Snell Isle Residence has a $14,200 cost overrun in Division 03 (Concrete) due to soil bearing amendments. All other trade divisions remain within contingency limits.";
         badge = { label: 'Variance Risk', value: '+$14.2K', variant: 'danger' };
         actionBtn = { label: 'Open Portfolio Budgets', targetTab: 'budgets' };
@@ -175,8 +180,8 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
             </div>
           </div>
 
-          {/* 2x2 Quick Action Suggestion Pills matching Reference Mockup */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {/* Quick Action Suggestion Prompts */}
+          <div className="flex flex-col gap-2 w-full">
             {QUICK_PROMPTS.map((item, idx) => {
               const Icon = item.icon;
               return (
@@ -184,14 +189,17 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
                   key={idx}
                   type="button"
                   onClick={() => handleSend(item.text)}
-                  className="py-2.5 px-3.5 rounded-full bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:bg-[#F8FAFC] text-left text-xs font-semibold text-[#1E293B] flex items-center gap-2.5 shadow-2xs transition-all cursor-pointer group active:scale-[0.98]"
+                  className="w-full py-2.5 px-3.5 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:bg-[#F8FAFC] text-left text-xs font-semibold text-[#1E293B] flex items-center justify-between gap-3 shadow-2xs transition-all cursor-pointer group active:scale-[0.99]"
                 >
-                  <div className="w-5 h-5 rounded-full bg-[#EAF3FF] flex items-center justify-center shrink-0 text-[#1677FF] group-hover:scale-110 transition-transform">
-                    <Icon className="w-3.5 h-3.5" />
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className="w-7 h-7 rounded-xl bg-[#EAF3FF] flex items-center justify-center shrink-0 text-[#1677FF] group-hover:scale-105 transition-transform">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="group-hover:text-[#1677FF] transition-colors leading-tight text-xs font-medium text-[#0F172A]">
+                      {item.text}
+                    </span>
                   </div>
-                  <span className="group-hover:text-[#1677FF] transition-colors leading-tight text-[11px] sm:text-xs font-medium">
-                    {item.text}
-                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors shrink-0" />
                 </button>
               );
             })}
@@ -265,12 +273,12 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
             e.preventDefault();
             handleSend();
           }}
-          className="flex items-center gap-2 py-1 px-3 bg-white border border-[#E2E8F0] focus-within:border-[#1677FF] focus-within:ring-2 focus-within:ring-[#1677FF]/15 rounded-full shadow-md transition-all"
+          className="flex items-center gap-2 px-3.5 bg-white border border-[#E2E8F0] focus-within:border-[#1677FF] focus-within:ring-2 focus-within:ring-[#1677FF]/15 rounded-full shadow-md transition-all h-12 min-h-[48px]"
         >
           <button
             type="button"
             onClick={() => alert("Attachment feature: Upload inspection photo, daily log report, or blueprint drawing.")}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-[#64748B] hover:text-[#1677FF] hover:bg-[#F1F5F9] transition-colors cursor-pointer shrink-0"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#64748B] hover:text-[#1677FF] hover:bg-[#F1F5F9] transition-colors cursor-pointer shrink-0"
             title="Attach photo or document"
           >
             <Paperclip className="w-4 h-4" />
@@ -281,7 +289,7 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
             placeholder="Ask Latti about budgets, schedules, permits..."
-            className="flex-1 bg-transparent py-2 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none font-medium"
+            className="flex-1 bg-transparent h-full text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none font-medium"
           />
 
           <button

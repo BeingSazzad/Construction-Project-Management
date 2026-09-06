@@ -112,7 +112,7 @@ export const SecurityPasswordView: React.FC<SecurityPasswordViewProps> = ({ onBa
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               placeholder="Enter current password"
-              className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 pr-10 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 pr-10 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white transition-colors"
             />
             <button
               type="button"
@@ -133,7 +133,7 @@ export const SecurityPasswordView: React.FC<SecurityPasswordViewProps> = ({ onBa
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter new password (min. 8 characters)"
-              className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 pr-10 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 pr-10 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white transition-colors"
             />
             <button
               type="button"
@@ -171,7 +171,7 @@ export const SecurityPasswordView: React.FC<SecurityPasswordViewProps> = ({ onBa
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter new password"
-              className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 pr-10 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 pr-10 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white transition-colors"
             />
             <button
               type="button"

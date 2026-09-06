@@ -19,10 +19,27 @@ export const ProjectDocumentsTab: React.FC<ProjectDocumentsTabProps> = ({
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['All', 'Plans', 'Drawings', 'Field Reports', 'PDFs', 'Contracts', 'Logistics'];
+  const categories = [
+    'All',
+    'Plans',
+    'Contracts',
+    'Permits',
+    'Selections',
+    'Receipts & Invoices',
+    'Drawings',
+    'Field Reports'
+  ];
 
   const filteredDocs = documents.filter(doc => {
-    if (activeCategory !== 'All' && doc.category !== activeCategory) return false;
+    if (activeCategory !== 'All') {
+      const docCat = (doc.category || '').toLowerCase();
+      const activeCat = activeCategory.toLowerCase();
+      if (activeCategory === 'Receipts & Invoices') {
+        if (!docCat.includes('receipt') && !docCat.includes('invoice')) return false;
+      } else if (docCat !== activeCat) {
+        return false;
+      }
+    }
     if (searchQuery && !doc.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
@@ -54,7 +71,7 @@ export const ProjectDocumentsTab: React.FC<ProjectDocumentsTabProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search blueprints, specs, contracts..."
-          className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-9 pr-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] transition-colors shadow-xs"
+          className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-9 pr-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] transition-colors shadow-xs"
         />
       </div>
 

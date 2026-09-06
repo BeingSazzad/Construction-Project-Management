@@ -16,7 +16,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   onSave
 }) => {
   const [name, setName] = useState(currentUser.name);
-  const [roleTitle, setRoleTitle] = useState(currentUser.roleTitle);
+  const [designation, setDesignation] = useState(currentUser.designation || currentUser.roleTitle || 'Managing Principal & Founder');
   const [company, setCompany] = useState(currentUser.company);
   const [email, setEmail] = useState(currentUser.email);
   const [phone, setPhone] = useState(currentUser.phone || '+1 (555) 345-6789');
@@ -40,7 +40,8 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     e.preventDefault();
     onSave({
       name,
-      roleTitle,
+      designation,
+      roleTitle: designation,
       company,
       email,
       phone
@@ -126,23 +127,26 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="Enter your full name"
-                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
 
-          {/* Job Title */}
+          {/* Designation */}
           <div>
-            <label className="block text-xs font-semibold text-[#68707C] mb-1.5">Job Title</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold text-[#171A1F]">Designation</label>
+              <span className="text-[10px] text-[#68707C]">Business Title</span>
+            </div>
             <div className="relative">
               <ShieldCheck className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9DA5B1] pointer-events-none" />
               <input
                 type="text"
-                value={roleTitle}
-                onChange={(e) => setRoleTitle(e.target.value)}
+                value={designation}
+                onChange={(e) => setDesignation(e.target.value)}
                 required
-                placeholder="e.g. Senior Project Manager"
-                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
+                placeholder="e.g. Managing Principal & Founder"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -158,7 +162,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 onChange={(e) => setCompany(e.target.value)}
                 required
                 placeholder="e.g. Lattice Construction"
-                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -174,7 +178,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="name@company.com"
-                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -189,7 +193,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+1 (555) 000-0000"
-                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -204,7 +208,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. New York, NY"
-                className="w-full h-11 bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-10 pr-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:outline-none transition-colors"
               />
             </div>
           </div>

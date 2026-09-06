@@ -214,7 +214,7 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack, onNavigateTab 
                   value={ticketSubject}
                   onChange={(e) => setTicketSubject(e.target.value)}
                   placeholder="Brief summary of your request"
-                  className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors font-medium"
+                  className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors font-medium"
                 />
               </div>
 
@@ -225,7 +225,7 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack, onNavigateTab 
                   <select
                     value={ticketCategory}
                     onChange={(e) => setTicketCategory(e.target.value)}
-                    className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl pl-3 pr-9 text-xs text-[#171A1F] outline-none appearance-none cursor-pointer transition-colors font-medium"
+                    className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl pl-3.5 pr-9 text-xs text-[#171A1F] outline-none appearance-none cursor-pointer transition-colors font-medium"
                   >
                     <option value="General Inquiry">General Inquiry</option>
                     <option value="Budget & Cost Codes">Budget & Cost Codes</option>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Project, Task } from '../../types';
 import { 
-  Plus, Search, ChevronRight, X
+  Plus, Search, ChevronRight, X, ChevronLeft, Flag
 } from 'lucide-react';
 import { MilestoneDetailsModal, MilestoneItem } from '../modals/MilestoneDetailsModal';
 import { CustomSelect } from '../common/CustomSelect';
@@ -11,6 +11,7 @@ interface MilestonesHubViewProps {
   tasks?: Task[];
   onSelectProject?: (project: Project) => void;
   onCreateTask?: () => void;
+  onBack?: () => void;
 }
 
 const INITIAL_MILESTONES: (MilestoneItem & { projectId: string; projectName: string })[] = [
@@ -103,7 +104,8 @@ const INITIAL_MILESTONES: (MilestoneItem & { projectId: string; projectName: str
 export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
   projects,
   tasks = [],
-  onCreateTask
+  onCreateTask,
+  onBack
 }) => {
   const [activeTab, setActiveTab] = useState<'milestones' | 'board'>('milestones');
   const [selectedProjectId, setSelectedProjectId] = useState<string>('all');
@@ -169,6 +171,22 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       
+      {/* ─── 0. TOP HEADER BAR WITH BACK BUTTON ─── */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="w-8 h-8 rounded-full bg-white hover:bg-[#E2E8F0] border border-[#DDE1E7] text-[#64748B] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors flex-shrink-0 shadow-xs active:scale-95"
+              title="Back"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          )}
+          <h1 className="text-base font-bold text-[#171A1F] tracking-tight">Milestone Tracker</h1>
+        </div>
+      </div>
+
       {/* ─── 1. TOP SUBTITLE & ACTION BAR ─── */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-[#68707C] font-medium">

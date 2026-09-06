@@ -394,7 +394,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by task, trade, code, or stage..."
-          className="w-full h-9 pl-9 pr-8 bg-white border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#1677FF] transition-colors shadow-2xs"
+          className="w-full h-12 min-h-[48px] pl-9 pr-8 bg-white border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#1677FF] transition-colors shadow-2xs"
         />
         {searchQuery && (
           <button

@@ -214,6 +214,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onCreateTask={onCreateTask}
             onUploadPhoto={onUploadPhoto}
             onAddDailyLog={onAddDailyLog}
+            onOpenEditProject={onOpenEditProject}
           />
         )}
 
@@ -244,6 +245,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           <ProjectBudgetTab
             project={project}
             categories={categories}
+            changeOrders={changeOrders}
+            onCreateChangeOrder={onCreateChangeOrder}
             onAddCostItem={() => alert("Add Cost Code Line Item")}
             onImportBudget={onImportBudget}
             onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}

@@ -155,7 +155,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Concrete Slump & Pour Quality Inspection"
-              className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all"
+              className="w-full h-12 min-h-[48px] bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all"
             />
           </div>
 
@@ -208,7 +208,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all"
               />
             </div>
           </div>

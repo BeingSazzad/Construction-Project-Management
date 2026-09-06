@@ -121,7 +121,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 required
                 value={logDate}
                 onChange={e => setLogDate(e.target.value)}
-                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none transition-colors"
               />
             </div>
 
@@ -130,7 +130,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 Project <span className="text-red-500">*</span>
               </label>
               {preselectedProjectId ? (
-                <div className="h-10 px-3 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl flex items-center justify-between text-xs font-bold text-[#171A1F]">
+                <div className="h-12 min-h-[48px] px-3 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl flex items-center justify-between text-xs font-bold text-[#171A1F]">
                   <span className="truncate">{currentProject?.name || 'Active Project'}</span>
                   <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.5 rounded">Active</span>
                 </div>
@@ -139,7 +139,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                   value={selectedProjectId}
                   onChange={e => setSelectedProjectId(e.target.value)}
                   required
-                  className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs font-semibold text-[#171A1F] outline-none cursor-pointer"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs font-semibold text-[#171A1F] outline-none cursor-pointer"
                 >
                   {projects.map(p => (
                     <option key={p.id} value={p.id} className="text-[#171A1F]">
@@ -160,7 +160,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 value={weather}
                 onChange={e => setWeather(e.target.value)}
                 placeholder="Sunny / Rain"
-                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
 
@@ -171,7 +171,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 value={temperature}
                 onChange={e => setTemperature(e.target.value)}
                 placeholder="78°F"
-                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 value={crewCount}
                 onChange={e => setCrewCount(e.target.value === '' ? '' : Number(e.target.value))}
                 placeholder="0"
-                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none transition-colors tabular-nums"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] outline-none transition-colors tabular-nums"
               />
             </div>
 
@@ -197,7 +197,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 value={visitors}
                 onChange={e => setVisitors(e.target.value)}
                 placeholder="Inspector, client..."
-                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
           </div>
@@ -211,7 +211,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 value={deliveries}
                 onChange={e => setDeliveries(e.target.value)}
                 placeholder="Lumber, trusses..."
-                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
 
@@ -222,7 +222,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                 value={equipment}
                 onChange={e => setEquipment(e.target.value)}
                 placeholder="Crane, forklift..."
-                className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
+                className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors"
               />
             </div>
           </div>

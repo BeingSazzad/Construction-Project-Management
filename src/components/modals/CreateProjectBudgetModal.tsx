@@ -47,7 +47,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
   };
 
   const inputClass =
-    'w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] transition-colors font-medium';
+    'w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] transition-colors font-medium';
 
   const formContent = (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">

@@ -62,7 +62,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search project name, code, or city..."
-            className="w-full h-10 pl-10 pr-4 bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none transition-all shadow-xs"
+            className="w-full h-12 min-h-[48px] pl-10 pr-4 bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none transition-all shadow-xs"
           />
         </div>
 

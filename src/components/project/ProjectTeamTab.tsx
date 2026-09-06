@@ -13,6 +13,7 @@ interface ProjectStaff {
   id: string;
   name: string;
   role: string;
+  designation?: string;
   company: string;
   phone: string;
   email: string;
@@ -27,6 +28,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-1',
     name: 'Sarah Johnson',
     role: 'Lead Project Manager',
+    designation: 'Lead Project Manager',
     company: 'Lattice Construction',
     phone: '+1 (555) 345-6789',
     email: 'sarah.j@averymarsh.com',
@@ -38,6 +40,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-2',
     name: 'John Smith',
     role: 'Lead Field Superintendent',
+    designation: 'Lead Field Superintendent',
     company: 'Lattice Construction',
     phone: '+1 (555) 567-8901',
     email: 'john.s@averymarsh.com',
@@ -49,6 +52,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-3',
     name: 'Emily Brown',
     role: 'Site Safety Officer',
+    designation: 'Site Safety Officer',
     company: 'Lattice Construction',
     phone: '+1 (555) 789-0123',
     email: 'emily.b@averymarsh.com',
@@ -60,6 +64,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-4',
     name: 'Marcus Chen',
     role: 'Finance Controller',
+    designation: 'Finance Controller',
     company: 'Lattice Construction',
     phone: '+1 (555) 456-7890',
     email: 'marcus.c@averymarsh.com',
@@ -71,6 +76,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-5',
     name: 'Carlos Ortiz',
     role: 'Earthwork Site Foreman',
+    designation: 'Earthwork Site Foreman',
     company: 'Earthworks Pro LLC',
     phone: '+1 (555) 234-5678',
     email: 'carlos@earthworkspro.com',
@@ -82,6 +88,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
     id: 'emp-6',
     name: 'Dave Miller',
     role: 'Structural Concrete Lead',
+    designation: 'Structural Concrete Lead',
     company: 'Concrete Solutions Inc.',
     phone: '+1 (555) 345-8901',
     email: 'dave.m@concretesolutions.com',
@@ -255,6 +262,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
               id: leadPM.id,
               name: leadPM.name,
               role: leadPM.role,
+              designation: leadPM.designation || leadPM.role,
               company: leadPM.company,
               phone: leadPM.phone,
               email: leadPM.email,
@@ -315,6 +323,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                   id: staff.id,
                   name: staff.name,
                   role: staff.role,
+                  designation: staff.designation || staff.role,
                   company: staff.company,
                   phone: staff.phone,
                   email: staff.email,
@@ -380,6 +389,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                             id: staff.id,
                             name: staff.name,
                             role: staff.role,
+                            designation: staff.designation || staff.role,
                             company: staff.company,
                             phone: staff.phone,
                             email: staff.email,
@@ -517,7 +527,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search by name, role, or trade..."
-                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-xl pl-8 pr-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl pl-9 pr-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 
@@ -577,7 +587,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                     placeholder="e.g. Marcus Vance"
                     value={inviteName}
                     onChange={(e) => setInviteName(e.target.value)}
-                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 
@@ -618,7 +628,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                     placeholder={inviteType === 'gc' ? 'e.g. Field Superintendent' : 'e.g. Concrete Lead'}
                     value={inviteRole}
                     onChange={(e) => setInviteRole(e.target.value)}
-                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 
@@ -629,7 +639,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                     placeholder="trade@company.com"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    className="w-full h-9 bg-white border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 

@@ -28,6 +28,27 @@ export interface SettingsViewProps {
   initialSubView?: string;
 }
 
+const ToggleSwitch: React.FC<{
+  checked: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+}> = ({ checked, onChange, disabled }) => (
+  <button
+    type="button"
+    disabled={disabled}
+    onClick={onChange}
+    className={`w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer flex-shrink-0 p-0.5 relative outline-none ${
+      disabled ? 'opacity-40 cursor-not-allowed' : ''
+    } ${checked ? 'bg-[#1677FF]' : 'bg-[#CBD5E1]'}`}
+  >
+    <div
+      className={`w-5 h-5 rounded-full bg-white shadow-xs transition-transform duration-200 ${
+        checked ? 'translate-x-5' : 'translate-x-0'
+      }`}
+    />
+  </button>
+);
+
 export const SettingsView: React.FC<SettingsViewProps> = ({
   currentUser,
   onSignOut,
@@ -202,21 +223,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <h4 className="text-xs font-semibold text-[#171A1F]">Enable Basement Caching</h4>
                 <p className="text-xs text-[#68707C] mt-0.5">Keep blueprints & tasks available offline without cell signal</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setOfflineSyncEnabled(!offlineSyncEnabled)}
-                className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
-                  offlineSyncEnabled
-                    ? 'bg-[#1677FF] border-[#1677FF]'
-                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
-                }`}
-              >
-                <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
-                    offlineSyncEnabled ? 'translate-x-4.5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+              <ToggleSwitch
+                checked={offlineSyncEnabled}
+                onChange={() => setOfflineSyncEnabled(!offlineSyncEnabled)}
+              />
             </div>
 
             <div className="p-3.5 flex items-center justify-between gap-3">
@@ -224,21 +234,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <h4 className="text-xs font-semibold text-[#171A1F]">Sync Over Cellular Data</h4>
                 <p className="text-xs text-[#68707C] mt-0.5">Upload photos instantly via 5G/LTE when outside</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setSyncOnCellular(!syncOnCellular)}
-                className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
-                  syncOnCellular
-                    ? 'bg-[#1677FF] border-[#1677FF]'
-                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
-                }`}
-              >
-                <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
-                    syncOnCellular ? 'translate-x-4.5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+              <ToggleSwitch
+                checked={syncOnCellular}
+                onChange={() => setSyncOnCellular(!syncOnCellular)}
+              />
             </div>
           </div>
         </div>
@@ -252,21 +251,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <h4 className="text-xs font-semibold text-[#171A1F]">Embed GPS Coordinates</h4>
                 <p className="text-xs text-[#68707C] mt-0.5">Burn latitude & longitude watermark on resolution photos</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setPhotoGpsTagging(!photoGpsTagging)}
-                className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
-                  photoGpsTagging
-                    ? 'bg-[#1677FF] border-[#1677FF]'
-                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
-                }`}
-              >
-                <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
-                    photoGpsTagging ? 'translate-x-4.5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+              <ToggleSwitch
+                checked={photoGpsTagging}
+                onChange={() => setPhotoGpsTagging(!photoGpsTagging)}
+              />
             </div>
 
             <div className="p-3.5 flex items-center justify-between gap-3">
@@ -274,21 +262,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <h4 className="text-xs font-semibold text-[#171A1F]">Embed Date & Timestamp</h4>
                 <p className="text-xs text-[#68707C] mt-0.5">Stamp exact hour/minute for punch list audit trails</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setPhotoTimestampTagging(!photoTimestampTagging)}
-                className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
-                  photoTimestampTagging
-                    ? 'bg-[#1677FF] border-[#1677FF]'
-                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
-                }`}
-              >
-                <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
-                    photoTimestampTagging ? 'translate-x-4.5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+              <ToggleSwitch
+                checked={photoTimestampTagging}
+                onChange={() => setPhotoTimestampTagging(!photoTimestampTagging)}
+              />
             </div>
 
             <div className="p-3.5 flex items-center justify-between gap-3">
@@ -327,21 +304,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <h4 className="text-xs font-semibold text-[#171A1F]">Auto-Save Drafts Every 2 Mins</h4>
                 <p className="text-xs text-[#68707C] mt-0.5">Prevent loss of end-of-day site logs and notes</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setDailyLogAutoSave(!dailyLogAutoSave)}
-                className={`w-10 h-5.5 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
-                  dailyLogAutoSave
-                    ? 'bg-[#1677FF] border-[#1677FF]'
-                    : 'bg-[#E5E7EB] border-[#D1D5DB]'
-                }`}
-              >
-                <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
-                    dailyLogAutoSave ? 'translate-x-4.5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+              <ToggleSwitch
+                checked={dailyLogAutoSave}
+                onChange={() => setDailyLogAutoSave(!dailyLogAutoSave)}
+              />
             </div>
           </div>
         </div>
@@ -520,7 +486,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <ChevronLeft className="w-4 h-4" />
             <span>Account</span>
           </button>
-          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Billing & Plans</h2>
+          <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Subscription</h2>
           <div className="w-12" />
         </div>
 
@@ -591,21 +557,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <p className="text-[12px] text-[#68707C]">Receive alerts on device</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setPushMasterEnabled(!pushMasterEnabled)}
-            className={`w-11 h-6 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
-              pushMasterEnabled
-                ? 'bg-[#1677FF] border-[#1677FF]'
-                : 'bg-[#E5E7EB] border-[#D1D5DB]'
-            }`}
-          >
-            <div
-              className={`w-5 h-5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
-                pushMasterEnabled ? 'translate-x-5' : 'translate-x-0'
-              }`}
-            />
-          </button>
+          <ToggleSwitch
+            checked={pushMasterEnabled}
+            onChange={() => setPushMasterEnabled(!pushMasterEnabled)}
+          />
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col gap-1">
@@ -628,21 +583,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <p className="text-[12px] text-[#68707C] mt-0.5">{item.desc}</p>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => toggleNotif(item.key as any)}
-                    className={`w-11 h-6 rounded-full transition-all duration-200 relative cursor-pointer flex-shrink-0 p-0.5 border ${
-                      isEffective
-                        ? 'bg-[#1677FF] border-[#1677FF]'
-                        : 'bg-[#E5E7EB] border-[#D1D5DB]'
-                    }`}
-                  >
-                    <div
-                      className={`w-5 h-5 rounded-full bg-white shadow-xs transform transition-transform duration-200 ${
-                        isEffective ? 'translate-x-5' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
+                  <ToggleSwitch
+                    checked={isEffective}
+                    disabled={!pushMasterEnabled}
+                    onChange={() => toggleNotif(item.key as any)}
+                  />
                 </div>
               );
             })}
@@ -672,55 +617,66 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       
 
 
-      {/* ─── 1. HERO PROFILE CARD (Executive Midnight & Vibrant Royal Blue) ─── */}
+      {/* ─── 1. HERO PROFILE CARD (Sapphire Gradient Design) ─── */}
       <div
         onClick={() => setSubView('profile')}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0B1E3B] via-[#094CA6] to-[#1677FF] p-4 text-white shadow-[0_10px_28px_rgba(22,119,255,0.22)] cursor-pointer group active:scale-[0.99] transition-all border border-white/15"
+        className="relative overflow-hidden rounded-[22px] bg-gradient-to-r from-[#0047C4] via-[#0D5EF4] to-[#257CFF] border border-white/20 p-4 text-white shadow-[0_4px_20px_rgba(13,94,244,0.22)] cursor-pointer group active:scale-[0.99] transition-all"
       >
-        {/* Subtle decorative glow orb */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-[#1677FF]/30 rounded-full blur-xl pointer-events-none" />
-
         {/* Avatar + Identity Info */}
-        <div className="relative z-10 flex items-center gap-3.5">
-          <div className="relative flex-shrink-0">
-            <div className="w-[60px] h-[60px] rounded-2xl bg-white/15 p-0.5 border border-white/25 shadow-md backdrop-blur-xs">
-              <img
-                src={userData.avatar}
-                alt={userData.name}
-                className="w-full h-full rounded-[14px] object-cover bg-slate-800"
-              />
-            </div>
-            <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#0B1E3B] shadow-sm flex items-center justify-center">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            </span>
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <h2 className="text-[15px] font-bold text-white truncate tracking-tight leading-tight group-hover:text-blue-100 transition-colors">
-                {userData.name}
-              </h2>
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-200 flex-shrink-0" />
+        <div className="flex items-center justify-between gap-3.5">
+          <div className="flex items-center gap-3.5 min-w-0 flex-1">
+            {/* Avatar Frame with Frosted Glass Border */}
+            <div className="relative flex-shrink-0">
+              <div className="w-[58px] h-[58px] rounded-[18px] p-[2.5px] bg-white/20 border border-white/30 backdrop-blur-xs flex items-center justify-center shadow-xs">
+                <img
+                  src={userData.avatar}
+                  alt={userData.name}
+                  className="w-full h-full rounded-[15px] object-cover bg-[#0047C4]"
+                />
+              </div>
+              {/* Backlit Emerald Online Indicator with Centered White Dot */}
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#00E676] border-2 border-[#0047C4] shadow-xs flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              </span>
             </div>
 
-            <p className="text-[11px] font-medium text-blue-100/90 truncate mt-0.5">
-              {userData.roleTitle || (isFieldStaff ? 'Lead Superintendent' : 'Managing Principal & Founder')}
-            </p>
+            {/* Identity Text Info */}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <h2 className="text-[16px] font-bold text-white tracking-tight leading-tight truncate">
+                  {userData.name}
+                </h2>
+                {/* Verified Circle with Blue Checkmark */}
+                <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-2xs" title="Verified">
+                  <Check className="w-2.5 h-2.5 text-[#0D5EF4] stroke-[3.5]" />
+                </span>
+              </div>
 
-            {/* Company & Role Chip */}
-            <div className="flex items-center gap-1.5 mt-2">
-              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white/15 hover:bg-white/20 border border-white/20 text-[10px] font-semibold text-white transition-colors">
-                <Building className="w-2.5 h-2.5 text-blue-200" />
-                <span className="truncate max-w-[130px]">{userData.company || 'Avery & Marsh Construction'}</span>
-                <ChevronRight className="w-2.5 h-2.5 text-white/60" />
+              <p className="text-[12px] font-normal text-white/80 truncate mt-0.5 tracking-tight">
+                {userData.roleTitle || (isFieldStaff ? 'Lead Superintendent' : 'Managing Principal & Founder')}
+              </p>
+
+              {/* Frosted Company Pill */}
+              <div className="flex items-center gap-1.5 mt-2">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSubView('company');
+                  }}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-[11px] font-semibold text-white transition-all cursor-pointer backdrop-blur-xs group/pill shadow-2xs"
+                >
+                  <Building className="w-3.5 h-3.5 text-white/90" />
+                  <span className="truncate max-w-[155px]">{userData.company || 'Avery & Marsh Construction'}</span>
+                  <ChevronRight className="w-3 h-3 text-white/80 group-hover/pill:translate-x-0.5 transition-transform" />
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Edit Button */}
-          <div className="w-8 h-8 rounded-xl bg-white/15 border border-white/20 text-white group-hover:bg-white/25 flex items-center justify-center transition-all flex-shrink-0 shadow-xs">
-            <Edit3 className="w-3.5 h-3.5" />
+          {/* Frosted Pencil Edit Button */}
+          <div className="w-10 h-10 rounded-2xl bg-white/15 group-hover:bg-white/25 border border-white/25 backdrop-blur-xs flex items-center justify-center text-white transition-all flex-shrink-0 shadow-xs active:scale-95">
+            <Edit3 className="w-4 h-4 text-white" />
           </div>
         </div>
       </div>
@@ -738,56 +694,48 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           {/* Safety Badges & Certs */}
           <button onClick={() => setSubView('certifications')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Award className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Safety Badges & Certifications</span>
+              <Award className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Safety Badges & Certifications</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">4 Valid</span>
-              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
             </div>
           </button>
 
           {/* Assigned Equipment */}
           <button onClick={() => setSubView('equipment')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Wrench className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Assigned Equipment & Tools</span>
+              <Wrench className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Assigned Equipment & Tools</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">4 Items</span>
-              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
             </div>
           </button>
 
           {/* Field Sync & Offline Storage */}
           <button onClick={() => setSubView('field-sync')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Wifi className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Field Sync & Offline Storage</span>
+              <Wifi className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Field Sync & Offline Storage</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">Auto-Sync</span>
-              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
             </div>
           </button>
 
           {/* Emergency Site Contacts */}
           <button onClick={() => setSubView('emergency')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <AlertOctagon className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Emergency Site Contacts</span>
+              <AlertOctagon className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Emergency Site Contacts</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">911 Active</span>
-              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
             </div>
           </button>
         </div>
@@ -804,49 +752,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           {/* Company Profile */}
           <button onClick={() => setSubView('company')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Building className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Workspace & Company Profile</span>
+              <Building className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Company Profile</span>
             </div>
             <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </button>
 
-          {/* Subscription & Billing */}
+          {/* Subscription */}
           <button onClick={() => setSubView('billing')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Crown className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Subscription & Invoicing</span>
+              <Crown className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Subscription</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">Trial</span>
-              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
             </div>
-          </button>
-
-
-          {/* Team Directory */}
-          <button onClick={() => onNavigateTab?.('team')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Users className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Team Staff & Directory</span>
-            </div>
-            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
-          </button>
-
-          {/* Milestones Hub */}
-          <button onClick={() => onNavigateTab?.('milestones')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Flag className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Company Milestone Tracker</span>
-            </div>
-            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </button>
         </div>
       )}
@@ -863,26 +784,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         {/* Notifications */}
         <button onClick={() => setSubView('notifications')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-              <Bell className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Notifications</span>
+            <Bell className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+            <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Notifications</span>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">
               {pushMasterEnabled ? 'On' : 'Off'}
             </span>
-            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </div>
         </button>
 
         {/* Security & Password */}
         <button onClick={() => setSubView('security')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-              <Lock className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
+            <Lock className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+            <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
               {isFieldStaff ? 'Security & PIN' : 'Security & Password'}
             </span>
           </div>
@@ -892,10 +809,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         {/* Help & Support */}
         <button onClick={() => setSubView('support')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
-              <HelpCircle className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
+            <HelpCircle className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+            <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
               {isFieldStaff ? 'Field Guides & Help' : 'Help & Support'}
             </span>
           </div>
@@ -921,13 +836,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <button
             key={view}
             onClick={() => setSubView(view)}
-            className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition-colors cursor-pointer group active:bg-slate-100/70"
+            className="w-full py-3.5 px-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition-colors cursor-pointer group active:bg-slate-100/70"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <Icon className="w-4 h-4 text-[#94A3B8] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
-              <span className="text-xs font-medium text-[#64748B] group-hover:text-[#171A1F] transition-colors">{label}</span>
+              <Icon className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">{label}</span>
             </div>
-            <ChevronRight className="w-3.5 h-3.5 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </button>
         ))}
       </div>
@@ -935,13 +850,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* ─── SIGN OUT ─── */}
       <button
         onClick={onSignOut}
-        className="w-full py-3.5 px-4 rounded-2xl bg-white hover:bg-rose-50/80 border border-slate-200/90 hover:border-rose-200 flex items-center gap-3 cursor-pointer transition-all active:scale-[0.99] shadow-[0_2px_8px_rgba(15,23,42,0.02)] group"
+        className="w-full py-3.5 px-4 rounded-2xl bg-white hover:bg-rose-50/80 border border-slate-200/90 hover:border-rose-200 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] shadow-[0_2px_8px_rgba(15,23,42,0.02)] group"
       >
-        <div className="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200/80 flex items-center justify-center flex-shrink-0 shadow-xs">
-          <LogOut className="w-4 h-4 text-rose-600" />
+        <div className="flex items-center gap-3 min-w-0">
+          <LogOut className="w-4 h-4 text-rose-600 flex-shrink-0" />
+          <span className="text-xs font-semibold text-rose-600 truncate">Sign Out</span>
         </div>
-        <span className="text-xs font-bold text-rose-600 flex-1 text-left">Sign Out</span>
-        <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-rose-500 transition-colors" />
+        <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-rose-500 transition-colors flex-shrink-0" />
       </button>
 
       <p className="text-center text-[10px] text-slate-400 font-medium pb-2">Lattice Construction OS · v1.0.0</p>

@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Project, TradeCategory, CostCodeGroup } from '../../types';
+import { Project, TradeCategory, CostCodeGroup, ChangeOrder } from '../../types';
 import {
   ChevronLeft, ChevronRight, Plus,
   FileText, CreditCard, Wallet, Boxes, Layers,
-  Download, Upload, X, Check, Landmark, Pencil
+  Download, Upload, X, Check, Landmark, Pencil, GitPullRequest
 } from 'lucide-react';
 
 interface ProjectBudgetTabProps {
   project: Project;
   categories: TradeCategory[];
+  changeOrders?: ChangeOrder[];
+  onCreateChangeOrder?: () => void;
   onAddCostItem?: () => void;
   onImportBudget?: () => void;
   onBack?: () => void;
@@ -17,6 +19,8 @@ interface ProjectBudgetTabProps {
 export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   project,
   categories: initialCategories,
+  changeOrders = [],
+  onCreateChangeOrder,
   onImportBudget,
   onBack
 }) => {
@@ -389,22 +393,117 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
         </div>
       </div>
 
-      {/* ─── Change Orders Status Strip (Fulfilling Core Launch Scope #5) ─── */}
-      <div className="bg-white rounded-xl border border-[#E2E8F0] px-3.5 py-2.5 shadow-card flex items-center justify-between text-xs">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-[#FEF2F2] text-[#E5484D] flex items-center justify-center font-bold text-[10px] shrink-0">
-            CO
+      {/* ─── Change Orders Section (Fulfilling Core Launch Scope #3) ─── */}
+      {(() => {
+        const projectCOs = changeOrders.filter(co => co.projectId === project.id);
+        const activeCOs = projectCOs.length > 0 ? projectCOs : [
+          {
+            id: 'co-default-1',
+            projectId: project.id,
+            title: 'Upgrade Lobby Finishes to Premium Carrera Marble',
+            description: 'Upgrade flooring and wall finishes in main lobby to premium Carrera marble panels.',
+            amount: 28500,
+            timeImpact: 3,
+            category: 'Finishes',
+            requestedBy: 'Arthur Vance (Client)',
+            status: 'Approved' as const,
+            createdDate: '2025-05-10'
+          },
+          {
+            id: 'co-default-2',
+            projectId: project.id,
+            title: 'Foundation Soil Grouting & Perimeter Stabilization',
+            description: 'Secondary geotechnical pressure grouting at coastal perimeter retaining wall.',
+            amount: 14200,
+            timeImpact: 2,
+            category: 'Foundation',
+            requestedBy: 'Earthworks Pro LLC',
+            status: 'Pending' as const,
+            createdDate: '2025-05-18'
+          }
+        ];
+
+        const totalCOAmount = activeCOs.filter(co => co.status === 'Approved').reduce((s, co) => s + co.amount, 0);
+
+        return (
+          <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#FEF2F2] text-[#E5484D] flex items-center justify-center font-bold text-[10px] shrink-0">
+                  CO
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="text-xs font-bold text-[#0F172A] tracking-tight">
+                      Change Orders
+                    </h3>
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#F1F5F9] text-[#475569]">
+                      {activeCOs.length}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-[#64748B] block">
+                    Approved Total: +${totalCOAmount.toLocaleString()} (+{(totalCOAmount / (totalBudget || 1) * 100).toFixed(1)}%)
+                  </span>
+                </div>
+              </div>
+
+              {onCreateChangeOrder && (
+                <button
+                  onClick={onCreateChangeOrder}
+                  className="h-7 px-2.5 rounded-lg bg-[#1677FF] hover:bg-[#125ecc] text-white text-[11px] font-bold flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer shrink-0"
+                  title="Create New Change Order"
+                >
+                  <Plus className="w-3 h-3 stroke-[2.5]" />
+                  <span>Add CO</span>
+                </button>
+              )}
+            </div>
+
+            {/* List of Change Orders */}
+            <div className="flex flex-col divide-y divide-[#F1F5F9] -mt-1">
+              {activeCOs.map((co) => {
+                const isApproved = co.status === 'Approved';
+                const isPending = co.status === 'Pending';
+                return (
+                  <div key={co.id} className="py-2 flex items-start justify-between gap-2 first:pt-1 last:pb-0">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-[#0F172A] truncate">
+                          {co.title}
+                        </span>
+                        <span className={`px-1.5 py-0.2 rounded-md text-[9px] font-bold shrink-0 ${
+                          isApproved 
+                            ? 'bg-[#E9F9F3] text-[#10A976]' 
+                            : isPending 
+                              ? 'bg-[#FFF8E6] text-[#D97706]' 
+                              : 'bg-[#FFF0F0] text-[#E5484D]'
+                        }`}>
+                          {co.status}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-[#64748B] truncate mt-0.5">
+                        {co.category} • Requested by {co.requestedBy}
+                        {co.timeImpact ? ` • +${co.timeImpact} days` : ''}
+                      </p>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span className={`text-xs font-bold block ${
+                        isApproved ? 'text-[#0F172A]' : 'text-[#D97706]'
+                      }`}>
+                        +${(co.amount || 0).toLocaleString()}
+                      </span>
+                      <span className="text-[9px] text-[#94A3B8] block">
+                        {co.createdDate || 'Recent'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <div className="min-w-0">
-            <span className="font-semibold text-[#0F172A] block leading-tight">Approved Change Orders</span>
-            <span className="text-[#64748B] text-[10px] block mt-0.5 leading-tight">7 revisions • contingency healthy</span>
-          </div>
-        </div>
-        <div className="text-right shrink-0">
-          <span className="font-bold text-[#E5484D] block leading-tight">+$28,500</span>
-          <span className="text-[10px] text-[#94A3B8] block mt-0.5 leading-tight">+0.6% budget</span>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* ─── 4. COST BREAKDOWN CARD (Sleek & Proportional) ─── */}
       <div className="p-3.5 bg-white rounded-2xl border border-[#E2E8F0] shadow-card flex flex-col gap-2.5">
@@ -653,7 +752,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                     placeholder="e.g. 06 – Roofing & Cladding"
                     value={customTradeName}
                     onChange={(e) => setCustomTradeName(e.target.value)}
-                    className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-[#171A1F] text-xs outline-none font-medium"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none font-medium"
                   />
                 ) : (
                   <select
@@ -666,7 +765,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                         setTradeName(e.target.value);
                       }
                     }}
-                    className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
                   >
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.name}>
@@ -688,7 +787,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                   placeholder="e.g. Slab Rebar Reinforcement"
                   value={costCodeName}
                   onChange={(e) => setCostCodeName(e.target.value)}
-                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                 />
               </div>
 
@@ -701,7 +800,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                     placeholder="45000"
                     value={budgetAmount}
                     onChange={(e) => setBudgetAmount(e.target.value)}
-                    className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 
@@ -712,7 +811,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                     placeholder="38000"
                     value={committedAmount}
                     onChange={(e) => setCommittedAmount(e.target.value)}
-                    className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
               </div>
@@ -763,7 +862,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                   placeholder="e.g. Slab Rebar Reinforcement"
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)}
-                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                 />
               </div>
 
@@ -776,7 +875,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                     placeholder="45000"
                     value={editingBudget}
                     onChange={(e) => setEditingBudget(e.target.value)}
-                    className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
 
@@ -788,7 +887,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                     placeholder="38000"
                     value={editingCommitted}
                     onChange={(e) => setEditingCommitted(e.target.value)}
-                    className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                    className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                   />
                 </div>
               </div>
@@ -841,7 +940,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                   placeholder="e.g. 06 – Roofing & Waterproofing"
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
                 />
               </div>
 
@@ -854,7 +953,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                   placeholder="e.g. 125000 (Optional initial budget)"
                   value={newCategoryBudget}
                   onChange={(e) => setNewCategoryBudget(e.target.value)}
-                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                  className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
                 />
               </div>
 

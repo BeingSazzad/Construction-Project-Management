@@ -1,13 +1,14 @@
 import React from 'react';
 import { 
   X, Phone, Mail, Building2, ShieldCheck, MapPin, CheckCircle2, 
-  Clock, HardHat, Calendar, MessageSquare, ExternalLink
+  Clock, HardHat, Calendar, MessageSquare, ExternalLink, Briefcase
 } from 'lucide-react';
 
 export interface EmployeeProfileData {
   id: string;
   name: string;
   role: string;
+  designation?: string;
   company: string;
   phone: string;
   email: string;
@@ -16,6 +17,7 @@ export interface EmployeeProfileData {
   isOnSite?: boolean;
   projectName?: string;
   sinceDate?: string;
+  address?: string;
 }
 
 interface EmployeeProfileModalProps {
@@ -75,7 +77,7 @@ export const EmployeeProfileModal: React.FC<EmployeeProfileModalProps> = ({
             {member.name}
           </h3>
           <p className="text-xs font-semibold text-[#1677FF] mt-0.5">
-            {member.role}
+            {member.designation || member.role}
           </p>
           <p className="text-xs text-[#64748B] mt-0.5 flex items-center gap-1">
             <Building2 className="w-3.5 h-3.5 text-[#94A3B8]" />
@@ -118,24 +120,66 @@ export const EmployeeProfileModal: React.FC<EmployeeProfileModalProps> = ({
 
         {/* Specifications / Detail Rows */}
         <div className="bg-[#F8FAFC] rounded-2xl p-3 border border-[#E2E8F0] flex flex-col gap-2.5 text-xs">
+          {/* Designation */}
           <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]/60">
-            <span className="text-[#64748B] font-medium">Direct Phone</span>
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <Briefcase className="w-3.5 h-3.5 text-[#1677FF] shrink-0" />
+              <span className="font-medium">Designation</span>
+            </div>
+            <span className="font-semibold text-[#0F172A] truncate max-w-[200px]">
+              {member.designation || member.role}
+            </span>
+          </div>
+
+          {/* Project Role */}
+          <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]/60">
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <HardHat className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+              <span className="font-medium">Project Role</span>
+            </div>
+            <span className="font-semibold text-[#0F172A] truncate max-w-[190px]">
+              {member.role}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]/60">
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <Phone className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+              <span className="font-medium">Direct Phone</span>
+            </div>
             <span className="font-semibold text-[#0F172A] font-mono">{member.phone}</span>
           </div>
           <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]/60">
-            <span className="text-[#64748B] font-medium">Work Email</span>
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <Mail className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+              <span className="font-medium">Work Email</span>
+            </div>
             <span className="font-semibold text-[#0F172A] truncate max-w-[180px]">{member.email}</span>
           </div>
+          <div className="flex items-start justify-between gap-3 pb-2 border-b border-[#E2E8F0]/60">
+            <div className="flex items-center gap-2 shrink-0 mt-0.5 text-[#64748B]">
+              <MapPin className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+              <span className="font-medium">Work Address</span>
+            </div>
+            <span className="font-semibold text-[#0F172A] text-right leading-snug">
+              {member.address || '401 E Jackson St, Tampa, FL'}
+            </span>
+          </div>
           <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]/60">
-            <span className="text-[#64748B] font-medium">Current Project</span>
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <Building2 className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+              <span className="font-medium">Current Project</span>
+            </div>
             <span className="font-semibold text-[#0F172A] truncate max-w-[180px]">
               {member.projectName || 'Active Project Workspace'}
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-[#64748B] font-medium">Site Assignment</span>
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#10A976] shrink-0" />
+              <span className="font-medium">Site Assignment</span>
+            </div>
             <span className="font-semibold text-[#10A976] flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Verified Access</span>
             </span>
           </div>

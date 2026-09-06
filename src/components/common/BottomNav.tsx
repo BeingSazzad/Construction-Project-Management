@@ -1,5 +1,5 @@
 import React from 'react';
-import { Folder, Plus, User } from 'lucide-react';
+import { Folder, Plus, User, Sparkles } from 'lucide-react';
 
 interface BottomNavProps {
   activeTab: string;
@@ -20,26 +20,6 @@ const HomeNavIcon = ({ active }: { active: boolean }) => (
     strokeLinejoin="round"
   >
     <path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H15a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1H4.5A1.5 1.5 0 0 1 3 20v-9.5z" />
-  </svg>
-);
-
-// 2. Modern AI Rosette Icon (Matches exact inspiration rosette swirl)
-const LattiRosetteIcon = ({ active }: { active: boolean }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth={active ? '2.1' : '1.8'}
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={`w-5 h-5 transition-transform duration-200 ${active ? 'scale-105' : ''}`}
-  >
-    {/* Concentric curved interlocking spiral rosette petals */}
-    <path d="M12 2.5a4 4 0 0 1 3.5 2.1l.4.7 1.9-.3a4 4 0 0 1 4.5 3.3l.1.8 1.4 1.3a4 4 0 0 1 .4 5.5l-.5.6.5.6a4 4 0 0 1-.4 5.5l-1.4 1.3-.1.8a4 4 0 0 1-4.5 3.3l-1.9-.3-.4.7A4 4 0 0 1 12 21.5a4 4 0 0 1-3.5-2.1l-.4-.7-1.9.3a4 4 0 0 1-4.5-3.3l-.1-.8-1.4-1.3a4 4 0 0 1-.4-5.5l.5-.6-.5-.6a4 4 0 0 1 .4-5.5l1.4-1.3.1-.8A4 4 0 0 1 6.2 5l1.9.3.4-.7A4 4 0 0 1 12 2.5z" />
-    <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
-    <path d="M12 8v8" />
-    <path d="M8.5 10l7 4" />
-    <path d="M8.5 14l7-4" />
   </svg>
 );
 
@@ -117,7 +97,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             <span className="absolute top-0 w-11 h-[3px] bg-[#1677FF] rounded-full animate-fade-in" />
           )}
 
-          <LattiRosetteIcon active={activeTab === 'latti'} />
+          <Sparkles className={`w-5 h-5 transition-transform duration-200 ${
+            activeTab === 'latti' ? 'scale-105 text-[#1677FF] stroke-[2.2]' : 'stroke-[1.8]'
+          }`} />
           <span className={`text-[11px] tracking-tight mt-1 leading-none ${
             activeTab === 'latti' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#64748B]'
           }`}>

@@ -110,7 +110,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
   };
 
   const inputClass =
-    'w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#8F95B2] outline-none transition-colors font-medium';
+    'w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#8F95B2] outline-none transition-colors font-medium';
 
   return (
     <div className="w-full flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">

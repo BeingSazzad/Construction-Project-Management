@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project, ProjectStatus } from '../../types';
 import { X, Check } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
@@ -25,18 +25,37 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
   onUpdate
 }) => {
   const [name, setName] = useState(project.name);
-  const [location, setLocation] = useState(project.location || '450 Waterfront Blvd');
-  const [cityState, setCityState] = useState(project.cityState || 'New York, NY');
+  const [code, setCode] = useState(project.code || '');
+  const [location, setLocation] = useState(project.location || '');
+  const [cityState, setCityState] = useState(project.cityState || '');
   const [status, setStatus] = useState<ProjectStatus>(project.status);
-  const [selectedPM, setSelectedPM] = useState(project.projectManager.name);
-  const [totalBudget, setTotalBudget] = useState(project.budget.total);
-  const [startDate, setStartDate] = useState(project.startDate || '2024-09-01');
-  const [targetEndDate, setTargetEndDate] = useState(project.targetEndDate || '2025-11-30');
+  const [selectedPM, setSelectedPM] = useState(project.projectManager?.name || 'Sarah Johnson');
+  const [totalBudget, setTotalBudget] = useState(project.budget?.total || 0);
+  const [startDate, setStartDate] = useState(project.startDate || '');
+  const [targetEndDate, setTargetEndDate] = useState(project.targetEndDate || '');
   const [description, setDescription] = useState(project.description || '');
 
   const [clientName, setClientName] = useState(project.clientName || '');
-  const [progress, setProgress] = useState(project.progress);
+  const [progress, setProgress] = useState(project.progress || 0);
   const [masterCode, setMasterCode] = useState(project.masterCode || '1234');
+
+  useEffect(() => {
+    if (isOpen) {
+      setName(project.name);
+      setCode(project.code || '');
+      setLocation(project.location || '');
+      setCityState(project.cityState || '');
+      setStatus(project.status);
+      setSelectedPM(project.projectManager?.name || 'Sarah Johnson');
+      setTotalBudget(project.budget?.total || 0);
+      setStartDate(project.startDate || '');
+      setTargetEndDate(project.targetEndDate || '');
+      setDescription(project.description || '');
+      setClientName(project.clientName || '');
+      setProgress(project.progress || 0);
+      setMasterCode(project.masterCode || '1234');
+    }
+  }, [project, isOpen]);
 
   if (!isOpen) return null;
 
@@ -47,14 +66,15 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
     const pmObj = AVAILABLE_PMS.find(p => p.name === selectedPM) || {
       name: selectedPM.trim() || 'Sarah Johnson',
       email: 'pm@averymarsh.com',
-      avatar: project.projectManager.avatar
+      avatar: project.projectManager?.avatar || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
     };
 
     const updated: Project = {
       ...project,
       name: name.trim(),
+      code: code.trim() || project.code,
       location: location.trim(),
-      cityState: cityState.trim() || 'New York, NY',
+      cityState: cityState.trim() || 'Tampa, FL',
       status: status,
       progress: Number(progress) || 0,
       startDate: startDate,
@@ -63,7 +83,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
       clientName: clientName.trim(),
       masterCode: masterCode.trim(),
       projectManager: {
-        id: project.projectManager.id,
+        id: project.projectManager?.id || 'usr_pm',
         name: pmObj.name,
         avatar: pmObj.avatar
       },
@@ -80,13 +100,13 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F] max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-[410px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F] max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div>
-            <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Project Info</h2>
-            <p className="text-xs text-[#68707C] mt-0.5 font-medium">Code: {project.code}</p>
+            <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Project Specifications</h2>
+            <p className="text-xs text-[#68707C] mt-0.5 font-medium">Update address, PM, client, schedule & budget</p>
           </div>
 
           <button
@@ -99,15 +119,27 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
 
         {/* Edit Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
-          <div>
-            <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Project Title *</label>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
-            />
+          <div className="grid grid-cols-3 gap-2">
+            <div className="col-span-2">
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Project Title *</label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Code</label>
+              <input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="SIR-2025"
+                className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-mono font-bold"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
@@ -142,9 +174,12 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 value={status}
                 onChange={(v) => setStatus(v as ProjectStatus)}
                 options={[
+                  'On Schedule',
+                  'In Progress',
                   'Planning',
                   'Pre-Construction',
-                  'In Progress',
+                  'At Risk',
+                  'Delayed',
                   'On Hold',
                   'Completed',
                   'Warranty'

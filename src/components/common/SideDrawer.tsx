@@ -2,7 +2,7 @@ import React from 'react';
 import { User, Project } from '../../types';
 import { 
   X, Users, Settings, LogOut, FileText, Bell, 
-  ChevronRight, ShieldCheck, HelpCircle, Wallet
+  ChevronRight, ShieldCheck, HelpCircle, Wallet, Flag
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -52,6 +52,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       label: 'Team Directory',
       description: 'GC staff & trade subcontractors',
       icon: Users,
+    },
+    {
+      id: 'milestones',
+      label: 'Milestone Tracker',
+      description: 'Cross-project schedule & progress',
+      icon: Flag,
     },
     {
       id: 'daily-logs',

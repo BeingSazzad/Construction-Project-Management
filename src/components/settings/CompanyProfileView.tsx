@@ -84,7 +84,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               onChange={(e) => setCompanyName(e.target.value)}
               required
               placeholder="e.g. Lattice Construction Group"
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -96,7 +96,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(555) 123-4567"
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -108,7 +108,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Main St, Suite 400"
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -120,7 +120,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={licenseNumber}
               onChange={(e) => setLicenseNumber(e.target.value)}
               placeholder="GC-12345"
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
         </div>
