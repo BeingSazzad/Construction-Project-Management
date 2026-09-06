@@ -177,7 +177,6 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             dailyLogs={project.dailyLogs || []}
             updates={MOCK_PROJECT_UPDATES.filter(u => u.projectId === project.id)}
             currentUser={currentUser}
-            initialView={activeTab === 'updates' ? 'updates' : 'logs'}
             onAddDailyLog={onAddDailyLog}
           />
         )}
