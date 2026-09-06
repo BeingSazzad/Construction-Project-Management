@@ -647,6 +647,24 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── MAIN SETTINGS & PROFILE SCREEN ───
   return (
     <div className="w-full flex flex-col gap-3 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+      {/* ─── Top Header (Single Clean Header: Back to Home) ─── */}
+      <div className="flex items-center gap-2.5 pb-2 mb-1 border-b border-[#EAEDF1]">
+        <button
+          onClick={() => onNavigateTab ? onNavigateTab('home') : null}
+          className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs flex-shrink-0"
+          title="Back to Home"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <div>
+          <h1 className="text-sm md:text-base font-bold text-[#171A1F] tracking-tight leading-tight">
+            Settings & Profile
+          </h1>
+          <p className="text-[10px] text-[#68707C] font-medium">
+            {userData.company || 'Lattice Construction'}
+          </p>
+        </div>
+      </div>
       
 
 
