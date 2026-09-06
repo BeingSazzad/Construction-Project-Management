@@ -120,6 +120,7 @@ export function App() {
   const [initialCalendarDate, setInitialCalendarDate] = useState<string>('2026-09-05');
 
   // Modals state
+  const [settingsSubView, setSettingsSubView] = useState<string>('main');
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
   const [isQuickActionSheetOpen, setIsQuickActionSheetOpen] = useState(false);
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
@@ -914,6 +915,7 @@ export function App() {
                   <SettingsView
                     currentUser={currentUser}
                     onSignOut={() => setAppView('auth')}
+                    initialSubView={settingsSubView}
                     onNavigateTab={(t) => {
                       if (t === 'team') {
                         setActiveTab('team');
@@ -1057,17 +1059,16 @@ export function App() {
             currentUser={currentUser}
             projects={projects}
             activeProject={activeProject}
-            onSelectProject={(proj) => {
-              handleSelectProject(proj);
-              setIsSideDrawerOpen(false);
-            }}
             unreadNotifsCount={unreadNotifsCount}
             onNavigateTab={(tab) => {
-              if (tab === 'schedule') {
-                handleSelectProject(projects[0]);
-                setProjectSubTab('schedule');
+              setActiveProject(null);
+              if (tab === 'company' || tab === 'support' || tab === 'security') {
+                setSettingsSubView(tab);
+                setActiveTab('more');
+              } else if (tab === 'settings') {
+                setSettingsSubView('main');
+                setActiveTab('more');
               } else {
-                setActiveProject(null);
                 setActiveTab(tab);
               }
             }}

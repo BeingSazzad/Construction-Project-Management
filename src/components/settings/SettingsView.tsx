@@ -25,12 +25,14 @@ export interface SettingsViewProps {
   currentUser: User;
   onSignOut: () => void;
   onNavigateTab?: (tab: string) => void;
+  initialSubView?: string;
 }
 
 export const SettingsView: React.FC<SettingsViewProps> = ({
   currentUser,
   onSignOut,
-  onNavigateTab
+  onNavigateTab,
+  initialSubView
 }) => {
   const [userData, setUserData] = useState<User>(currentUser);
   const [subView, setSubView] = useState<
@@ -38,7 +40,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     'privacy' | 'support' | 'profile' | 'security' | 'ai-disclaimer' | 
     'subscription-terms' | 'beta' | 'certifications' | 'equipment' | 
     'emergency' | 'sop' | 'field-sync' | 'verified'
-  >('main');
+  >((initialSubView as any) || 'main');
+
+  React.useEffect(() => {
+    if (initialSubView) {
+      setSubView(initialSubView as any);
+    }
+  }, [initialSubView]);
   const [pushMasterEnabled, setPushMasterEnabled] = useState(true);
 
   // Field Staff Specific Settings

@@ -1,8 +1,8 @@
 import React from 'react';
 import { User, Project } from '../../types';
 import { 
-  X, Users, Settings, LogOut, Building2, Calendar, 
-  Home, FileText, DollarSign, CheckSquare, ChevronRight, Sparkles, TrendingUp
+  X, Users, Settings, LogOut, FileText, Bell, 
+  ChevronRight, ShieldCheck, HelpCircle
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -12,7 +12,7 @@ interface SideDrawerProps {
   projects?: Project[];
   activeProject?: Project | null;
   onSelectProject?: (project: Project) => void;
-  onNavigateTab: (tab: string) => void;
+  onNavigateTab: (tab: string, subView?: string) => void;
   onOpenCreateProject?: () => void;
   onSignOut: () => void;
   unreadNotifsCount?: number;
@@ -22,14 +22,14 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   isOpen,
   onClose,
   currentUser,
-  projects = [],
   onNavigateTab,
   onSignOut,
+  unreadNotifsCount = 0,
 }) => {
   if (!isOpen) return null;
 
-  const go = (tab: string) => {
-    onNavigateTab(tab);
+  const go = (tab: string, subView?: string) => {
+    onNavigateTab(tab, subView);
     onClose();
   };
 
@@ -40,68 +40,49 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     return name.slice(0, 2).toUpperCase();
   };
 
-  const NAV_ITEMS = [
-    {
-      id: 'home',
-      label: 'Home Dashboard',
-      description: 'Executive overview & KPIs',
-      icon: Home,
-    },
-    {
-      id: 'projects',
-      label: 'Projects',
-      description: `${projects.length} Active jobsites`,
-      icon: Building2,
-      badge: `${projects.length}`,
-    },
-    {
-      id: 'opportunities',
-      label: 'Opportunities & Deals',
-      description: 'Pre-construction pipeline & bids',
-      icon: TrendingUp,
-    },
-    {
-      id: 'schedule',
-      label: 'Master Schedule',
-      description: 'Gantt & milestones',
-      icon: Calendar,
-    },
-    {
-      id: 'daily-logs',
-      label: 'Daily Logs',
-      description: 'Site updates & field reports',
-      icon: FileText,
-    },
-    {
-      id: 'budgets',
-      label: 'Budgets & Financials',
-      description: 'Cost codes & expenses',
-      icon: DollarSign,
-    },
-    {
-      id: 'punch',
-      label: 'Punch List',
-      description: 'Deficiency tracking & QA',
-      icon: CheckSquare,
-    },
+  const OPERATIONS_ITEMS = [
     {
       id: 'team',
       label: 'Team Directory',
-      description: 'Subcontractors & staff',
+      description: 'GC staff & trade subcontractors',
       icon: Users,
     },
     {
-      id: 'latti',
-      label: 'Latti AI Intelligence',
-      description: 'AI site copilot & analysis',
-      icon: Sparkles,
-      highlight: true,
+      id: 'daily-logs',
+      label: 'Daily Field Logs',
+      description: 'Site updates & field reports feed',
+      icon: FileText,
     },
     {
-      id: 'more',
-      label: 'Settings & Account',
-      description: 'Preferences & system info',
+      id: 'notifications',
+      label: 'Notifications & Alerts',
+      description: 'Safety warnings & approvals',
+      icon: Bell,
+      badge: unreadNotifsCount > 0 ? `${unreadNotifsCount}` : undefined,
+    },
+  ];
+
+  const ACCOUNT_ITEMS = [
+    {
+      id: 'company',
+      label: 'Company Profile',
+      description: 'Licensing, insurance & credentials',
+      icon: ShieldCheck,
+      subView: 'company',
+    },
+    {
+      id: 'settings',
+      label: 'Settings & Preferences',
+      description: 'Offline sync & field preferences',
       icon: Settings,
+      subView: 'main',
+    },
+    {
+      id: 'support',
+      label: 'Help & Support',
+      description: 'Field guide & support line',
+      icon: HelpCircle,
+      subView: 'support',
     },
   ];
 
@@ -113,7 +94,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
         className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
       />
 
-      {/* Minimal MVP Drawer Panel */}
+      {/* Minimal MVP Drawer Panel (Apple Light Design System) */}
       <div
         className="relative w-[320px] max-w-[85%] bg-white border-r border-[#DDE1E7] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-[#171A1F] animate-slide-in"
       >
@@ -143,31 +124,24 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
           </button>
         </div>
 
-        {/* ─── Clean Navigation Menu (No Cluttered Project List) ─── */}
-        <div className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2 py-1 block">
-            Navigation Hub
-          </span>
-
+        {/* ─── Clean Navigation Hub (Zero Clutter & Duplicacy) ─── */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3">
+          {/* Group 1: Company Operations */}
           <div className="flex flex-col gap-1">
-            {NAV_ITEMS.map((item) => {
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2 py-1 block">
+              Company Operations
+            </span>
+
+            {OPERATIONS_ITEMS.map((item) => {
               const IconComp = item.icon;
               return (
                 <button
                   key={item.id}
                   onClick={() => go(item.id)}
-                  className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group border ${
-                    item.highlight 
-                      ? 'bg-blue-50/60 border-blue-200/60 hover:bg-blue-100/50' 
-                      : 'border-transparent hover:bg-[#F2F2F7]'
-                  }`}
+                  className="w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group border border-transparent hover:bg-[#F2F2F7]"
                 >
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
-                      item.highlight 
-                        ? 'bg-[#1677FF] text-white' 
-                        : 'bg-[#EAF3FF] text-[#1677FF] group-hover:bg-[#1677FF] group-hover:text-white'
-                    }`}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors bg-[#EAF3FF] text-[#1677FF] group-hover:bg-[#1677FF] group-hover:text-white">
                       <IconComp className="w-4 h-4 stroke-[2]" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -186,6 +160,44 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
                         {item.badge}
                       </span>
                     )}
+                    <ChevronRight className="w-3.5 h-3.5 text-[#9DA5B1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="h-px bg-[#EAEDF1] mx-1" />
+
+          {/* Group 2: Account & System */}
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2 py-1 block">
+              Account &amp; System
+            </span>
+
+            {ACCOUNT_ITEMS.map((item) => {
+              const IconComp = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => go(item.id, item.subView)}
+                  className="w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group border border-transparent hover:bg-[#F2F2F7]"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors bg-[#F2F2F7] text-[#68707C] group-hover:bg-[#1677FF] group-hover:text-white">
+                      <IconComp className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors leading-tight">
+                        {item.label}
+                      </p>
+                      <p className="text-[10px] text-[#68707C] truncate mt-0.5">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
                     <ChevronRight className="w-3.5 h-3.5 text-[#9DA5B1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </button>
