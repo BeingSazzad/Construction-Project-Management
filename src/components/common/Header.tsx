@@ -218,6 +218,17 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               <button
+                onClick={() => (onOpenMessages ? onOpenMessages() : onNavigateTab ? onNavigateTab('messages') : null)}
+                className="w-10 h-10 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-xs"
+                title="Messages"
+              >
+                <MessageSquare className="w-4 h-4 text-[#0F172A]" />
+                {unreadMessagesCount > 0 && (
+                  <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#1677FF] ring-2 ring-white" />
+                )}
+              </button>
+
+              <button
                 onClick={onOpenNotifications}
                 className="w-10 h-10 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-xs"
                 title="Notifications"
