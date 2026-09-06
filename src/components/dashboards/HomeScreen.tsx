@@ -6,7 +6,7 @@ import {
   ChevronRight, Building2, HardHat, ShieldCheck, Users,
   Clock, AlertTriangle, Phone, CheckCircle2, ChevronDown,
   Layers, Hammer, FileSpreadsheet, Eye, Plus, Wrench,
-  Landmark, Receipt, FileCheck, ArrowUpRight, Check, Info
+  Landmark, Receipt, FileCheck, ArrowUpRight, Check, Info, Sun
 } from 'lucide-react';
 import { ProjectCard } from '../common/ProjectCard';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
@@ -91,29 +91,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
         
         {/* Portfolio Overview Hero Card */}
-        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F1F6FF] to-[#E2EFFF] p-4 sm:p-5 shadow-xs">
-          {/* Construction Crane Graphic / Photo on Right with smooth gradient mask */}
-          <div 
-            className="absolute right-0 top-0 bottom-0 w-2/5 md:w-1/2 bg-cover bg-center pointer-events-none opacity-90"
-            style={{
-              backgroundImage: `url('/assets/crane-hero.jpg')`,
-              maskImage: 'linear-gradient(to right, transparent, black 30%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent, black 30%)'
-            }}
-          />
-          
-          <div className="relative z-10 flex flex-col justify-between">
-            <div className="flex items-center justify-between">
+        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F4F8FF] to-white p-4 sm:p-5 shadow-xs">
+          <div className="flex items-start justify-between gap-3">
+            {/* Left: Portfolio Overview & Status */}
+            <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
                 Portfolio Overview
               </span>
-              <span className="text-xs font-semibold text-[#0F172A]">
-                {todayDateFormatted}
-              </span>
-            </div>
-
-            <div className="mt-2.5">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-1.5">
                 <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight">
                   On track
                 </h2>
@@ -122,6 +107,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <p className="text-xs text-[#64748B] font-medium mt-1">
                 Your projects are performing well.
               </p>
+            </div>
+
+            {/* Right: Date & Weather */}
+            <div className="flex flex-col items-end shrink-0">
+              <span className="text-xs font-semibold text-[#0F172A]">
+                {todayDateFormatted}
+              </span>
+              <button
+                onClick={() => setIsWeatherModalOpen(true)}
+                className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white border border-[#DCE8F8] text-xs font-medium transition-all cursor-pointer shadow-xs active:scale-95 group/w"
+                title="View weather radar & delay impact"
+              >
+                <Sun className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
+                <span className="font-bold text-[#0F172A]">82°F</span>
+                <span className="text-[#64748B] text-[11px]">Sunny</span>
+              </button>
             </div>
           </div>
         </div>
