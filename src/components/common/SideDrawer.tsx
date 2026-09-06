@@ -1,7 +1,8 @@
 import React from 'react';
 import { User, Project } from '../../types';
 import { 
-  X, Users, Settings, LogOut, Plus, Check, ArrowRight, Building2, Calendar
+  X, Users, Settings, LogOut, Building2, Calendar, 
+  Home, FileText, DollarSign, CheckSquare, ChevronRight, Sparkles
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -22,10 +23,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   onClose,
   currentUser,
   projects = [],
-  activeProject,
-  onSelectProject,
   onNavigateTab,
-  onOpenCreateProject,
   onSignOut,
 }) => {
   if (!isOpen) return null;
@@ -42,6 +40,65 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     return name.slice(0, 2).toUpperCase();
   };
 
+  const NAV_ITEMS = [
+    {
+      id: 'home',
+      label: 'Home Dashboard',
+      description: 'Executive overview & KPIs',
+      icon: Home,
+    },
+    {
+      id: 'projects',
+      label: 'Projects',
+      description: `${projects.length} Active jobsites`,
+      icon: Building2,
+      badge: `${projects.length}`,
+    },
+    {
+      id: 'schedule',
+      label: 'Master Schedule',
+      description: 'Gantt & milestones',
+      icon: Calendar,
+    },
+    {
+      id: 'daily-logs',
+      label: 'Daily Logs',
+      description: 'Site updates & field reports',
+      icon: FileText,
+    },
+    {
+      id: 'budgets',
+      label: 'Budgets & Financials',
+      description: 'Cost codes & expenses',
+      icon: DollarSign,
+    },
+    {
+      id: 'punch',
+      label: 'Punch List',
+      description: 'Deficiency tracking & QA',
+      icon: CheckSquare,
+    },
+    {
+      id: 'team',
+      label: 'Team Directory',
+      description: 'Subcontractors & staff',
+      icon: Users,
+    },
+    {
+      id: 'latti',
+      label: 'Latti AI Intelligence',
+      description: 'AI site copilot & analysis',
+      icon: Sparkles,
+      highlight: true,
+    },
+    {
+      id: 'more',
+      label: 'Settings & Account',
+      description: 'Preferences & system info',
+      icon: Settings,
+    },
+  ];
+
   return (
     <div className="fixed inset-0 z-50 flex font-sans overflow-hidden animate-fade-in">
       {/* Backdrop */}
@@ -52,7 +109,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
       {/* Minimal MVP Drawer Panel */}
       <div
-        className="relative w-[310px] max-w-[85%] bg-white border-r border-[#DDE1E7] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-[#171A1F] animate-slide-in"
+        className="relative w-[320px] max-w-[85%] bg-white border-r border-[#DDE1E7] h-full shadow-2xl flex flex-col z-10 overflow-hidden text-[#171A1F] animate-slide-in"
       >
         {/* ─── Profile Header ─── */}
         <div className="flex items-center gap-3 p-4 border-b border-[#EAEDF1] bg-[#F7F8FA]">
@@ -80,154 +137,55 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
           </button>
         </div>
 
-        {/* ─── Body Content ─── */}
-        <div className="flex-1 overflow-y-auto px-3.5 py-4 flex flex-col gap-4">
+        {/* ─── Clean Navigation Menu (No Cluttered Project List) ─── */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-2 py-1 block">
+            Navigation Hub
+          </span>
 
-          {/* 1. PROJECTS SWITCHER (Primary Core Feature) */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">
-                  Projects
-                </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#F2F2F7] text-[#68707C]">
-                  {projects.length}
-                </span>
-              </div>
-              {onOpenCreateProject && (
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenCreateProject();
-                  }}
-                  className="text-[11px] font-semibold text-[#1677FF] hover:text-[#0958D9] flex items-center gap-1 cursor-pointer transition-colors"
-                >
-                  <Plus className="w-3 h-3 stroke-[2.5]" />
-                  <span>New Project</span>
-                </button>
-              )}
-            </div>
-
-            {/* Clean Project Items */}
-            <div className="flex flex-col gap-1.5">
-              {projects.map((p) => {
-                const isActive = activeProject?.id === p.id;
-                return (
-                  <button
-                    key={p.id}
-                    onClick={() => {
-                      if (onSelectProject) {
-                        onSelectProject(p);
-                      } else {
-                        go('projects');
-                      }
-                      onClose();
-                    }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group ${
-                      isActive 
-                        ? 'bg-[#EAF3FF] border border-[#1677FF]/30 text-[#1677FF] shadow-2xs' 
-                        : 'hover:bg-[#F2F2F7] text-[#171A1F] border border-transparent'
-                    }`}
-                  >
-                    <div className="flex items-start gap-2.5 min-w-0 flex-1">
-                      <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
-                        isActive ? 'bg-[#1677FF] ring-2 ring-blue-200' : 'bg-[#DDE1E7] group-hover:bg-[#68707C]'
-                      }`} />
-                      <div className="min-w-0 flex-1">
-                        <p className={`text-xs font-semibold leading-snug break-words ${
-                          isActive ? 'text-[#1677FF]' : 'text-[#171A1F] group-hover:text-[#1677FF]'
-                        }`}>
-                          {p.name}
-                        </p>
-                        <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[#68707C]">
-                          <span className="truncate">{p.status || 'In Progress'}</span>
-                          <span>•</span>
-                          <span className="font-medium text-[#171A1F]">{p.progress}%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {isActive && (
-                      <div className="ml-2 flex-shrink-0 w-5 h-5 rounded-full bg-[#1677FF]/10 text-[#1677FF] flex items-center justify-center">
-                        <Check className="w-3 h-3 stroke-[3]" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* View All Projects Link */}
-            <button
-              onClick={() => go('projects')}
-              className="w-full flex items-center justify-center gap-1.5 py-2 text-[11px] font-semibold text-[#68707C] hover:text-[#1677FF] transition-colors cursor-pointer mt-1"
-            >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>All Projects Overview</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-
-          <div className="h-px bg-[#EAEDF1] mx-1" />
-
-          {/* 2. ESSENTIAL QUICK SHORTCUTS */}
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-1 pb-1 block">
-              Quick Shortcuts
-            </span>
+            {NAV_ITEMS.map((item) => {
+              const IconComp = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => go(item.id)}
+                  className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group border ${
+                    item.highlight 
+                      ? 'bg-blue-50/60 border-blue-200/60 hover:bg-blue-100/50' 
+                      : 'border-transparent hover:bg-[#F2F2F7]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+                      item.highlight 
+                        ? 'bg-[#1677FF] text-white' 
+                        : 'bg-[#EAF3FF] text-[#1677FF] group-hover:bg-[#1677FF] group-hover:text-white'
+                    }`}>
+                      <IconComp className="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors leading-tight">
+                        {item.label}
+                      </p>
+                      <p className="text-[10px] text-[#68707C] truncate mt-0.5">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
 
-            {/* Master Schedule */}
-            <button
-              onClick={() => go('schedule')}
-              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
-                  <Calendar className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                  Master Schedule
-                </span>
-              </div>
-              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
-                Active
-              </span>
-            </button>
-
-            {/* Team Directory */}
-            <button
-              onClick={() => go('team')}
-              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
-                  <Users className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                  Team Directory
-                </span>
-              </div>
-              <span className="text-[10px] font-bold text-[#68707C]">
-                12
-              </span>
-            </button>
-
-            {/* Settings */}
-            <button
-              onClick={() => go('more')}
-              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-[#F2F2F7] border border-[#DDE1E7] flex items-center justify-center flex-shrink-0 text-[#68707C] group-hover:text-[#171A1F]">
-                  <Settings className="w-3.5 h-3.5" />
-                </div>
-                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                  Settings &amp; App Info
-                </span>
-              </div>
-            </button>
+                  <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                    {item.badge && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1677FF] text-white">
+                        {item.badge}
+                      </span>
+                    )}
+                    <ChevronRight className="w-3.5 h-3.5 text-[#9DA5B1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                  </div>
+                </button>
+              );
+            })}
           </div>
-
         </div>
 
         {/* ─── Minimal Footer ─── */}
