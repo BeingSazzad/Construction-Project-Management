@@ -199,64 +199,64 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Executive Capital Health Card */}
         <div 
           onClick={onOpenBudgetsHub}
-          className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-3 group"
+          className="p-3 sm:p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2 group"
         >
           {/* Header row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
                 EXECUTIVE CAPITAL BALANCE
               </span>
-              <Info className="w-3.5 h-3.5 text-[#94A3B8]" />
+              <Info className="w-3 h-3 text-[#94A3B8]" />
             </div>
-            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976]">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976]">
               Protected
             </span>
           </div>
 
           {/* Value + Circular Arrow Button */}
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <h3 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight leading-none">
+              <h3 className="text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight leading-tight">
                 $34,850,000
               </h3>
-              <p className="text-[10.5px] sm:text-xs text-[#64748B] font-medium tracking-tight mt-1.5 leading-snug">
+              <p className="text-[10px] sm:text-[11px] text-[#64748B] font-medium tracking-tight mt-0.5 leading-snug truncate">
                 $16.8M Paid (48%) · $12.1M Committed · $5.95M Contingency
               </p>
             </div>
-            <div className="w-9 h-9 rounded-full bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center group-hover:bg-[#1677FF] group-hover:text-white transition-all shrink-0">
-              <ArrowRight className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-full bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center group-hover:bg-[#1677FF] group-hover:text-white transition-all shrink-0">
+              <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
 
           {/* Segmented Continuous Progress Bar */}
-          <div className="w-full h-2.5 rounded-full bg-[#F1F5F9] overflow-hidden flex gap-0.5 mt-0.5">
+          <div className="w-full h-2 rounded-full bg-[#F1F5F9] overflow-hidden flex gap-0.5 mt-0.5">
             <div className="h-full bg-[#1677FF] rounded-l-full" style={{ width: '48%' }} />
             <div className="h-full bg-[#60A5FA]" style={{ width: '35%' }} />
             <div className="h-full bg-[#BAE6FD] rounded-r-full" style={{ width: '17%' }} />
           </div>
 
           {/* Bar Legend */}
-          <div className="flex items-center gap-6 pt-0.5">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#1677FF] shrink-0" />
+          <div className="flex items-center gap-5 pt-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1677FF] shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[11px] text-[#64748B] font-medium leading-none">Paid</span>
-                <span className="text-[11px] font-bold text-[#0F172A] leading-tight mt-0.5">48%</span>
+                <span className="text-[10px] text-[#64748B] font-medium leading-none">Paid</span>
+                <span className="text-[10px] font-bold text-[#0F172A] leading-tight mt-0.5">48%</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#60A5FA] shrink-0" />
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#60A5FA] shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[11px] text-[#64748B] font-medium leading-none">Committed</span>
-                <span className="text-[11px] font-bold text-[#0F172A] leading-tight mt-0.5">35%</span>
+                <span className="text-[10px] text-[#64748B] font-medium leading-none">Committed</span>
+                <span className="text-[10px] font-bold text-[#0F172A] leading-tight mt-0.5">35%</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#BAE6FD] shrink-0" />
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#BAE6FD] shrink-0" />
               <div className="flex flex-col">
-                <span className="text-[11px] text-[#64748B] font-medium leading-none">Contingency</span>
-                <span className="text-[11px] font-bold text-[#0F172A] leading-tight mt-0.5">17%</span>
+                <span className="text-[10px] text-[#64748B] font-medium leading-none">Contingency</span>
+                <span className="text-[10px] font-bold text-[#0F172A] leading-tight mt-0.5">17%</span>
               </div>
             </div>
           </div>
