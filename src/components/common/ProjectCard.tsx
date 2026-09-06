@@ -32,18 +32,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     const s = project.status?.toLowerCase() || '';
     if (s.includes('complete')) {
       return {
-        label: '• Completed',
+        label: '● Completed',
         classes: 'bg-[#E9F9F3] text-[#10A976]'
       };
     }
     if (s.includes('attention') || s.includes('risk') || s.includes('hold') || s.includes('delay')) {
       return {
-        label: '• Needs Attention',
+        label: '● Needs Attention',
         classes: 'bg-[#FFF7E6] text-[#F59E0B]'
       };
     }
     return {
-      label: '• On Schedule',
+      label: '● On Schedule',
       classes: 'bg-[#E9F9F3] text-[#10A976]'
     };
   };

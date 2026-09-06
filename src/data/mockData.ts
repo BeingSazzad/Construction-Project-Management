@@ -13,7 +13,7 @@ export const CURRENT_USERS: Record<string, User> = {
     role: 'admin',
     roleTitle: 'Managing Principal & Founder',
     designation: 'Managing Principal & Founder',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatar: '/assets/avery-scott.jpg',
     company: 'Avery & Marsh Construction',
     phone: '+1 (555) 234-5678',
     assignedProjects: ['proj-1', 'proj-2', 'proj-3', 'proj-4', 'proj-5']
@@ -264,7 +264,7 @@ export const MOCK_PROJECTS: Project[] = [
   },
   {
     id: 'proj-2',
-    name: 'Downtown Commercial Tower',
+    name: 'Downtown Commercial',
     code: 'DCT-2024',
     location: '1200 Michigan Ave',
     cityState: 'Chicago, IL',
@@ -294,8 +294,8 @@ export const MOCK_PROJECTS: Project[] = [
       totalMilestones: 12,
       completedMilestones: 4
     },
-    thumbnail: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
-    coverImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&auto=format&fit=crop&q=80',
+    thumbnail: '/assets/crane-hero.jpg',
+    coverImage: '/assets/crane-hero.jpg',
     description: 'High-density mixed retail & 28-floor steel frame commercial tower with integrated subterranean transit concourse.',
     clientName: 'Metropolitan Trust',
     type: 'Commercial',

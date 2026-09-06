@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { User, Project } from '../../types';
 import { 
-  Bell, ChevronLeft, Menu, MessageSquare, MoreVertical, Edit3, Trash2 
+  Bell, ChevronLeft, Menu, MessageSquare, MoreVertical, Edit3, Trash2, Search 
 } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
 
@@ -40,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenLatti,
   onOpenSettings,
   onOpenDrawer,
+  onNavigateTab,
   onOpenEditProject,
   onDeleteProject
 }) => {
@@ -172,15 +173,15 @@ export const Header: React.FC<HeaderProps> = ({
         ) : (
           // Home Dashboard Header with Hamburger Drawer Button, Avatar Profile, and Right Actions (Light Mode)
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
               {/* Drawer Hamburger Button */}
               {onOpenDrawer && (
                 <button
                   onClick={onOpenDrawer}
-                  className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-xs"
+                  className="w-10 h-10 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-xs"
                   title="Open Navigation Menu"
                 >
-                  <Menu className="w-4 h-4" />
+                  <Menu className="w-5 h-5 text-[#0F172A]" />
                 </button>
               )}
 
@@ -191,41 +192,39 @@ export const Header: React.FC<HeaderProps> = ({
                 <img
                   src={avatarUrl}
                   alt={currentUser?.name}
-                  className="w-9 h-9 rounded-full object-cover border-2 border-[#1677FF]/30 group-hover:border-[#1677FF] transition-colors shadow-xs flex-shrink-0"
+                  className="w-10 h-10 rounded-full object-cover border border-[#E2E8F0] group-hover:border-[#1677FF] transition-colors shadow-xs flex-shrink-0"
                 />
                 <div className="min-w-0">
-                  <h1 className="text-xs sm:text-sm font-bold text-[#171A1F] tracking-tight leading-tight truncate group-hover:text-[#1677FF] transition-colors">
+                  <span className="text-[11px] text-[#64748B] font-medium leading-none block">
+                    Good morning,
+                  </span>
+                  <h1 className="text-sm sm:text-base font-bold text-[#0F172A] tracking-tight leading-snug truncate group-hover:text-[#1677FF] transition-colors mt-0.5">
                     {currentUser?.name || 'Avery Scott'}
                   </h1>
-                  <p className="text-[11px] text-[#64748B] mt-0.5 font-medium truncate">
-                    Avery &amp; Marsh Construction
+                  <p className="text-[11px] text-[#64748B] font-medium truncate leading-none mt-0.5">
+                    {currentUser?.company || 'Avery & Marsh Construction'}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              {onOpenMessages && (
-                <button
-                  onClick={onOpenMessages}
-                  className="w-9 h-9 rounded-xl bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-xs"
-                  title="Messages"
-                >
-                  <MessageSquare className="w-4 h-4 text-[#171A1F]" />
-                  {unreadMessagesCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1677FF]" />
-                  )}
-                </button>
-              )}
+              <button
+                onClick={() => (onNavigateTab ? onNavigateTab('projects') : null)}
+                className="w-10 h-10 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                title="Search"
+              >
+                <Search className="w-4 h-4 text-[#0F172A]" />
+              </button>
 
               <button
                 onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-xl bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-xs"
+                className="w-10 h-10 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-xs"
                 title="Notifications"
               >
-                <Bell className="w-4 h-4 text-[#171A1F]" />
+                <Bell className="w-4 h-4 text-[#0F172A]" />
                 {unreadNotifsCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1677FF]" />
+                  <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#1677FF] ring-2 ring-white" />
                 )}
               </button>
             </div>

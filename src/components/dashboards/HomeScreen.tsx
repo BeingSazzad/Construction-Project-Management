@@ -6,7 +6,7 @@ import {
   ChevronRight, Building2, HardHat, ShieldCheck, Users,
   Clock, AlertTriangle, Phone, CheckCircle2, ChevronDown,
   Layers, Hammer, FileSpreadsheet, Eye, Plus, Wrench,
-  Landmark, Receipt, FileCheck, ArrowUpRight, Check
+  Landmark, Receipt, FileCheck, ArrowUpRight, Check, Info
 } from 'lucide-react';
 import { ProjectCard } from '../common/ProjectCard';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
@@ -90,128 +90,213 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return (
       <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
         
-        {/* Context Bar */}
-        <div className="flex items-center justify-between pt-0.5">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[11px] text-[#64748B] font-semibold uppercase tracking-wider">
-              Portfolio & Capital Control
-            </span>
+        {/* Portfolio Overview Hero Card */}
+        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F1F6FF] to-[#E2EFFF] p-4 sm:p-5 shadow-xs">
+          {/* Construction Crane Graphic / Photo on Right with smooth gradient mask */}
+          <div 
+            className="absolute right-0 top-0 bottom-0 w-2/5 md:w-1/2 bg-cover bg-center pointer-events-none opacity-90"
+            style={{
+              backgroundImage: `url('/assets/crane-hero.jpg')`,
+              maskImage: 'linear-gradient(to right, transparent, black 30%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent, black 30%)'
+            }}
+          />
+          
+          <div className="relative z-10 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+                Portfolio Overview
+              </span>
+              <span className="text-xs font-semibold text-[#0F172A]">
+                {todayDateFormatted}
+              </span>
+            </div>
+
+            <div className="mt-2.5">
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight">
+                  On track
+                </h2>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#10A976] inline-block shadow-xs" />
+              </div>
+              <p className="text-xs text-[#64748B] font-medium mt-1">
+                Your projects are performing well.
+              </p>
+            </div>
           </div>
-          <span className="text-xs font-semibold text-[#64748B]">{todayDateFormatted}</span>
         </div>
 
         {/* 3 Executive KPIs */}
         <div className="grid grid-cols-3 gap-2.5">
           <div 
             onClick={onOpenBudgetsHub}
-            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[104px] group"
           >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
-            <div>
-              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-                {formattedBudget}
-              </span>
-              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight">
                 Total Budget
               </span>
+              <span className="text-base sm:text-lg font-black text-[#0F172A] block leading-tight mt-0.5">
+                {formattedBudget}
+              </span>
             </div>
-            <span className="text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-              {projects.length} sites
-            </span>
+            <div className="mt-2">
+              <span className="inline-flex items-center gap-1 text-[10px] text-[#10A976] font-bold bg-[#E9F9F3] px-2 py-0.5 rounded-full">
+                <span className="text-[11px] leading-none">↑</span> {projects.length} sites
+              </span>
+            </div>
           </div>
 
           <div 
             onClick={onOpenBudgetsHub}
-            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[104px] group"
           >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
-            <div>
-              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-                {formattedSpend}
-              </span>
-              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight">
                 Spend to Date
               </span>
+              <span className="text-base sm:text-lg font-black text-[#0F172A] block leading-tight mt-0.5">
+                {formattedSpend}
+              </span>
             </div>
-            <span className="text-[10px] text-[#1677FF] font-semibold bg-[#EAF3FF] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-              {Math.round((totalSpend / (totalBudget || 1)) * 100)}% utilized
-            </span>
+            <div className="mt-2">
+              <span className="inline-flex items-center text-[10px] text-[#1677FF] font-bold bg-[#EAF3FF] px-2 py-0.5 rounded-full">
+                {Math.round((totalSpend / (totalBudget || 1)) * 100)}% utilized
+              </span>
+            </div>
           </div>
 
           <div 
             onClick={onOpenProjects}
-            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[104px] group"
           >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <Building2 className="w-3.5 h-3.5" />
             </div>
-            <div>
-              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-                {projects.length} Sites
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight">
+                Active Sites
               </span>
-              <span className="text-[10px] text-[#64748B] font-medium block truncate">
-                Active Projects
+              <span className="text-base sm:text-lg font-black text-[#0F172A] block leading-tight mt-0.5">
+                {projects.length}
               </span>
             </div>
-            <span className="text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-              100% on schedule
-            </span>
+            <div className="mt-2">
+              <span className="inline-flex items-center gap-1 text-[10px] text-[#10A976] font-bold bg-[#E9F9F3] px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10A976]" />
+                100% on schedule
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Executive Capital Health Card */}
         <div 
           onClick={onOpenBudgetsHub}
-          className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/50 transition-all cursor-pointer flex items-center justify-between gap-3 group"
+          className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-3 group"
         >
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Executive Capital Balance</span>
-              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Protected</span>
+          {/* Header row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
+                EXECUTIVE CAPITAL BALANCE
+              </span>
+              <Info className="w-3.5 h-3.5 text-[#94A3B8]" />
             </div>
-            <h3 className="text-xl font-black text-[#0F172A] mt-1 leading-none">$34,850,000</h3>
-            <p className="text-xs text-[#64748B] mt-1.5 leading-snug">
-              $16.8M Paid (48%) · $12.1M Committed · $5.95M Contingency reserve
-            </p>
+            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976]">
+              Protected
+            </span>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-            <ChevronRight className="w-5 h-5" />
+
+          {/* Value + Circular Arrow Button */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-tight leading-none">
+                $34,850,000
+              </h3>
+              <p className="text-[10.5px] sm:text-xs text-[#64748B] font-medium tracking-tight mt-1.5 leading-snug">
+                $16.8M Paid (48%) · $12.1M Committed · $5.95M Contingency
+              </p>
+            </div>
+            <div className="w-9 h-9 rounded-full bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center group-hover:bg-[#1677FF] group-hover:text-white transition-all shrink-0">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Segmented Continuous Progress Bar */}
+          <div className="w-full h-2.5 rounded-full bg-[#F1F5F9] overflow-hidden flex gap-0.5 mt-0.5">
+            <div className="h-full bg-[#1677FF] rounded-l-full" style={{ width: '48%' }} />
+            <div className="h-full bg-[#60A5FA]" style={{ width: '35%' }} />
+            <div className="h-full bg-[#BAE6FD] rounded-r-full" style={{ width: '17%' }} />
+          </div>
+
+          {/* Bar Legend */}
+          <div className="flex items-center gap-6 pt-0.5">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#1677FF] shrink-0" />
+              <div className="flex flex-col">
+                <span className="text-[11px] text-[#64748B] font-medium leading-none">Paid</span>
+                <span className="text-[11px] font-bold text-[#0F172A] leading-tight mt-0.5">48%</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#60A5FA] shrink-0" />
+              <div className="flex flex-col">
+                <span className="text-[11px] text-[#64748B] font-medium leading-none">Committed</span>
+                <span className="text-[11px] font-bold text-[#0F172A] leading-tight mt-0.5">35%</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#BAE6FD] shrink-0" />
+              <div className="flex flex-col">
+                <span className="text-[11px] text-[#64748B] font-medium leading-none">Contingency</span>
+                <span className="text-[11px] font-bold text-[#0F172A] leading-tight mt-0.5">17%</span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Latti AI Executive Briefing */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-2.5">
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-[#1677FF]" />
-              <span className="text-xs font-bold text-[#1677FF]">Latti Executive Briefing</span>
+              <span className="text-sm font-bold text-[#1677FF]">Latti Executive Briefing</span>
             </div>
-            <button onClick={() => onOpenLatti()} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5">
+            <button 
+              onClick={() => onOpenLatti()} 
+              className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
+            >
               <span>View all</span>
-              <ChevronRight className="w-3 h-3" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-          <p className="text-xs text-[#475569] leading-relaxed">
-            Snell Isle concrete costs are running 8% (+$14,200) over budget due to revised pier depths. Thursday rainfall threatens exterior concrete cure. All other job sites are tracking within contingency thresholds.
-          </p>
-          <div className="flex items-center gap-2 pt-1">
+
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0]/70 rounded-2xl p-3.5">
+            <p className="text-xs text-[#334155] leading-relaxed font-normal">
+              Snell Isle concrete costs are running 8% (+$14,200) over budget due to revised pier depths. Thursday rainfall threatens exterior concrete cure. All other job sites are tracking within contingency thresholds.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 pt-0.5">
             <button 
               onClick={() => onOpenBudgetsHub ? onOpenBudgetsHub() : null}
-              className="h-7 px-3 rounded-full bg-[#F5F9FF] border border-[#EAF3FF] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 hover:bg-[#EAF3FF] transition-all cursor-pointer"
+              className="h-8 px-3.5 rounded-full bg-[#F1F6FE] hover:bg-[#E5EFFF] border border-[#DCE8F8] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
             >
-              <DollarSign className="w-3 h-3" />
+              <FileText className="w-3.5 h-3.5" />
               <span>Inspect Budget Risks</span>
             </button>
             <button 
               onClick={() => onOpenLatti("Show owner risk analysis")}
-              className="h-7 px-3 rounded-full bg-[#F5F9FF] border border-[#EAF3FF] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 hover:bg-[#EAF3FF] transition-all cursor-pointer"
+              className="h-8 px-3.5 rounded-full bg-[#F1F6FE] hover:bg-[#E5EFFF] border border-[#DCE8F8] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
             >
-              <Sparkles className="w-3 h-3" />
+              <Sparkles className="w-3.5 h-3.5" />
               <span>Ask Copilot</span>
             </button>
           </div>
@@ -220,15 +305,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Active Projects Multi-Site Rollup */}
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between px-0.5">
-            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Job Sites</h2>
-            <button onClick={onOpenProjects} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5">
+            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Active Job Sites</h2>
+            <button 
+              onClick={onOpenProjects} 
+              className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
+            >
               <span>See all ({projects.length})</span>
-              <ChevronRight className="w-3 h-3" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
           <div className="flex flex-col gap-2.5">
-            {projects.slice(0, 3).map((p) => (
+            {projects.map((p) => (
               <ProjectCard
                 key={p.id}
                 project={p}
