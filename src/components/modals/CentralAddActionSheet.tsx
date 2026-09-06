@@ -1,13 +1,14 @@
 import React from 'react';
 import { 
-  X, CheckSquare, MessageSquarePlus, DollarSign, Camera, FileText, ChevronRight 
+  X, CheckSquare, ClipboardList, DollarSign, Camera, FileText, ChevronRight 
 } from 'lucide-react';
 
 interface CentralAddActionSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onAddTask: () => void;
-  onAddUpdate: () => void;
+  onAddDailyLog?: () => void;
+  onAddUpdate?: () => void;
   onAddExpense: () => void;
   onAddPhoto: () => void;
   onAddDocument: () => void;
@@ -17,12 +18,15 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
   isOpen,
   onClose,
   onAddTask,
+  onAddDailyLog,
   onAddUpdate,
   onAddExpense,
   onAddPhoto,
   onAddDocument,
 }) => {
   if (!isOpen) return null;
+
+  const handleDailyLogAction = onAddDailyLog || onAddUpdate || (() => {});
 
   const actions = [
     {
@@ -34,12 +38,12 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
       action: onAddTask,
     },
     {
-      id: 'update',
-      label: 'Project Update',
-      subtitle: 'Post daily field progress, changes, or needed decisions',
-      icon: MessageSquarePlus,
+      id: 'daily-log',
+      label: 'Daily Log',
+      subtitle: 'Record field progress, crew activity & site updates',
+      icon: ClipboardList,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
-      action: onAddUpdate,
+      action: handleDailyLogAction,
     },
     {
       id: 'expense',
@@ -52,7 +56,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     {
       id: 'photo',
       label: 'Photo',
-      subtitle: 'Upload progress or punch verification photos',
+      subtitle: 'Upload site progress or verification photos',
       icon: Camera,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
       action: onAddPhoto,
@@ -60,7 +64,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     {
       id: 'document',
       label: 'Document',
-      subtitle: 'Attach architectural sets, permits, or contracts',
+      subtitle: 'Attach blueprints, specs, permits, or contracts',
       icon: FileText,
       color: 'bg-[#EAF3FF] text-[#1677FF]',
       action: onAddDocument,

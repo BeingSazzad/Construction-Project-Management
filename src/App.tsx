@@ -68,6 +68,7 @@ import { CreateProjectBudgetModal } from './components/modals/CreateProjectBudge
 import { DealAnalyzerModal } from './components/modals/DealAnalyzerModal';
 import { CreateTaskModal } from './components/modals/CreateTaskModal';
 import { CreatePunchModal } from './components/modals/CreatePunchModal';
+import { CreateDailyLogModal } from './components/modals/CreateDailyLogModal';
 import { PhotoUploadModal } from './components/modals/PhotoUploadModal';
 import { TaskDetailsModal } from './components/modals/TaskDetailsModal';
 import { PhotoPreviewModal } from './components/modals/PhotoPreviewModal';
@@ -132,6 +133,7 @@ export function App() {
   const [isCreatePunchOpen, setIsCreatePunchOpen] = useState(false);
   const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
   const [isUploadDocumentOpen, setIsUploadDocumentOpen] = useState(false);
+  const [isCreateDailyLogOpen, setIsCreateDailyLogOpen] = useState(false);
   const [isCreateDrawOpen, setIsCreateDrawOpen] = useState(false);
   const [isRecordLienWaiverOpen, setIsRecordLienWaiverOpen] = useState(false);
   const [isApprovePayAppOpen, setIsApprovePayAppOpen] = useState(false);
@@ -953,20 +955,38 @@ export function App() {
         isOpen={isQuickActionSheetOpen}
         onClose={() => setIsQuickActionSheetOpen(false)}
         onAddTask={() => {
+          const target = activeProject || projects[0];
+          setActiveProject(target);
+          setActiveTab('projects');
+          setProjectSubTab('tasks');
           setIsCreateTaskModalOpen(true);
         }}
-        onAddUpdate={() => {
-          if (!activeProject) setActiveProject(projects[0]);
-          setProjectSubTab('updates');
+        onAddDailyLog={() => {
+          const target = activeProject || projects[0];
+          setActiveProject(target);
+          setActiveTab('projects');
+          setProjectSubTab('daily-logs');
+          setIsCreateDailyLogOpen(true);
         }}
         onAddExpense={() => {
+          const target = activeProject || projects[0];
+          setActiveProject(target);
+          setActiveTab('projects');
+          setProjectSubTab('budget');
           setIsCreateChangeOrderOpen(true);
         }}
         onAddPhoto={() => {
+          const target = activeProject || projects[0];
+          setActiveProject(target);
+          setActiveTab('projects');
+          setProjectSubTab('photos');
           setIsPhotoUploadOpen(true);
         }}
         onAddDocument={() => {
-          if (!activeProject) setActiveProject(projects[0]);
+          const target = activeProject || projects[0];
+          setActiveProject(target);
+          setActiveTab('projects');
+          setProjectSubTab('documents');
           setIsUploadDocumentOpen(true);
         }}
       />
@@ -1038,6 +1058,18 @@ export function App() {
         project={activeProject}
         onClose={() => setIsCreatePunchOpen(false)}
         onCreate={handleCreatePunch}
+      />
+
+      {/* CREATE DAILY LOG MODAL */}
+      <CreateDailyLogModal
+        isOpen={isCreateDailyLogOpen}
+        onClose={() => setIsCreateDailyLogOpen(false)}
+        projects={projects}
+        preselectedProjectId={activeProject ? activeProject.id : projects[0]?.id}
+        onSaveLog={(newLog) => {
+          handleAddDailyLog(newLog);
+          setIsCreateDailyLogOpen(false);
+        }}
       />
 
       {/* PHOTO UPLOAD MODAL */}
