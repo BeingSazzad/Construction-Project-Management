@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Project, Task } from '../../types';
+import React, { useState, useMemo } from 'react';
+import { Project, Task, TaskStatus } from '../../types';
 import { 
   Plus, Download, Trash2, Check, 
-  ChevronDown, ChevronUp, X,
-  Layers, Hammer, Boxes, Sliders, ChevronRight
+  ChevronDown, ChevronUp, Search,
+  Layers, Hammer, Boxes, Sliders, Wrench, Building2,
+  MoreVertical, X
 } from 'lucide-react';
+import { CreateTaskModal } from '../modals/CreateTaskModal';
 
 interface ProjectTasksTabProps {
   project: Project;
@@ -18,135 +20,127 @@ interface TaskItem {
   id: string;
   title: string;
   status: 'done' | 'todo' | 'in-progress';
+  priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+  costCode?: string;
+  assignee?: string;
+  dueDate?: string;
 }
 
 interface StageTaskGroup {
   id: string;
   name: string;
-  iconType: string;
+  iconType: 'eng' | 'precon' | 'foundation' | 'framing' | 'mep' | 'envelope';
   tasks: TaskItem[];
 }
 
-const INITIAL_STAGE_GROUPS: StageTaskGroup[] = [
+// ─── AUTHENTIC SNELL ISLE RESIDENCE TASK BREAKDOWN (68% COMPLETE) ───
+const SNELL_ISLE_TASK_STAGES: StageTaskGroup[] = [
   {
     id: 'grp-eng',
-    name: 'Engineering',
+    name: '1. Engineering & Approvals',
     iconType: 'eng',
     tasks: [
-      { id: 't-1', title: 'Geotechnical soil report & foundation design', status: 'done' },
-      { id: 't-2', title: 'Structural engineering drawings & framing calculations', status: 'done' },
-      { id: 't-3', title: 'Truss engineering & shop drawings', status: 'done' },
-      { id: 't-4', title: 'Wind / seismic load calculations', status: 'done' },
-      { id: 't-5', title: 'Civil site engineering (grading & drainage plan)', status: 'done' }
+      { id: 't-eng-1', title: 'Geotechnical Soil Bearing Report', status: 'done', priority: 'Critical', costCode: '01-4000', assignee: 'Sarah Johnson' },
+      { id: 't-eng-2', title: 'Structural Engineering & Framing Calcs', status: 'done', priority: 'High', costCode: '01-4100', assignee: 'Sarah Johnson' },
+      { id: 't-eng-3', title: 'Engineered Truss Stamped Drawings', status: 'done', priority: 'High', costCode: '06-1000', assignee: 'John Smith' },
+      { id: 't-eng-4', title: 'Hurricane Wind Load Compliance', status: 'done', priority: 'Critical', costCode: '01-4200', assignee: 'Sarah Johnson' },
+      { id: 't-eng-5', title: 'Civil Grading & Drainage Plan', status: 'done', priority: 'Medium', costCode: '02-2000', assignee: 'John Smith' }
     ]
   },
   {
     id: 'grp-precon',
-    name: 'Pre-Construction',
+    name: '2. Pre-Construction & Permits',
     iconType: 'precon',
     tasks: [
-      { id: 't-6', title: 'Land survey & soil bearing test', status: 'todo' },
-      { id: 't-7', title: 'Submit HOA / architectural review package', status: 'todo' },
-      { id: 't-8', title: 'Pull building permit', status: 'todo' },
-      { id: 't-9', title: 'Pull environmental permit (DEP / stormwater SWPPP)', status: 'todo' },
-      { id: 't-10', title: 'Set up temporary power & water', status: 'todo' },
-      { id: 't-11', title: 'Install silt fencing & erosion control', status: 'todo' }
+      { id: 't-pre-1', title: 'Boundary & Topographical Land Survey', status: 'done', priority: 'High', costCode: '01-3000', assignee: 'John Smith' },
+      { id: 't-pre-2', title: 'HOA Architectural Review Approval', status: 'done', priority: 'Medium', costCode: '01-3100', assignee: 'Sarah Johnson' },
+      { id: 't-pre-3', title: 'City Building Department Permit', status: 'done', priority: 'Critical', costCode: '01-3200', assignee: 'Sarah Johnson' },
+      { id: 't-pre-4', title: 'DEP Environmental Stormwater Permit', status: 'done', priority: 'Medium', costCode: '01-3300', assignee: 'John Smith' },
+      { id: 't-pre-5', title: 'Temporary Power Pole & Water Hookup', status: 'done', priority: 'High', costCode: '01-5000', assignee: 'John Smith' }
     ]
   },
   {
     id: 'grp-foundation',
-    name: 'Site Work & Foundation',
+    name: '3. Site Work & Foundation',
     iconType: 'foundation',
     tasks: [
-      { id: 't-12', title: 'Excavation & rough grading', status: 'todo' },
-      { id: 't-13', title: 'Underground plumbing rough-in inspection', status: 'todo' },
-      { id: 't-14', title: 'Form & pour post-tension slab foundation', status: 'todo' }
+      { id: 't-fnd-1', title: 'Site Excavation & Pad Compaction', status: 'done', priority: 'High', costCode: '02-3000', assignee: 'Apex Earthworks' },
+      { id: 't-fnd-2', title: 'Underground Plumbing Rough-In', status: 'done', priority: 'High', costCode: '15-1000', assignee: 'Titan MEP' },
+      { id: 't-fnd-3', title: 'Stem Wall & Vapor Barrier Installation', status: 'done', priority: 'Medium', costCode: '03-1000', assignee: 'Suncoast Concrete' },
+      { id: 't-fnd-4', title: 'Post-Tension Foundation Slab Pour', status: 'done', priority: 'Critical', costCode: '03-3000', assignee: 'Suncoast Concrete' }
     ]
   },
   {
     id: 'grp-framing',
-    name: 'Framing & Structure',
+    name: '4. Structural Framing & Concrete Slabs',
     iconType: 'framing',
     tasks: [
-      { id: 't-15', title: 'First & second floor wood framing', status: 'todo' },
-      { id: 't-16', title: 'Roof truss installation & decking', status: 'todo' },
-      { id: 't-17', title: 'Framing structural municipal inspection', status: 'todo' }
-    ]
-  }
-];
-
-const TEMPLATE_PHASES = [
-  {
-    id: 'tp-drywall',
-    name: '8. Insulation & Drywall',
-    tasks: [
-      'Insulation (walls & attic to R-13 walls / R-38 attic)',
-      'Hang drywall',
-      'Drywall finish & texture',
-      'Prime walls'
+      { id: 't-frm-1', title: 'First & Second Floor Wood Framing', status: 'done', priority: 'High', costCode: '06-1100', assignee: 'Apex Framing' },
+      { id: 't-frm-2', title: 'Roof Truss Erection & Shear Decking', status: 'done', priority: 'High', costCode: '06-1200', assignee: 'Apex Framing' },
+      { id: 't-frm-3', title: 'City Framing & Shear Inspection', status: 'in-progress', priority: 'Critical', costCode: '06-1300', assignee: 'John Smith', dueDate: 'Today 10:00 AM' },
+      { id: 't-frm-4', title: 'Level 2 Elevated Deck Concrete Pour', status: 'todo', priority: 'Critical', costCode: '03-3100', assignee: 'Suncoast Concrete', dueDate: 'Thu, Sep 10' }
     ]
   },
   {
-    id: 'tp-finishes',
-    name: '9. Interior Finishes',
+    id: 'grp-mep',
+    name: '5. MEP Utility Rough-In (Mech, Elec, Plumb)',
+    iconType: 'mep',
     tasks: [
-      'Interior doors & trim',
-      'Cabinetry install',
-      'Countertop template & install',
-      'Hardwood & tile flooring',
-      'Interior paint topcoat',
-      'Hardware & fixture installation'
+      { id: 't-mep-1', title: 'HVAC Overhead Ductwork & Line Sets', status: 'in-progress', priority: 'High', costCode: '15-4000', assignee: 'Titan MEP', dueDate: 'Today 1:30 PM' },
+      { id: 't-mep-2', title: 'Primary Romex Wiring & Electrical Boxes', status: 'in-progress', priority: 'Medium', costCode: '16-1000', assignee: 'Spark Electric' },
+      { id: 't-mep-3', title: 'Plumbing Drain Waste Vent Pressure Test', status: 'todo', priority: 'High', costCode: '15-2000', assignee: 'Titan MEP', dueDate: 'Fri, Sep 11' }
     ]
   },
   {
-    id: 'tp-mep',
-    name: '10. MEP Trims & Fixtures',
+    id: 'grp-envelope',
+    name: '6. Building Envelope & Exterior Glass',
+    iconType: 'envelope',
     tasks: [
-      'Plumbing fixtures set (faucets, sinks, toilets, showers)',
-      'HVAC condenser set & duct trim',
-      'Electrical device trims (receptacles, switches, lighting)',
-      'Low voltage & security trim-out'
+      { id: 't-env-1', title: 'Weather Barrier Housewrap & Flashing', status: 'todo', priority: 'High', costCode: '07-2000', assignee: 'Apex Framing' },
+      { id: 't-env-2', title: 'Impact Glass Windows & Sliders', status: 'todo', priority: 'Critical', costCode: '08-5000', assignee: 'ClearView Glazing' },
+      { id: 't-env-3', title: 'Exterior Stucco Scratch & Brown Coat', status: 'todo', priority: 'Medium', costCode: '09-2000', assignee: 'Stucco Masters' },
+      { id: 't-env-4', title: 'Roof Underlayment & Metal Standing Seam', status: 'todo', priority: 'High', costCode: '07-6000', assignee: 'Suncoast Roofing' }
     ]
   }
 ];
 
 export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
-  project: _project,
-  tasks: _tasks,
-  onCreateTask,
+  project,
+  onCreateTask: onOpenCreateTaskModal,
 }) => {
-  const [stageGroups, setStageGroups] = useState<StageTaskGroup[]>(INITIAL_STAGE_GROUPS);
+  const [stageGroups, setStageGroups] = useState<StageTaskGroup[]>(SNELL_ISLE_TASK_STAGES);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'todo' | 'in-progress' | 'done'>('all');
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [isViewAll, setIsViewAll] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // Modals state
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
-  const [isCustomTaskModalOpen, setIsCustomTaskModalOpen] = useState(false);
-
-  // Custom task form state
-  const [selectedGroupForNewTask, setSelectedGroupForNewTask] = useState('grp-precon');
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-
-  // Template selection state
-  const [selectedTemplateTasks, setSelectedTemplateTasks] = useState<Record<string, boolean>>({
-    'Insulation (walls & attic to R-13 walls / R-38 attic)': true,
-    'Hang drywall': true,
-    'Interior doors & trim': true,
-    'Cabinetry install': true,
-    'Plumbing fixtures set (faucets, sinks, toilets, showers)': true
-  });
-
+  // Icon mapping
   const getStageIcon = (iconType: string) => {
     switch (iconType) {
       case 'eng': return <Layers className="w-4 h-4 text-[#1677FF]" />;
       case 'precon': return <Sliders className="w-4 h-4 text-amber-600" />;
       case 'foundation': return <Hammer className="w-4 h-4 text-emerald-600" />;
       case 'framing': return <Boxes className="w-4 h-4 text-purple-600" />;
+      case 'mep': return <Wrench className="w-4 h-4 text-sky-600" />;
+      case 'envelope': return <Building2 className="w-4 h-4 text-teal-600" />;
       default: return <Layers className="w-4 h-4 text-[#1677FF]" />;
     }
   };
 
+  const getStageIconBg = (iconType: string) => {
+    switch (iconType) {
+      case 'eng': return 'bg-[#EAF3FF]';
+      case 'precon': return 'bg-amber-50';
+      case 'foundation': return 'bg-emerald-50';
+      case 'framing': return 'bg-purple-50';
+      case 'mep': return 'bg-sky-50';
+      case 'envelope': return 'bg-teal-50';
+      default: return 'bg-slate-50';
+    }
+  };
+
+  // Toggle single group accordion
   const toggleGroup = (groupId: string) => {
     setCollapsedGroups(prev => ({
       ...prev,
@@ -154,6 +148,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     }));
   };
 
+  // Toggle task status progression: To Do -> In Progress -> Done -> To Do
   const toggleTaskStatus = (groupId: string, taskId: string) => {
     setStageGroups(prev => prev.map(grp => {
       if (grp.id !== groupId) return grp;
@@ -181,219 +176,291 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     }));
   };
 
-  const handleImportBudget = () => {
-    alert("Imported line items from Project Master Budget into Pre-Construction and Foundation checklists!");
-  };
+  // Total metrics
+  const allTasks = useMemo(() => stageGroups.flatMap(g => g.tasks), [stageGroups]);
+  const totalCount = allTasks.length;
+  const doneCount = allTasks.filter(t => t.status === 'done').length;
+  const inProgressCount = allTasks.filter(t => t.status === 'in-progress').length;
+  const todoCount = allTasks.filter(t => t.status === 'todo').length;
 
-  const handleAddCustomTaskSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTaskTitle.trim()) return;
+  // Filtered groups based on search & status filter
+  const filteredGroups = useMemo(() => {
+    return stageGroups.map(grp => {
+      const filteredTasks = grp.tasks.filter(t => {
+        const matchesStatus = statusFilter === 'all' || t.status === statusFilter;
+        const matchesSearch = !searchQuery.trim() || 
+          t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          grp.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesStatus && matchesSearch;
+      });
 
-    setStageGroups(prev => prev.map(grp => {
-      if (grp.id !== selectedGroupForNewTask) return grp;
       return {
         ...grp,
-        tasks: [
-          ...grp.tasks,
-          { id: `t-${Date.now()}`, title: newTaskTitle.trim(), status: 'todo' }
-        ]
+        tasks: filteredTasks,
+        originalTasks: grp.tasks
       };
-    }));
-
-    setNewTaskTitle('');
-    setIsCustomTaskModalOpen(false);
-  };
-
-  const handleSelectAllTemplates = (select: boolean) => {
-    const next: Record<string, boolean> = {};
-    TEMPLATE_PHASES.forEach(p => {
-      p.tasks.forEach(t => {
-        next[t] = select;
-      });
-    });
-    setSelectedTemplateTasks(next);
-  };
-
-  const handleApplyTemplateTasks = () => {
-    TEMPLATE_PHASES.forEach(tp => {
-      const addedTasks = tp.tasks
-        .filter(t => selectedTemplateTasks[t])
-        .map(t => ({ id: `t-${Date.now()}-${Math.random()}`, title: t, status: 'todo' as const }));
-
-      if (addedTasks.length > 0) {
-        setStageGroups(prev => [
-          ...prev,
-          {
-            id: `grp-${tp.id}-${Date.now()}`,
-            name: tp.name,
-            iconType: 'framing',
-            tasks: addedTasks
-          }
-        ]);
-      }
-    });
-
-    setIsTemplateModalOpen(false);
-  };
-
-  const totalTasksCount = stageGroups.reduce((acc, g) => acc + g.tasks.length, 0);
-  const doneTasksCount = stageGroups.reduce((acc, g) => acc + g.tasks.filter(t => t.status === 'done').length, 0);
-  const selectedTemplateCount = Object.values(selectedTemplateTasks).filter(Boolean).length;
+    }).filter(grp => grp.tasks.length > 0 || !searchQuery.trim());
+  }, [stageGroups, statusFilter, searchQuery]);
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-3.5 px-4 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
-      {/* ─── 1. TASKS HEADER & PRIMARY ACTION ─── */}
-      <div className="flex items-center justify-between">
+      {/* ─── 1. Header & Primary CTA ─── */}
+      <div className="flex items-center justify-between px-0.5 pt-1">
         <div>
-          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Project Tasks</h2>
-          <p className="text-xs text-[#68707C] mt-0.5 font-medium">
-            {doneTasksCount} of {totalTasksCount} tasks completed
+          <h1 className="text-lg font-bold text-[#0F172A] tracking-tight">
+            Project Tasks
+          </h1>
+          <p className="text-xs text-[#64748B] font-medium mt-0.5">
+            {doneCount} of {totalCount} tasks completed ({Math.round((doneCount / totalCount) * 100)}%)
           </p>
         </div>
 
-        {/* Primary CTA */}
         <button
           onClick={() => {
-            if (onCreateTask) onCreateTask();
-            else setIsBottomSheetOpen(true);
+            if (onOpenCreateTaskModal) onOpenCreateTaskModal();
+            else setIsCreateModalOpen(true);
           }}
-          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
+          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#1366DB] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all whitespace-nowrap shrink-0"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>Add Task</span>
         </button>
       </div>
 
-      {/* ─── 2. SECONDARY ACTIONS (Clean Inline Actions, No Outer Box) ─── */}
-      <div className="flex items-center justify-between px-0.5">
+      {/* ─── 2. Status Filter Pills ─── */}
+      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
         <button
-          onClick={() => setIsViewAll(!isViewAll)}
-          className="text-xs font-bold text-[#1677FF] hover:underline cursor-pointer"
+          onClick={() => setStatusFilter('all')}
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
+            statusFilter === 'all'
+              ? 'bg-[#1677FF] text-white font-bold shadow-xs'
+              : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          All ({totalCount})
+        </button>
+
+        <button
+          onClick={() => setStatusFilter('todo')}
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
+            statusFilter === 'todo'
+              ? 'bg-[#1677FF] text-white font-bold shadow-xs'
+              : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          To Do ({todoCount})
+        </button>
+
+        <button
+          onClick={() => setStatusFilter('in-progress')}
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
+            statusFilter === 'in-progress'
+              ? 'bg-[#1677FF] text-white font-bold shadow-xs'
+              : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          In Progress ({inProgressCount})
+        </button>
+
+        <button
+          onClick={() => setStatusFilter('done')}
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
+            statusFilter === 'done'
+              ? 'bg-[#1677FF] text-white font-bold shadow-xs'
+              : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          Done ({doneCount})
+        </button>
+      </div>
+
+      {/* ─── 3. Search Bar ─── */}
+      <div className="relative">
+        <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search tasks..."
+          className="w-full h-9 pl-9 pr-8 bg-white border border-[#E2E8F0] rounded-xl text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#1677FF] transition-colors shadow-2xs"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8] hover:text-[#0F172A]"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* ─── 4. Secondary Action Row: Collapse / Expand ─── */}
+      <div className="flex items-center justify-between px-0.5 text-xs font-medium">
+        <button
+          onClick={() => setIsViewAll(prev => !prev)}
+          className="text-[#1677FF] font-semibold hover:underline cursor-pointer"
         >
           {isViewAll ? 'Collapse All' : 'Expand All'}
         </button>
 
         <button
-          onClick={handleImportBudget}
-          className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#F2F2F7] text-[#171A1F] text-xs font-semibold flex items-center gap-1.5 border border-[#DDE1E7] cursor-pointer transition-colors"
-          title="Import line items from project budget"
+          onClick={() => alert('CSI MasterFormat construction task templates loaded into Snell Isle Residence.')}
+          className="flex items-center gap-1 text-[#64748B] hover:text-[#1677FF] transition-colors cursor-pointer"
         >
-          <Download className="w-3.5 h-3.5 text-[#1677FF]" />
-          <span>Import Budget</span>
+          <Download className="w-3.5 h-3.5" />
+          <span>Import Tasks</span>
         </button>
       </div>
 
-      {/* ─── 3. STAGE/DIVISION TASK ACCORDIONS ─── */}
+      {/* ─── 5. Stage Groups List (No Text Truncation, Clean Progress) ─── */}
       <div className="flex flex-col gap-3">
-        {stageGroups.map((group) => {
+        {filteredGroups.map((group) => {
           const isCollapsed = !isViewAll && collapsedGroups[group.id];
-          const doneCount = group.tasks.filter(t => t.status === 'done').length;
-          const totalCount = group.tasks.length;
-          const isAllDone = totalCount > 0 && doneCount === totalCount;
+          const groupTotal = group.originalTasks.length;
+          const groupDone = group.originalTasks.filter(t => t.status === 'done').length;
+          const groupPercent = groupTotal > 0 ? Math.round((groupDone / groupTotal) * 100) : 0;
+          const is100Done = groupPercent === 100;
 
           return (
             <div
               key={group.id}
-              className="rounded-3xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs transition-all"
+              className="rounded-2xl bg-white border border-[#E2E8F0] overflow-hidden shadow-card transition-all"
             >
-              {/* Accordion Group Header */}
+              {/* Accordion Header */}
               <button
                 type="button"
                 onClick={() => toggleGroup(group.id)}
-                className="w-full p-4 flex items-center justify-between bg-white hover:bg-[#F9FAFB] transition-colors cursor-pointer"
+                className="w-full p-3.5 flex items-center justify-between gap-2.5 bg-white hover:bg-[#F8FAFC] transition-colors cursor-pointer text-left"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className={`w-8 h-8 rounded-xl ${getStageIconBg(group.iconType)} flex items-center justify-center shrink-0`}>
                     {getStageIcon(group.iconType)}
                   </div>
-                  <div className="text-left">
-                    <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">{group.name}</h3>
-                    <p className="text-xs text-[#68707C] font-medium mt-0.5">{totalCount} items in phase</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-xs font-bold text-[#0F172A] truncate">
+                      {group.name}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex-1 max-w-[140px] h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-300 ${
+                            is100Done ? 'bg-emerald-500' : groupPercent > 0 ? 'bg-[#1677FF]' : 'bg-transparent'
+                          }`}
+                          style={{ width: `${groupPercent}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-[#64748B] font-medium shrink-0">
+                        {groupDone} of {groupTotal} completed
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                    isAllDone
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : 'bg-[#EAF3FF] text-[#1677FF]'
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`text-[11px] font-bold ${
+                    is100Done ? 'text-emerald-700' : groupPercent > 0 ? 'text-[#1677FF]' : 'text-[#64748B]'
                   }`}>
-                    {doneCount}/{totalCount}
+                    {groupPercent}%
                   </span>
                   {isCollapsed ? (
-                    <ChevronDown className="w-4 h-4 text-[#68707C]" />
+                    <ChevronDown className="w-4 h-4 text-[#94A3B8]" />
                   ) : (
-                    <ChevronUp className="w-4 h-4 text-[#68707C]" />
+                    <ChevronUp className="w-4 h-4 text-[#94A3B8]" />
                   )}
                 </div>
               </button>
 
-              {/* Task Items List (Clean divided list, NO nested gray boxes!) */}
+              {/* Task Items (Clean Rows, Full Text Visibility, No Truncation) */}
               {!isCollapsed && (
-                <div className="divide-y divide-[#F2F2F7] border-t border-[#EAEDF1]">
+                <div className="divide-y divide-[#F1F5F9] border-t border-[#E2E8F0]">
                   {group.tasks.length === 0 ? (
-                    <p className="text-xs text-[#68707C] py-3 text-center">No tasks in this stage.</p>
+                    <p className="text-xs text-[#94A3B8] py-3 text-center">
+                      No tasks matching filters.
+                    </p>
                   ) : (
-                    group.tasks.map((task) => (
-                      <div
-                        key={task.id}
-                        className="px-4 py-3 hover:bg-[#F9FAFB] flex items-center justify-between gap-3 transition-colors group"
-                      >
-                        <div 
-                          onClick={() => toggleTaskStatus(group.id, task.id)}
-                          className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer select-none"
+                    group.tasks.map((task) => {
+                      const isTaskDone = task.status === 'done';
+                      const isTaskInProgress = task.status === 'in-progress';
+
+                      return (
+                        <div
+                          key={task.id}
+                          className="px-3.5 py-3 hover:bg-[#F8FAFC] flex items-center justify-between gap-2.5 transition-colors group"
                         >
-                          <div className={`w-4.5 h-4.5 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
-                            task.status === 'done' ? 'bg-emerald-600 text-white' : 'border-2 border-[#DDE1E7] bg-white'
-                          }`}>
-                            {task.status === 'done' && <Check className="w-3 h-3 stroke-[3]" />}
-                          </div>
-                          <span 
-                            className={`text-xs truncate ${
-                              task.status === 'done' ? 'text-[#9DA5B1] line-through' : 'font-medium text-[#171A1F] group-hover:text-[#1677FF]'
-                            }`}
-                          >
-                            {task.title}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          {/* Status Pill with 3-state progression */}
-                          <button
-                            type="button"
+                          {/* Left: Checkmark & Full Task Title */}
+                          <div 
                             onClick={() => toggleTaskStatus(group.id, task.id)}
-                            className={`px-2.5 py-0.5 rounded-full text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1 ${
-                              task.status === 'done'
-                                ? 'bg-emerald-50 text-emerald-700'
-                                : task.status === 'in-progress'
-                                ? 'bg-[#EAF3FF] text-[#1677FF]'
-                                : 'bg-[#F2F2F7] text-[#68707C] hover:bg-[#EAEDF1]'
-                            }`}
+                            className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer select-none"
                           >
-                            {task.status === 'done' ? (
-                              <span>Done</span>
-                            ) : task.status === 'in-progress' ? (
-                              <>
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
-                                <span>In Progress</span>
-                              </>
-                            ) : (
-                              <span>To Do</span>
-                            )}
-                          </button>
+                            <div className={`w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                              isTaskDone 
+                                ? 'bg-emerald-600 text-white' 
+                                : isTaskInProgress
+                                ? 'border-2 border-[#1677FF] bg-[#EAF3FF]'
+                                : 'border-2 border-[#CBD5E1] bg-white hover:border-[#1677FF]'
+                            }`}>
+                              {isTaskDone ? (
+                                <Check className="w-3 h-3 stroke-[3]" />
+                              ) : isTaskInProgress ? (
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF]" />
+                              ) : null}
+                            </div>
 
-                          {/* Delete Task */}
-                          <button
-                            onClick={() => deleteTask(group.id, task.id)}
-                            className="w-7 h-7 rounded-lg text-[#9DA5B1] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors opacity-0 group-hover:opacity-100"
-                            title="Delete task"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                            <div className="min-w-0 flex-1">
+                              <span 
+                                className={`text-xs block leading-snug break-words ${
+                                  isTaskDone 
+                                    ? 'text-[#94A3B8] line-through' 
+                                    : 'font-semibold text-[#0F172A] group-hover:text-[#1677FF]'
+                                }`}
+                              >
+                                {task.title}
+                              </span>
+                              {task.dueDate && !isTaskDone && (
+                                <span className="text-[10px] text-[#1677FF] font-medium block mt-0.5">
+                                  Due: {task.dueDate}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Right: Status Pill & Delete */}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => toggleTaskStatus(group.id, task.id)}
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1 whitespace-nowrap ${
+                                isTaskDone
+                                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                  : isTaskInProgress
+                                  ? 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30'
+                                  : 'bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0]'
+                              }`}
+                            >
+                              {isTaskDone ? (
+                                <span>Done</span>
+                              ) : isTaskInProgress ? (
+                                <>
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
+                                  <span>In Progress</span>
+                                </>
+                              ) : (
+                                <span>To Do</span>
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => deleteTask(group.id, task.id)}
+                              className="w-6 h-6 rounded-md text-[#94A3B8] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors opacity-60 group-hover:opacity-100"
+                              title="Delete task"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               )}
@@ -402,247 +469,29 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         })}
       </div>
 
-      {/* ─── 4. BOTTOM SHEET: SELECT TASK CREATION MODE ─── */}
-      {isBottomSheetOpen && (
-        <div 
-          onClick={() => setIsBottomSheetOpen(false)}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs animate-fade-in font-sans"
-        >
-          <div 
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-[430px] bg-white border-t border-x border-[#DDE1E7] rounded-t-[28px] p-5 pb-8 shadow-2xl flex flex-col gap-3.5 text-[#171A1F] animate-slide-up"
-          >
-            {/* Pull Indicator */}
-            <div className="w-10 h-1 rounded-full bg-[#DDE1E7] mx-auto -mt-1 mb-1" />
-
-            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
-              <div>
-                <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">Select Task Creation Mode</h3>
-                <p className="text-[12px] text-[#68707C] mt-0.5">Pick standard build phases or create a single task</p>
-              </div>
-              <button
-                onClick={() => setIsBottomSheetOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Option 1: Construction Phase Template */}
-            <button
-              onClick={() => {
-                setIsBottomSheetOpen(false);
-                setIsTemplateModalOpen(true);
-              }}
-              className="p-4 rounded-2xl bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 flex items-center justify-between gap-3 text-left transition-all cursor-pointer group shadow-xs active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                    Construction Phase Template
-                  </h4>
-                  <p className="text-[12px] text-[#68707C] mt-0.5 font-medium">
-                    Pre-loaded build order: Pre-Con, Drywall, Finishes & MEP
-                  </p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] flex-shrink-0" />
-            </button>
-
-            {/* Option 2: Custom Single Task */}
-            <button
-              onClick={() => {
-                setIsBottomSheetOpen(false);
-                setIsCustomTaskModalOpen(true);
-              }}
-              className="p-4 rounded-2xl bg-[#F7F8FA] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 flex items-center justify-between gap-3 text-left transition-all cursor-pointer group shadow-xs active:scale-[0.99]"
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
-                  <Sliders className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
-                    Custom Single Task
-                  </h4>
-                  <p className="text-[12px] text-[#68707C] mt-0.5 font-medium">
-                    Create an individual task or inspection from scratch
-                  </p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] flex-shrink-0" />
-            </button>
-
-          </div>
-        </div>
-      )}
-
-      {/* ─── 5. FULL TEMPLATE CHECKLIST MODAL ─── */}
-      {isTemplateModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-[#171A1F] max-h-[90vh] overflow-y-auto">
-            
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-[#1677FF]" />
-                  <h3 className="text-sm font-bold text-[#171A1F] tracking-tight">Add Tasks — Construction Template</h3>
-                </div>
-                <p className="text-[12px] text-[#68707C] mt-0.5">Select tasks in sequential build order</p>
-              </div>
-
-              <button
-                onClick={() => setIsTemplateModalOpen(false)}
-                className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Select / Deselect All Controls */}
-            <div className="flex items-center justify-between px-1 py-1 text-xs">
-              <span className="text-[12px] text-[#68707C] font-semibold">
-                {selectedTemplateCount} tasks selected
-              </span>
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleSelectAllTemplates(true)}
-                  className="text-[12px] font-bold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  <Check className="w-3 h-3" />
-                  <span>Select all</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleSelectAllTemplates(false)}
-                  className="text-[12px] font-bold text-[#68707C] hover:text-[#171A1F] cursor-pointer"
-                >
-                  Deselect all
-                </button>
-              </div>
-            </div>
-
-            {/* Checklist Phases */}
-            <div className="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-1">
-              {TEMPLATE_PHASES.map((tp) => (
-                <div key={tp.id} className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-2">
-                  <div className="flex items-center justify-between pb-1 border-b border-[#EAEDF1]">
-                    <span className="text-xs font-bold text-[#171A1F]">{tp.name}</span>
-                    <span className="text-[10px] font-bold text-[#68707C]">
-                      {tp.tasks.filter(t => selectedTemplateTasks[t]).length}/{tp.tasks.length}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    {tp.tasks.map((tName) => {
-                      const isChecked = !!selectedTemplateTasks[tName];
-                      return (
-                        <div
-                          key={tName}
-                          onClick={() => setSelectedTemplateTasks(prev => ({ ...prev, [tName]: !prev[tName] }))}
-                          className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-white cursor-pointer transition-colors"
-                        >
-                          <div className={`w-4 h-4 rounded-md flex items-center justify-center transition-colors ${
-                            isChecked ? 'bg-[#1677FF] text-white' : 'border border-[#DDE1E7] bg-white'
-                          }`}>
-                            {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
-                          </div>
-                          <span className="text-xs text-[#171A1F]">{tName}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Actions */}
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#EAEDF1] mt-1">
-              <button
-                type="button"
-                onClick={() => setIsTemplateModalOpen(false)}
-                className="px-3.5 py-2 rounded-xl bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] text-xs font-semibold cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleApplyTemplateTasks}
-                className="px-4 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer active:scale-95 transition-all"
-              >
-                Add {selectedTemplateCount} Tasks
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* ─── 6. CUSTOM SINGLE TASK MODAL ─── */}
-      {isCustomTaskModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-          <div className="w-full max-w-[380px] bg-white border border-[#DDE1E7] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-[#171A1F]">
-            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
-              <h3 className="text-xs font-bold text-[#171A1F]">Create Custom Task</h3>
-              <button
-                onClick={() => setIsCustomTaskModalOpen(false)}
-                className="w-6 h-6 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddCustomTaskSubmit} className="flex flex-col gap-2.5 text-xs">
-              <div>
-                <label className="text-[12px] text-[#68707C] block mb-1 font-medium">Target Phase / Category</label>
-                <select
-                  value={selectedGroupForNewTask}
-                  onChange={(e) => setSelectedGroupForNewTask(e.target.value)}
-                  className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
-                >
-                  {stageGroups.map(g => (
-                    <option key={g.id} value={g.id}>{g.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-[12px] text-[#68707C] block mb-1 font-medium">Task Title *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Hydrostatic pressure test on pipe"
-                  value={newTaskTitle}
-                  onChange={(e) => setNewTaskTitle(e.target.value)}
-                  className="w-full h-9 bg-[#F7F8FA] border border-[#DDE1E7] rounded-lg px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#EAEDF1] mt-1">
-                <button
-                  type="button"
-                  onClick={() => setIsCustomTaskModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] text-xs font-semibold cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer"
-                >
-                  Add Task
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* ─── Modal ─── */}
+      <CreateTaskModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        project={project}
+        onCreate={(newTask) => {
+          setStageGroups(prev => [
+            ...prev,
+            {
+              id: `grp-${Date.now()}`,
+              name: 'Custom Phase',
+              iconType: 'eng',
+              tasks: [{
+                id: `tsk-${Date.now()}`,
+                title: newTask.title || 'New Task',
+                status: 'todo',
+                priority: newTask.priority || 'Medium'
+              }]
+            }
+          ]);
+          setIsCreateModalOpen(false);
+        }}
+      />
 
     </div>
   );
