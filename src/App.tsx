@@ -697,7 +697,7 @@ export function App() {
         /* 3. MAIN WORKSPACE APP */
         <div className="w-full h-full flex flex-col justify-between relative bg-[#F7F9FC] text-[#0F172A] font-sans">
           {/* Top Sticky Header */}
-          {activeTab !== 'notifications' && activeTab !== 'budgets' && activeTab !== 'more' && activeTab !== 'account' && activeTab !== 'team' && activeTab !== 'milestones' && activeTab !== 'punch' && (
+          {activeTab !== 'notifications' && activeTab !== 'budgets' && activeTab !== 'more' && activeTab !== 'account' && activeTab !== 'team' && activeTab !== 'milestones' && activeTab !== 'punch' && activeTab !== 'messages' && (
             <Header
               currentUser={currentUser}
               activeProject={activeProject}
@@ -955,6 +955,7 @@ export function App() {
                     chatMessages={chatMessages}
                     onSendMessage={handleSendMessage}
                     onSelectProject={handleSelectProject}
+                    onBack={() => setActiveTab('home')}
                   />
                 )}
 

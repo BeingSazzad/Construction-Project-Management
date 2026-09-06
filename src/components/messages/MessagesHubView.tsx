@@ -15,6 +15,7 @@ interface MessagesHubViewProps {
   chatMessages: ProjectChatMessage[];
   onSendMessage: (msg: ProjectChatMessage) => void;
   onSelectProject?: (project: Project) => void;
+  onBack?: () => void;
 }
 
 interface TeamMember {
@@ -52,11 +53,11 @@ const ALL_COMPANY_MEMBERS: TeamMember[] = [
 const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
   {
     id: 'disc-1',
-    projectId: 'proj-001',
-    projectName: 'Project 001',
-    channelName: 'Project 001 Team',
-    lastMessage: 'Hello project team, inspection ready.',
-    lastSender: 'Sazzad Chowdhury',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
+    channelName: 'Snell Isle Project Team',
+    lastMessage: 'City framing inspection scheduled for 2:00 PM.',
+    lastSender: 'Sarah Johnson',
     timestamp: '10:15 AM',
     unreadCount: 0,
     members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[1], ALL_COMPANY_MEMBERS[2], ALL_COMPANY_MEMBERS[3]],
@@ -64,35 +65,35 @@ const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
   {
     id: 'disc-2',
     projectId: 'proj-2',
-    projectName: 'Sample 1',
-    channelName: 'St Pete project',
-    lastMessage: 'New milestone: Framing Inspection Prep',
-    lastSender: 'Latti AI',
-    timestamp: 'Yesterday',
-    unreadCount: 0,
-    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[4], ALL_COMPANY_MEMBERS[5]],
-  },
-  {
-    id: 'disc-3',
-    projectId: 'proj-1',
-    projectName: 'Riverside Office Complex',
-    channelName: 'Riverside General Site',
+    projectName: 'Downtown Commercial',
+    channelName: 'Downtown Commercial Site',
     lastMessage: 'City inspector arrived for Level 12 deck inspection.',
-    lastSender: 'Sarah Johnson',
+    lastSender: 'Carlos Ortiz',
     timestamp: '10:45 AM',
     unreadCount: 2,
     members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[1], ALL_COMPANY_MEMBERS[4], ALL_COMPANY_MEMBERS[6]],
   },
   {
-    id: 'disc-4',
+    id: 'disc-3',
     projectId: 'proj-3',
-    projectName: 'Greenfield Hub',
-    channelName: 'Greenfield Project Team',
+    projectName: 'Grandview Heights',
+    channelName: 'Grandview Field Team',
     lastMessage: 'Draw #4 packet is uploaded for your review.',
-    lastSender: 'Sarah Johnson',
-    timestamp: 'May 20',
+    lastSender: 'Marcus Chen',
+    timestamp: 'Yesterday',
     unreadCount: 0,
     members: [ALL_COMPANY_MEMBERS[4], ALL_COMPANY_MEMBERS[5], ALL_COMPANY_MEMBERS[7]],
+  },
+  {
+    id: 'disc-4',
+    projectId: 'company',
+    projectName: 'Company-Wide',
+    channelName: 'Safety & Weather Alerts',
+    lastMessage: 'Heavy rain expected Thursday afternoon may impact concrete cure.',
+    lastSender: 'Emily Brown',
+    timestamp: 'May 20',
+    unreadCount: 0,
+    members: [ALL_COMPANY_MEMBERS[0], ALL_COMPANY_MEMBERS[1], ALL_COMPANY_MEMBERS[3], ALL_COMPANY_MEMBERS[4]],
   }
 ];
 
@@ -101,11 +102,13 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
   projects,
   chatMessages,
   onSendMessage,
-  onSelectProject
+  onSelectProject,
+  onBack
 }) => {
   const [discussions, setDiscussions] = useState<ProjectDiscussion[]>(INITIAL_DISCUSSIONS);
   const [selectedDisc, setSelectedDisc] = useState<ProjectDiscussion | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [channelFilter, setChannelFilter] = useState<'All' | 'Unread' | string>('All');
   const [inputText, setInputText] = useState('');
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [newChannelName, setNewChannelName] = useState('');
@@ -269,11 +272,24 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
     }
   };
 
-  const filtered = discussions.filter(d => 
-    d.channelName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    d.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    d.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filtered = discussions.filter(d => {
+    if (channelFilter === 'Unread' && d.unreadCount === 0) return false;
+    if (channelFilter !== 'All' && channelFilter !== 'Unread') {
+      const matchProject = d.projectName.toLowerCase().includes(channelFilter.toLowerCase());
+      const matchChannel = d.channelName.toLowerCase().includes(channelFilter.toLowerCase());
+      if (!matchProject && !matchChannel) return false;
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return (
+        d.channelName.toLowerCase().includes(q) ||
+        d.projectName.toLowerCase().includes(q) ||
+        d.lastMessage.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
 
   // ─────────────────────────────────────────────────────────────
   // 1. Thread Chat View (Inside Discussion)
@@ -964,47 +980,107 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
   // 2. Master Discussions List (Channels Overview)
   // ─────────────────────────────────────────────────────────────
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-4 px-4 sm:px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] bg-[#F8FAFC] min-h-screen animate-fade-in">
       
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-[#171A1F] tracking-tight">Messages</h1>
-          <p className="text-xs text-[#68707C] font-medium mt-0.5">Project discussions</p>
+      {/* ── 1. Clean Single Header: Back, Title & New Channel CTA ── */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors shadow-2xs active:scale-95 flex-shrink-0"
+              title="Back"
+            >
+              <ArrowLeft className="w-5 h-5 text-slate-700" />
+            </button>
+          )}
+          <div>
+            <h1 className="text-xl font-bold text-[#0F172A] tracking-tight leading-tight">Messages</h1>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">
+              {discussions.length} project discussions
+            </p>
+          </div>
         </div>
+
         <button
           onClick={() => setIsCreatingNew(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer flex-shrink-0"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>New Channel</span>
         </button>
       </div>
 
+      {/* ── 2. Filter Pills (All, Unread, By Project) ── */}
+      <div className="flex items-center gap-2 overflow-x-auto py-0.5 scrollbar-none">
+        {(['All', 'Unread', 'Snell Isle', 'Downtown Commercial', 'Grandview'] as const).map((filter) => {
+          const isActive = channelFilter === filter;
+          const unreadTotal = discussions.reduce((acc, d) => acc + d.unreadCount, 0);
+          return (
+            <button
+              key={filter}
+              onClick={() => setChannelFilter(filter)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 border ${
+                isActive
+                  ? 'bg-[#1677FF] border-[#1677FF] text-white font-semibold shadow-2xs'
+                  : 'bg-white text-[#475569] border-[#E2E8F0] hover:bg-slate-50'
+              }`}
+            >
+              <span>{filter}</span>
+              {filter === 'Unread' && unreadTotal > 0 && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white text-[#1677FF]' : 'bg-[#1677FF] text-white'}`}>
+                  {unreadTotal}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── 3. Search Bar ── */}
+      <div className="bg-white border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-2xs focus-within:border-[#1677FF] transition-colors">
+        <Search className="w-4 h-4 text-[#94A3B8] flex-shrink-0" />
+        <input
+          type="text"
+          placeholder="Search discussions, messages or channels..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full bg-transparent border-none text-xs sm:text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-hidden font-sans"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="text-[#94A3B8] hover:text-[#0F172A] p-0.5 cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
       {/* New Discussion Creation Form */}
       {isCreatingNew && (
-        <form onSubmit={handleCreateDiscussion} className="p-4 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col gap-3.5 animate-fade-in shadow-xl">
-          <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
-            <span className="text-xs font-bold text-[#171A1F]">New Project Discussion</span>
-            <button type="button" onClick={() => setIsCreatingNew(false)} className="text-[#68707C] hover:text-[#171A1F]">
+        <form onSubmit={handleCreateDiscussion} className="p-4 rounded-2xl bg-white border border-[#E2E8F0] flex flex-col gap-3.5 animate-fade-in shadow-lg">
+          <div className="flex items-center justify-between pb-2 border-b border-[#F1F5F9]">
+            <span className="text-xs font-bold text-[#0F172A]">New Project Discussion</span>
+            <button type="button" onClick={() => setIsCreatingNew(false)} className="text-[#64748B] hover:text-[#0F172A] cursor-pointer">
               <X className="w-4 h-4" />
             </button>
           </div>
 
           <div>
-            <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider block mb-1">Discussion / Channel Name</label>
+            <label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Discussion / Channel Name</label>
             <input
               type="text"
-              placeholder="e.g. St Pete Project Team"
+              placeholder="e.g. Electrical Coordination"
               value={newChannelName}
               onChange={e => setNewChannelName(e.target.value)}
-              className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] focus:border-[#1677FF] focus:bg-white rounded-xl px-3 text-xs text-[#171A1F] outline-none placeholder-[#9DA5B1]"
+              className="w-full h-10 bg-[#F8FAFC] border border-[#E2E8F0] focus:border-[#1677FF] focus:bg-white rounded-xl px-3 text-xs text-[#0F172A] outline-none placeholder-[#94A3B8]"
               required
             />
           </div>
 
           <div>
-            <label className="text-[10px] font-bold text-[#68707C] uppercase tracking-wider block mb-1">Select Project</label>
+            <label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Select Project</label>
             <CustomSelect
               value={selectedProjectId}
               onChange={setSelectedProjectId}
@@ -1015,10 +1091,10 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
 
           {/* Toggle: Automatic vs Manual Member Selection */}
           <div className="pt-1">
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1]">
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
               <div>
-                <p className="text-xs font-bold text-[#171A1F]">Manual Member Selection</p>
-                <p className="text-[10px] text-[#68707C]">
+                <p className="text-xs font-bold text-[#0F172A]">Manual Member Selection</p>
+                <p className="text-[11px] text-[#64748B]">
                   {isManualMemberMode ? 'Pick specific team members' : 'Auto-add entire project team'}
                 </p>
               </div>
@@ -1028,7 +1104,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                   isManualMemberMode
                     ? 'bg-[#1677FF] text-white shadow-xs'
-                    : 'bg-white text-[#171A1F] border border-[#DDE1E7] hover:bg-[#F2F2F7]'
+                    : 'bg-white text-[#0F172A] border border-[#E2E8F0] hover:bg-slate-50'
                 }`}
               >
                 {isManualMemberMode ? 'Active' : '+ Customize'}
@@ -1046,19 +1122,19 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                       onClick={() => toggleMemberSelection(member.id)}
                       className={`p-2 rounded-xl border flex items-center justify-between gap-2 cursor-pointer transition-all ${
                         isSelected
-                          ? 'bg-[#EAF3FF] border-[#1677FF] text-[#171A1F]'
-                          : 'bg-white border-[#DDE1E7] text-[#68707C] hover:bg-[#F7F8FA]'
+                          ? 'bg-[#EAF3FF] border-[#1677FF] text-[#0F172A]'
+                          : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-[#F8FAFC]'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full object-cover" />
                         <div className="min-w-0">
-                          <p className="text-[12px] font-bold text-[#171A1F] truncate">{member.name}</p>
-                          <p className="text-[10px] text-[#68707C] truncate">{member.role}</p>
+                          <p className="text-xs font-bold text-[#0F172A] truncate">{member.name}</p>
+                          <p className="text-[10px] text-[#64748B] truncate">{member.role}</p>
                         </div>
                       </div>
                       <div className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 ${
-                        isSelected ? 'bg-[#1677FF] border-[#1677FF] text-white' : 'border-[#DDE1E7] bg-white'
+                        isSelected ? 'bg-[#1677FF] border-[#1677FF] text-white' : 'border-[#E2E8F0] bg-white'
                       }`}>
                         {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                       </div>
@@ -1069,17 +1145,17 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
             )}
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-[#EAEDF1]">
+          <div className="flex justify-end gap-2 pt-2 border-t border-[#F1F5F9]">
             <button
               type="button"
               onClick={() => setIsCreatingNew(false)}
-              className="px-3 h-8 rounded-xl border border-[#DDE1E7] text-[#68707C] text-xs font-semibold hover:bg-[#F2F2F7]"
+              className="px-3 h-8 rounded-xl border border-[#E2E8F0] text-[#64748B] text-xs font-semibold hover:bg-slate-50 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 h-8 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs active:scale-95"
+              className="px-4 h-8 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold shadow-xs active:scale-95 cursor-pointer"
             >
               Create Discussion
             </button>
@@ -1087,59 +1163,66 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
         </form>
       )}
 
-      {/* Search discussions input */}
-      <div className="relative">
-        <Search className="w-4 h-4 text-[#9DA5B1] absolute left-3.5 top-1/2 -translate-y-1/2" />
-        <input
-          type="text"
-          placeholder="Search discussions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full h-11 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-2xl pl-10 pr-4 text-xs text-[#171A1F] outline-none placeholder-[#9DA5B1] transition-all shadow-xs"
-        />
-      </div>
-
-      {/* Discussions Channel List */}
-      <div className="flex flex-col gap-2.5">
+      {/* ── 4. Sleek Discussions List Group (Zero Card Bloat) ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] divide-y divide-[#F1F5F9] shadow-2xs overflow-hidden">
         {filtered.map((disc) => (
           <div
             key={disc.id}
             onClick={() => setSelectedDisc(disc)}
-            className="p-4 bg-white hover:bg-[#F7F8FA] border border-[#DDE1E7] hover:border-[#1677FF] rounded-2xl shadow-xs flex items-start gap-3 transition-all cursor-pointer group active:scale-[0.99]"
+            className="p-3.5 sm:p-4 hover:bg-[#F8FAFC] transition-colors cursor-pointer flex items-center gap-3.5 group relative active:bg-slate-50"
           >
-            {/* Hashtag Icon */}
-            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-blue-200 flex items-center justify-center text-[#1677FF] flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform shadow-xs">
-              <Hash className="w-4 h-4" />
+            {/* Smart Channel Icon / Badge */}
+            <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center font-bold text-sm flex-shrink-0 group-hover:scale-105 transition-transform relative">
+              <Hash className="w-4 h-4 stroke-[2.2]" />
+              {disc.unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#1677FF] border-2 border-white ring-2 ring-[#1677FF]/20" />
+              )}
             </div>
 
+            {/* Channel Details */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-xs sm:text-sm font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">
-                  {disc.channelName}
-                </h3>
-                <span className="text-[10px] text-[#9DA5B1] font-medium flex-shrink-0">{disc.timestamp}</span>
-              </div>
-              
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[12px] text-[#1677FF] font-semibold truncate">
-                  {disc.projectName}
+                <div className="flex items-center gap-2 min-w-0">
+                  <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">
+                    {disc.channelName}
+                  </h3>
+                  <span className="text-[10px] font-semibold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-md truncate max-w-[130px] hidden sm:inline-block">
+                    {disc.projectName}
+                  </span>
+                </div>
+                <span className="text-[11px] text-[#94A3B8] font-medium flex-shrink-0">
+                  {disc.timestamp}
                 </span>
-                <span className="text-[10px] text-[#68707C]">• {disc.members.length} members</span>
               </div>
 
-              <p className="text-[12px] text-[#68707C] truncate mt-1">
-                {disc.lastMessage}
-              </p>
-            </div>
+              <div className="flex items-center justify-between gap-2 mt-1">
+                <p className="text-xs text-[#64748B] truncate font-normal min-w-0 flex-1">
+                  {disc.lastSender && (
+                    <span className="font-semibold text-[#475569]">
+                      {disc.lastSender.split(' ')[0]}:{' '}
+                    </span>
+                  )}
+                  <span>{disc.lastMessage}</span>
+                </p>
 
-            <ChevronRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-[#171A1F] transition-colors flex-shrink-0 self-center" />
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {disc.unreadCount > 0 && (
+                    <span className="bg-[#1677FF] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-2xs">
+                      {disc.unreadCount}
+                    </span>
+                  )}
+                  <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                </div>
+              </div>
+            </div>
           </div>
         ))}
 
         {filtered.length === 0 && (
-          <div className="py-12 flex flex-col items-center gap-2 text-[#68707C] text-center">
-            <Hash className="w-8 h-8 opacity-30" />
-            <p className="text-xs font-semibold">No discussions found</p>
+          <div className="p-8 text-center flex flex-col items-center justify-center gap-2 text-[#64748B]">
+            <Hash className="w-8 h-8 text-[#94A3B8]" />
+            <p className="text-xs font-bold text-[#0F172A]">No discussions match your filter</p>
+            <p className="text-[12px] text-[#64748B]">Try searching with a different keyword or reset filters.</p>
           </div>
         )}
       </div>
