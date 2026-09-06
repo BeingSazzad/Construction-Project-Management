@@ -705,7 +705,7 @@ export function App() {
   const handleSelectProject = (p: Project) => {
     setPreviousTab(activeTab);
     setActiveProject(p);
-    setProjectSubTab('overview');
+    setProjectSubTab(currentRole === 'finance' ? 'budget' : 'overview');
   };
 
   const handleHeaderBack = () => {
@@ -911,6 +911,8 @@ export function App() {
                     }}
                     onOpenBudgetsHub={() => setActiveTab('budgets')}
                     onOpenDailyLogs={() => setActiveTab('daily-logs')}
+                    onOpenApprovePayApp={() => setIsApprovePayAppOpen(true)}
+                    onOpenLienWaiver={() => setIsRecordLienWaiverOpen(true)}
                   />
                 )}
 

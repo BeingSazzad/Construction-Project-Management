@@ -105,7 +105,9 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onAddDailyLog,
   initialCalendarDate
 }) => {
-  const [internalActiveTab, setInternalActiveTab] = useState<string>('overview');
+  const [internalActiveTab, setInternalActiveTab] = useState<string>(
+    currentRole === 'finance' ? 'budget' : 'overview'
+  );
   const activeTab = activeSubTab !== undefined ? activeSubTab : internalActiveTab;
   
   const setActiveTab = (tab: string) => {
@@ -115,14 +117,23 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
   const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents'].includes(activeTab);
 
-  const allTabs = [
-    { id: 'overview', label: 'Overview', icon: Layers },
-    { id: 'schedule', label: 'Schedule', icon: Calendar },
-    { id: 'budget', label: 'Budget', icon: DollarSign },
-    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-    { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-    { id: 'files', label: 'Files', icon: FolderClosed },
-  ];
+  const allTabs = currentRole === 'finance'
+    ? [
+        { id: 'budget', label: 'Budget & Draws', icon: DollarSign },
+        { id: 'overview', label: 'Overview', icon: Layers },
+        { id: 'files', label: 'Files & Liens', icon: FolderClosed },
+        { id: 'schedule', label: 'Schedule', icon: Calendar },
+        { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+        { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+      ]
+    : [
+        { id: 'overview', label: 'Overview', icon: Layers },
+        { id: 'schedule', label: 'Schedule', icon: Calendar },
+        { id: 'budget', label: 'Budget', icon: DollarSign },
+        { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+        { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+        { id: 'files', label: 'Files', icon: FolderClosed },
+      ];
 
   return (
     <div className="w-full flex flex-col flex-1 bg-[#F8FAFC]">
