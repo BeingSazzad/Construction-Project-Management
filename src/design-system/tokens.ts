@@ -6,68 +6,68 @@
 export const colors = {
   // 1. Brand Palette
   brand: {
-    primary: '#2563EB',       // Core Sapphire Blue
-    hover: '#1D4ED8',         // Interactive Hover
-    active: '#1E40AF',        // Interactive Active/Pressed
-    light: '#3B82F6',         // Focus Ring / Highlight
-    dark: '#1E3A8A',          // Deep Accent
-    glow: 'rgba(37, 99, 235, 0.35)',
-    gradient: 'linear-gradient(135deg, #2563EB 0%, #06B6D4 100%)',
-    gradientSubtle: 'linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(6, 182, 212, 0.06) 100%)',
+    primary: '#1677FF',       // Core Lattice Brand Blue
+    hover: '#0F5FD7',         // Interactive Hover
+    active: '#094BBD',        // Interactive Active/Pressed
+    light: '#EAF3FF',         // Focus Ring / Tint Highlight
+    dark: '#0B3A82',          // Deep Accent
+    glow: 'rgba(22, 119, 255, 0.25)',
+    gradient: 'linear-gradient(135deg, #1677FF 0%, #06B6D4 100%)',
+    gradientSubtle: 'linear-gradient(135deg, rgba(22, 119, 255, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%)',
   },
 
-  // 2. Neutral Surfaces (Dark Enterprise Palette)
+  // 2. Neutral Surfaces (Apple Light Palette)
   neutral: {
-    canvas: '#070A12',        // Ultra-dark background
-    surface: '#0A111F',       // Primary card surface
-    surfaceElevated: '#0E1A30', // Modals, popovers, dropdown menus
-    surfaceInset: '#050811',  // Form input backgrounds, nested table rows
-    surfaceHover: '#121F38',  // Hoverable list item/card state
-    border: '#142036',        // Subtle card & divider border
-    borderSubtle: '#10192A',  // Sub-element borders
-    borderStrong: '#1E2E4A',  // Active/elevated borders
-    borderFocus: '#2563EB',   // Accessible focus border
-    divider: '#142036',       // Section dividers
+    canvas: '#F7F9FC',        // Clean Light Canvas
+    surface: '#FFFFFF',       // Primary Card Surface
+    surfaceElevated: '#FFFFFF', // Modals, Popovers, Sheets
+    surfaceInset: '#F8FAFC',  // Form Input Backgrounds, Table Insets
+    surfaceHover: '#F1F5F9',  // Hoverable List Item/Card State
+    border: '#E2E8F0',        // Subtle 1px Border & Divider
+    borderSubtle: '#F1F5F9',  // Sub-element Borders
+    borderStrong: '#CBD5E1',  // Active/Elevated Borders
+    borderFocus: '#1677FF',   // Accessible Focus Border
+    divider: '#E2E8F0',       // Section Dividers
   },
 
   // 3. Typography Colors
   text: {
-    primary: '#F8FAFC',       // Slate 50 - High contrast headings & main content
-    secondary: '#94A3B8',     // Slate 400 - Supporting descriptions & subheadings
-    tertiary: '#64748B',      // Slate 500 - Captions, metadata, placeholders
-    disabled: '#475569',      // Slate 600 - Inactive elements
-    inverse: '#070A12',       // Dark text for bright badges/buttons
+    primary: '#0F172A',       // Slate 900 - High Contrast Headings & Main Content
+    secondary: '#475569',     // Slate 600 - Supporting Descriptions & Subheadings
+    tertiary: '#64748B',      // Slate 500 - Captions, Metadata, Subtext
+    disabled: '#94A3B8',      // Slate 400 - Inactive Elements, Placeholders
+    inverse: '#FFFFFF',       // White Text for Primary Buttons
   },
 
   // 4. Semantic Status Colors
   semantic: {
     success: {
-      text: '#10B981',        // Emerald 500
-      bg: 'rgba(16, 185, 129, 0.12)',
-      border: 'rgba(16, 185, 129, 0.25)',
-      solid: '#10B981',
+      text: '#10A976',        // Green 600
+      bg: '#E9F9F3',
+      border: 'rgba(16, 169, 118, 0.25)',
+      solid: '#10A976',
     },
     warning: {
       text: '#F59E0B',        // Amber 500
-      bg: 'rgba(245, 158, 11, 0.12)',
+      bg: '#FFF7E6',
       border: 'rgba(245, 158, 11, 0.25)',
       solid: '#F59E0B',
     },
     error: {
-      text: '#EF4444',        // Rose/Red 500
-      bg: 'rgba(239, 68, 68, 0.12)',
-      border: 'rgba(239, 68, 68, 0.25)',
-      solid: '#EF4444',
+      text: '#E5484D',        // Red 500
+      bg: '#FFF0F0',
+      border: 'rgba(229, 72, 77, 0.25)',
+      solid: '#E5484D',
     },
     info: {
-      text: '#06B6D4',        // Cyan 500
-      bg: 'rgba(6, 182, 212, 0.12)',
-      border: 'rgba(6, 182, 212, 0.25)',
-      solid: '#06B6D4',
+      text: '#1677FF',        // Blue 500
+      bg: '#EAF3FF',
+      border: 'rgba(22, 119, 255, 0.25)',
+      solid: '#1677FF',
     },
     ai: {
-      text: '#8B5CF6',        // Violet/Purple 500
-      bg: 'rgba(139, 92, 246, 0.12)',
+      text: '#8B5CF6',        // Purple 500
+      bg: '#F3E8FF',
       border: 'rgba(139, 92, 246, 0.25)',
       solid: '#8B5CF6',
     },
@@ -153,23 +153,24 @@ export const radius = {
 
 export const shadows = {
   none: 'none',
-  sm: '0 1px 3px rgba(0, 0, 0, 0.4)',
-  md: '0 4px 16px -2px rgba(0, 0, 0, 0.6)',
-  lg: '0 12px 36px -4px rgba(0, 0, 0, 0.8)',
-  glowBrand: '0 0 24px -2px rgba(37, 99, 235, 0.35)',
-  glowCyan: '0 0 24px -2px rgba(6, 182, 212, 0.35)',
+  xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+  sm: '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08)',
+  card: '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
+  md: '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
+  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
+  glowBrand: '0 4px 14px 0 rgba(22, 119, 255, 0.25)',
 } as const;
 
 export const formStandards = {
-  inputHeight: '44px',     // Universal 44px Height Standard across entire app (h-11)
-  inputRadius: '12px',     // rounded-xl
-  inputBg: '#050811',      // Deep inset neutral
-  inputBorder: '#142036',  // Subtle border
-  inputBorderFocus: '#2563EB', // Sapphire focus border
+  inputHeight: '44px',         // Universal 44px Height Standard across entire app (h-11)
+  inputRadius: '12px',         // rounded-xl
+  inputBg: '#FFFFFF',          // Clean white surface
+  inputBorder: '#E2E8F0',      // Subtle border
+  inputBorderFocus: '#1677FF', // Brand blue focus border
   inputTextSize: '13px',
-  inputPaddingX: '14px',   // px-3.5
-  labelSize: '12px',       // text-xs font-semibold
-  labelColor: '#CBD5E1',   // slate-300
+  inputPaddingX: '14px',       // px-3.5
+  labelSize: '12px',           // text-xs font-semibold
+  labelColor: '#334155',       // slate-700
 } as const;
 
 export const buttonStandards = {
