@@ -336,7 +336,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             onClick={onOpenCalendar || onOpenTasks}
             className="text-xs font-semibold text-[#1677FF] hover:underline cursor-pointer"
           >
-            View calendar
+            View schedule
           </button>
         </div>
 

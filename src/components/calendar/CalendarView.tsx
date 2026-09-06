@@ -11,13 +11,15 @@ interface CalendarViewProps {
   events?: CalendarEventItem[];
   onSelectProject?: (project: Project) => void;
   onAddEvent?: (event: CalendarEventItem) => void;
+  isInline?: boolean;
 }
 
 export const CalendarView: React.FC<CalendarViewProps> = ({
   projects,
   events: initialEvents,
   onSelectProject,
-  onAddEvent
+  onAddEvent,
+  isInline = false
 }) => {
   // Calendar Navigation State
   const [currentDate, setCurrentDate] = useState(new Date(2026, 7, 1)); // August 2026
@@ -113,33 +115,36 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const selectedDayEvents = eventsList.filter(e => e.date === selectedDateStr);
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3.5 px-5 pt-2 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
+    <div className={isInline 
+      ? "w-full flex-1 flex flex-col gap-3 font-sans text-[#171A1F] animate-fade-in" 
+      : "w-full flex-1 flex flex-col gap-3.5 px-5 pt-2 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in"
+    }>
       
       {/* ─── 1. Single Header Control Row ─── */}
-      <div className="flex items-center justify-between px-0.5 py-0.5">
+      <div className="flex items-center justify-between gap-2 px-0.5 py-1">
         <div className="flex items-center gap-1.5 min-w-0">
-          <h2 className="text-base sm:text-lg font-black text-[#171A1F] tracking-tight truncate">
-            {currentMonthName} <span className="text-[#68707C] font-normal">{year}</span>
+          <h2 className="text-sm sm:text-base font-bold text-[#171A1F] tracking-tight whitespace-nowrap">
+            {currentMonthName.slice(0, 3)} <span className="text-[#68707C] font-normal">{year}</span>
           </h2>
           <div className="flex items-center gap-1">
             <button
               onClick={prevMonth}
-              className="w-7 h-7 rounded-xl bg-white border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-xs"
+              className="w-6 h-6 rounded-lg bg-white border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-2xs shrink-0"
               title="Previous Month"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={nextMonth}
-              className="w-7 h-7 rounded-xl bg-white border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-xs"
+              className="w-6 h-6 rounded-lg bg-white border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-2xs shrink-0"
               title="Next Month"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <button
             onClick={goToToday}
-            className="px-2.5 py-1 rounded-xl bg-white border border-[#DDE1E7] hover:bg-[#F2F2F7] text-[#171A1F] text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+            className="px-2 py-0.5 rounded-lg bg-white border border-[#DDE1E7] hover:bg-[#F2F2F7] text-[#171A1F] text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs shrink-0"
             title="Jump to current date"
           >
             Today
@@ -147,31 +152,31 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
 
         {/* Right Controls */}
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          <div className="flex items-center bg-white border border-[#DDE1E7] rounded-xl p-0.5 shadow-xs">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center bg-white border border-[#DDE1E7] rounded-lg p-0.5 shadow-2xs">
             <button
               onClick={() => setViewMode('month')}
-              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+              className={`p-1 rounded-md transition-colors cursor-pointer ${
                 viewMode === 'month' ? 'bg-[#1677FF] text-white' : 'text-[#68707C] hover:text-[#171A1F]'
               }`}
               title="Month Grid View"
             >
-              <Grid3X3 className="w-3.5 h-3.5" />
+              <Grid3X3 className="w-3 h-3" />
             </button>
             <button
               onClick={() => setViewMode('agenda')}
-              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+              className={`p-1 rounded-md transition-colors cursor-pointer ${
                 viewMode === 'agenda' ? 'bg-[#1677FF] text-white' : 'text-[#68707C] hover:text-[#171A1F]'
               }`}
               title="Agenda List View"
             >
-              <List className="w-3.5 h-3.5" />
+              <List className="w-3 h-3" />
             </button>
           </div>
 
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-semibold shadow-2xs transition-all cursor-pointer active:scale-95 shrink-0"
           >
             <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Add</span>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Project, GanttItem, Task, TaskStatus } from '../../types';
-import { Check, Plus, X, Flag, ChevronRight, Wrench } from 'lucide-react';
+import { Check, Plus, X, Flag, ChevronRight, Wrench, Calendar as CalendarIcon } from 'lucide-react';
 import { MilestoneDetailsModal, MilestoneItem } from '../modals/MilestoneDetailsModal';
+import { CalendarView } from '../calendar/CalendarView';
 
 interface ProjectScheduleTabProps {
   project: Project;
@@ -97,6 +98,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
 }) => {
   const [activeFilter, setActiveFilter] = useState<'All' | 'In Progress' | 'Completed' | 'Upcoming'>('All');
   const [selectedMilestone, setSelectedMilestone] = useState<PhaseItem | null>(null);
+  const [viewMode, setViewMode] = useState<'phases' | 'calendar'>('phases');
   
   // ── 7 Standard Project Phases matching spec ──
   const [phases, setPhases] = useState<PhaseItem[]>([
@@ -327,122 +329,161 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] bg-[#F8FAFC] animate-fade-in">
       
-      {/* ─── 1. MASTER SCHEDULE HEADER WITH ADD GATE ─── */}
-      <div className="flex items-center justify-between pt-1">
-        <div>
-          <h2 className="text-xl font-bold text-[#0F172A] tracking-tight">
-            Master Schedule
-          </h2>
-          <p className="text-xs text-[#64748B] font-normal mt-0.5">
-            {completedCount} of {phases.length} phases completed
-          </p>
-        </div>
-
+      {/* ─── 0. TOP 2-SEGMENT SWITCHER (Schedule vs Calendar Merge) ─── */}
+      <div className="flex p-1 bg-[#F1F5F9] rounded-xl border border-[#E2E8F0] gap-1 shrink-0">
         <button
-          onClick={() => {
-            const nextNum = (phases.length + 1).toString().padStart(2, '0');
-            setNewCode(`MS-${nextNum}`);
-            setIsAddModalOpen(true);
-          }}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          type="button"
+          onClick={() => setViewMode('phases')}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+            viewMode === 'phases'
+              ? 'bg-white text-[#1677FF] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
+          }`}
         >
-          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>Add Gate</span>
+          <Flag className="w-3.5 h-3.5" />
+          <span>Phase Gates ({phases.length})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('calendar')}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+            viewMode === 'calendar'
+              ? 'bg-white text-[#1677FF] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
+          }`}
+        >
+          <CalendarIcon className="w-3.5 h-3.5" />
+          <span>Calendar Timeline</span>
         </button>
       </div>
 
-      {/* ─── 2. CLEAN FILTER PILLS ─── */}
-      <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
-        {(['All', 'In Progress', 'Completed', 'Upcoming'] as const).map((f) => {
-          const isActive = activeFilter === f;
-          return (
-            <button
-              key={f}
-              onClick={() => setActiveFilter(f)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
-                isActive
-                  ? 'bg-[#1677FF] text-white shadow-xs'
-                  : 'bg-white text-[#4B5563] hover:text-[#0F172A] border border-[#E5E7EB] hover:bg-slate-50'
-              }`}
-            >
-              {f}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* ─── 3. SCHEDULE PHASE CARDS ─── */}
-      <div className="flex flex-col gap-3">
-        {filtered.map((phase) => {
-          const isDone = phase.status === 'Completed';
-          const isInProgress = phase.status === 'In Progress';
-          const totalTasks = phase.totalTasks || 5;
-          const completedTasks = phase.completedTasks || (isDone ? totalTasks : 0);
-          const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-          return (
-            <div
-              key={phase.id}
-              onClick={() => setSelectedMilestone(phase)}
-              className="w-full p-3.5 rounded-2xl bg-white border border-[#E5E7EB] hover:border-[#1677FF]/40 cursor-pointer transition-all active:scale-[0.99] text-left shadow-xs hover:shadow-sm flex items-start gap-3 group"
-            >
-              {/* Left Phase Icon */}
-              <div className={`w-10 h-10 rounded-xl ${phase.colorTheme.bg} ${phase.colorTheme.text} flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-105 transition-transform`}>
-                {renderPhaseIcon(phase.phaseNumber)}
-              </div>
-
-              {/* Right Content Area */}
-              <div className="flex-1 min-w-0">
-                {/* Top Line: Title + Badge + Chevron */}
-                <div className="flex items-start justify-between gap-1.5">
-                  <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight">
-                    {phase.name}
-                  </h3>
-
-                  <div className="flex items-center gap-1 shrink-0 mt-[-1px]">
-                    {isDone ? (
-                      <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E6F7F0] text-[#10A976] flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[2.5]" />
-                        <span>Done</span>
-                      </span>
-                    ) : isInProgress ? (
-                      <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#EAF3FF] text-[#1677FF]">
-                        {progress}%
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#F1F5F9] text-[#64748B]">
-                        Upcoming
-                      </span>
-                    )}
-
-                    <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
-                  </div>
-                </div>
-
-                {/* Subcontractor / Lead Trade */}
-                <p className="text-[11px] text-[#64748B] font-medium mt-1 truncate">
-                  {phase.subcontractor}
-                </p>
-
-                {/* Progress Bar & Task Count */}
-                <div className="flex items-center gap-3 mt-2.5">
-                  <div className="flex-1 h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        isDone ? 'bg-[#10A976]' : isInProgress ? 'bg-[#1677FF]' : 'bg-transparent'
-                      }`}
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <span className="text-[11px] font-medium text-[#64748B] shrink-0 font-mono">
-                    {completedTasks} / {totalTasks}
-                  </span>
-                </div>
-              </div>
+      {viewMode === 'calendar' ? (
+        <div className="w-full bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card">
+          <CalendarView
+            projects={[project]}
+            isInline={true}
+          />
+        </div>
+      ) : (
+        <>
+          {/* ─── 1. MASTER SCHEDULE HEADER WITH ADD GATE ─── */}
+          <div className="flex items-center justify-between pt-1">
+            <div>
+              <h2 className="text-xl font-bold text-[#0F172A] tracking-tight">
+                Master Schedule
+              </h2>
+              <p className="text-xs text-[#64748B] font-normal mt-0.5">
+                {completedCount} of {phases.length} phases completed
+              </p>
             </div>
-          );
-        })}
-      </div>
+
+            <button
+              onClick={() => {
+                const nextNum = (phases.length + 1).toString().padStart(2, '0');
+                setNewCode(`MS-${nextNum}`);
+                setIsAddModalOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Add Gate</span>
+            </button>
+          </div>
+
+          {/* ─── 2. CLEAN FILTER PILLS ─── */}
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+            {(['All', 'In Progress', 'Completed', 'Upcoming'] as const).map((f) => {
+              const isActive = activeFilter === f;
+              return (
+                <button
+                  key={f}
+                  onClick={() => setActiveFilter(f)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
+                    isActive
+                      ? 'bg-[#1677FF] text-white shadow-xs'
+                      : 'bg-white text-[#4B5563] hover:text-[#0F172A] border border-[#E5E7EB] hover:bg-slate-50'
+                  }`}
+                >
+                  {f}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ─── 3. SCHEDULE PHASE CARDS ─── */}
+          <div className="flex flex-col gap-3">
+            {filtered.map((phase) => {
+              const isDone = phase.status === 'Completed';
+              const isInProgress = phase.status === 'In Progress';
+              const totalTasks = phase.totalTasks || 5;
+              const completedTasks = phase.completedTasks || (isDone ? totalTasks : 0);
+              const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+              return (
+                <div
+                  key={phase.id}
+                  onClick={() => setSelectedMilestone(phase)}
+                  className="w-full p-3.5 rounded-2xl bg-white border border-[#E5E7EB] hover:border-[#1677FF]/40 cursor-pointer transition-all active:scale-[0.99] text-left shadow-xs hover:shadow-sm flex items-start gap-3 group"
+                >
+                  {/* Left Phase Icon */}
+                  <div className={`w-10 h-10 rounded-xl ${phase.colorTheme.bg} ${phase.colorTheme.text} flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-105 transition-transform`}>
+                    {renderPhaseIcon(phase.phaseNumber)}
+                  </div>
+
+                  {/* Right Content Area */}
+                  <div className="flex-1 min-w-0">
+                    {/* Top Line: Title + Badge + Chevron */}
+                    <div className="flex items-start justify-between gap-1.5">
+                      <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight">
+                        {phase.name}
+                      </h3>
+
+                      <div className="flex items-center gap-1 shrink-0 mt-[-1px]">
+                        {isDone ? (
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E6F7F0] text-[#10A976] flex items-center gap-1">
+                            <Check className="w-3 h-3 stroke-[2.5]" />
+                            <span>Done</span>
+                          </span>
+                        ) : isInProgress ? (
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#EAF3FF] text-[#1677FF]">
+                            {progress}%
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#F1F5F9] text-[#64748B]">
+                            Upcoming
+                          </span>
+                        )}
+
+                        <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                      </div>
+                    </div>
+
+                    {/* Subcontractor / Lead Trade */}
+                    <p className="text-[11px] text-[#64748B] font-medium mt-1 truncate">
+                      {phase.subcontractor}
+                    </p>
+
+                    {/* Progress Bar & Task Count */}
+                    <div className="flex items-center gap-3 mt-2.5">
+                      <div className="flex-1 h-1.5 bg-[#EAEDF1] rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            isDone ? 'bg-[#10A976]' : isInProgress ? 'bg-[#1677FF]' : 'bg-transparent'
+                          }`}
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                      <span className="text-[11px] font-medium text-[#64748B] shrink-0 font-mono">
+                        {completedTasks} / {totalTasks}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {/* ─── 4. ADD NEW MILESTONE GATE MODAL ─── */}
       {isAddModalOpen && (
