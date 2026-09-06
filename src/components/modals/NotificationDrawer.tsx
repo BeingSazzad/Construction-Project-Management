@@ -40,7 +40,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[400px] bg-white border border-[#DDE1E7] rounded-3xl max-h-[85vh] shadow-2xl flex flex-col overflow-hidden text-[#171A1F]">
+      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl max-h-[85vh] shadow-2xl flex flex-col overflow-hidden text-[#171A1F]">
         {/* Header */}
         <div className="flex items-center justify-between p-4 pb-3 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-2.5">

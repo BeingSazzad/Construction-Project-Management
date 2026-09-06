@@ -65,7 +65,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
-      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F] animate-scale-up">
+      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#171A1F] animate-scale-up max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-2">

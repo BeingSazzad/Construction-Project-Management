@@ -33,7 +33,7 @@ export const DailyLogDetailModal: React.FC<DailyLogDetailModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center font-sans bg-black/40 backdrop-blur-sm animate-fade-in p-0 sm:p-4 overflow-y-auto">
       <div 
-        className="w-full max-w-[440px] min-h-screen sm:min-h-0 sm:max-h-[92vh] bg-white sm:border sm:border-[#DDE1E7] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden text-[#171A1F] relative"
+        className="w-full max-w-[390px] mx-auto min-h-screen sm:min-h-0 sm:max-h-[92vh] bg-white sm:border sm:border-[#DDE1E7] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden text-[#171A1F] relative"
       >
         {/* ─── Top Header Bar ─── */}
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#EAEDF1] bg-white sticky top-0 z-20">

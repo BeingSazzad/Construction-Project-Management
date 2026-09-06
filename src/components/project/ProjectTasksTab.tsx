@@ -113,9 +113,18 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'todo' | 'in-progress' | 'done'>('all');
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
-  const [isViewAll, setIsViewAll] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<EditableTaskData | null>(null);
+  const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
+  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
+  const [editingGroupName, setEditingGroupName] = useState<string>('');
+
+  // Close menus on click outside
+  React.useEffect(() => {
+    const handleGlobalClick = () => setOpenMenuTaskId(null);
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
 
   // Icon mapping
   const getStageIcon = (iconType: string) => {
@@ -148,6 +157,38 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
       ...prev,
       [groupId]: !prev[groupId]
     }));
+  };
+
+  const allCollapsed = stageGroups.length > 0 && stageGroups.every(g => !!collapsedGroups[g.id]);
+
+  const handleToggleAll = () => {
+    if (allCollapsed) {
+      setCollapsedGroups({});
+    } else {
+      const all: Record<string, boolean> = {};
+      stageGroups.forEach(g => {
+        all[g.id] = true;
+      });
+      setCollapsedGroups(all);
+    }
+  };
+
+  const handleStartRenameGroup = (e: React.MouseEvent, grp: StageTaskGroup) => {
+    e.stopPropagation();
+    setEditingGroupId(grp.id);
+    setEditingGroupName(grp.name);
+  };
+
+  const handleSaveRenameGroup = (groupId: string) => {
+    if (editingGroupName.trim()) {
+      setStageGroups(prev => prev.map(g => g.id === groupId ? { ...g, name: editingGroupName.trim() } : g));
+    }
+    setEditingGroupId(null);
+  };
+
+  const handleCancelRenameGroup = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingGroupId(null);
   };
 
   // Toggle task status progression: To Do -> In Progress -> Done -> To Do
@@ -358,10 +399,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
       {/* ─── 4. Secondary Action Row: Collapse / Expand ─── */}
       <div className="flex items-center justify-between px-0.5 text-xs font-medium">
         <button
-          onClick={() => setIsViewAll(prev => !prev)}
+          onClick={handleToggleAll}
           className="text-[#1677FF] font-semibold hover:underline cursor-pointer"
         >
-          {isViewAll ? 'Collapse All' : 'Expand All'}
+          {allCollapsed ? 'Expand All' : 'Collapse All'}
         </button>
 
         <button
@@ -373,10 +414,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         </button>
       </div>
 
-      {/* ─── 5. Stage Groups List (No Text Truncation, Clean Progress) ─── */}
+      {/* ─── 5. Stage Groups List ─── */}
       <div className="flex flex-col gap-3">
         {filteredGroups.map((group) => {
-          const isCollapsed = !isViewAll && collapsedGroups[group.id];
+          const isCollapsed = !!collapsedGroups[group.id];
           const groupTotal = group.originalTasks.length;
           const groupDone = group.originalTasks.filter(t => t.status === 'done').length;
           const groupPercent = groupTotal > 0 ? Math.round((groupDone / groupTotal) * 100) : 0;
@@ -388,19 +429,58 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
               className="rounded-2xl bg-white border border-[#E2E8F0] overflow-hidden shadow-card transition-all"
             >
               {/* Accordion Header */}
-              <button
-                type="button"
+              <div
                 onClick={() => toggleGroup(group.id)}
-                className="w-full p-3.5 flex items-center justify-between gap-2.5 bg-white hover:bg-[#F8FAFC] transition-colors cursor-pointer text-left"
+                className="w-full p-3.5 flex items-center justify-between gap-2.5 bg-white hover:bg-[#F8FAFC] transition-colors cursor-pointer text-left select-none"
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div className={`w-8 h-8 rounded-xl ${getStageIconBg(group.iconType)} flex items-center justify-center shrink-0`}>
                     {getStageIcon(group.iconType)}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-xs font-bold text-[#0F172A] truncate">
-                      {group.name}
-                    </h3>
+                    {editingGroupId === group.id ? (
+                      <div className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
+                        <input
+                          type="text"
+                          value={editingGroupName}
+                          onChange={e => setEditingGroupName(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') handleSaveRenameGroup(group.id);
+                            if (e.key === 'Escape') setEditingGroupId(null);
+                          }}
+                          className="text-xs font-bold text-[#0F172A] bg-white border border-[#1677FF] rounded-xl px-2.5 py-1 outline-none w-full"
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleSaveRenameGroup(group.id)}
+                          className="px-2.5 py-1 rounded-xl bg-[#1677FF] hover:bg-[#125ecc] text-white text-[11px] font-bold cursor-pointer shrink-0 transition-colors"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCancelRenameGroup}
+                          className="p-1.5 rounded-xl text-[#64748B] hover:bg-[#E2E8F0] text-[10px] cursor-pointer shrink-0 transition-colors"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 group/header">
+                        <h3 className="text-xs font-bold text-[#0F172A] truncate">
+                          {group.name}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={(e) => handleStartRenameGroup(e, group)}
+                          className="w-5 h-5 rounded text-[#94A3B8] hover:text-[#1677FF] hover:bg-[#EAF3FF] flex items-center justify-center transition-colors cursor-pointer shrink-0 opacity-0 group-hover/header:opacity-100"
+                          title="Rename stage"
+                        >
+                          <Pencil className="w-2.5 h-2.5" />
+                        </button>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 mt-1">
                       <div className="flex-1 max-w-[140px] h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
                         <div 
@@ -429,9 +509,9 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                     <ChevronUp className="w-4 h-4 text-[#94A3B8]" />
                   )}
                 </div>
-              </button>
+              </div>
 
-              {/* Task Items (Clean Rows, Full Text Visibility, No Truncation) */}
+              {/* Task Items */}
               {!isCollapsed && (
                 <div className="divide-y divide-[#F1F5F9] border-t border-[#E2E8F0]">
                   {group.tasks.length === 0 ? (
@@ -448,7 +528,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                           key={task.id}
                           className="px-3.5 py-3 hover:bg-[#F8FAFC] flex items-center justify-between gap-2.5 transition-colors group"
                         >
-                          {/* Left: Checkmark & Full Task Title */}
+                          {/* Left: Checkmark & Task Title */}
                           <div 
                             onClick={() => toggleTaskStatus(group.id, task.id)}
                             className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer select-none"
@@ -485,8 +565,8 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                             </div>
                           </div>
 
-                          {/* Right: Status Pill & Delete */}
-                          <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Right: Status Pill & 3-Dot Action Menu */}
+                          <div className="flex items-center gap-2 shrink-0">
                             <button
                               type="button"
                               onClick={() => toggleTaskStatus(group.id, task.id)}
@@ -510,40 +590,57 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                               )}
                             </button>
 
-                            {/* Edit Button */}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingTask({
-                                  id: task.id,
-                                  title: task.title,
-                                  status: task.status,
-                                  priority: task.priority,
-                                  costCode: task.costCode,
-                                  assignee: task.assignee,
-                                  dueDate: task.dueDate,
-                                  groupId: group.id
-                                });
-                              }}
-                              className="w-6 h-6 rounded-md text-[#94A3B8] hover:text-[#1677FF] hover:bg-[#EAF3FF] flex items-center justify-center cursor-pointer transition-colors opacity-60 group-hover:opacity-100"
-                              title="Edit task"
-                            >
-                              <Pencil className="w-3 h-3" />
-                            </button>
+                            {/* 3-Dot Action Menu (Edit / Delete) */}
+                            <div className="relative" onClick={e => e.stopPropagation()}>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setOpenMenuTaskId(prev => prev === task.id ? null : task.id);
+                                }}
+                                className="w-8 h-8 rounded-xl text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] flex items-center justify-center cursor-pointer transition-colors active:scale-95"
+                                title="More options"
+                              >
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
 
-                            {/* Delete Button */}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteTask(group.id, task.id);
-                              }}
-                              className="w-6 h-6 rounded-md text-[#94A3B8] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors opacity-60 group-hover:opacity-100"
-                              title="Delete task"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
+                              {openMenuTaskId === task.id && (
+                                <div className="absolute right-0 top-8 w-32 bg-white rounded-xl border border-[#E2E8F0] shadow-xl py-1 z-30 flex flex-col animate-scale-in">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuTaskId(null);
+                                      setEditingTask({
+                                        id: task.id,
+                                        title: task.title,
+                                        status: task.status,
+                                        priority: task.priority,
+                                        costCode: task.costCode,
+                                        assignee: task.assignee,
+                                        dueDate: task.dueDate,
+                                        groupId: group.id
+                                      });
+                                    }}
+                                    className="w-full px-3 py-1.5 text-left text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] flex items-center gap-2 cursor-pointer transition-colors"
+                                  >
+                                    <Pencil className="w-3.5 h-3.5 text-[#1677FF]" />
+                                    <span>Edit</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuTaskId(null);
+                                      deleteTask(group.id, task.id);
+                                    }}
+                                    className="w-full px-3 py-1.5 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer transition-colors"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                                    <span>Delete</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );

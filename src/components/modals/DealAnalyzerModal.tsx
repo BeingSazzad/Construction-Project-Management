@@ -211,7 +211,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[480px] bg-white border border-[#DDE1E7] rounded-3xl p-5 max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F]">
+      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl p-5 max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F]">
         <div className="flex items-start justify-between pb-3.5 border-b border-[#EAEDF1]">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-blue-200 text-[#1677FF] flex items-center justify-center flex-shrink-0">

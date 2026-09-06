@@ -93,7 +93,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
       <div 
-        className="w-full max-w-[460px] max-h-[92vh] overflow-y-auto bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl flex flex-col scrollbar-none text-[#171A1F]"
+        className="w-full max-w-[390px] mx-auto max-h-[92vh] overflow-y-auto bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl flex flex-col scrollbar-none text-[#171A1F]"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}

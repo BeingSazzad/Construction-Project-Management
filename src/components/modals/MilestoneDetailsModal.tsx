@@ -139,7 +139,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4 animate-fade-in font-sans">
-      <div className="w-full max-w-[480px] bg-white border border-[#DDE1E7] rounded-t-3xl sm:rounded-3xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden text-[#171A1F]">
+      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-t-3xl sm:rounded-3xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden text-[#171A1F]">
         
         {/* ─── 1. MODAL HEADER ─── */}
         <div className="p-4 bg-white border-b border-[#EAEDF1] flex items-center justify-between sticky top-0 z-10">

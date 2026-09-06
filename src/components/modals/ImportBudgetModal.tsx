@@ -80,7 +80,7 @@ export const ImportBudgetModal: React.FC<ImportBudgetModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
-      <div className="w-full max-w-[420px] bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F] scrollbar-none">
+      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F] scrollbar-none">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-3.5 border-b border-[#EAEDF1] mb-4">

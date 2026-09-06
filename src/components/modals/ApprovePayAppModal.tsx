@@ -47,7 +47,7 @@ export const ApprovePayAppModal: React.FC<ApprovePayAppModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in font-sans">
-      <div className="relative w-full max-w-[430px] bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl overflow-hidden flex flex-col text-[#171A1F]">
+      <div className="relative w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl overflow-hidden flex flex-col text-[#171A1F]">
         
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAEDF1] bg-white">

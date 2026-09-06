@@ -78,7 +78,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[430px] bg-white border-t border-[#DDE1E7] rounded-t-[32px] p-5 pb-9 shadow-2xl flex flex-col gap-3 text-[#171A1F] animate-slide-up"
+        className="w-full max-w-[390px] mx-auto bg-white border-t border-[#DDE1E7] rounded-t-[32px] p-5 pb-9 shadow-2xl flex flex-col gap-3 text-[#171A1F] animate-slide-up"
       >
         {/* Pull Indicator Bar */}
         <div className="w-10 h-1 rounded-full bg-[#DDE1E7] mx-auto -mt-1 mb-1" />

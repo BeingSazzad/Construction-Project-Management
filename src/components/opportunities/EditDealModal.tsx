@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  X, DollarSign, Percent, ChevronDown, Calendar, 
-  Trash2, CheckCircle2, Building2, Briefcase, User, MapPin
+  X, DollarSign, Percent,
+  Trash2
 } from 'lucide-react';
 import { Opportunity } from './OpportunitiesView';
 import { PROJECT_TYPES, OPPORTUNITY_STAGES, LEAD_SOURCES } from './CreateDealView';
@@ -64,40 +64,40 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
   };
 
   const InputLabel = ({ label, required }: { label: string; required?: boolean }) => (
-    <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
-      {label}{required && <span className="text-rose-400 ml-0.5">*</span>}
+    <label className="text-xs font-bold text-[#4B5565] mb-1.5 block">
+      {label}{required && <span className="text-rose-500 ml-0.5">*</span>}
     </label>
   );
 
   const inputClass =
-    'w-full h-11 bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] focus:bg-[#0A1220] transition-all font-medium';
+    'w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] transition-all font-medium';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in font-sans">
       <div 
-        className="w-full max-w-[430px] max-h-[90vh] bg-[#070A12] border border-[#142036] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-scale-up"
+        className="w-full max-w-[390px] mx-auto max-h-[90vh] bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-scale-up text-[#171A1F]"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#142036] flex items-center justify-between bg-[#0A111F]">
+        <div className="px-5 py-4 border-b border-[#EAEDF1] flex items-center justify-between bg-white">
           <div>
-            <h2 className="text-sm font-bold text-white tracking-tight">Edit Opportunity</h2>
-            <p className="text-[10px] text-slate-400 mt-0.5">Update opportunity details & valuation</p>
+            <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Opportunity</h2>
+            <p className="text-xs text-[#68707C] mt-0.5 font-medium">Update details & valuation</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-[#070D1A] border border-[#142036] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-all"
+            className="w-8 h-8 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-all"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Scrollable Form Body */}
-        <form id="edit-deal-form" onSubmit={handleSubmit} className="p-5 overflow-y-auto flex flex-col gap-4 flex-1 scrollbar-none">
+        <form id="edit-deal-form" onSubmit={handleSubmit} className="p-4 overflow-y-auto flex flex-col gap-3.5 flex-1 scrollbar-none">
           
           {/* 1. Opportunity & Client Info */}
-          <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
+          <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-3 shadow-xs">
             <div>
               <InputLabel label="Opportunity Title" required />
               <input
@@ -110,14 +110,14 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
                 <InputLabel label="Client Name" />
                 <input
                   type="text"
                   value={client}
                   onChange={e => setClient(e.target.value)}
-                  placeholder="e.g. Anderson Family Trust"
+                  placeholder="e.g. Anderson Family"
                   className={inputClass}
                 />
               </div>
@@ -146,9 +146,8 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
           </div>
 
           {/* 2. Pipeline & Financial Details */}
-          <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-            <div className="grid grid-cols-2 gap-3">
-              {/* Project Type */}
+          <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-3 shadow-xs">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
                 <InputLabel label="Project Type" />
                 <CustomSelect
@@ -159,7 +158,6 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
                 />
               </div>
 
-              {/* Stage */}
               <div>
                 <InputLabel label="Stage" />
                 <CustomSelect
@@ -171,12 +169,11 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
               </div>
             </div>
 
-            {/* Value & Probability */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
                 <InputLabel label="Est. Construction Value" />
                 <div className="relative">
-                  <DollarSign className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <DollarSign className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#68707C]" />
                   <input
                     type="number"
                     min={0}
@@ -191,7 +188,7 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
               <div>
                 <InputLabel label="Probability (%)" />
                 <div className="relative">
-                  <Percent className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Percent className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#68707C]" />
                   <input
                     type="number"
                     min={0}
@@ -205,8 +202,7 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
               </div>
             </div>
 
-            {/* Lead Source & Assigned To */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
                 <InputLabel label="Lead Source" />
                 <CustomSelect
@@ -232,8 +228,8 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
           </div>
 
           {/* 3. Schedule & Notes */}
-          <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-            <div className="grid grid-cols-2 gap-3">
+          <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#EAEDF1] flex flex-col gap-3 shadow-xs">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
                 <InputLabel label="Expected Start Date" />
                 <input
@@ -261,7 +257,7 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
                 onChange={e => setDescription(e.target.value)}
                 placeholder="Scope outline, architectural specs, client wishlist..."
                 rows={2}
-                className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+                className="w-full bg-white border border-[#DDE1E7] rounded-xl px-3.5 py-2.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] resize-none transition-all font-medium"
               />
             </div>
 
@@ -272,7 +268,7 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
                 onChange={e => setNotes(e.target.value)}
                 placeholder="Private notes, square footage, pool, garage specs..."
                 rows={2}
-                className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+                className="w-full bg-white border border-[#DDE1E7] rounded-xl px-3.5 py-2.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] resize-none transition-all font-medium"
               />
             </div>
           </div>
@@ -280,7 +276,7 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
         </form>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-[#0A111F] border-t border-[#142036] flex items-center justify-between gap-3">
+        <div className="p-4 bg-white border-t border-[#EAEDF1] flex items-center justify-between gap-3">
           {onDelete ? (
             <button
               type="button"
@@ -288,7 +284,7 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
                 onDelete(deal.id);
                 onClose();
               }}
-              className="h-11 px-3.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+              className="h-10 px-3.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Delete</span>
@@ -299,14 +295,14 @@ export const EditDealModal: React.FC<EditDealModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="h-11 px-4 rounded-xl bg-[#070D1A] text-slate-300 hover:text-white border border-[#142036] text-xs font-bold cursor-pointer transition-all active:scale-95"
+              className="h-10 px-4 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#4B5565] hover:text-[#171A1F] text-xs font-bold cursor-pointer transition-all active:scale-95"
             >
               Cancel
             </button>
             <button
               form="edit-deal-form"
               type="submit"
-              className="h-11 px-6 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-bold shadow-md shadow-cyan-600/30 cursor-pointer transition-all active:scale-95"
+              className="h-10 px-5 rounded-xl bg-[#1677FF] hover:bg-[#125ecc] text-white text-xs font-bold shadow-sm cursor-pointer transition-all active:scale-95"
             >
               Save Changes
             </button>

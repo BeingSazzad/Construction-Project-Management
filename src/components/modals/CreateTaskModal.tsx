@@ -102,7 +102,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[430px] bg-white border border-[#E2E8F0] rounded-t-[28px] sm:rounded-3xl p-5 pb-7 max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col gap-3.5 text-[#0F172A] animate-slide-up"
+        className="w-full max-w-[390px] mx-auto bg-white border border-[#E2E8F0] rounded-t-[28px] sm:rounded-3xl p-5 pb-7 max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col gap-3.5 text-[#0F172A] animate-slide-up"
       >
         {/* Mobile Pull Bar */}
         <div className="w-10 h-1 rounded-full bg-[#CBD5E1] mx-auto sm:hidden -mt-1" />

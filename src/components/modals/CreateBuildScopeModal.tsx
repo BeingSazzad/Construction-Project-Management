@@ -39,7 +39,7 @@ export const CreateBuildScopeModal: React.FC<CreateBuildScopeModalProps> = ({
       />
 
       {/* Modal Card Box */}
-      <div className="relative w-full max-w-[400px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl z-10 flex flex-col gap-4 text-[#171A1F]">
+      <div className="relative w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl z-10 flex flex-col gap-4 text-[#171A1F]">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#EAEDF1] pb-3">

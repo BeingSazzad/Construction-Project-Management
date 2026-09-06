@@ -7,7 +7,7 @@ export interface ModalProps {
   title: string;
   subtitle?: string;
   icon?: React.ReactNode;
-  maxWidth?: string; // default 'max-w-[430px]'
+  maxWidth?: string; // default 'max-w-[390px]'
   children: React.ReactNode;
   footer?: React.ReactNode;
 }
@@ -18,7 +18,7 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   subtitle,
   icon,
-  maxWidth = 'max-w-[430px]',
+  maxWidth = 'max-w-[390px]',
   children,
   footer,
 }) => {

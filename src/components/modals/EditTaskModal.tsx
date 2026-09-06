@@ -93,7 +93,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-[420px] bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F] scrollbar-none"
+        className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] p-5 rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F] scrollbar-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

@@ -62,7 +62,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in font-sans">
-      <div className="w-full max-w-md bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="p-4 px-5 border-b border-[#EAEDF1] flex items-center justify-between bg-white/95 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-2.5">

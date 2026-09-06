@@ -102,37 +102,37 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
   };
 
   const InputLabel = ({ label, required }: { label: string; required?: boolean }) => (
-    <label className="text-xs font-semibold text-slate-300 mb-1.5 block">
-      {label}{required && <span className="text-rose-400 ml-0.5">*</span>}
+    <label className="text-xs font-bold text-[#4B5565] mb-1.5 block">
+      {label}{required && <span className="text-rose-500 ml-0.5">*</span>}
     </label>
   );
 
   const inputClass =
-    'w-full h-11 bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] focus:bg-[#0A1220] transition-all font-medium';
+    'w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white transition-all font-medium';
 
   return (
-    <div className="w-full min-h-screen bg-[#070A12] font-sans pb-32 max-w-[430px] mx-auto text-slate-100 animate-fade-in flex flex-col">
+    <div className="w-full min-h-screen bg-[#F2F2F7] font-sans pb-32 max-w-[430px] mx-auto text-[#171A1F] animate-fade-in flex flex-col">
 
       {/* ─── STICKY HEADER ─── */}
-      <div className="sticky top-0 z-20 bg-[#070A12]/95 backdrop-blur-md border-b border-[#142036] px-5 py-3 flex items-center justify-between">
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-[#EAEDF1] px-5 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={onBack}
-            className="w-9 h-9 rounded-xl bg-[#0A111F] border border-[#142036] text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-all active:scale-95"
+            className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-all active:scale-95"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="text-sm font-bold text-white tracking-tight">New Opportunity</h1>
-            <p className="text-[10px] text-slate-500">Create pre-construction lead</p>
+            <h1 className="text-sm font-bold text-[#171A1F] tracking-tight">New Opportunity</h1>
+            <p className="text-xs text-[#68707C] font-medium">Create pre-construction lead</p>
           </div>
         </div>
       </div>
 
       {/* Success banner */}
       {isSuccess && (
-        <div className="mx-5 mt-4 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-2 animate-fade-in">
+        <div className="mx-5 mt-4 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2 animate-fade-in">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           <span>Opportunity created successfully!</span>
         </div>
@@ -142,10 +142,10 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
       <form onSubmit={handleSubmit} className="px-5 pt-4 flex-1 flex flex-col gap-4">
         
         {/* SECTION 1: OPPORTUNITY & CLIENT INFO */}
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-          <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
-            <Building2 className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-bold text-white">Opportunity & Client Info</span>
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col gap-3.5 shadow-xs">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#EAEDF1]">
+            <Building2 className="w-4 h-4 text-[#1677FF]" />
+            <span className="text-xs font-bold text-[#171A1F]">Opportunity & Client Info</span>
           </div>
 
           <div>
@@ -161,7 +161,7 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
               <InputLabel label="Client Name" />
               <input
@@ -197,13 +197,13 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
         </div>
 
         {/* SECTION 2: PIPELINE & VALUATION */}
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-          <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
-            <Briefcase className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-bold text-white">Pipeline Classification & Financials</span>
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col gap-3.5 shadow-xs">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#EAEDF1]">
+            <Briefcase className="w-4 h-4 text-[#1677FF]" />
+            <span className="text-xs font-bold text-[#171A1F]">Pipeline Classification & Financials</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             {/* Project Type */}
             <div>
               <InputLabel label="Project Type" />
@@ -228,11 +228,11 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
           </div>
 
           {/* Value & Probability */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
               <InputLabel label="Est. Construction Value" />
               <div className="relative">
-                <DollarSign className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <DollarSign className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#68707C]" />
                 <input
                   type="number"
                   min={0}
@@ -247,7 +247,7 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
             <div>
               <InputLabel label="Probability (%)" />
               <div className="relative">
-                <Percent className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Percent className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#68707C]" />
                 <input
                   type="number"
                   min={0}
@@ -262,7 +262,7 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
           </div>
 
           {/* Lead Source & Assigned To */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
               <InputLabel label="Lead Source" />
               <CustomSelect
@@ -288,13 +288,13 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
         </div>
 
         {/* SECTION 3: SCHEDULE & NOTES */}
-        <div className="p-4 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col gap-3.5 shadow-sm">
-          <div className="flex items-center gap-2 pb-2 border-b border-[#142036]">
-            <Calendar className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-bold text-white">Timeline & Scope Details</span>
+        <div className="p-4 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col gap-3.5 shadow-xs">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#EAEDF1]">
+            <Calendar className="w-4 h-4 text-[#1677FF]" />
+            <span className="text-xs font-bold text-[#171A1F]">Timeline & Scope Details</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
               <InputLabel label="Expected Start Date" />
               <input
@@ -322,7 +322,7 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
               onChange={e => setDescription(e.target.value)}
               placeholder="Scope outline, architectural specs, client wishlist..."
               rows={2}
-              className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 py-2.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white resize-none transition-all font-medium"
             />
           </div>
 
@@ -333,20 +333,20 @@ export const CreateDealView: React.FC<CreateDealViewProps> = ({ onBack, onCreate
               onChange={e => setNotes(e.target.value)}
               placeholder="Private notes for estimating team..."
               rows={2}
-              className="w-full bg-[#090E1A] border border-[#142036] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 outline-none focus:border-[#2563EB] resize-none transition-all font-medium"
+              className="w-full bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 py-2.5 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] focus:bg-white resize-none transition-all font-medium"
             />
           </div>
         </div>
 
         {/* ─── PRIMARY SUBMIT ACTION ─── */}
-        <div className="pt-2">
+        <div className="pt-1">
           <button
             type="submit"
             disabled={!isValid || isSuccess}
-            className={`w-full h-12 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer ${
+            className={`w-full h-11 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer ${
               isValid && !isSuccess
-                ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-blue-600/30 active:scale-[0.99]'
-                : 'bg-[#0D1422] text-slate-500 border border-[#142036] cursor-not-allowed'
+                ? 'bg-[#1677FF] hover:bg-[#125ecc] text-white active:scale-[0.99]'
+                : 'bg-[#EAEDF1] text-[#9DA5B1] cursor-not-allowed'
             }`}
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />

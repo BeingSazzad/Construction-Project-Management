@@ -98,19 +98,36 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
   {
     id: 'opp-5',
     title: 'Cherry Creek Master Bath Remodel',
-    client: 'Marcus Davis',
-    clientEmail: 'mdavis@coloradohealth.org',
-    address: '250 Columbine St, Denver, CO',
-    value: 95000,
-    stage: 'Contract Signed',
+    client: 'David Miller',
+    clientEmail: 'dmiller@coloradolaw.net',
+    address: '320 Adams St, Denver, CO',
+    value: 75000,
+    stage: 'Contacted',
     type: 'Remodel',
-    probability: 100,
+    probability: 40,
     leadSource: 'Referral',
     assignedTo: 'Alex Chen',
+    startDate: '2026-09-15',
+    followUpDate: '2026-08-23',
+    description: 'Spa retreat with freestanding stone soaking tub.',
+    notes: 'Client travel schedule delays site survey.'
+  },
+  {
+    id: 'opp-6',
+    title: 'Highland Park Ground-Up Duplex',
+    client: 'Summit Urban Living LLC',
+    clientEmail: 'invest@summiturban.com',
+    address: '3210 Tejon St, Denver, CO',
+    value: 1650000,
+    stage: 'Contract Signed',
+    type: 'Residential Development',
+    probability: 100,
+    leadSource: 'Subcontractor',
+    assignedTo: 'Alex Chen',
     startDate: '2026-09-01',
-    followUpDate: '2026-08-25',
-    description: 'Won project, mobilization next week.',
-    notes: 'Deposit paid, permits submitted.'
+    followUpDate: '2026-08-20',
+    description: 'Contemporary two-unit townhome with rooftop decks.',
+    notes: 'Deposit wired. Ready to transition into active project!'
   }
 ];
 
@@ -125,6 +142,7 @@ export const OpportunitiesView: React.FC = () => {
   const [isStageMenuOpen, setIsStageMenuOpen] = useState(false);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
+  // Top Metrics
   const totalPipeline = opportunities
     .filter(o => o.stage !== 'Contract Signed')
     .reduce((sum, o) => sum + o.value, 0);
@@ -191,15 +209,6 @@ export const OpportunitiesView: React.FC = () => {
     setEditingDeal(null);
   };
 
-  const handleUpdateStage = (id: string, newStage: typeof OPPORTUNITY_STAGES[number]) => {
-    setOpportunities(prev => prev.map(o => o.id === id ? { ...o, stage: newStage } : o));
-  };
-
-  // Selected stage total value
-  const activeTabTotalValue = useMemo(() => {
-    return filteredOpportunities.reduce((sum, o) => sum + o.value, 0);
-  }, [filteredOpportunities]);
-
   // Full-screen create opportunity view
   if (showCreate) {
     return <CreateDealView onBack={() => setShowCreate(false)} onCreate={handleCreate} />;
@@ -217,53 +226,53 @@ export const OpportunitiesView: React.FC = () => {
     );
   }
 
-  // Stage color badge styling
+  // Stage color badge styling (Apple Light Theme)
   const getStageBadgeClasses = (stage: string) => {
     switch (stage) {
       case 'Won':
       case 'Contract Signed':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
       case 'Estimating':
       case 'Proposal Sent':
       case 'Negotiation':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+        return 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20';
       case 'Contacted':
       case 'Discovery':
-        return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+        return 'bg-sky-50 text-sky-700 border border-sky-200';
       case 'Plans Received':
-        return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+        return 'bg-purple-50 text-purple-700 border border-purple-200';
       case 'Lost':
-        return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+        return 'bg-rose-50 text-rose-700 border border-rose-200';
       default:
-        return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+        return 'bg-[#F2F2F7] text-[#4B5565] border border-[#DDE1E7]';
     }
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-slate-100 animate-fade-in">
+    <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
       
       {/* ─── 1. TOP HEADER & PRIMARY ACTION ─── */}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 shadow-sm">
+            <div className="w-7 h-7 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF] shadow-xs">
               <TrendingUp className="w-4 h-4 stroke-[2.5]" />
             </div>
-            <h1 className="text-base font-bold text-white tracking-tight">
+            <h1 className="text-base font-bold text-[#171A1F] tracking-tight">
               Opportunities
             </h1>
           </div>
-          <p className="text-[10px] text-slate-400 mt-0.5 font-medium">
-            Pre-construction pipeline & revenue forecasting
+          <p className="text-xs text-[#68707C] mt-0.5 font-medium">
+            Pre-construction pipeline & revenue
           </p>
         </div>
 
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer active:scale-95 flex-shrink-0"
+          className="flex items-center gap-1.5 h-9 px-3 rounded-xl bg-[#1677FF] hover:bg-[#125ecc] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>New Opportunity</span>
+          <span>New</span>
         </button>
       </div>
 
@@ -271,55 +280,55 @@ export const OpportunitiesView: React.FC = () => {
       <div className="grid grid-cols-2 gap-2.5">
         
         {/* Card 1: Pipeline Value */}
-        <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col justify-between relative overflow-hidden">
+        <div className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <div className="w-7 h-7 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <div className="w-7 h-7 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]">
               <Briefcase className="w-3.5 h-3.5" />
             </div>
-            <div className="w-12 h-6 opacity-80">
-              <svg viewBox="0 0 60 30" className="w-full h-full stroke-blue-400 fill-none" strokeWidth="2.5">
+            <div className="w-12 h-6 opacity-90">
+              <svg viewBox="0 0 60 30" className="w-full h-full stroke-[#1677FF] fill-none" strokeWidth="2.5">
                 <path d="M0 24 Q 15 26, 25 15 T 45 10 T 60 2" />
-                <circle cx="60" cy="2" r="2.5" className="fill-blue-400" />
+                <circle cx="60" cy="2" r="2.5" className="fill-[#1677FF]" />
               </svg>
             </div>
           </div>
 
           <div className="mt-2.5">
-            <span className="text-[12px] font-medium text-slate-400 block leading-tight">
+            <span className="text-xs font-semibold text-[#68707C] block leading-tight">
               Pipeline Value
             </span>
-            <div className="text-lg font-black text-white mt-0.5 tracking-tight">
+            <div className="text-lg font-black text-[#171A1F] mt-0.5 tracking-tight">
               ${(totalPipeline / 1000000).toFixed(2)}M
             </div>
-            <div className="text-[10px] text-slate-400 font-medium mt-0.5">
-              {activeCount} active opportunities
+            <div className="text-[11px] text-[#68707C] font-medium mt-0.5">
+              {activeCount} active deals
             </div>
           </div>
         </div>
 
         {/* Card 2: Won Value */}
-        <div className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] shadow-sm flex flex-col justify-between relative overflow-hidden">
+        <div className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] shadow-xs flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <div className="w-7 h-7 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-7 h-7 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
               <Trophy className="w-3.5 h-3.5" />
             </div>
-            <div className="w-12 h-6 opacity-80">
-              <svg viewBox="0 0 60 30" className="w-full h-full stroke-emerald-400 fill-none" strokeWidth="2.5">
+            <div className="w-12 h-6 opacity-90">
+              <svg viewBox="0 0 60 30" className="w-full h-full stroke-emerald-500 fill-none" strokeWidth="2.5">
                 <path d="M0 26 Q 15 28, 30 18 T 45 12 T 60 4" />
-                <circle cx="60" cy="4" r="2.5" className="fill-emerald-400" />
+                <circle cx="60" cy="4" r="2.5" className="fill-emerald-500" />
               </svg>
             </div>
           </div>
 
           <div className="mt-2.5">
-            <span className="text-[12px] font-medium text-slate-400 block leading-tight">
+            <span className="text-xs font-semibold text-[#68707C] block leading-tight">
               Won Value
             </span>
-            <div className="text-lg font-black text-white mt-0.5 tracking-tight">
+            <div className="text-lg font-black text-[#171A1F] mt-0.5 tracking-tight">
               ${wonValue.toLocaleString()}
             </div>
-            <div className="text-[10px] text-slate-400 font-medium mt-0.5">
-              <strong className="text-emerald-400 font-bold">{conversionRate}%</strong> win rate
+            <div className="text-[11px] text-[#68707C] font-medium mt-0.5">
+              <strong className="text-emerald-600 font-bold">{conversionRate}%</strong> win rate
             </div>
           </div>
         </div>
@@ -328,18 +337,18 @@ export const OpportunitiesView: React.FC = () => {
 
       {/* ─── 3. SEARCH BAR ─── */}
       <div className="relative">
-        <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <Search className="w-3.5 h-3.5 text-[#9DA5B1] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search opportunities by title, client, or address..."
-          className="w-full h-9 bg-[#0A111F] border border-[#142036] rounded-xl pl-8 pr-3 text-xs text-white placeholder-slate-500 outline-none focus:border-[#2563EB] transition-colors"
+          placeholder="Search by title, client, or address..."
+          className="w-full h-9 bg-white border border-[#DDE1E7] rounded-xl pl-8 pr-8 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none focus:border-[#1677FF] transition-colors font-medium"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="w-4.5 h-4.5 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer"
+            className="w-4.5 h-4.5 rounded-full bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer"
           >
             <X className="w-3 h-3" />
           </button>
@@ -348,10 +357,10 @@ export const OpportunitiesView: React.FC = () => {
 
       {/* ─── 4. CLEAN HEADER & CONTROLS ROW ─── */}
       <div className="flex items-center justify-between pt-1 px-0.5">
-        <h3 className="text-xs font-bold text-white tracking-tight">Opportunity Pipeline</h3>
+        <h3 className="text-xs font-bold text-[#171A1F] tracking-tight">Pipeline</h3>
 
         <div className="flex items-center gap-1.5">
-          {/* Custom Stage Filter Dropdown (Figma & DOM Capturable) */}
+          {/* Custom Stage Filter Dropdown */}
           <div className="relative">
             <button
               type="button"
@@ -359,14 +368,14 @@ export const OpportunitiesView: React.FC = () => {
                 setIsStageMenuOpen(!isStageMenuOpen);
                 setIsSortMenuOpen(false);
               }}
-              className={`h-8 px-2.5 rounded-xl border text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`h-8 px-2.5 rounded-xl border text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 isStageMenuOpen || selectedStageFilter !== 'All'
-                  ? 'bg-blue-600/20 border-blue-500/50 text-blue-400'
-                  : 'bg-[#070D1A] border-[#142036] hover:border-slate-600 text-slate-300'
+                  ? 'bg-[#EAF3FF] border-[#1677FF]/30 text-[#1677FF]'
+                  : 'bg-white border-[#DDE1E7] hover:border-[#9DA5B1] text-[#4B5565]'
               }`}
             >
               <span>{selectedStageFilter === 'All' ? 'All Stages' : selectedStageFilter}</span>
-              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isStageMenuOpen ? 'rotate-180 text-blue-400' : ''}`} />
+              <ChevronDown className={`w-3 h-3 transition-transform ${isStageMenuOpen ? 'rotate-180 text-[#1677FF]' : 'text-[#68707C]'}`} />
             </button>
 
             {isStageMenuOpen && (
@@ -375,8 +384,8 @@ export const OpportunitiesView: React.FC = () => {
                   className="fixed inset-0 z-40" 
                   onClick={() => setIsStageMenuOpen(false)}
                 />
-                <div className="absolute right-0 top-full mt-1.5 w-48 rounded-2xl bg-[#0A111F] border border-[#1E2D4A] p-1.5 shadow-2xl shadow-black/80 backdrop-blur-xl z-50 flex flex-col gap-0.5 animate-fade-in">
-                  <div className="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                <div className="absolute right-0 top-full mt-1.5 w-48 rounded-2xl bg-white border border-[#DDE1E7] p-1.5 shadow-xl z-50 flex flex-col gap-0.5 animate-fade-in text-[#171A1F]">
+                  <div className="px-2 py-1 text-[10px] font-bold text-[#68707C] uppercase tracking-wider">
                     Filter by Stage
                   </div>
 
@@ -388,15 +397,15 @@ export const OpportunitiesView: React.FC = () => {
                     }}
                     className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer text-left ${
                       selectedStageFilter === 'All'
-                        ? 'bg-blue-600/20 text-blue-400 font-bold'
-                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                        ? 'bg-[#EAF3FF] text-[#1677FF] font-bold'
+                        : 'text-[#4B5565] hover:bg-[#F2F2F7] hover:text-[#171A1F]'
                     }`}
                   >
                     <span>All Stages</span>
-                    <span className="text-[10px] text-slate-500 font-normal">({opportunities.length})</span>
+                    <span className="text-[10px] text-[#68707C] font-normal">({opportunities.length})</span>
                   </button>
 
-                  <div className="h-px bg-[#142036] my-1" />
+                  <div className="h-px bg-[#EAEDF1] my-1" />
 
                   {OPPORTUNITY_STAGES.map(s => {
                     const count = opportunities.filter(o => o.stage === s).length;
@@ -411,18 +420,18 @@ export const OpportunitiesView: React.FC = () => {
                         }}
                         className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer text-left ${
                           isSelected
-                            ? 'bg-blue-600/20 text-blue-400 font-bold'
-                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                            ? 'bg-[#EAF3FF] text-[#1677FF] font-bold'
+                            : 'text-[#4B5565] hover:bg-[#F2F2F7] hover:text-[#171A1F]'
                         }`}
                       >
                         <span className="truncate">{s}</span>
                         <div className="flex items-center gap-1.5 flex-shrink-0">
                           <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                            count > 0 ? 'bg-blue-500/10 text-blue-400 font-bold' : 'text-slate-600'
+                            count > 0 ? 'bg-[#EAF3FF] text-[#1677FF] font-bold' : 'text-[#9DA5B1]'
                           }`}>
                             {count}
                           </span>
-                          {isSelected && <Check className="w-3 h-3 text-blue-400 stroke-[2.5]" />}
+                          {isSelected && <Check className="w-3 h-3 text-[#1677FF] stroke-[2.5]" />}
                         </div>
                       </button>
                     );
@@ -432,7 +441,7 @@ export const OpportunitiesView: React.FC = () => {
             )}
           </div>
 
-          {/* Custom Sort Dropdown (Figma & DOM Capturable) */}
+          {/* Custom Sort Dropdown */}
           <div className="relative">
             <button
               type="button"
@@ -440,20 +449,20 @@ export const OpportunitiesView: React.FC = () => {
                 setIsSortMenuOpen(!isSortMenuOpen);
                 setIsStageMenuOpen(false);
               }}
-              className={`h-8 px-2.5 rounded-xl border text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`h-8 px-2.5 rounded-xl border text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 isSortMenuOpen
-                  ? 'bg-blue-600/20 border-blue-500/50 text-blue-400'
-                  : 'bg-[#070D1A] border-[#142036] hover:border-slate-600 text-slate-300'
+                  ? 'bg-[#EAF3FF] border-[#1677FF]/30 text-[#1677FF]'
+                  : 'bg-white border-[#DDE1E7] hover:border-[#9DA5B1] text-[#4B5565]'
               }`}
             >
-              <ArrowUpDown className="w-3 h-3 text-slate-400" />
+              <ArrowUpDown className="w-3 h-3 text-[#68707C]" />
               <span>
                 {sortBy === 'value-desc' && 'Highest Value'}
                 {sortBy === 'value-asc' && 'Lowest Value'}
                 {sortBy === 'prob-desc' && 'Win Rate'}
                 {sortBy === 'name-asc' && 'A-Z Name'}
               </span>
-              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isSortMenuOpen ? 'rotate-180 text-blue-400' : ''}`} />
+              <ChevronDown className={`w-3 h-3 transition-transform ${isSortMenuOpen ? 'rotate-180 text-[#1677FF]' : 'text-[#68707C]'}`} />
             </button>
 
             {isSortMenuOpen && (
@@ -462,8 +471,8 @@ export const OpportunitiesView: React.FC = () => {
                   className="fixed inset-0 z-40" 
                   onClick={() => setIsSortMenuOpen(false)}
                 />
-                <div className="absolute right-0 top-full mt-1.5 w-44 rounded-2xl bg-[#0A111F] border border-[#1E2D4A] p-1.5 shadow-2xl shadow-black/80 backdrop-blur-xl z-50 flex flex-col gap-0.5 animate-fade-in">
-                  <div className="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                <div className="absolute right-0 top-full mt-1.5 w-44 rounded-2xl bg-white border border-[#DDE1E7] p-1.5 shadow-xl z-50 flex flex-col gap-0.5 animate-fade-in text-[#171A1F]">
+                  <div className="px-2 py-1 text-[10px] font-bold text-[#68707C] uppercase tracking-wider">
                     Sort Deals
                   </div>
 
@@ -484,12 +493,12 @@ export const OpportunitiesView: React.FC = () => {
                         }}
                         className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer text-left ${
                           isSelected
-                            ? 'bg-blue-600/20 text-blue-400 font-bold'
-                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                            ? 'bg-[#EAF3FF] text-[#1677FF] font-bold'
+                            : 'text-[#4B5565] hover:bg-[#F2F2F7] hover:text-[#171A1F]'
                         }`}
                       >
                         <span>{opt.label}</span>
-                        {isSelected && <Check className="w-3 h-3 text-blue-400 stroke-[2.5]" />}
+                        {isSelected && <Check className="w-3 h-3 text-[#1677FF] stroke-[2.5]" />}
                       </button>
                     );
                   })}
@@ -502,13 +511,13 @@ export const OpportunitiesView: React.FC = () => {
 
       {/* ─── 5. OPPORTUNITY CARDS FEED ─── */}
       {filteredOpportunities.length === 0 ? (
-        <div className="p-8 rounded-2xl bg-[#0A111F] border border-[#142036] flex flex-col items-center justify-center text-center gap-3 text-slate-400 my-2">
-          <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+        <div className="p-8 rounded-2xl bg-white border border-[#DDE1E7] flex flex-col items-center justify-center text-center gap-3 text-[#68707C] my-2 shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center">
             <TrendingUp className="w-6 h-6" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">No opportunities found</h4>
-            <p className="text-[12px] text-slate-400 mt-1 max-w-[220px]">
+            <h4 className="text-xs font-bold text-[#171A1F]">No opportunities found</h4>
+            <p className="text-xs text-[#68707C] mt-1 max-w-[220px]">
               {selectedStageFilter !== 'All' 
                 ? `There are currently no opportunities in "${selectedStageFilter}".`
                 : 'No opportunities match your search criteria.'}
@@ -516,7 +525,7 @@ export const OpportunitiesView: React.FC = () => {
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="mt-1 px-3.5 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer"
+            className="mt-1 h-9 px-3.5 bg-[#1677FF] hover:bg-[#125ecc] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
           >
             + Create Opportunity
           </button>
@@ -527,38 +536,38 @@ export const OpportunitiesView: React.FC = () => {
             <div
               key={deal.id}
               onClick={() => setSelectedDeal(deal)}
-              className="p-3.5 rounded-2xl bg-[#0A111F] border border-[#142036] hover:border-blue-500/40 transition-all cursor-pointer flex flex-col gap-2.5 shadow-sm active:scale-[0.99] group"
+              className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 hover:shadow-sm transition-all cursor-pointer flex flex-col gap-2.5 shadow-xs active:scale-[0.99] group"
             >
               {/* Header Row: Title & Stage Badge */}
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">
+                  <h3 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">
                     {deal.title}
                   </h3>
-                  <p className="text-[12px] text-slate-400 font-medium truncate mt-0.5">
-                    {deal.client} <span className="text-slate-600">·</span> <span className="text-slate-400">{deal.type || 'Custom Home'}</span>
+                  <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
+                    {deal.client} <span className="text-[#DDE1E7]">·</span> <span className="text-[#68707C]">{deal.type || 'Custom Home'}</span>
                   </p>
                 </div>
 
-                <span className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold border flex-shrink-0 ${getStageBadgeClasses(deal.stage)}`}>
+                <span className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold flex-shrink-0 ${getStageBadgeClasses(deal.stage)}`}>
                   {deal.stage}
                 </span>
               </div>
 
               {/* Bottom Row: Value & Probability */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#142036]/60 text-xs">
-                <span className="text-sm font-black text-white">
+              <div className="flex items-center justify-between pt-2 border-t border-[#EAEDF1] text-xs">
+                <span className="text-sm font-black text-[#171A1F]">
                   ${deal.value.toLocaleString()}
                 </span>
 
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-slate-400">
+                  <span className="text-[11px] font-bold text-[#68707C]">
                     {deal.probability}% win
                   </span>
-                  <div className="w-12 h-1 bg-[#050811] rounded-full overflow-hidden border border-[#142036]">
+                  <div className="w-12 h-1 bg-[#F2F2F7] rounded-full overflow-hidden border border-[#E2E8F0]">
                     <div
                       className={`h-full rounded-full ${
-                        deal.probability >= 70 ? 'bg-emerald-500' : 'bg-blue-500'
+                        deal.probability >= 70 ? 'bg-emerald-500' : 'bg-[#1677FF]'
                       }`}
                       style={{ width: `${deal.probability}%` }}
                     />
