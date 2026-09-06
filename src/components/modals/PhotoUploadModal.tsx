@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Project, SitePhoto } from '../../types';
-import { X, Camera, Upload, RefreshCw, LocateFixed } from 'lucide-react';
+import { X, Camera, Upload, RefreshCw, LocateFixed, Building2, ChevronDown } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface PhotoUploadModalProps {
   isOpen: boolean;
   project?: Project | null;
+  projects?: Project[];
   onClose: () => void;
   onUpload: (photo: Partial<SitePhoto>) => void;
 }
@@ -13,15 +14,29 @@ interface PhotoUploadModalProps {
 export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
   isOpen,
   project,
+  projects = [],
   onClose,
   onUpload
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(() => {
+    return project?.id || (projects.length > 0 ? projects[0].id : 'proj-1');
+  });
   const [caption, setCaption] = useState('');
   const [location, setLocation] = useState('');
   const [category, setCategory] = useState<SitePhoto['category']>('Progress');
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [isTracking, setIsTracking] = useState(false);
+
+  useEffect(() => {
+    if (project?.id) {
+      setSelectedProjectId(project.id);
+    } else if (projects.length > 0 && !selectedProjectId) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [project, projects, isOpen]);
+
+  const currentProject = projects.find(p => p.id === selectedProjectId) || project || projects[0];
 
   if (!isOpen) return null;
 
@@ -32,18 +47,18 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
         (pos) => {
           const lat = pos.coords.latitude.toFixed(4);
           const lng = pos.coords.longitude.toFixed(4);
-          setLocation(`GPS: ${lat}° N, ${lng}° W (Jobsite Sector B)`);
+          setLocation(`GPS: ${lat}° N, ${lng}° W (${currentProject?.name ? currentProject.name.slice(0, 15) : 'Jobsite'})`);
           setIsTracking(false);
         },
         () => {
           // Fallback mock GPS coordinates for jobsite
-          setLocation('GPS: 40.7128° N, 74.0060° W (Level 12 Deck)');
+          setLocation(`GPS: 27.7731° N, 82.6398° W (${currentProject?.name || 'Jobsite'})`);
           setIsTracking(false);
         },
         { timeout: 3000 }
       );
     } else {
-      setLocation('GPS: 40.7128° N, 74.0060° W (Level 12 Deck)');
+      setLocation(`GPS: 27.7731° N, 82.6398° W (${currentProject?.name || 'Jobsite'})`);
       setIsTracking(false);
     }
   };
@@ -58,16 +73,19 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const targetProjId = currentProject?.id || 'proj-1';
+    const targetProjName = currentProject?.name || 'Snell Isle Residence';
+
     onUpload({
       caption: caption.trim() || 'Site Inspection Photo',
-      location: location.trim() || 'Jobsite Area',
+      location: location.trim() || (currentProject?.cityState ? `${currentProject.cityState} - Site Area` : 'Jobsite Sector B'),
       category,
       url: selectedImg || 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=800&auto=format&fit=crop&q=80',
       timestamp: 'Just now',
-      uploadedBy: 'John Smith (Superintendent)',
+      uploadedBy: 'Lead Field Superintendent',
       tags: ['Site Log', category],
-      projectId: project?.id || 'proj-1',
-      projectName: project?.name || 'Riverside Office Complex'
+      projectId: targetProjId,
+      projectName: targetProjName
     });
     setCaption('');
     setLocation('');
@@ -89,8 +107,11 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
               <h3 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight truncate">
                 Upload Site Photo
               </h3>
-              <p className="text-xs text-[#68707C] font-medium mt-0.5 truncate">
-                {project?.name || 'Active Project'}
+              <p className="text-xs text-[#1677FF] font-bold mt-0.5 truncate flex items-center gap-1.5">
+                <span className="truncate">{currentProject?.name || 'Select Project'}</span>
+                {currentProject?.code && (
+                  <span className="text-[#64748B] font-medium shrink-0">• {currentProject.code}</span>
+                )}
               </p>
             </div>
           </div>
@@ -152,6 +173,45 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
         {/* Clean Upload Form Inputs */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">
           
+          {/* Target Jobsite / Project Selector */}
+          <div className="flex flex-col gap-1">
+            <label className="font-bold text-[#171A1F] flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-[#1677FF]" />
+                <span>Target Project / Jobsite *</span>
+              </span>
+              {projects && projects.length > 1 && (
+                <span className="text-[10px] text-[#64748B] font-medium">
+                  {projects.length} Active Projects
+                </span>
+              )}
+            </label>
+
+            {projects && projects.length > 1 ? (
+              <div className="relative">
+                <select
+                  value={selectedProjectId}
+                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                  className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs font-bold focus:outline-none focus:border-[#1677FF] transition-colors cursor-pointer appearance-none pr-9"
+                >
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} {p.code ? `• ${p.code}` : ''} {p.cityState ? `(${p.cityState})` : ''}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-4 h-4 text-[#68707C] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+            ) : (
+              <div className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 flex items-center justify-between text-xs text-[#171A1F] font-bold">
+                <span className="truncate">{currentProject?.name || 'Snell Isle Residence'}</span>
+                <span className="text-[10px] text-[#68707C] font-semibold bg-white px-2 py-0.5 rounded-md border border-[#DDE1E7] shrink-0">
+                  {currentProject?.code || 'JOB-101'}
+                </span>
+              </div>
+            )}
+          </div>
+
           {/* Inspection Note Input */}
           <div className="flex flex-col gap-1">
             <label className="font-bold text-[#171A1F]">Inspection Note *</label>

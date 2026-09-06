@@ -1206,19 +1206,22 @@ export function App() {
       <PhotoUploadModal
         isOpen={isPhotoUploadOpen}
         onClose={() => setIsPhotoUploadOpen(false)}
+        project={activeProject || projects[0]}
+        projects={projects}
         onUpload={(p) => {
+          const targetProj = projects.find(proj => proj.id === p.projectId) || activeProject || projects[0];
           setPhotos(prev => [
             {
               id: `ph-${Date.now()}`,
-              projectId: activeProject ? activeProject.id : 'proj-1',
-              projectName: activeProject ? activeProject.name : 'Riverside Office Complex',
+              projectId: targetProj.id,
+              projectName: targetProj.name,
               url: p.url || 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
               caption: p.caption || 'Site progress photo',
               category: p.category || 'Progress',
-              location: p.location || 'Level 12 Deck',
-              timestamp: '2025-05-20 09:30 AM',
+              location: p.location || targetProj.location || 'Site Area',
+              timestamp: 'Just now',
               uploadedBy: currentUser.name,
-              tags: ['Structural', 'Concrete']
+              tags: ['Structural', p.category || 'Progress']
             },
             ...prev
           ]);
@@ -1231,6 +1234,7 @@ export function App() {
         isOpen={isUploadDocumentOpen}
         onClose={() => setIsUploadDocumentOpen(false)}
         project={activeProject || projects[0]}
+        projects={projects}
         onUpload={(newDoc) => {
           setDocuments(prev => [newDoc, ...prev]);
           setIsUploadDocumentOpen(false);

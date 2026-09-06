@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project, DocumentItem } from '../../types';
 import { 
-  X, UploadCloud, Upload, CheckCircle2 
+  X, UploadCloud, Upload, CheckCircle2, Building2, ChevronDown
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
@@ -9,6 +9,7 @@ interface UploadDocumentModalProps {
   isOpen: boolean;
   onClose: () => void;
   project: Project;
+  projects?: Project[];
   onUpload: (newDoc: DocumentItem) => void;
 }
 
@@ -16,14 +17,28 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   isOpen,
   onClose,
   project,
+  projects = [],
   onUpload
 }) => {
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(() => {
+    return project?.id || (projects.length > 0 ? projects[0].id : 'proj-1');
+  });
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<'Plans' | 'Drawings' | 'PDFs' | 'Contracts' | 'Reports' | 'Site Logistics'>('Plans');
   const [fileType, setFileType] = useState<'PDF' | 'DWG' | 'DOCX' | 'XLSX'>('PDF');
   const [version, setVersion] = useState('v1.0');
   const [fileSize] = useState('8.4 MB');
   const [fileName, setFileName] = useState('');
+
+  useEffect(() => {
+    if (project?.id) {
+      setSelectedProjectId(project.id);
+    } else if (projects.length > 0 && !selectedProjectId) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [project, projects, isOpen]);
+
+  const currentProject = projects.find(p => p.id === selectedProjectId) || project;
 
   if (!isOpen) return null;
 
@@ -33,13 +48,13 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
 
     const newDoc: DocumentItem = {
       id: `doc-${Date.now()}`,
-      projectId: project.id,
+      projectId: currentProject?.id || project.id,
       title: title.trim(),
       category,
       fileType,
       fileSize: fileName ? fileSize : '6.2 MB',
       version: version || 'v1.0',
-      uploadedBy: 'Current User',
+      uploadedBy: 'Lead Field Team',
       uploadDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       url: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80'
     };
@@ -67,7 +82,12 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             </div>
             <div className="min-w-0">
               <h3 className="text-base font-bold text-[#171A1F] tracking-tight leading-snug truncate">Upload Document</h3>
-              <p className="text-xs text-[#68707C] font-medium truncate">{project.name}</p>
+              <p className="text-xs text-[#1677FF] font-bold truncate flex items-center gap-1">
+                <span>{currentProject?.name || 'Select Project'}</span>
+                {currentProject?.code && (
+                  <span className="text-[#64748B] font-medium shrink-0">• {currentProject.code}</span>
+                )}
+              </p>
             </div>
           </div>
 
@@ -80,6 +100,45 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Target Jobsite / Project Selector */}
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-bold text-[#171A1F] flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-[#1677FF]" />
+                <span>Target Project / Jobsite *</span>
+              </span>
+              {projects && projects.length > 1 && (
+                <span className="text-[10px] text-[#64748B] font-medium">
+                  {projects.length} Active Projects
+                </span>
+              )}
+            </label>
+
+            {projects && projects.length > 1 ? (
+              <div className="relative">
+                <select
+                  value={selectedProjectId}
+                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                  className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs font-bold focus:outline-none focus:border-[#1677FF] transition-colors cursor-pointer appearance-none pr-9"
+                >
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} {p.code ? `• ${p.code}` : ''} {p.cityState ? `(${p.cityState})` : ''}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-4 h-4 text-[#68707C] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+            ) : (
+              <div className="w-full h-11 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 flex items-center justify-between text-xs text-[#171A1F] font-bold">
+                <span className="truncate">{currentProject?.name || 'Snell Isle Residence'}</span>
+                <span className="text-[10px] text-[#64748B] font-semibold bg-white px-2 py-0.5 rounded-md border border-[#DDE1E7] shrink-0">
+                  {currentProject?.code || 'JOB-101'}
+                </span>
+              </div>
+            )}
+          </div>
+
           {/* File Dropzone */}
           <div 
             onClick={handleSimulateFileSelect}
