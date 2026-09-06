@@ -130,67 +130,51 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
           <div 
             onClick={onOpenBudgetsHub}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer h-[106px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
           >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
-            <div>
-              <span className="text-[10px] sm:text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
                 Total Budget
               </span>
-              <span className="text-[15px] sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+              <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
                 {formattedBudget}
-              </span>
-            </div>
-            <div>
-              <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                <span className="text-[10px] leading-none">↑</span> {projects.length} sites
               </span>
             </div>
           </div>
 
           <div 
             onClick={onOpenBudgetsHub}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer h-[106px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
           >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
-            <div>
-              <span className="text-[10px] sm:text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
                 Spend to Date
               </span>
-              <span className="text-[15px] sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+              <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
                 {formattedSpend}
-              </span>
-            </div>
-            <div>
-              <span className="inline-flex items-center text-[9px] sm:text-[10px] text-[#1677FF] font-semibold bg-[#EAF3FF] px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                {Math.round((totalSpend / (totalBudget || 1)) * 100)}% utilized
               </span>
             </div>
           </div>
 
           <div 
             onClick={onOpenProjects}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer h-[106px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
           >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <Building2 className="w-3.5 h-3.5" />
             </div>
-            <div>
-              <span className="text-[10px] sm:text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
                 Active Sites
               </span>
-              <span className="text-[15px] sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+              <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
                 {projects.length}
-              </span>
-            </div>
-            <div>
-              <span className="inline-flex items-center gap-1 text-[8.5px] sm:text-[9.5px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full whitespace-nowrap">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10A976] shrink-0" />
-                100% on schedule
               </span>
             </div>
           </div>
