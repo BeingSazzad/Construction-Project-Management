@@ -173,12 +173,12 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
         {/* Clean Upload Form Inputs */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">
           
-          {/* Target Jobsite / Project Selector */}
+          {/* Target Project Selector */}
           <div className="flex flex-col gap-1">
             <label className="font-bold text-[#171A1F] flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Building2 className="w-3.5 h-3.5 text-[#1677FF]" />
-                <span>Target Project / Jobsite *</span>
+                <span>Target Project *</span>
               </span>
               {projects && projects.length > 1 && (
                 <span className="text-[10px] text-[#64748B] font-medium">

@@ -1140,11 +1140,11 @@ export const MOCK_BUDGET_CATEGORIES: TradeCategory[] = [
   },
   {
     id: 'cat-02',
-    name: '02 – Foundation & Structure',
-    icon: 'Hammer',
-    estimatedCost: 1450000,
-    committedCost: 1380000,
-    actualCost: 1120000,
+    name: '02 – Concrete',
+    icon: 'Building2',
+    estimatedCost: 750000,
+    committedCost: 680000,
+    actualCost: 540000,
     costCodes: [
       {
         code: '02-1000',
@@ -1186,11 +1186,11 @@ export const MOCK_BUDGET_CATEGORIES: TradeCategory[] = [
   },
   {
     id: 'cat-03',
-    name: '03 – MEP (Mechanical, Electrical, Plumbing)',
-    icon: 'Flame',
-    estimatedCost: 900000,
-    committedCost: 850000,
-    actualCost: 640000,
+    name: '03 – Structural Steel',
+    icon: 'Wrench',
+    estimatedCost: 620000,
+    committedCost: 580000,
+    actualCost: 420000,
     costCodes: [
       {
         code: '03-1000',
@@ -1220,11 +1220,11 @@ export const MOCK_BUDGET_CATEGORIES: TradeCategory[] = [
   },
   {
     id: 'cat-04',
-    name: '04 – Finishes',
-    icon: 'Layers',
-    estimatedCost: 650000,
-    committedCost: 600000,
-    actualCost: 420000,
+    name: '04 – MEP & HVAC',
+    icon: 'Flame',
+    estimatedCost: 1200000,
+    committedCost: 1100000,
+    actualCost: 850000,
     costCodes: [
       {
         code: '04-1000',
@@ -1254,11 +1254,11 @@ export const MOCK_BUDGET_CATEGORIES: TradeCategory[] = [
   },
   {
     id: 'cat-05',
-    name: '05 – Other Costs',
-    icon: 'Boxes',
-    estimatedCost: 250000,
-    committedCost: 230000,
-    actualCost: 120000,
+    name: '05 – Finishes & Millwork',
+    icon: 'Layers',
+    estimatedCost: 1630000,
+    committedCost: 1580000,
+    actualCost: 1120000,
     costCodes: [
       {
         code: '05-1000',
@@ -2204,7 +2204,7 @@ export const MOCK_CHANGE_ORDERS: ChangeOrder[] = [
   {
     id: 'co-1',
     projectId: 'proj-1',
-    title: 'Upgrade Lobby Finishes to Premium Marble',
+    title: 'Upgrade Lobby Finishes to Premium',
     description: 'Upgrade the flooring and wall finishes in the main lobby area from standard porcelain tiles to premium Carrera marble panels.',
     amount: 45000,
     timeImpact: 3,

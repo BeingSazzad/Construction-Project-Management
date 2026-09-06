@@ -41,7 +41,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
       {/* ── 1. Top Action Bar with New Project CTA ── */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-[#64748B] font-semibold">
-          {filteredProjects.length} active construction jobsite{filteredProjects.length !== 1 ? 's' : ''}
+          {filteredProjects.length} active project{filteredProjects.length !== 1 ? 's' : ''}
         </p>
         <button
           onClick={onCreateProject}

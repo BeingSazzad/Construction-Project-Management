@@ -97,7 +97,7 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
     setIsThinking(true);
 
     setTimeout(() => {
-      let replyText = "I've analyzed real-time project telemetry across all active sites.";
+      let replyText = "I've analyzed real-time project telemetry across all active projects.";
       let badge: ChatMessage['metricBadge'] | undefined = undefined;
       let actionBtn: ChatMessage['actionButton'] | undefined = undefined;
 

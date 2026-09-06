@@ -184,7 +184,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
             <div className="mt-2">
               <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
-                Active Sites
+                Active Projects
               </span>
               <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
                 {projects.length}
@@ -277,7 +277,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           <div className="bg-[#F8FAFC] border border-[#E2E8F0]/70 rounded-2xl p-3.5">
             <p className="text-xs text-[#334155] leading-relaxed font-normal">
-              Snell Isle concrete costs are running 8% (+$14,200) over budget due to revised pier depths. Thursday rainfall threatens exterior concrete cure. All other job sites are tracking within contingency thresholds.
+              Snell Isle concrete costs are running 8% (+$14,200) over budget due to revised pier depths. Thursday rainfall threatens exterior concrete cure. All other projects are tracking within contingency thresholds.
             </p>
           </div>
 
@@ -299,10 +299,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
         </div>
 
-        {/* Active Projects Multi-Site Rollup */}
+        {/* Active Projects Multi-Project Rollup */}
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between px-0.5">
-            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Active Job Sites</h2>
+            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Active Projects</h2>
             <button 
               onClick={onOpenProjects} 
               className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
@@ -1044,7 +1044,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
           <span className="text-[11px] text-[#64748B] font-semibold uppercase tracking-wider">
-            Jobsite Command & Safety
+            Project Field Command & Safety
           </span>
         </div>
         <span className="text-xs font-semibold text-[#64748B]">{todayDateFormatted}</span>
@@ -1192,15 +1192,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </div>
 
-      {/* ── Active Job Sites & Field Project User Flow ── */}
+      {/* ── Active Projects & Field User Flow ── */}
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between px-0.5">
           <div>
-            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Job Sites</h2>
-            <p className="text-[11px] text-[#64748B]">Tap site to open daily log or log site photos</p>
+            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Projects</h2>
+            <p className="text-[11px] text-[#64748B]">Tap project to open daily log or log photos</p>
           </div>
           <button onClick={onOpenProjects} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5">
-            <span>All Sites ({projects.length})</span>
+            <span>All Projects ({projects.length})</span>
             <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -1243,7 +1243,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </div>
 
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                    Active Site
+                    Active Project
                   </span>
                 </div>
 

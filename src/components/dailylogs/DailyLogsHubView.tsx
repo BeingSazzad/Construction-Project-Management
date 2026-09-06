@@ -42,7 +42,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
 
       {/* ── Top Subtitle & Action Bar ── */}
       <div className="flex items-center justify-between pt-0.5">
-        <p className="text-xs text-[#68707C] font-medium">Jobsite field progress & crew activity</p>
+        <p className="text-xs text-[#68707C] font-medium">Project field progress & crew activity</p>
         <button
           onClick={() => setIsCreateModalOpen(true)}
           className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] active:scale-95 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 flex-shrink-0"

@@ -118,7 +118,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
                 <Building2 className="w-4 h-4 text-[#1677FF] shrink-0" />
                 <div className="min-w-0">
                   <span className="text-[10px] text-[#68707C] font-semibold block leading-none mb-0.5">
-                    Jobsite Project
+                    Project
                   </span>
                   <span className="font-bold text-[#1677FF] truncate block">
                     {currentProject.name}
@@ -126,7 +126,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
                 </div>
               </div>
               <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-white text-[#1677FF] border border-[#D0E2FF] shrink-0">
-                Active Jobsite
+                Active Project
               </span>
             </div>
           ) : (
@@ -249,7 +249,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
           {/* Distinct Field 1: Site Location / Zone */}
           <div>
             <label className="text-xs font-bold text-[#171A1F] block mb-1">
-              Jobsite Location / Zone <span className="text-[#9DA5B1] font-normal">(Optional)</span>
+              Project Location / Zone <span className="text-[#9DA5B1] font-normal">(Optional)</span>
             </label>
             <div className="relative">
               <MapPin className="w-4 h-4 text-[#9DA5B1] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />

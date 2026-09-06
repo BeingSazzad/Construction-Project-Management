@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Project, TradeCategory, CostCodeGroup, ChangeOrder } from '../../types';
 import {
-  ChevronLeft, ChevronRight, Plus,
-  FileText, CreditCard, Wallet, Boxes, Layers,
-  Download, Upload, X, Check, Landmark, Pencil, GitPullRequest
+  ArrowLeft, ChevronRight, Plus,
+  FileText, CreditCard, Wallet, Boxes, Layers, Building2, Wrench, Zap,
+  Download, Upload, X, Check, Landmark, Pencil, GitPullRequest,
+  Search, SlidersHorizontal, PieChart
 } from 'lucide-react';
 
 interface ProjectBudgetTabProps {
@@ -28,6 +29,10 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   const [isAddCodeModalOpen, setIsAddCodeModalOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [showBreakdownDetails, setShowBreakdownDetails] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<string>('all');
   const moreMenuRef = useRef<HTMLDivElement>(null);
 
   // New Code Form State
@@ -247,8 +252,21 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   const getTradeStyle = (cat: TradeCategory) => {
     const percent = cat.estimatedCost > 0 ? Math.round((cat.actualCost / cat.estimatedCost) * 100) : 0;
     const isOverBudget = percent > 100;
+    const lower = cat.name.toLowerCase();
+
+    let icon = <Layers className="w-4 h-4 text-[#1677FF]" />;
+    if (lower.includes('concrete') || lower.includes('foundation')) {
+      icon = <Building2 className="w-4 h-4 text-[#1677FF]" />;
+    } else if (lower.includes('steel') || lower.includes('structure') || lower.includes('frame')) {
+      icon = <Wrench className="w-4 h-4 text-[#1677FF]" />;
+    } else if (lower.includes('mep') || lower.includes('electric') || lower.includes('plumb') || lower.includes('hvac')) {
+      icon = <Zap className="w-4 h-4 text-[#1677FF]" />;
+    } else if (lower.includes('finish') || lower.includes('millwork')) {
+      icon = <Boxes className="w-4 h-4 text-[#1677FF]" />;
+    }
+
     return {
-      icon: <Layers className="w-4 h-4 text-[#1677FF]" />,
+      icon,
       iconBg: 'bg-[#EAF3FF]',
       barColor: isOverBudget ? 'bg-[#E5484D]' : 'bg-[#1677FF]',
       pillBg: isOverBudget ? 'bg-[#FFF0F0]' : 'bg-[#EAF3FF]',
@@ -270,18 +288,78 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
     return { dot: 'bg-[#F59E0B]', text: 'text-[#D97706]' };
   };
 
-  return (
-    <div className="w-full flex-1 flex flex-col gap-3.5 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
+  // Filter categories by search & status
+  const filteredCategories = categories.filter(cat => {
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const matchName = cat.name.toLowerCase().includes(q);
+      const matchCodes = cat.costCodes.some(cc => cc.name.toLowerCase().includes(q) || cc.code.toLowerCase().includes(q));
+      if (!matchName && !matchCodes) return false;
+    }
 
-      {/* ─── 1. COMPACT ACTION TOOLBAR (Clean & Streamlined) ─── */}
-      <div className="flex items-center justify-between pt-0.5 pb-0.5">
-        <div>
-          <h2 className="text-base font-bold text-[#0F172A] tracking-tight">
-            Budget Ledger
-          </h2>
-          <p className="text-xs text-[#64748B] font-medium">
-            Cost breakdown &amp; expenses by trade
-          </p>
+    if (filterStatus !== 'all') {
+      const percent = cat.estimatedCost > 0 ? Math.round((cat.actualCost / cat.estimatedCost) * 100) : 0;
+      if (filterStatus === 'on-track' && percent >= 80) return false;
+      if (filterStatus === 'near-budget' && (percent < 80 || percent > 100)) return false;
+      if (filterStatus === 'over-budget' && percent <= 100) return false;
+    }
+
+    return true;
+  });
+
+  // Change orders matching project or default mock
+  const projectCOs = changeOrders.filter(co => co.projectId === project.id);
+  const displayCOs = projectCOs.length > 0 ? projectCOs : [
+    {
+      id: 'co-default-1',
+      projectId: project.id,
+      title: 'Upgrade Lobby Finishes to Premium',
+      description: 'Upgrade flooring and wall finishes in main lobby to premium Carrera marble panels.',
+      amount: 45000,
+      timeImpact: 3,
+      category: 'Finishes',
+      requestedBy: 'Anderson Family Trust',
+      status: 'Approved' as const,
+      createdDate: '2025-05-10'
+    },
+    {
+      id: 'co-default-2',
+      projectId: project.id,
+      title: 'HVAC Roof Platform Structural Reinforcement',
+      description: 'Reinforce structural steel columns on roof deck.',
+      amount: 12500,
+      timeImpact: 0,
+      category: 'Structural',
+      requestedBy: 'Lattice Engineering',
+      status: 'Pending' as const,
+      createdDate: '2025-05-18'
+    }
+  ];
+  const totalCOApproved = displayCOs.filter(co => co.status === 'Approved').reduce((s, co) => s + co.amount, 0);
+
+  return (
+    <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
+
+      {/* ── Top Header with Back Button & Action ── */}
+      <div className="flex items-center justify-between pt-1">
+        <div className="flex items-center gap-2.5">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="w-9 h-9 rounded-xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-center text-[#0F172A] hover:bg-[#F8FAFC] transition-all active:scale-95 cursor-pointer"
+              title="Back to Overview"
+            >
+              <ArrowLeft className="w-4 h-4 text-[#0F172A]" />
+            </button>
+          )}
+          <div>
+            <h1 className="text-base sm:text-lg font-bold text-[#0F172A] tracking-tight">
+              Budget Ledger
+            </h1>
+            <p className="text-[11px] text-[#64748B] font-medium">
+              Cost breakdown &amp; expenses by trade
+            </p>
+          </div>
         </div>
 
         <button
@@ -290,316 +368,392 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             setCustomTradeName('');
             setIsAddCodeModalOpen(true);
           }}
-          className="btn-action btn-primary"
-          title="Add Budget Expense Item"
+          className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 active:scale-95 cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
-          <span className="whitespace-nowrap">Add Budget Item</span>
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+          <span>Add Item</span>
         </button>
       </div>
 
-      {/* ─── 2. EXECUTIVE HERO BUDGET CARD (Compact & Clean - No Duplication) ─── */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-2.5">
-        <div className="flex items-center justify-between">
+      {/* ── 1. Total Planned Budget Card (Standard & Compact) ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 sm:p-4 shadow-card flex flex-col gap-2.5">
+        {/* Top Header Row */}
+        <div className="flex items-start justify-between">
           <div>
-            <span className="text-xs font-medium text-[#64748B]">Total Planned Budget</span>
-            <div className="text-2xl font-bold text-[#0F172A] tracking-tight mt-0.5">
+            <span className="text-[11px] font-medium text-[#64748B]">Total Planned Budget</span>
+            <div className="text-xl sm:text-2xl font-bold text-[#0F172A] tracking-tight mt-0.5">
               ${(totalBudget / 1000000).toFixed(2)}M
             </div>
           </div>
 
           <div className="flex flex-col items-end">
-            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#EAF3FF] text-[#1677FF] inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF]" />
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#EAF3FF] text-[#1677FF] inline-flex items-center gap-1">
+              <PieChart className="w-3 h-3 text-[#1677FF]" />
               {progressPercent}% Spent
             </span>
-            <span className="text-xs text-[#64748B] mt-1 font-medium">
+            <span className="text-[11px] text-[#64748B] mt-1 font-medium">
               ${(totalActual / 1000000).toFixed(2)}M of ${(totalBudget / 1000000).toFixed(2)}M
             </span>
           </div>
         </div>
 
-        {/* Single Clean Progress Bar */}
-        <div className="w-full h-2 rounded-full bg-[#F1F5F9] overflow-hidden mt-1">
+        {/* Full width clean Progress Bar */}
+        <div className="w-full h-2 rounded-full bg-[#F1F5F9] overflow-hidden mt-0.5">
           <div
             className="h-full bg-[#1677FF] rounded-full transition-all duration-500"
             style={{ width: `${Math.min(100, progressPercent)}%` }}
           />
         </div>
+
+        {/* 3 Mini Stats Columns inside the card */}
+        <div className="grid grid-cols-3 pt-2.5 border-t border-[#F1F5F9] divide-x divide-[#F1F5F9]">
+          {/* Stat 1: Budget */}
+          <div className="flex items-center gap-2 pr-1 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <Wallet className="w-3.5 h-3.5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] text-[#64748B] font-medium block leading-none">Budget</span>
+              <span className="text-xs sm:text-sm font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+                ${(totalBudget / 1000000).toFixed(2)}M
+              </span>
+            </div>
+          </div>
+
+          {/* Stat 2: Spent */}
+          <div className="flex items-center gap-2 px-1.5 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <CreditCard className="w-3.5 h-3.5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] text-[#64748B] font-medium block leading-none">Spent</span>
+              <span className="text-xs sm:text-sm font-bold text-[#1677FF] block leading-tight mt-1 truncate">
+                ${(totalActual / 1000000).toFixed(2)}M
+              </span>
+            </div>
+          </div>
+
+          {/* Stat 3: Remaining */}
+          <div className="flex items-center gap-2 pl-1.5 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
+              <FileText className="w-3.5 h-3.5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] text-[#64748B] font-medium block leading-none">Remaining</span>
+              <span className="text-xs sm:text-sm font-bold text-[#10A976] block leading-tight mt-1 truncate">
+                ${(totalRemaining / 1000000).toFixed(2)}M
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ─── 3. 3-COLUMN KPI CARDS ROW (Budget • Spent • Remaining) ─── */}
-      <div className="grid grid-cols-3 gap-2">
-        {/* 1st: Budget */}
-        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col justify-between min-h-[68px]">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <div className="w-5 h-5 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-              <Landmark className="w-3 h-3" />
+      {/* ── 2. Change Orders Card ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-xs flex flex-col gap-3.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <FileText className="w-4 h-4" />
             </div>
-            <span className="text-xs font-semibold text-[#0F172A] truncate">Budget</span>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#0F172A] tracking-tight">
+                  Change Orders
+                </h3>
+                <span className="w-5 h-5 rounded-full bg-[#F1F5F9] text-[#64748B] text-[11px] font-bold flex items-center justify-center">
+                  {displayCOs.length}
+                </span>
+              </div>
+              <span className="text-xs text-[#64748B] block mt-0.5">
+                Approved total: +${totalCOApproved.toLocaleString()} (+{(totalCOApproved / (totalBudget || 1) * 100).toFixed(1)}%)
+              </span>
+            </div>
           </div>
-          <span className="text-sm font-bold text-[#0F172A] tracking-tight">
-            ${(totalBudget / 1000000).toFixed(2)}M
-          </span>
+
+          {onCreateChangeOrder && (
+            <button
+              onClick={onCreateChangeOrder}
+              className="h-8 px-3 rounded-xl border border-[#DCE8F8] bg-[#F4F8FF] hover:bg-[#EAF3FF] text-[#1677FF] text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer shrink-0"
+            >
+              <Plus className="w-3 h-3 stroke-[2.5]" />
+              <span>Add CO</span>
+            </button>
+          )}
         </div>
 
-        {/* 2nd: Spent */}
-        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col justify-between min-h-[68px]">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <div className="w-5 h-5 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-              <CreditCard className="w-3 h-3" />
-            </div>
-            <span className="text-xs font-semibold text-[#1677FF] truncate">Spent</span>
-          </div>
-          <span className="text-sm font-bold text-[#1677FF] tracking-tight">
-            ${(totalActual / 1000000).toFixed(2)}M
-          </span>
-        </div>
-
-        {/* 3rd: Remaining */}
-        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col justify-between min-h-[68px]">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <div className="w-5 h-5 rounded-md bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
-              <Wallet className="w-3 h-3" />
-            </div>
-            <span className="text-xs font-semibold text-[#10A976] truncate">Remaining</span>
-          </div>
-          <span className="text-sm font-bold text-[#10A976] tracking-tight">
-            ${(totalRemaining / 1000000).toFixed(2)}M
-          </span>
-        </div>
-      </div>
-
-      {/* ─── Change Orders Section (Fulfilling Core Launch Scope #3) ─── */}
-      {(() => {
-        const projectCOs = changeOrders.filter(co => co.projectId === project.id);
-        const activeCOs = projectCOs.length > 0 ? projectCOs : [
-          {
-            id: 'co-default-1',
-            projectId: project.id,
-            title: 'Upgrade Lobby Finishes to Premium Carrera Marble',
-            description: 'Upgrade flooring and wall finishes in main lobby to premium Carrera marble panels.',
-            amount: 28500,
-            timeImpact: 3,
-            category: 'Finishes',
-            requestedBy: 'Arthur Vance (Client)',
-            status: 'Approved' as const,
-            createdDate: '2025-05-10'
-          },
-          {
-            id: 'co-default-2',
-            projectId: project.id,
-            title: 'Foundation Soil Grouting & Perimeter Stabilization',
-            description: 'Secondary geotechnical pressure grouting at coastal perimeter retaining wall.',
-            amount: 14200,
-            timeImpact: 2,
-            category: 'Foundation',
-            requestedBy: 'Earthworks Pro LLC',
-            status: 'Pending' as const,
-            createdDate: '2025-05-18'
-          }
-        ];
-
-        const totalCOAmount = activeCOs.filter(co => co.status === 'Approved').reduce((s, co) => s + co.amount, 0);
-
-        return (
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#FEF2F2] text-[#E5484D] flex items-center justify-center font-bold text-[10px] shrink-0">
-                  CO
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-xs font-bold text-[#0F172A] tracking-tight">
-                      Change Orders
-                    </h3>
-                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#F1F5F9] text-[#475569]">
-                      {activeCOs.length}
+        {/* Change Orders List */}
+        <div className="flex flex-col divide-y divide-[#F1F5F9] -mt-1">
+          {displayCOs.map((co) => {
+            const isApproved = co.status === 'Approved';
+            const isPending = co.status === 'Pending';
+            return (
+              <div 
+                key={co.id} 
+                className="py-2.5 flex items-center justify-between gap-3 first:pt-1 last:pb-0 hover:bg-[#F8FAFC]/70 transition-colors rounded-lg px-1 cursor-pointer"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-[#0F172A] truncate">
+                      {co.title}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold shrink-0 ${
+                      isApproved 
+                        ? 'bg-[#E9F9F3] text-[#10A976]' 
+                        : isPending 
+                          ? 'bg-[#FFF8E6] text-[#D97706]' 
+                          : 'bg-[#FFF0F0] text-[#E5484D]'
+                    }`}>
+                      {co.status}
                     </span>
                   </div>
-                  <span className="text-[10px] text-[#64748B] block">
-                    Approved Total: +${totalCOAmount.toLocaleString()} (+{(totalCOAmount / (totalBudget || 1) * 100).toFixed(1)}%)
-                  </span>
+                  <p className="text-[11px] text-[#64748B] truncate mt-0.5">
+                    {co.category} • Requested by {co.requestedBy}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-[#0F172A] block leading-tight">
+                      +${(co.amount || 0).toLocaleString()}
+                    </span>
+                    <span className="text-[11px] text-[#94A3B8] block leading-tight mt-0.5">
+                      {co.createdDate || '2025-05-10'}
+                    </span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#94A3B8] shrink-0" />
                 </div>
               </div>
+            );
+          })}
+        </div>
+      </div>
 
-              {onCreateChangeOrder && (
-                <button
-                  onClick={onCreateChangeOrder}
-                  className="h-7 px-2.5 rounded-lg bg-[#1677FF] hover:bg-[#125ecc] text-white text-[11px] font-bold flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer shrink-0"
-                  title="Create New Change Order"
-                >
-                  <Plus className="w-3 h-3 stroke-[2.5]" />
-                  <span>Add CO</span>
-                </button>
-              )}
-            </div>
-
-            {/* List of Change Orders */}
-            <div className="flex flex-col divide-y divide-[#F1F5F9] -mt-1">
-              {activeCOs.map((co) => {
-                const isApproved = co.status === 'Approved';
-                const isPending = co.status === 'Pending';
-                return (
-                  <div key={co.id} className="py-2 flex items-start justify-between gap-2 first:pt-1 last:pb-0">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-[#0F172A] truncate">
-                          {co.title}
-                        </span>
-                        <span className={`px-1.5 py-0.2 rounded-md text-[9px] font-bold shrink-0 ${
-                          isApproved 
-                            ? 'bg-[#E9F9F3] text-[#10A976]' 
-                            : isPending 
-                              ? 'bg-[#FFF8E6] text-[#D97706]' 
-                              : 'bg-[#FFF0F0] text-[#E5484D]'
-                        }`}>
-                          {co.status}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-[#64748B] truncate mt-0.5">
-                        {co.category} • Requested by {co.requestedBy}
-                        {co.timeImpact ? ` • +${co.timeImpact} days` : ''}
-                      </p>
-                    </div>
-
-                    <div className="text-right shrink-0">
-                      <span className={`text-xs font-bold block ${
-                        isApproved ? 'text-[#0F172A]' : 'text-[#D97706]'
-                      }`}>
-                        +${(co.amount || 0).toLocaleString()}
-                      </span>
-                      <span className="text-[9px] text-[#94A3B8] block">
-                        {co.createdDate || 'Recent'}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* ─── 4. COST BREAKDOWN CARD (Sleek & Proportional) ─── */}
-      <div className="p-3.5 bg-white rounded-2xl border border-[#E2E8F0] shadow-card flex flex-col gap-2.5">
+      {/* ── 3. Cost Breakdown Card ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-xs flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold text-[#0F172A]">Cost Breakdown</h3>
+          <h3 className="text-sm font-bold text-[#0F172A]">Cost Breakdown</h3>
           <button
             onClick={() => setShowBreakdownDetails(!showBreakdownDetails)}
-            className="text-xs font-medium text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
+            className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
           >
-            <span>{showBreakdownDetails ? 'Hide' : 'Details'}</span>
-            <ChevronRight className={`w-3 h-3 transition-transform ${showBreakdownDetails ? 'rotate-90' : ''}`} />
+            <span>{showBreakdownDetails ? 'Hide Details' : 'View Details'}</span>
+            <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 ${showBreakdownDetails ? 'rotate-90' : ''}`} />
           </button>
         </div>
 
         {/* Multi-Segment Stacked Progress Bar */}
-        <div className="h-2 rounded-full overflow-hidden flex bg-[#F1F5F9] w-full">
+        <div className="h-2.5 rounded-full overflow-hidden flex bg-[#E2E8F0] w-full">
           <div style={{ width: `${matPercent}%` }} className="bg-[#1677FF] h-full transition-all" title={`Materials: ${matPercent}%`} />
           <div style={{ width: `${labPercent}%` }} className="bg-[#60A5FA] h-full transition-all" title={`Labor: ${labPercent}%`} />
           <div style={{ width: `${eqPercent}%` }} className="bg-[#A78BFA] h-full transition-all" title={`Equipment: ${eqPercent}%`} />
           <div style={{ width: `${subPercent}%` }} className="bg-[#CBD5E1] h-full transition-all" title={`Subcontracts: ${subPercent}%`} />
         </div>
 
-        {/* Breakdown Items Grid */}
-        <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 pt-1 text-xs">
-          <div className="flex items-center justify-between">
+        {/* 4-Column Legend Underneath */}
+        <div className="grid grid-cols-4 gap-2 pt-1 text-xs">
+          <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#1677FF]" />
-              <span className="text-[#475569]">Materials</span>
+              <span className="w-2 h-2 rounded-full bg-[#1677FF] shrink-0" />
+              <span className="text-[11px] font-medium text-[#475569] truncate">Materials</span>
             </div>
-            <span className="font-semibold text-[#0F172A]">{matPercent}% (${(matCost / 1000000).toFixed(2)}M)</span>
+            <span className="text-sm font-bold text-[#0F172A] mt-1">{matPercent}%</span>
+            <span className="text-[11px] text-[#64748B] mt-0.5">${(matCost / 1000000).toFixed(2)}M</span>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#60A5FA]" />
-              <span className="text-[#475569]">Labor</span>
+              <span className="w-2 h-2 rounded-full bg-[#60A5FA] shrink-0" />
+              <span className="text-[11px] font-medium text-[#475569] truncate">Labor</span>
             </div>
-            <span className="font-semibold text-[#0F172A]">{labPercent}% (${(labCost / 1000000).toFixed(2)}M)</span>
+            <span className="text-sm font-bold text-[#0F172A] mt-1">{labPercent}%</span>
+            <span className="text-[11px] text-[#64748B] mt-0.5">${(labCost / 1000000).toFixed(2)}M</span>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#A78BFA]" />
-              <span className="text-[#475569]">Equipment</span>
+              <span className="w-2 h-2 rounded-full bg-[#A78BFA] shrink-0" />
+              <span className="text-[11px] font-medium text-[#475569] truncate">Equipment</span>
             </div>
-            <span className="font-semibold text-[#0F172A]">{eqPercent}% (${(eqCost / 1000000).toFixed(2)}M)</span>
+            <span className="text-sm font-bold text-[#0F172A] mt-1">{eqPercent}%</span>
+            <span className="text-[11px] text-[#64748B] mt-0.5">${(eqCost / 1000000).toFixed(2)}M</span>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#CBD5E1]" />
-              <span className="text-[#475569]">Subcontracts</span>
+              <span className="w-2 h-2 rounded-full bg-[#CBD5E1] shrink-0" />
+              <span className="text-[11px] font-medium text-[#475569] truncate">Subcontracts</span>
             </div>
-            <span className="font-semibold text-[#0F172A]">{subPercent}% (${(subCost / 1000000).toFixed(2)}M)</span>
+            <span className="text-sm font-bold text-[#0F172A] mt-1">{subPercent}%</span>
+            <span className="text-[11px] text-[#64748B] mt-0.5">${(subCost / 1000000).toFixed(2)}M</span>
           </div>
         </div>
+
+        {/* Detailed Breakdown expand */}
+        {showBreakdownDetails && (
+          <div className="pt-3 border-t border-[#F1F5F9] flex flex-col gap-2 text-xs text-[#334155] animate-fade-in">
+            <div className="flex items-center justify-between">
+              <span>Direct Material Orders (CSI Div 03-09)</span>
+              <span className="font-mono font-semibold">${matCost.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Direct Field Labor &amp; Subcontract Labor</span>
+              <span className="font-mono font-semibold">${labCost.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Heavy Equipment &amp; Crane Rentals</span>
+              <span className="font-mono font-semibold">${eqCost.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Specialty Subcontract Packages</span>
+              <span className="font-mono font-semibold">${subCost.toLocaleString()}</span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* ─── 5. COST ITEMS (TRADES LIST) ─── */}
-      <div className="flex flex-col gap-3">
+      {/* ── 4. Cost Items Section Header ── */}
+      <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between px-0.5">
-          <h3 className="text-sm font-bold text-[#171A1F]">Cost Items</h3>
-          <button
-            onClick={() => setIsAddCodeModalOpen(true)}
-            className="btn-action btn-primary"
-          >
-            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Add Item</span>
-          </button>
+          <h3 className="text-base font-bold text-[#0F172A] tracking-tight">Cost Items</h3>
+          
+          <div className="flex items-center gap-2">
+            {/* Search Toggle Button */}
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className={`w-9 h-9 rounded-xl border transition-all flex items-center justify-center cursor-pointer shadow-xs ${
+                isSearchOpen || searchQuery
+                  ? 'bg-[#EAF3FF] border-[#1677FF] text-[#1677FF]'
+                  : 'bg-white border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC]'
+              }`}
+              title="Search Cost Items"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+
+            {/* Filter Toggle Button */}
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`w-9 h-9 rounded-xl border transition-all flex items-center justify-center cursor-pointer shadow-xs ${
+                isFilterOpen || filterStatus !== 'all'
+                  ? 'bg-[#EAF3FF] border-[#1677FF] text-[#1677FF]'
+                  : 'bg-white border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC]'
+              }`}
+              title="Filter Cost Items"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+            </button>
+
+            {/* Add Item Button */}
+            <button
+              onClick={() => {
+                setIsCustomTrade(false);
+                setCustomTradeName('');
+                setIsAddCodeModalOpen(true);
+              }}
+              className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Add Item</span>
+            </button>
+          </div>
         </div>
 
+        {/* Search Input Bar */}
+        {isSearchOpen && (
+          <div className="relative animate-fade-in">
+            <Search className="w-4 h-4 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search trade or cost code..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-9 pl-9 pr-8 text-xs bg-white border border-[#1677FF]/40 rounded-xl focus:outline-none focus:border-[#1677FF] text-[#0F172A]"
+              autoFocus
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#0F172A]"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Filter Pills */}
+        {isFilterOpen && (
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar animate-fade-in">
+            {[
+              { id: 'all', label: 'All Items' },
+              { id: 'on-track', label: 'On Track (<80%)' },
+              { id: 'near-budget', label: 'Near Budget (80-100%)' },
+              { id: 'over-budget', label: 'Over Budget (>100%)' }
+            ].map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => setFilterStatus(id)}
+                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  filterStatus === id
+                    ? 'bg-[#1677FF] text-white'
+                    : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1]'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Cost Items Cards List */}
         <div className="flex flex-col gap-2.5">
-          {categories.map((cat) => {
+          {filteredCategories.map((cat) => {
             const isExpanded = expandedCategories[cat.id];
             const percent = cat.estimatedCost > 0 ? Math.round((cat.actualCost / cat.estimatedCost) * 100) : 0;
-            const { icon, iconBg, barColor, pillBg, pillText } = getTradeStyle(cat);
+            const { icon, iconBg } = getTradeStyle(cat);
 
             return (
               <div
                 key={cat.id}
-                className="bg-white rounded-xl border border-[#E2E8F0] shadow-card overflow-hidden transition-all hover:border-[#CBD5E1]"
+                className="bg-white rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden transition-all hover:border-[#1677FF]/40"
               >
-                {/* Category Card Header */}
+                {/* Category Row */}
                 <div
                   onClick={() => toggleCategory(cat.id)}
-                  className="p-3 flex items-center justify-between cursor-pointer hover:bg-[#F1F5F9]/50 transition-colors"
+                  className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-[#F8FAFC]/60 transition-colors"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBg}`}>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBg}`}>
                       {icon}
                     </div>
                     <div className="min-w-0">
-                      <h4 className="text-xs font-semibold text-[#0F172A] truncate">{cat.name}</h4>
+                      <h4 className="text-xs font-bold text-[#0F172A] truncate">{cat.name}</h4>
                       <p className="text-xs font-medium text-[#64748B] mt-0.5">
                         ${formatCost(cat.actualCost)} / ${formatCost(cat.estimatedCost)}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     {/* Mini horizontal progress bar */}
-                    <div className="w-12 h-1.5 rounded-full bg-[#F1F5F9] overflow-hidden hidden sm:block">
+                    <div className="w-16 sm:w-24 h-1.5 rounded-full bg-[#E2E8F0] overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${barColor}`}
+                        className="h-full rounded-full bg-[#1677FF]"
                         style={{ width: `${Math.min(100, percent)}%` }}
                       />
                     </div>
 
                     {/* Percentage Pill */}
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${pillBg} ${pillText}`}>
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#EAF3FF] text-[#1677FF]">
                       {percent}%
                     </span>
 
                     {/* Chevron Arrow */}
-                    <ChevronRight className={`w-3.5 h-3.5 text-[#94A3B8] transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+                    <ChevronRight className={`w-4 h-4 text-[#94A3B8] transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
                   </div>
                 </div>
 
-                {/* Expanded Detailed Cost Codes Drawer (Senior UX & Tabular Alignment) */}
+                {/* Expanded Detailed Cost Codes Drawer */}
                 {isExpanded && (
                   <div className="p-3 bg-[#F8FAFC] border-t border-[#E2E8F0] flex flex-col gap-2.5 animate-fade-in">
                     {cat.costCodes.map((cc) => (
@@ -645,7 +799,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                           </div>
                         </div>
 
-                        {/* Cost Line Items - Tabular 2-Tier Layout */}
+                        {/* Cost Line Items */}
                         <div className="flex flex-col divide-y divide-[#F8FAFC]">
                           {cc.items.map((item) => {
                             const style = getItemTypeStyle(item.type);
@@ -654,7 +808,6 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                                 key={item.id} 
                                 className="flex items-center justify-between py-1.5 text-xs hover:bg-[#F8FAFC] -mx-1 px-1 rounded-md transition-colors"
                               >
-                                {/* Left: Item Name & Metadata */}
                                 <div className="flex flex-col min-w-0 pr-3">
                                   <span className="font-medium text-[#1E293B] text-xs truncate">
                                     {item.name}
@@ -672,7 +825,6 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                                   </div>
                                 </div>
 
-                                {/* Right: Tabular Amount */}
                                 <div className="text-right shrink-0">
                                   <span className="font-semibold text-[#0F172A] tabular-nums text-xs">
                                     ${item.actualCost.toLocaleString()}
