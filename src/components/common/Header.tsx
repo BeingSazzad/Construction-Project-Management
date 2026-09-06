@@ -108,18 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* 3-Dots Action Menu (Edit Info / Delete) */}
-            <div className="relative flex-shrink-0 flex items-center gap-2" ref={menuRef}>
-              <button
-                onClick={onOpenNotifications}
-                className="w-9 h-9 rounded-xl bg-white hover:bg-[#F2F2F7] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-all cursor-pointer relative active:scale-95 shadow-xs"
-                title="Notifications"
-              >
-                <Bell className="w-4 h-4 text-[#171A1F]" />
-                {unreadNotifsCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#1677FF]" />
-                )}
-              </button>
-
+            <div className="relative flex-shrink-0 flex items-center" ref={menuRef}>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
