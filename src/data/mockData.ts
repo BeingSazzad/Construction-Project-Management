@@ -1303,7 +1303,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     id: 'pnch-1',
     projectId: 'proj-1',
     title: 'Crack in concrete column',
-    location: 'Level 3 - Grid A-4',
+    location: 'Level 3 – Grid A-4',
     description: 'Hairline vertical shrinkage crack (approx 0.8mm) observed on southwest face of column C-32 after stripping forms. Requires epoxy injection evaluation.',
     assignedTo: {
       id: 'usr_field',
@@ -1317,13 +1317,13 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     photos: [
       'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80'
     ],
-    createdDate: '2025-05-18'
+    createdDate: 'Apr 28, 2025'
   },
   {
     id: 'pnch-2',
     projectId: 'proj-1',
     title: 'Door frame not aligned with drywall',
-    location: 'Level 2 - Room 201',
+    location: 'Level 2 – Room 201',
     description: 'Hollow metal door frame is out of plumb by 3/8 inch on latch jamb. Prevents fire-rated door closer from latching securely.',
     assignedTo: {
       id: 'usr_field',
@@ -1337,51 +1337,51 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     photos: [
       'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80'
     ],
-    createdDate: '2025-05-15'
+    createdDate: 'Apr 26, 2025'
   },
   {
     id: 'pnch-3',
     projectId: 'proj-1',
     title: 'Paint touch up required on soffit',
-    location: 'Level 1 - Corridor East',
+    location: 'Exterior – North Soffit',
     description: 'Scuffs and roller streaks on eggshell latex finish around recessed LED troffers.',
     assignedTo: {
       id: 'usr_field',
       name: 'Emily Brown',
       avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
-      trade: 'Apex Finishes'
+      trade: 'Prime Finishes Co.'
     },
     priority: 'Low',
     dueDate: '2025-05-28',
     status: 'Resolved',
     photos: [
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=600&auto=format&fit=crop&q=80'
     ],
-    resolutionEvidence: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80',
+    resolutionEvidence: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=600&auto=format&fit=crop&q=80',
     resolutionNote: 'Repainted entire soffit bay with 2 coats Sherwin Williams ProMar 200.',
-    createdDate: '2025-05-12'
+    createdDate: 'Apr 24, 2025'
   },
   {
     id: 'pnch-4',
     projectId: 'proj-1',
-    title: 'Electrical outlet box missing ground screw',
-    location: 'Level 4 - Office 401',
-    description: 'Junction box J-412 lacks dedicated green bonding pigtail to metal frame.',
+    title: 'Plumbing insulation missing',
+    location: 'Level 1 – Mech Room',
+    description: 'Cold water line insulation is missing at valve connection. Install per spec section 22 07 19.',
     assignedTo: {
       id: 'usr_field',
-      name: 'John Smith',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-      trade: 'Prime Electrical'
+      name: 'Alex Turner',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      trade: 'FlowTech Plumbing'
     },
     priority: 'High',
     dueDate: '2025-05-19',
     status: 'Verified',
     photos: [
-      'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=600&auto=format&fit=crop&q=80'
     ],
-    resolutionEvidence: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop&q=80',
-    resolutionNote: 'Installed #10 green ground screw and verified continuity with multimeter (0.02 ohms).',
-    createdDate: '2025-05-10'
+    resolutionEvidence: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=600&auto=format&fit=crop&q=80',
+    resolutionNote: 'Installed fiberglass insulation jacket with vapor barrier tape.',
+    createdDate: 'Apr 20, 2025'
   },
   {
     id: 'pnch-5',

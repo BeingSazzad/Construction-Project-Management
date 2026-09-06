@@ -268,7 +268,18 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {(activeTab === 'tasks' || activeTab === 'punch') && (
+        {activeTab === 'punch' && (
+          <ProjectPunchListTab
+            project={project}
+            punchItems={punchItems}
+            onCreatePunch={onCreatePunch}
+            onUpdatePunchStatus={onUpdatePunchStatus}
+            onDeletePunch={(punchId) => onUpdatePunchStatus(punchId, 'Closed')}
+            onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}
+          />
+        )}
+
+        {activeTab === 'tasks' && (
           <ProjectTasksTab
             project={project}
             tasks={tasks}
