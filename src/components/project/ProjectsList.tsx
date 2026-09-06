@@ -38,21 +38,16 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
-      {/* ── 1. Top Header with New Project CTA ── */}
+      {/* ── 1. Top Action Bar with New Project CTA ── */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-[#0F172A] tracking-tight">
-            Projects
-          </h2>
-          <p className="text-xs text-[#64748B] font-medium mt-0.5">
-            {filteredProjects.length} active construction jobsite{filteredProjects.length !== 1 ? 's' : ''}
-          </p>
-        </div>
+        <p className="text-xs text-[#64748B] font-semibold">
+          {filteredProjects.length} active construction jobsite{filteredProjects.length !== 1 ? 's' : ''}
+        </p>
         <button
           onClick={onCreateProject}
-          className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-card active:scale-[0.98] cursor-pointer"
+          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-card active:scale-[0.98] cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           <span>New Project</span>
         </button>
       </div>

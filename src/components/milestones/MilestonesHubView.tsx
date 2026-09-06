@@ -169,18 +169,13 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       
-      {/* ─── 1. HEADER ─── */}
+      {/* ─── 1. TOP SUBTITLE & ACTION BAR ─── */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-[#171A1F] tracking-tight">
-            {activeTab === 'milestones' ? 'Milestones' : 'Tasks'}
-          </h1>
-          <p className="text-xs text-[#68707C] font-medium mt-0.5">
-            {activeTab === 'milestones'
-              ? `${upcomingCount} upcoming · ${completedCount} completed`
-              : 'Move tasks across your build workflow'}
-          </p>
-        </div>
+        <p className="text-xs text-[#68707C] font-medium">
+          {activeTab === 'milestones'
+            ? `${upcomingCount} upcoming · ${completedCount} completed`
+            : 'Move tasks across your build workflow'}
+        </p>
 
         <button
           onClick={() => {
@@ -190,9 +185,9 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
               onCreateTask();
             }
           }}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
         >
-          <Plus className="w-4 h-4 stroke-[3]" />
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>{activeTab === 'milestones' ? 'Add Milestone' : 'Add Task'}</span>
         </button>
       </div>

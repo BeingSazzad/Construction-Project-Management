@@ -63,16 +63,16 @@ export const Header: React.FC<HeaderProps> = ({
 
   const getTabTitle = (tab: string) => {
     switch (tab) {
-      case 'projects': return 'Active Projects';
+      case 'projects': return 'Projects';
       case 'calendar': return 'Master Calendar';
       case 'schedule': return 'Master Schedule';
       case 'tasks': return 'Task Management';
       case 'punch': return 'Punch List Items';
       case 'budgets': return 'Budgets & Financials';
-      case 'daily-logs': return 'Daily Field Logs';
+      case 'daily-logs': return 'Daily Logs';
       case 'photos': return 'Site Photos';
       case 'documents': return 'Plans & Permits';
-      case 'team': return 'Company Team';
+      case 'team': return 'Team Directory';
       case 'messages': return 'Messages & Team Chat';
       case 'notifications': return 'Notifications';
       case 'more': return 'Settings & Profile';
@@ -88,16 +88,6 @@ export const Header: React.FC<HeaderProps> = ({
           // Inside Project Workspace Header (Has Back Button & 3-Dots Action Menu)
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              {onOpenDrawer && (
-                <button
-                  onClick={onOpenDrawer}
-                  className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-xs"
-                  title="Open Navigation Menu"
-                >
-                  <Menu className="w-4 h-4" />
-                </button>
-              )}
-
               <button
                 onClick={handleBackClick}
                 className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] flex items-center justify-center text-[#171A1F] transition-all flex-shrink-0 cursor-pointer active:scale-95 shadow-xs"
@@ -138,20 +128,21 @@ export const Header: React.FC<HeaderProps> = ({
                 <MoreVertical className="w-4 h-4" />
               </button>
 
+              {/* Dropdown Options */}
               {isMenuOpen && (
-                <div className="absolute right-0 top-11 w-48 bg-white border border-[#DDE1E7] rounded-2xl shadow-xl overflow-hidden py-1.5 z-50 animate-fade-in">
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      if (onOpenEditProject) onOpenEditProject();
-                    }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-semibold text-[#171A1F] hover:bg-[#F2F2F7] flex items-center gap-2 transition-colors cursor-pointer"
-                  >
-                    <Edit3 className="w-3.5 h-3.5 text-[#1677FF]" />
-                    <span>Edit Project Info</span>
-                  </button>
-
-                  <div className="h-px bg-[#EAEDF1] my-1" />
+                <div className="absolute right-0 top-11 w-44 rounded-2xl bg-white border border-[#DDE1E7] shadow-xl z-50 py-1.5 overflow-hidden animate-fade-in divide-y divide-[#EAEDF1]">
+                  {onOpenEditProject && (
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onOpenEditProject();
+                      }}
+                      className="w-full px-3.5 py-2 text-left text-xs font-semibold text-[#171A1F] hover:bg-[#F2F2F7] flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <Edit3 className="w-3.5 h-3.5 text-[#68707C]" />
+                      <span>Edit Project</span>
+                    </button>
+                  )}
 
                   <button
                     onClick={() => {
@@ -172,19 +163,9 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
         ) : activeTab !== 'home' ? (
-          // Sub-pages / Non-Home Top Header with Back to Home button
+          // Sub-pages / Non-Home Top Header with Back to Home button (Clean: NO hamburger, NO avatar)
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2.5 min-w-0">
-              {onOpenDrawer && (
-                <button
-                  onClick={onOpenDrawer}
-                  className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-xs"
-                  title="Open Navigation Menu"
-                >
-                  <Menu className="w-4 h-4" />
-                </button>
-              )}
-
               <button
                 onClick={handleBackClick}
                 className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] flex items-center justify-center text-[#171A1F] transition-all flex-shrink-0 cursor-pointer active:scale-95 shadow-xs"
@@ -198,17 +179,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </h1>
                 <p className="text-[10px] text-[#68707C] font-medium">Lattice Construction</p>
               </div>
-            </div>
-
-            <div 
-              onClick={onOpenSettings}
-              className="cursor-pointer flex items-center gap-2"
-            >
-              <img
-                src={avatarUrl}
-                alt={currentUser?.name}
-                className="w-9 h-9 rounded-full object-cover border-2 border-[#1677FF]/30 hover:border-[#1677FF] transition-colors shadow-xs"
-              />
             </div>
           </div>
         ) : (

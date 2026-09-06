@@ -648,23 +648,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   return (
     <div className="w-full flex flex-col gap-3 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
       
-      {/* ─── Top Header ─── */}
-      <div className="flex items-center justify-between mb-1">
-        <div>
-          <h1 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight">
-            Settings & Profile
-          </h1>
-          <p className="text-xs text-[#68707C] font-medium mt-0.5">
-            {userData.company || 'Lattice Construction'}
-          </p>
-        </div>
-        <button
-          onClick={() => onNavigateTab ? onNavigateTab('home') : null}
-          className="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center cursor-pointer transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-      </div>
+
 
       {/* ─── 1. HERO PROFILE CARD ─── */}
       <div

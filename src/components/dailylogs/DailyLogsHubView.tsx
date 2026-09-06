@@ -40,12 +40,9 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
 
-      {/* ── Header ── */}
+      {/* ── Top Subtitle & Action Bar ── */}
       <div className="flex items-center justify-between pt-0.5">
-        <div>
-          <h1 className="text-base font-bold text-[#171A1F] tracking-tight leading-none">Daily Logs</h1>
-          <p className="text-xs text-[#68707C] font-medium mt-0.5">Jobsite field progress & crew activity</p>
-        </div>
+        <p className="text-xs text-[#68707C] font-medium">Jobsite field progress & crew activity</p>
         <button
           onClick={() => setIsCreateModalOpen(true)}
           className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] active:scale-95 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 flex-shrink-0"

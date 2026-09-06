@@ -172,12 +172,9 @@ export const TeamHubView: React.FC = () => {
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in relative">
 
-      {/* ── Header ── */}
+      {/* ── Top Subtitle & Action Bar ── */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-base font-black text-[#171A1F] tracking-tight">Team Directory</h1>
-          <p className="text-xs text-[#68707C] font-medium">Company members & organizational roles</p>
-        </div>
+        <p className="text-xs text-[#68707C] font-medium">Company members & organizational roles</p>
         <button
           onClick={() => setIsInviteOpen(true)}
           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
