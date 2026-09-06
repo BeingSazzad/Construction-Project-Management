@@ -1,8 +1,8 @@
 import React from 'react';
 import { User, Project } from '../../types';
 import { 
-  X, Users, Settings, LogOut, FileText, Bell, 
-  ChevronRight, ShieldCheck, HelpCircle, Flag, CheckSquare
+  X, Users, LogOut, FileText, 
+  ChevronRight, Flag, CheckSquare
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -24,7 +24,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
   currentUser,
   onNavigateTab,
   onSignOut,
-  unreadNotifsCount = 0,
 }) => {
   if (!isOpen) return null;
 
@@ -64,37 +63,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       label: 'Team Directory',
       icon: Users,
       iconColor: 'bg-indigo-50 text-indigo-600',
-    },
-    {
-      id: 'notifications',
-      label: 'Notifications & Alerts',
-      icon: Bell,
-      iconColor: 'bg-sky-50 text-sky-600',
-      badge: unreadNotifsCount > 0 ? `${unreadNotifsCount}` : undefined,
-    },
-  ];
-
-  const ACCOUNT_ITEMS = [
-    {
-      id: 'company',
-      label: 'Company Profile',
-      icon: ShieldCheck,
-      iconColor: 'bg-slate-100 text-slate-600',
-      subView: 'company',
-    },
-    {
-      id: 'account',
-      label: 'Account & Settings',
-      icon: Settings,
-      iconColor: 'bg-slate-100 text-slate-600',
-      subView: 'main',
-    },
-    {
-      id: 'support',
-      label: 'Help & Support',
-      icon: HelpCircle,
-      iconColor: 'bg-slate-100 text-slate-600',
-      subView: 'support',
     },
   ];
 
@@ -159,11 +127,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
                   </div>
 
                   <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-                    {item.badge && (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#1677FF] text-white">
-                        {item.badge}
-                      </span>
-                    )}
                     <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </button>
@@ -171,38 +134,6 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
             })}
           </div>
 
-          <div className="h-px bg-slate-100 mx-1" />
-
-          {/* Group 2: Account & System */}
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1.5 block">
-              Account &amp; System
-            </span>
-
-            {ACCOUNT_ITEMS.map((item) => {
-              const IconComp = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => go(item.id, item.subView)}
-                  className="w-full flex items-center justify-between px-2.5 py-2.5 rounded-xl text-left cursor-pointer transition-all active:scale-[0.99] group hover:bg-slate-50"
-                >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${item.iconColor} group-hover:bg-[#1677FF] group-hover:text-white`}>
-                      <IconComp className="w-4 h-4 stroke-[2]" />
-                    </div>
-                    <span className="text-[13px] font-semibold text-slate-800 group-hover:text-[#1677FF] transition-colors truncate">
-                      {item.label}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all" />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* ─── Minimal Footer ─── */}
