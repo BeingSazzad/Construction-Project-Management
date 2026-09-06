@@ -159,9 +159,9 @@ export const CreateDrawModal: React.FC<CreateDrawModalProps> = ({
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-11 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-2"
+            className="w-full h-12 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-extrabold text-[18px] flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-2"
           >
-            <CheckCircle2 className="w-4 h-4" />
+            <CheckCircle2 className="w-5 h-5" />
             <span>Submit Draw Request to Lender</span>
           </button>
         </form>

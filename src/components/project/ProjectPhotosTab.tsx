@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, SitePhoto } from '../../types';
-import { Camera, Eye, Image as ImageIcon } from 'lucide-react';
+import { Camera, Eye, Image as ImageIcon, Upload } from 'lucide-react';
 import { FilterPills } from '../common/FilterPills';
 
 interface ProjectPhotosTabProps {
@@ -38,9 +38,9 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
 
         <button
           onClick={onUploadPhoto}
-          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all flex-shrink-0"
+          className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all flex-shrink-0"
         >
-          <Camera className="w-4 h-4" />
+          <Upload className="w-3.5 h-3.5" />
           <span>Upload</span>
         </button>
       </div>

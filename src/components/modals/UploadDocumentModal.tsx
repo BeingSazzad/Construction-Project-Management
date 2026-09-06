@@ -164,22 +164,22 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             />
           </div>
 
-          {/* Submit Actions */}
-          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#EAEDF1]">
+          {/* Equal Size Action Buttons */}
+          <div className="grid grid-cols-2 gap-2.5 mt-2">
             <button
               type="button"
               onClick={onClose}
-              className="h-11 px-4 rounded-xl border border-[#DDE1E7] bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] text-xs font-bold transition-all cursor-pointer"
+              className="w-full btn-lg bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] font-bold transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!title.trim()}
-              className="h-11 px-5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] disabled:opacity-50 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
+              className="w-full btn-lg bg-[#1677FF] hover:bg-[#0958D9] disabled:opacity-50 text-white font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <UploadCloud className="w-4 h-4" />
-              <span>Archive Document</span>
+              <UploadCloud className="w-5 h-5" />
+              <span>Archive</span>
             </button>
           </div>
         </form>

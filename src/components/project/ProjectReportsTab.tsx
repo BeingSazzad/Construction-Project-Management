@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Project, ReportItem } from '../../types';
-import { FileText, Download, X, UploadCloud, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { FileText, Download, X, UploadCloud, Upload, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectReportsTabProps {
@@ -82,9 +82,9 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
 
         <button 
           onClick={() => setIsUploadOpen(true)}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all flex-shrink-0"
         >
-          <UploadCloud className="w-3.5 h-3.5 stroke-[2.5]" />
+          <Upload className="w-3.5 h-3.5" />
           <span>Upload</span>
         </button>
       </div>

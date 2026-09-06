@@ -229,7 +229,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           {onImportBudget && (
             <button
               onClick={onImportBudget}
-              className="h-8 px-2.5 text-xs font-medium text-[#475569] bg-white border border-[#E2E8F0] rounded-xl hover:bg-[#F1F5F9] flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95 whitespace-nowrap shrink-0"
+              className="h-8 px-3.5 text-xs font-bold text-[#475569] bg-white border border-[#E2E8F0] rounded-xl hover:bg-[#F1F5F9] flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95 whitespace-nowrap shrink-0"
               title="Import Budget Ledger"
             >
               <Upload className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
@@ -239,7 +239,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
           <button
             onClick={() => setIsAddCodeModalOpen(true)}
-            className="h-8 px-3 text-xs font-semibold text-white bg-[#1677FF] hover:bg-[#0F5FD7] rounded-xl flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95 whitespace-nowrap shrink-0"
+            className="h-8 px-3.5 text-xs font-bold text-white bg-[#1677FF] hover:bg-[#0958D9] rounded-xl flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95 whitespace-nowrap shrink-0"
             title="Add Cost Code"
           >
             <Plus className="w-3.5 h-3.5 shrink-0" />
@@ -400,7 +400,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           <h3 className="text-sm font-bold text-[#171A1F]">Cost Items</h3>
           <button
             onClick={() => setIsAddCodeModalOpen(true)}
-            className="bg-[#EAF3FF] hover:bg-[#D4E8FF] text-[#1677FF] px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs"
+            className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Item</span>
