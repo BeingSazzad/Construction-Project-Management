@@ -105,7 +105,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div>
-            <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Project Specifications</h2>
+            <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Project Details</h2>
             <p className="text-xs text-[#68707C] mt-0.5 font-medium">Update address, PM, client, schedule & budget</p>
           </div>
 

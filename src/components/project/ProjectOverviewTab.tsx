@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Project, Task, SitePhoto, DocumentItem, PunchItem, ChangeOrder } from '../../types';
 import { 
   Calendar, Check, ChevronRight, Users, FileText, CloudRain, 
-  Landmark, Camera, CheckSquare, MapPin, User 
+  Landmark, Camera, CheckSquare, MapPin, User, Building2 
 } from 'lucide-react';
 import { CreateDailyLogModal } from '../modals/CreateDailyLogModal';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
@@ -138,7 +138,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ── 2. Project Specifications (Vertical Stacked Card strictly following Lattice System) ── */}
+      {/* ── 2. Project Details (Vertical Stacked Card strictly following Lattice System) ── */}
       <div 
         onClick={onOpenEditProject}
         className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3.5 cursor-pointer hover:border-[#1677FF]/40 transition-all group"
@@ -146,9 +146,9 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         {/* Header with Title and Chevron */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#1677FF]" />
+            <Building2 className="w-4 h-4 text-[#1677FF]" />
             <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] tracking-tight group-hover:text-[#1677FF] transition-colors">
-              Project Specifications
+              Project Details
             </h3>
           </div>
           <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors" />
