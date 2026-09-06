@@ -2308,6 +2308,7 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     projectName: 'Snell Isle Residence',
     priority: 'Urgent',
     time: '10:00 AM',
+    location: 'Level 2 Main Deck & North Shear Wall',
     notes: 'Tampa building inspector on-site. Engineer structural sign-off cards ready.'
   },
   {
@@ -2319,7 +2320,8 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     projectName: 'Snell Isle Residence',
     priority: 'Urgent',
     time: '10:00 AM',
-    notes: 'Snell Isle Residence • City building inspector arrival at 10:00 AM. Inspect foundation perimeter drain tile and membrane wrap.'
+    location: 'Perimeter Foundation & East Swale',
+    notes: 'City building inspector arrival at 10:00 AM. Inspect foundation perimeter drain tile and membrane wrap.'
   },
   {
     id: 'evt-2',
@@ -2330,6 +2332,7 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     projectName: 'Snell Isle Residence',
     priority: 'High',
     time: '01:30 PM',
+    location: 'Ground Floor Utility Core & Master Suite',
     notes: 'Mechanical, electrical, and plumbing rough lines pressure test.'
   },
   {
@@ -2341,6 +2344,7 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     projectName: 'Snell Isle Residence',
     priority: 'Medium',
     time: '08:30 AM',
+    location: 'East Staging Lot & Crane Pad',
     notes: 'Crane rigging on East lot. Staging area secured.'
   },
   {
@@ -2352,6 +2356,7 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     projectName: 'Snell Isle Residence',
     priority: 'Urgent',
     time: '07:00 AM',
+    location: 'Level 2 Suspended Slab (Section B)',
     notes: 'Concrete pump trucks confirmed with Apex Concrete Masters.'
   },
   {
@@ -2363,6 +2368,7 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     projectName: 'Downtown Commercial Tower',
     priority: 'High',
     time: '09:00 AM',
+    location: 'Loading Bay 2 & Level 4 Freight Elevator',
     notes: 'Level 4 glass panel shipment from port.'
   },
   {

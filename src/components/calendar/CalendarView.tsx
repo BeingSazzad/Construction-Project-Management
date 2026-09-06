@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Project, CalendarEventItem, CalendarEventType } from '../../types';
 import { 
   ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, 
-  List, Grid3X3
+  List, Grid3X3, MapPin
 } from 'lucide-react';
 import { AddCalendarEventModal } from '../modals/AddCalendarEventModal';
 
@@ -483,6 +483,15 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 <div className="flex items-center justify-between text-[#68707C]">
                   <span>Priority:</span>
                   <span className="font-semibold text-amber-700">{selectedEvent.priority}</span>
+                </div>
+              )}
+              {selectedEvent.location && (
+                <div className="flex items-center justify-between text-[#68707C]">
+                  <span>Location:</span>
+                  <span className="font-semibold text-[#171A1F] flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-[#1677FF]" />
+                    <span>{selectedEvent.location}</span>
+                  </span>
                 </div>
               )}
               {selectedEvent.notes && (

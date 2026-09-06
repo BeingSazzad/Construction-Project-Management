@@ -418,6 +418,7 @@ export interface CalendarEventItem {
   projectName?: string;
   priority?: CalendarEventPriority;
   time?: string;
+  location?: string;
   notes?: string;
 }
 
