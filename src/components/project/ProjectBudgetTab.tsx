@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Project, TradeCategory, CostCodeGroup } from '../../types';
 import {
   ChevronLeft, ChevronRight, Plus,
-  FileText, CreditCard, Wallet, Boxes, Building2, Wrench,
-  Paintbrush, MoreHorizontal, Download, Upload, X, Check, Landmark, Pencil
+  FileText, CreditCard, Wallet, Boxes, Layers,
+  Download, Upload, X, Check, Landmark, Pencil
 } from 'lucide-react';
 
 interface ProjectBudgetTabProps {
@@ -185,49 +185,15 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
     return `${Math.round(val / 1000)}K`;
   };
 
-  const getTradeStyle = (cat: TradeCategory, index: number) => {
-    if (cat.name.includes('Site') || index === 0) {
-      return {
-        icon: <Boxes className="w-5 h-5 text-[#1677FF]" />,
-        iconBg: 'bg-[#EAF3FF]',
-        barColor: 'bg-[#1677FF]',
-        pillBg: 'bg-[#EAF3FF]',
-        pillText: 'text-[#1677FF]'
-      };
-    }
-    if (cat.name.includes('Foundation') || cat.name.includes('Structure') || index === 1) {
-      return {
-        icon: <Building2 className="w-5 h-5 text-[#16A34A]" />,
-        iconBg: 'bg-[#DCFCE7]',
-        barColor: 'bg-[#16A34A]',
-        pillBg: 'bg-[#DCFCE7]',
-        pillText: 'text-[#16A34A]'
-      };
-    }
-    if (cat.name.includes('MEP') || cat.name.includes('Mechanical') || index === 2) {
-      return {
-        icon: <Wrench className="w-5 h-5 text-[#9333EA]" />,
-        iconBg: 'bg-[#F3E8FF]',
-        barColor: 'bg-[#9333EA]',
-        pillBg: 'bg-[#F3E8FF]',
-        pillText: 'text-[#9333EA]'
-      };
-    }
-    if (cat.name.includes('Finish') || index === 3) {
-      return {
-        icon: <Paintbrush className="w-5 h-5 text-[#EA580C]" />,
-        iconBg: 'bg-[#FFEDD5]',
-        barColor: 'bg-[#EA580C]',
-        pillBg: 'bg-[#FFEDD5]',
-        pillText: 'text-[#EA580C]'
-      };
-    }
+  const getTradeStyle = (cat: TradeCategory) => {
+    const percent = cat.estimatedCost > 0 ? Math.round((cat.actualCost / cat.estimatedCost) * 100) : 0;
+    const isOverBudget = percent > 100;
     return {
-      icon: <MoreHorizontal className="w-5 h-5 text-[#64748B]" />,
-      iconBg: 'bg-[#F1F5F9]',
-      barColor: 'bg-[#64748B]',
-      pillBg: 'bg-[#F1F5F9]',
-      pillText: 'text-[#64748B]'
+      icon: <Layers className="w-4 h-4 text-[#1677FF]" />,
+      iconBg: 'bg-[#EAF3FF]',
+      barColor: isOverBudget ? 'bg-[#E5484D]' : 'bg-[#1677FF]',
+      pillBg: isOverBudget ? 'bg-[#FFF0F0]' : 'bg-[#EAF3FF]',
+      pillText: isOverBudget ? 'text-[#E5484D]' : 'text-[#1677FF]'
     };
   };
 
@@ -442,10 +408,10 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
         </div>
 
         <div className="flex flex-col gap-2.5">
-          {categories.map((cat, idx) => {
+          {categories.map((cat) => {
             const isExpanded = expandedCategories[cat.id];
             const percent = cat.estimatedCost > 0 ? Math.round((cat.actualCost / cat.estimatedCost) * 100) : 0;
-            const { icon, iconBg, barColor, pillBg, pillText } = getTradeStyle(cat, idx);
+            const { icon, iconBg, barColor, pillBg, pillText } = getTradeStyle(cat);
 
             return (
               <div
