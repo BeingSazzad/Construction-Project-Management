@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project, PunchItem, PunchStatus } from '../../types';
-import { Plus, MapPin, Trash2, Folder } from 'lucide-react';
+import { Plus, MapPin, Trash2, Folder, ChevronLeft } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectPunchListTabProps {
@@ -9,19 +9,29 @@ interface ProjectPunchListTabProps {
   onCreatePunch: () => void;
   onOpenPunchDetails?: (item: PunchItem) => void;
   onUpdatePunchStatus?: (punchId: string, status: PunchStatus) => void;
+  onDeletePunch?: (punchId: string) => void;
+  onBack?: () => void;
 }
 
 export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   project,
   punchItems,
   onCreatePunch,
-  onUpdatePunchStatus
+  onUpdatePunchStatus,
+  onDeletePunch,
+  onBack
 }) => {
   const [activeFilter, setActiveFilter] = useState<PunchStatus | 'All'>('All');
   const [items, setItems] = useState<PunchItem[]>(() => {
     const projItems = punchItems.filter(p => p.projectId === project.id);
     return projItems.length > 0 ? projItems : punchItems;
   });
+
+  // Keep items in sync with incoming punchItems prop
+  useEffect(() => {
+    const projItems = punchItems.filter(p => p.projectId === project.id);
+    setItems(projItems.length > 0 ? projItems : punchItems);
+  }, [punchItems, project.id]);
 
   const filteredItems = items.filter(p => {
     if (activeFilter === 'All') return true;
@@ -37,6 +47,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
   const handleDeletePunch = (punchId: string) => {
     setItems(prev => prev.filter(p => p.id !== punchId));
+    if (onDeletePunch) onDeletePunch(punchId);
   };
 
   const STATUS_DOT: Record<PunchStatus, string> = {
@@ -52,11 +63,22 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
       
       {/* ── 1. Page Header & Live Open Count ── */}
       <div className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Punch List</h2>
-          <p className="text-xs text-[#68707C] mt-0.5 font-medium">
-            {openCount} open {openCount === 1 ? 'item' : 'items'}
-          </p>
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="w-10 h-10 rounded-xl bg-white border border-slate-200/90 text-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors shadow-xs active:scale-95 flex-shrink-0"
+              title="Back"
+            >
+              <ChevronLeft className="w-5 h-5 text-slate-700" />
+            </button>
+          )}
+          <div>
+            <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Punch List</h2>
+            <p className="text-xs text-[#68707C] mt-0.5 font-medium">
+              {openCount} open {openCount === 1 ? 'item' : 'items'}
+            </p>
+          </div>
         </div>
 
         <button

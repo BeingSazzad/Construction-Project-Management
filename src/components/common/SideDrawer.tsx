@@ -2,7 +2,7 @@ import React from 'react';
 import { User, Project } from '../../types';
 import { 
   X, Users, Settings, LogOut, FileText, Bell, 
-  ChevronRight, ShieldCheck, HelpCircle, Wallet, Flag
+  ChevronRight, ShieldCheck, HelpCircle, Flag, CheckSquare
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -42,21 +42,15 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
   const OPERATIONS_ITEMS = [
     {
-      id: 'budgets',
-      label: 'Portfolio Budgets',
-      icon: Wallet,
-      iconColor: 'bg-blue-50 text-[#1677FF]',
-    },
-    {
-      id: 'team',
-      label: 'Team Directory',
-      icon: Users,
-      iconColor: 'bg-indigo-50 text-indigo-600',
-    },
-    {
       id: 'milestones',
       label: 'Milestone Tracker',
       icon: Flag,
+      iconColor: 'bg-blue-50 text-[#1677FF]',
+    },
+    {
+      id: 'punch',
+      label: 'Punch List',
+      icon: CheckSquare,
       iconColor: 'bg-amber-50 text-amber-600',
     },
     {
@@ -64,6 +58,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       label: 'Daily Field Logs',
       icon: FileText,
       iconColor: 'bg-emerald-50 text-emerald-600',
+    },
+    {
+      id: 'team',
+      label: 'Team Directory',
+      icon: Users,
+      iconColor: 'bg-indigo-50 text-indigo-600',
     },
     {
       id: 'notifications',

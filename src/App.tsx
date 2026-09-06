@@ -536,6 +536,10 @@ export function App() {
     setPunchItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
   };
 
+  const handleDeletePunch = (punchId: string) => {
+    setPunchItems(prev => prev.filter(p => p.id !== punchId));
+  };
+
 
   const handleAddPin = (pin: Partial<PlanGridPin>) => {
     const fullPin: PlanGridPin = {
@@ -636,7 +640,7 @@ export function App() {
         /* 3. MAIN WORKSPACE APP */
         <div className="w-full h-full flex flex-col justify-between relative bg-[#F7F9FC] text-[#0F172A] font-sans">
           {/* Top Sticky Header */}
-          {activeTab !== 'notifications' && activeTab !== 'budgets' && activeTab !== 'more' && activeTab !== 'account' && activeTab !== 'team' && activeTab !== 'milestones' && (
+          {activeTab !== 'notifications' && activeTab !== 'budgets' && activeTab !== 'more' && activeTab !== 'account' && activeTab !== 'team' && activeTab !== 'milestones' && activeTab !== 'punch' && (
             <Header
               currentUser={currentUser}
               activeProject={activeProject}
@@ -770,7 +774,10 @@ export function App() {
                       handleSelectProject(proj);
                       setProjectSubTab('budget');
                     }}
-                    onOpenBudgetsHub={() => setActiveTab('budgets')}
+                    onOpenBudgetsHub={() => {
+                      handleSelectProject(projects[0]);
+                      setProjectSubTab('budget');
+                    }}
                     onOpenDailyLogs={() => setActiveTab('daily-logs')}
                     onOpenApprovePayApp={() => setIsApprovePayAppOpen(true)}
                     onOpenLienWaiver={() => setIsRecordLienWaiverOpen(true)}
@@ -905,11 +912,12 @@ export function App() {
 
                 {activeTab === 'punch' && (
                   <ProjectPunchListTab
-                    project={projects[0]}
+                    project={activeProject || projects[0]}
                     punchItems={punchItems}
                     onCreatePunch={() => setIsCreatePunchOpen(true)}
-                    onOpenPunchDetails={(p) => setSelectedTask(null)}
                     onUpdatePunchStatus={handleUpdatePunchStatus}
+                    onDeletePunch={handleDeletePunch}
+                    onBack={() => setActiveTab('home')}
                   />
                 )}
 
