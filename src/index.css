@@ -268,3 +268,8 @@ body {
   border: 1px solid #DDE1E7;
   border-radius: 16px;
 }
+
+/* Universal Button Guard: Prevent any button text from wrapping to 2 lines */
+button, .btn, [role="button"] {
+  white-space: nowrap;
+}
