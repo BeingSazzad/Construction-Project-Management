@@ -72,6 +72,7 @@ import { PhotoUploadModal } from './components/modals/PhotoUploadModal';
 import { TaskDetailsModal } from './components/modals/TaskDetailsModal';
 import { PhotoPreviewModal } from './components/modals/PhotoPreviewModal';
 import { DocumentPreviewModal } from './components/modals/DocumentPreviewModal';
+import { UploadDocumentModal } from './components/modals/UploadDocumentModal';
 import { CreateDrawModal } from './components/modals/CreateDrawModal';
 import { ProcessLienWaiverModal } from './components/modals/ProcessLienWaiverModal';
 import { ApprovePayAppModal } from './components/modals/ApprovePayAppModal';
@@ -130,6 +131,7 @@ export function App() {
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
   const [isCreatePunchOpen, setIsCreatePunchOpen] = useState(false);
   const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
+  const [isUploadDocumentOpen, setIsUploadDocumentOpen] = useState(false);
   const [isCreateDrawOpen, setIsCreateDrawOpen] = useState(false);
   const [isRecordLienWaiverOpen, setIsRecordLienWaiverOpen] = useState(false);
   const [isApprovePayAppOpen, setIsApprovePayAppOpen] = useState(false);
@@ -699,7 +701,7 @@ export function App() {
                 onUpdateTaskStatus={handleUpdateTaskStatus}
                 onUploadPhoto={() => setIsPhotoUploadOpen(true)}
                 onPreviewPhoto={(p) => setSelectedPhoto(p)}
-                onUploadDocument={() => alert('Upload Document...')}
+                onUploadDocument={() => setIsUploadDocumentOpen(true)}
                 onPreviewDocument={(d) => setSelectedDocument(d)}
                 onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
                 onAddPlanPin={handleAddPin}
@@ -965,7 +967,7 @@ export function App() {
         }}
         onAddDocument={() => {
           if (!activeProject) setActiveProject(projects[0]);
-          setProjectSubTab('documents');
+          setIsUploadDocumentOpen(true);
         }}
       />
 
@@ -1059,6 +1061,17 @@ export function App() {
             ...prev
           ]);
           setIsPhotoUploadOpen(false);
+        }}
+      />
+
+      {/* DOCUMENT UPLOAD MODAL */}
+      <UploadDocumentModal
+        isOpen={isUploadDocumentOpen}
+        onClose={() => setIsUploadDocumentOpen(false)}
+        project={activeProject || projects[0]}
+        onUpload={(newDoc) => {
+          setDocuments(prev => [newDoc, ...prev]);
+          setIsUploadDocumentOpen(false);
         }}
       />
 

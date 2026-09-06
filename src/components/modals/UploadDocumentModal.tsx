@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Project, DocumentItem } from '../../types';
 import { 
-  X, UploadCloud, CheckCircle2 
+  X, UploadCloud, Upload, CheckCircle2 
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
@@ -178,8 +178,8 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               disabled={!title.trim()}
               className="w-full btn-lg bg-[#1677FF] hover:bg-[#0958D9] disabled:opacity-50 text-white font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <UploadCloud className="w-5 h-5" />
-              <span>Archive</span>
+              <Upload className="w-4 h-4 stroke-[2.5]" />
+              <span>Upload</span>
             </button>
           </div>
         </form>
