@@ -75,6 +75,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
     onCreate({
       name: name.trim(),
+      type: type as any,
       code: masterCode.trim() ? `PRJ-${masterCode.trim()}` : `PRJ-${Math.floor(1000 + Math.random() * 9000)}`,
       location: address.trim() || 'Site Address Pending',
       cityState: cityState.trim() || (address.includes(',') ? address.split(',')[1]?.trim() || 'Austin, TX' : 'Austin, TX'),

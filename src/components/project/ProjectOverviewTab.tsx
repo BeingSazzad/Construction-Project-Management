@@ -162,9 +162,16 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               <MapPin className="w-4 h-4 stroke-[2]" />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
-                Address
-              </span>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-[#64748B] font-medium block leading-none">
+                  Address
+                </span>
+                {project.masterCode && (
+                  <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full font-mono">
+                    Master #{project.masterCode}
+                  </span>
+                )}
+              </div>
               <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug">
                 {project.location || '1840 Brightwaters Blvd NE'}{project.cityState ? `, ${project.cityState}` : ''}
               </p>
@@ -201,20 +208,33 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             </div>
           </div>
 
-          {/* 4. Target Date */}
+          {/* 4. Important Project Timeline: Start Date & Target Completion Date */}
           <div className="flex items-start gap-3">
             <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
               <Calendar className="w-4 h-4 stroke-[2]" />
             </div>
-            <div className="min-w-0 flex-1">
-              <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
-                Target Date
-              </span>
-              <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-tight">
-                {project.targetEndDate 
-                  ? new Date(project.targetEndDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                  : 'Aug 30, 2025'}
-              </p>
+            <div className="min-w-0 flex-1 grid grid-cols-2 gap-2">
+              <div>
+                <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
+                  Start Date
+                </span>
+                <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-tight">
+                  {project.startDate 
+                    ? new Date(project.startDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'Mar 01, 2024'}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-xs text-[#64748B] font-medium block leading-none mb-1">
+                  Target Completion
+                </span>
+                <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-tight">
+                  {project.targetEndDate 
+                    ? new Date(project.targetEndDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : 'Aug 30, 2025'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -266,7 +286,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               <CheckSquare className="w-4 h-4 stroke-[2]" />
             </div>
             <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
-              {tasks.filter(t => t.projectId === project.id && t.status !== 'Completed').length || 10}
+              {tasks.filter(t => t.projectId === project.id && t.status !== 'Completed').length}
             </span>
             <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
               Active Tasks
@@ -282,7 +302,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               <FileText className="w-4 h-4 stroke-[2]" />
             </div>
             <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
-              {documents.length || 6}
+              {documents.filter(d => !d.projectId || d.projectId === project.id).length}
             </span>
             <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
               Documents
