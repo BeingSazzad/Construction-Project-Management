@@ -484,7 +484,8 @@ export const MOCK_PROJECTS: Project[] = [
       totalMilestones: 6,
       completedMilestones: 2
     },
-    thumbnail: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
+    thumbnail: 'https://images.unsplash.com/photo-1573164713988-86e5fc905e3f?w=600&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1573164713988-86e5fc905e3f?w=1200&auto=format&fit=crop&q=80',
     description: 'Commercial high-density office development with custom glass atrium facade.'
   },
   {

@@ -127,46 +127,46 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* 3 Executive KPIs */}
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
           <div 
             onClick={onOpenBudgetsHub}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[104px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer h-[106px] group"
           >
-            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
-            <div className="mt-2">
-              <span className="text-[11px] text-[#64748B] font-medium block leading-tight">
+            <div>
+              <span className="text-[10px] sm:text-[11px] text-[#64748B] font-medium block leading-tight truncate">
                 Total Budget
               </span>
-              <span className="text-base sm:text-lg font-black text-[#0F172A] block leading-tight mt-0.5">
+              <span className="text-[15px] sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
                 {formattedBudget}
               </span>
             </div>
-            <div className="mt-2">
-              <span className="inline-flex items-center gap-1 text-[10px] text-[#10A976] font-bold bg-[#E9F9F3] px-2 py-0.5 rounded-full">
-                <span className="text-[11px] leading-none">↑</span> {projects.length} sites
+            <div>
+              <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                <span className="text-[10px] leading-none">↑</span> {projects.length} sites
               </span>
             </div>
           </div>
 
           <div 
             onClick={onOpenBudgetsHub}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[104px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer h-[106px] group"
           >
-            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
-            <div className="mt-2">
-              <span className="text-[11px] text-[#64748B] font-medium block leading-tight">
+            <div>
+              <span className="text-[10px] sm:text-[11px] text-[#64748B] font-medium block leading-tight truncate">
                 Spend to Date
               </span>
-              <span className="text-base sm:text-lg font-black text-[#0F172A] block leading-tight mt-0.5">
+              <span className="text-[15px] sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
                 {formattedSpend}
               </span>
             </div>
-            <div className="mt-2">
-              <span className="inline-flex items-center text-[10px] text-[#1677FF] font-bold bg-[#EAF3FF] px-2 py-0.5 rounded-full">
+            <div>
+              <span className="inline-flex items-center text-[9px] sm:text-[10px] text-[#1677FF] font-semibold bg-[#EAF3FF] px-1.5 py-0.5 rounded-full whitespace-nowrap">
                 {Math.round((totalSpend / (totalBudget || 1)) * 100)}% utilized
               </span>
             </div>
@@ -174,22 +174,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           <div 
             onClick={onOpenProjects}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[104px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer h-[106px] group"
           >
-            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <Building2 className="w-3.5 h-3.5" />
             </div>
-            <div className="mt-2">
-              <span className="text-[11px] text-[#64748B] font-medium block leading-tight">
+            <div>
+              <span className="text-[10px] sm:text-[11px] text-[#64748B] font-medium block leading-tight truncate">
                 Active Sites
               </span>
-              <span className="text-base sm:text-lg font-black text-[#0F172A] block leading-tight mt-0.5">
+              <span className="text-[15px] sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
                 {projects.length}
               </span>
             </div>
-            <div className="mt-2">
-              <span className="inline-flex items-center gap-1 text-[10px] text-[#10A976] font-bold bg-[#E9F9F3] px-2 py-0.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10A976]" />
+            <div>
+              <span className="inline-flex items-center gap-1 text-[8.5px] sm:text-[9.5px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10A976] shrink-0" />
                 100% on schedule
               </span>
             </div>
@@ -316,7 +316,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           <div className="flex flex-col gap-2.5">
-            {projects.map((p) => (
+            {projects.slice(0, 3).map((p) => (
               <ProjectCard
                 key={p.id}
                 project={p}
