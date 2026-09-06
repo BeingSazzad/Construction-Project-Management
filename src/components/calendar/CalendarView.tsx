@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Project, CalendarEventItem, CalendarEventType } from '../../types';
 import { 
   ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, 
-  List, Grid3X3, MapPin
+  List, Grid3X3, MapPin, Trash2
 } from 'lucide-react';
 import { AddCalendarEventModal } from '../modals/AddCalendarEventModal';
 
@@ -11,6 +11,7 @@ interface CalendarViewProps {
   events?: CalendarEventItem[];
   onSelectProject?: (project: Project) => void;
   onAddEvent?: (event: CalendarEventItem) => void;
+  onDeleteEvent?: (eventId: string) => void;
   isInline?: boolean;
   initialDate?: string;
 }
@@ -20,6 +21,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   events: initialEvents,
   onSelectProject,
   onAddEvent,
+  onDeleteEvent,
   isInline = false,
   initialDate
 }) => {
@@ -501,20 +503,43 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               )}
             </div>
 
-            {selectedEvent.projectId && onSelectProject && (
+            <div className="flex items-center gap-2 pt-1">
               <button
                 onClick={() => {
-                  const p = projects.find(proj => proj.id === selectedEvent.projectId);
-                  if (p) {
+                  if (window.confirm(`Delete event "${selectedEvent.title}"?`)) {
+                    setEventsList(prev => prev.filter(e => e.id !== selectedEvent.id));
+                    if (onDeleteEvent) onDeleteEvent(selectedEvent.id);
                     setSelectedEvent(null);
-                    onSelectProject(p);
                   }
                 }}
-                className="w-full py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-xs font-bold text-white transition-colors cursor-pointer text-center shadow-xs"
+                className="h-10 px-3 rounded-xl bg-[#F2F2F7] hover:bg-rose-50 text-[#68707C] hover:text-rose-600 border border-[#DDE1E7] flex items-center justify-center cursor-pointer transition-colors active:scale-95 flex-shrink-0"
+                title="Delete Event"
               >
-                View Project Workspace
+                <Trash2 className="w-4 h-4" />
               </button>
-            )}
+
+              {selectedEvent.projectId && onSelectProject ? (
+                <button
+                  onClick={() => {
+                    const p = projects.find(proj => proj.id === selectedEvent.projectId);
+                    if (p) {
+                      setSelectedEvent(null);
+                      onSelectProject(p);
+                    }
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-xs font-bold text-white transition-colors cursor-pointer text-center shadow-xs"
+                >
+                  View Project Workspace
+                </button>
+              ) : (
+                <button
+                  onClick={() => setSelectedEvent(null)}
+                  className="flex-1 py-2.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-xs font-bold text-[#171A1F] transition-colors cursor-pointer text-center"
+                >
+                  Close
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

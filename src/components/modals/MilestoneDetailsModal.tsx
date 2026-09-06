@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Task, TaskStatus } from '../../types';
 import { 
   X, CheckSquare, DollarSign, Clock, 
-  ShieldCheck, Users, Check, Plus
+  ShieldCheck, Users, Check, Plus, Trash2
 } from 'lucide-react';
 
 export interface MilestoneItem {
@@ -28,6 +28,7 @@ interface MilestoneDetailsModalProps {
   onUpdateTaskStatus?: (taskId: string, status: TaskStatus) => void;
   onAddTask?: (task: Partial<Task>) => void;
   onRequestDraw?: (milestone: MilestoneItem) => void;
+  onDeleteMilestone?: (milestoneId: string) => void;
 }
 
 export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
@@ -38,7 +39,8 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
   onUpdateStatus,
   onUpdateTaskStatus,
   onAddTask,
-  onRequestDraw
+  onRequestDraw,
+  onDeleteMilestone
 }) => {
   if (!milestone) return null;
 
@@ -323,6 +325,21 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
 
         {/* ─── 3. MODAL FOOTER ACTIONS ─── */}
         <div className="p-4 bg-white border-t border-[#EAEDF1] flex items-center gap-2">
+          {onDeleteMilestone && (
+            <button
+              onClick={() => {
+                if (window.confirm(`Delete milestone "${milestone.name}"?`)) {
+                  onDeleteMilestone(milestone.id);
+                  onClose();
+                }
+              }}
+              className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200 flex items-center justify-center cursor-pointer transition-colors active:scale-95 flex-shrink-0"
+              title="Delete Milestone"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+
           {!isFullyComplete ? (
             <button
               onClick={() => {

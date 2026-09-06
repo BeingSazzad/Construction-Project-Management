@@ -1,16 +1,18 @@
 import React from 'react';
 import { DocumentItem } from '../../types';
-import { X, Download, Share2, CheckCircle2 } from 'lucide-react';
+import { X, Download, Share2, CheckCircle2, Trash2 } from 'lucide-react';
 import { Button } from '../common/Button';
 
 interface DocumentPreviewModalProps {
   document: DocumentItem | null;
   onClose: () => void;
+  onDelete?: (docId: string) => void;
 }
 
 export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
   document,
-  onClose
+  onClose,
+  onDelete
 }) => {
   if (!document) return null;
 
@@ -83,6 +85,21 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
           >
             Share with Subcontractor
           </Button>
+
+          {onDelete && (
+            <button
+              onClick={() => {
+                if (window.confirm(`Delete document "${document.title}"?`)) {
+                  onDelete(document.id);
+                  onClose();
+                }
+              }}
+              className="w-full h-10 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 mt-1"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Delete Document</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

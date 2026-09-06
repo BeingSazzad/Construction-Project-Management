@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Project, DailyLogItem } from '../../types';
 import { 
   Plus, Search, Calendar, Users, Sun, CloudRain, 
-  Building2, ArrowUpRight
+  Building2, ArrowUpRight, Trash2
 } from 'lucide-react';
 import { CreateDailyLogModal } from '../modals/CreateDailyLogModal';
 
@@ -10,6 +10,7 @@ interface DailyLogsHubViewProps {
   projects: Project[];
   dailyLogs: DailyLogItem[];
   onAddDailyLog: (newLog: DailyLogItem) => void;
+  onDeleteLog?: (logId: string) => void;
   onNavigateToProject?: (projectId: string, tab?: string) => void;
 }
 
@@ -17,6 +18,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
   projects,
   dailyLogs,
   onAddDailyLog,
+  onDeleteLog,
   onNavigateToProject
 }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -170,9 +172,24 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
               </p>
 
               {/* Row 4: Author Footer */}
-              <div className="flex items-center justify-between text-xs text-[#68707C] pt-1 border-t border-[#EAEDF1]">
+              <div className="flex items-center justify-between text-xs text-[#68707C] pt-1.5 border-t border-[#EAEDF1]">
                 <span>By: {log.author}</span>
-                <span className="text-emerald-700 font-semibold">{log.safetyIncidents}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-emerald-700 font-semibold">{log.safetyIncidents}</span>
+                  {onDeleteLog && (
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Delete field log for ${log.projectName} (${log.date})?`)) {
+                          onDeleteLog(log.id);
+                        }
+                      }}
+                      className="w-6 h-6 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
+                      title="Delete log"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
             </article>
           ))

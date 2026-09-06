@@ -707,6 +707,10 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           onUpdateStatus={(id, st) => {
             setMilestonesList(prev => prev.map(m => m.id === id ? { ...m, status: st, progress: st === 'Completed' ? 100 : m.progress } : m));
           }}
+          onDeleteMilestone={(id) => {
+            setMilestonesList(prev => prev.filter(m => m.id !== id));
+            setSelectedMilestone(null);
+          }}
         />
       )}
 

@@ -540,6 +540,63 @@ export function App() {
     setPunchItems(prev => prev.filter(p => p.id !== punchId));
   };
 
+  const handleDeleteTask = (taskId: string) => {
+    setTasks(prevTasks => {
+      const taskToDelete = prevTasks.find(t => t.id === taskId);
+      const updatedTasks = prevTasks.filter(t => t.id !== taskId);
+      
+      if (taskToDelete) {
+        const projTasks = updatedTasks.filter(t => t.projectId === taskToDelete.projectId);
+        const completedCount = projTasks.filter(t => t.status === 'Completed').length;
+        const nextProgress = projTasks.length > 0 ? Math.round((completedCount / projTasks.length) * 100) : 0;
+        
+        setProjects(prevProjects => prevProjects.map(p => {
+          if (p.id === taskToDelete.projectId) {
+            const updatedProj = {
+              ...p,
+              progress: nextProgress,
+              metrics: {
+                ...p.metrics,
+                totalTasks: projTasks.length,
+                completedTasks: completedCount
+              }
+            };
+            if (activeProject && activeProject.id === p.id) {
+              setActiveProject(updatedProj);
+            }
+            return updatedProj;
+          }
+          return p;
+        }));
+      }
+      return updatedTasks;
+    });
+    setSelectedTask(null);
+  };
+
+  const handleEditTask = (updatedTask: Task) => {
+    setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
+    setSelectedTask(updatedTask);
+  };
+
+  const handleDeletePhoto = (photoId: string) => {
+    setPhotos(prev => prev.filter(p => p.id !== photoId));
+    setSelectedPhoto(null);
+  };
+
+  const handleDeleteDocument = (docId: string) => {
+    setDocuments(prev => prev.filter(d => d.id !== docId));
+    setSelectedDocument(null);
+  };
+
+  const handleDeleteDailyLog = (logId: string) => {
+    setDailyLogs(prev => prev.filter(l => l.id !== logId));
+    setProjects(prev => prev.map(p => ({
+      ...p,
+      dailyLogs: (p.dailyLogs || []).filter(l => l.id !== logId)
+    })));
+  };
+
 
   const handleAddPin = (pin: Partial<PlanGridPin>) => {
     const fullPin: PlanGridPin = {
@@ -877,6 +934,7 @@ export function App() {
                     events={calendarEvents}
                     onSelectProject={handleSelectProject}
                     onAddEvent={(evt) => setCalendarEvents(prev => [evt, ...prev])}
+                    onDeleteEvent={(id) => setCalendarEvents(prev => prev.filter(e => e.id !== id))}
                     initialDate={initialCalendarDate}
                   />
                 )}
@@ -935,6 +993,7 @@ export function App() {
                     projects={projects}
                     dailyLogs={dailyLogs}
                     onAddDailyLog={handleAddDailyLog}
+                    onDeleteLog={handleDeleteDailyLog}
                     onNavigateToProject={(projId, subTab) => {
                       const found = projects.find(p => p.id === projId);
                       if (found) {
@@ -1156,6 +1215,8 @@ export function App() {
           onClose={() => setSelectedTask(null)}
           onUpdateStatus={handleUpdateTaskStatus}
           onToggleSubtask={handleToggleSubtask}
+          onDelete={handleDeleteTask}
+          onEdit={handleEditTask}
         />
       )}
 
@@ -1163,6 +1224,7 @@ export function App() {
         <PhotoPreviewModal
           photo={selectedPhoto}
           onClose={() => setSelectedPhoto(null)}
+          onDelete={handleDeletePhoto}
         />
       )}
 
@@ -1170,6 +1232,7 @@ export function App() {
         <DocumentPreviewModal
           document={selectedDocument}
           onClose={() => setSelectedDocument(null)}
+          onDelete={handleDeleteDocument}
         />
       )}
 

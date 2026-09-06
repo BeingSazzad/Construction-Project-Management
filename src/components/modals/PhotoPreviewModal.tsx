@@ -1,17 +1,19 @@
 import React from 'react';
 import { SitePhoto } from '../../types';
-import { MapPin, Calendar, User as UserIcon, Download } from 'lucide-react';
+import { MapPin, Calendar, User as UserIcon, Download, Trash2 } from 'lucide-react';
 
 interface PhotoPreviewModalProps {
   photo: SitePhoto | null;
   onClose: () => void;
+  onDelete?: (photoId: string) => void;
 }
 
 const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&auto=format&fit=crop&q=80';
 
 export const PhotoPreviewModal: React.FC<PhotoPreviewModalProps> = ({
   photo,
-  onClose
+  onClose,
+  onDelete
 }) => {
   if (!photo) return null;
 
@@ -79,20 +81,36 @@ export const PhotoPreviewModal: React.FC<PhotoPreviewModalProps> = ({
           )}
 
           {/* Footer Action */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#EAEDF1] mt-1">
-            <button
-              onClick={() => alert('Downloading original photo asset...')}
-              className="px-3.5 py-1.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
-            >
-              <Download className="w-3.5 h-3.5 text-[#1677FF]" />
-              <span>Download</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="px-4 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-95"
-            >
-              Done
-            </button>
+          <div className="flex items-center justify-between gap-2 pt-3 border-t border-[#EAEDF1] mt-1">
+            {onDelete && (
+              <button
+                onClick={() => {
+                  if (window.confirm(`Delete this photo from site gallery?`)) {
+                    onDelete(photo.id);
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl bg-[#F2F2F7] hover:bg-rose-50 text-[#68707C] hover:text-rose-600 border border-[#DDE1E7] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                title="Delete Photo"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete</span>
+              </button>
+            )}
+            <div className="flex items-center gap-2 ml-auto">
+              <button
+                onClick={() => alert('Downloading original photo asset...')}
+                className="px-3.5 py-1.5 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7] text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+              >
+                <Download className="w-3.5 h-3.5 text-[#1677FF]" />
+                <span>Download</span>
+              </button>
+              <button
+                onClick={onClose}
+                className="px-4 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-95"
+              >
+                Done
+              </button>
+            </div>
           </div>
         </div>
       </div>
