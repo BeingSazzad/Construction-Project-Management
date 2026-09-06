@@ -381,7 +381,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
         <div className="flex items-start justify-between">
           <div>
             <span className="text-[11px] font-medium text-[#64748B]">Total Planned Budget</span>
-            <div className="text-xl sm:text-2xl font-bold text-[#0F172A] tracking-tight mt-0.5">
+            <div className="text-[20px] font-bold text-[#0F172A] tracking-tight mt-0.5 leading-snug">
               ${(totalBudget / 1000000).toFixed(2)}M
             </div>
           </div>
