@@ -1868,86 +1868,102 @@ export const MOCK_CHANGE_ORDERS: ChangeOrder[] = [
 export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
   {
     id: 'evt-1',
-    title: 'Rough',
-    date: '2026-08-24',
+    title: 'City Framing & Structural Shear Inspection',
+    date: '2026-09-05',
     type: 'Inspection',
     projectId: 'proj-1',
-    projectName: 'Riverside Office Complex',
-    priority: 'High',
+    projectName: 'Snell Isle Residence',
+    priority: 'Urgent',
     time: '10:00 AM',
-    notes: 'City framing and MEP rough-in inspection'
+    notes: 'Tampa building inspector on-site. Engineer structural sign-off cards ready.'
   },
   {
     id: 'evt-2',
-    title: 'Sold - Natus dolorem lorem',
-    date: '2026-08-28',
-    type: 'Milestone',
-    projectId: 'proj-2',
-    projectName: 'Natus dolorem lorem',
-    priority: 'Urgent',
-    time: '02:00 PM',
-    notes: 'Client contract finalized and funded'
+    title: 'MEP Rough-In Pre-Inspection',
+    date: '2026-09-05',
+    type: 'Inspection',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
+    priority: 'High',
+    time: '01:30 PM',
+    notes: 'Mechanical, electrical, and plumbing rough lines pressure test.'
   },
   {
     id: 'evt-3',
-    title: 'Sold - Sample 2',
-    date: '2026-08-28',
-    type: 'Milestone',
-    projectId: 'proj-3',
-    projectName: 'Sample 2 Residence',
-    priority: 'High',
-    time: '04:30 PM',
-    notes: 'Permits cleared and initial deposit in escrow'
+    title: 'Structural Steel & Trusses Crane Delivery',
+    date: '2026-09-08',
+    type: 'Delivery',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
+    priority: 'Medium',
+    time: '08:30 AM',
+    notes: 'Crane rigging on East lot. Staging area secured.'
   },
   {
     id: 'evt-4',
-    title: 'Foundation Pour Milestone',
-    date: '2026-08-12',
+    title: 'Level 2 Post-Tension Deck Pour Milestone',
+    date: '2026-09-12',
     type: 'Milestone',
     projectId: 'proj-1',
-    projectName: 'Riverside Office Complex',
+    projectName: 'Snell Isle Residence',
     priority: 'Urgent',
-    time: '07:00 AM'
+    time: '07:00 AM',
+    notes: 'Concrete pump trucks confirmed with Apex Concrete Masters.'
   },
   {
     id: 'evt-5',
-    title: 'Plumbing Rough-in',
-    date: '2026-08-18',
-    type: 'Inspection',
-    projectId: 'proj-1',
-    projectName: 'Riverside Office Complex',
+    title: 'Curtain Wall Glazing Delivery',
+    date: '2026-09-10',
+    type: 'Delivery',
+    projectId: 'proj-2',
+    projectName: 'Downtown Commercial Tower',
     priority: 'High',
-    time: '01:30 PM'
+    time: '09:00 AM',
+    notes: 'Level 4 glass panel shipment from port.'
   },
   {
     id: 'evt-6',
-    title: 'Cabinetry Delivery',
-    date: '2026-08-21',
-    type: 'Delivery',
-    projectId: 'proj-2',
-    projectName: 'Highland Luxury Villa',
+    title: 'Architect Progress Walkthrough & Submittal Review',
+    date: '2026-09-16',
+    type: 'Meeting',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
     priority: 'Medium',
-    time: '09:00 AM'
+    time: '11:00 AM',
+    notes: 'Review change order #4 and exterior stucco samples.'
   },
   {
     id: 'evt-7',
-    title: 'Owner Walkthrough Meeting',
-    date: '2026-08-26',
-    type: 'Meeting',
+    title: 'Underground Plumbing Pressure Test',
+    date: '2026-09-20',
+    type: 'Inspection',
     projectId: 'proj-1',
-    projectName: 'Riverside Office Complex',
-    priority: 'Medium',
-    time: '11:00 AM'
+    projectName: 'Snell Isle Residence',
+    priority: 'High',
+    time: '09:30 AM',
+    notes: 'Municipal code inspection for sewer tie-ins.'
   },
   {
     id: 'evt-8',
-    title: 'Framing Start Date',
-    date: '2026-08-05',
+    title: 'Drywall Subcontractor Mobilization Date',
+    date: '2026-09-25',
     type: 'Start Date',
-    projectId: 'proj-3',
-    projectName: 'Metro Logistics Warehouse',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
+    priority: 'Medium',
+    time: '08:00 AM',
+    notes: 'Crews arrive for acoustic insulation and sheetrock hanging.'
+  },
+  {
+    id: 'evt-9',
+    title: 'Phase 03 Structural Milestone Sign-Off',
+    date: '2026-09-30',
+    type: 'Milestone',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
     priority: 'High',
-    time: '08:00 AM'
+    time: '03:00 PM',
+    notes: 'Draw #3 funding gate verification.'
   }
 ];
 

@@ -22,13 +22,17 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   isInline = false
 }) => {
   // Calendar Navigation State
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 7, 1)); // August 2026
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 8, 5)); // September 2026
   const [viewMode, setViewMode] = useState<'month' | 'agenda'>('month');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEventItem | null>(null);
 
   // Local state for events
   const [eventsList, setEventsList] = useState<CalendarEventItem[]>(initialEvents || []);
+
+  React.useEffect(() => {
+    if (initialEvents) setEventsList(initialEvents);
+  }, [initialEvents]);
 
   const handleAddNewEvent = (newEvent: CalendarEventItem) => {
     setEventsList(prev => [newEvent, ...prev]);
@@ -45,7 +49,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   };
 
   const goToToday = () => {
-    setCurrentDate(new Date(2026, 7, 1));
+    setCurrentDate(new Date(2026, 8, 5));
+    setSelectedDateStr('2026-09-05');
   };
 
   const monthNames = [
@@ -86,7 +91,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   }
 
   // Selected date state for day-click agenda preview
-  const [selectedDateStr, setSelectedDateStr] = useState<string>('2026-08-28');
+  const [selectedDateStr, setSelectedDateStr] = useState<string>('2026-09-05');
 
   // Helper for dot colors based on event type
   const getEventDotColor = (type: CalendarEventType) => {
@@ -333,6 +338,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         projects={projects}
+        defaultProjectId={projects.length === 1 ? projects[0].id : undefined}
+        initialDate={selectedDateStr}
         onAddEvent={handleAddNewEvent}
       />
 

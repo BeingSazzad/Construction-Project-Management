@@ -8,6 +8,7 @@ interface AddCalendarEventModalProps {
   projects: Project[];
   onAddEvent: (event: CalendarEventItem) => void;
   initialDate?: string;
+  defaultProjectId?: string;
 }
 
 export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
@@ -15,15 +16,25 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
   onClose,
   projects,
   onAddEvent,
-  initialDate
+  initialDate,
+  defaultProjectId
 }) => {
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState(initialDate || new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(initialDate || '2026-09-05');
   const [type, setType] = useState<CalendarEventType>('Inspection');
-  const [projectId, setProjectId] = useState<string>('');
+  const [projectId, setProjectId] = useState<string>(defaultProjectId || (projects.length === 1 ? projects[0].id : ''));
   const [priority, setPriority] = useState<CalendarEventPriority>('Medium');
   const [time, setTime] = useState('09:00 AM');
   const [notes, setNotes] = useState('');
+
+  React.useEffect(() => {
+    if (defaultProjectId) setProjectId(defaultProjectId);
+    else if (projects.length === 1) setProjectId(projects[0].id);
+  }, [defaultProjectId, projects]);
+
+  React.useEffect(() => {
+    if (initialDate) setDate(initialDate);
+  }, [initialDate]);
 
   if (!isOpen) return null;
 

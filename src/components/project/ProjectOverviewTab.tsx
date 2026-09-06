@@ -229,7 +229,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             onClick={() => handleTabChange('schedule')}
             className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
           >
-            <span>View Timeline</span>
+            <span>View Schedule</span>
             <ChevronRight className="w-3 h-3" />
           </button>
         </div>
