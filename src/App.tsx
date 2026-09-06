@@ -705,7 +705,11 @@ export function App() {
   const handleSelectProject = (p: Project) => {
     setPreviousTab(activeTab);
     setActiveProject(p);
-    setProjectSubTab(currentRole === 'finance' ? 'budget' : 'overview');
+    let targetSubTab = 'overview';
+    if (currentRole === 'finance') targetSubTab = 'budget';
+    else if (currentRole === 'pm') targetSubTab = 'tasks';
+    else if (currentRole === 'field') targetSubTab = 'daily-logs';
+    setProjectSubTab(targetSubTab);
   };
 
   const handleHeaderBack = () => {

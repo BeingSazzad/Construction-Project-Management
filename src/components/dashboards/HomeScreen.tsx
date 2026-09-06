@@ -6,7 +6,7 @@ import {
   ChevronRight, Building2, HardHat, ShieldCheck, Users,
   Clock, AlertTriangle, Phone, CheckCircle2, ChevronDown,
   Layers, Hammer, FileSpreadsheet, Eye, Plus, Wrench,
-  Landmark, Receipt, FileCheck, ArrowUpRight
+  Landmark, Receipt, FileCheck, ArrowUpRight, Check
 } from 'lucide-react';
 import { ProjectCard } from '../common/ProjectCard';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
@@ -48,6 +48,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [approvedInvoices, setApprovedInvoices] = useState<string[]>([]);
   const [financeProjectFilter, setFinanceProjectFilter] = useState<'all' | 'variance' | 'draws'>('all');
   const [financeToast, setFinanceToast] = useState<string | null>(null);
+  const [checkedFieldPunch, setCheckedFieldPunch] = useState<string[]>(['fp-1']);
   const snellProject = projects.find(p => p.id === 'proj-1') || projects[0];
 
   const todayDateFormatted = 'Fri, Sep 5, 2026';
@@ -378,24 +379,114 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
         </div>
 
-        {/* Active Projects */}
+        {/* ── PM Active Projects Delivery Pipeline (PM Project User Flow) ── */}
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between px-0.5">
-            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Projects</h2>
+            <div>
+              <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Projects Delivery</h2>
+              <p className="text-[11px] text-[#64748B]">Tap to manage tasks, stages & trade schedules</p>
+            </div>
             <button onClick={onOpenProjects} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5">
               <span>See all ({projects.length})</span>
               <ChevronRight className="w-3 h-3" />
             </button>
           </div>
 
-          <div className="flex flex-col gap-2.5">
-            {projects.slice(0, 3).map((p) => (
-              <ProjectCard
-                key={p.id}
-                project={p}
-                onClick={() => onSelectProject(p)}
-              />
-            ))}
+          <div className="flex flex-col gap-3">
+            {projects.slice(0, 3).map((p) => {
+              const projTasks = tasks.filter(t => t.projectId === p.id);
+              const doneCount = projTasks.filter(t => t.status === 'Completed').length;
+              const totalCount = projTasks.length || 12;
+              const pct = Math.round((doneCount / totalCount) * 100);
+
+              let milestoneNotice = 'Pre-Pour Inspection: Tomorrow 10:00 AM';
+              let submittalNotice = '2 Submittals Awaiting Sign-off';
+              if (p.id === 'proj-2') {
+                milestoneNotice = 'Framing Inspection: Sep 14';
+                submittalNotice = 'All Submittals Approved ✓';
+              } else if (p.id === 'proj-3') {
+                milestoneNotice = 'MEP Rough-in Review: Sep 18';
+                submittalNotice = '1 Submittal Under Review';
+              }
+
+              return (
+                <div
+                  key={p.id}
+                  className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#1677FF]/50 shadow-card p-4 transition-all duration-200 flex flex-col gap-3 group"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3
+                          onClick={() => onSelectProject(p)}
+                          className="text-sm font-bold text-[#0F172A] hover:text-[#1677FF] cursor-pointer truncate transition-colors"
+                        >
+                          {p.name}
+                        </h3>
+                        <span className="text-[10px] font-bold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-md shrink-0">
+                          {p.code || 'JOB-101'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#64748B] truncate mt-0.5">{p.location} · Lead PM: Sarah Johnson</p>
+                    </div>
+
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20 shrink-0">
+                      {p.status}
+                    </span>
+                  </div>
+
+                  {/* Task Completion Bar */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span className="text-[#64748B]">Task Progress:</span>
+                      <span className="text-[#0F172A] font-bold">
+                        {doneCount}/{totalCount} Completed ({pct}%)
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#1677FF] rounded-full transition-all duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Operational Vitals */}
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#F1F5F9] text-[11px]">
+                    <div className="flex items-center gap-1.5 text-[#0F172A] truncate">
+                      <Calendar className="w-3.5 h-3.5 text-[#1677FF] shrink-0" />
+                      <span className="font-semibold truncate">{milestoneNotice}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[#64748B] truncate justify-end">
+                      <FileText className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <span className="font-semibold text-amber-700 truncate">{submittalNotice}</span>
+                    </div>
+                  </div>
+
+                  {/* PM Project User Flow Actions */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      onClick={() => onSelectProject(p)}
+                      className="h-9 px-3 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-xs"
+                    >
+                      <CheckSquare className="w-3.5 h-3.5" />
+                      <span>Tasks & Stages</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (onOpenCalendar) onOpenCalendar('2026-09-06');
+                        else onSelectProject(p);
+                      }}
+                      className="h-9 px-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:text-[#1677FF] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-2xs"
+                    >
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>Gantt Schedule</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -1013,6 +1104,155 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </a>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* ── Active Job Sites & Field Project User Flow ── */}
+      <div className="flex flex-col gap-2.5">
+        <div className="flex items-center justify-between px-0.5">
+          <div>
+            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Job Sites</h2>
+            <p className="text-[11px] text-[#64748B]">Tap site to open daily log or log site photos</p>
+          </div>
+          <button onClick={onOpenProjects} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5">
+            <span>All Sites ({projects.length})</span>
+            <ChevronRight className="w-3 h-3" />
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {projects.slice(0, 3).map((p) => {
+            let crewOnSite = '14 Tradesmen on Site';
+            let nextCheck = 'Pre-Pour Rebar Inspection: Tomorrow 10 AM';
+            let punchCount = '2 Punch items open';
+
+            if (p.id === 'proj-2') {
+              crewOnSite = '10 Workers (Framing)';
+              nextCheck = 'Framing Shear Sign-off: Sep 14';
+              punchCount = '0 Punch items';
+            } else if (p.id === 'proj-3') {
+              crewOnSite = '8 Workers (Underground MEP)';
+              nextCheck = 'Plumbing Inspection: Sep 18';
+              punchCount = '1 Punch item';
+            }
+
+            return (
+              <div
+                key={p.id}
+                className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-amber-400 shadow-card p-4 transition-all duration-200 flex flex-col gap-3 group"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3
+                        onClick={() => onSelectProject(p)}
+                        className="text-sm font-bold text-[#0F172A] hover:text-[#1677FF] cursor-pointer truncate transition-colors"
+                      >
+                        {p.name}
+                      </h3>
+                      <span className="text-[10px] font-bold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-md shrink-0">
+                        {p.code || 'JOB-101'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#64748B] truncate mt-0.5">{p.location}</p>
+                  </div>
+
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                    Active Site
+                  </span>
+                </div>
+
+                {/* Field Vitals Strip */}
+                <div className="grid grid-cols-2 gap-2 text-[11px] bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0]">
+                  <div className="flex items-center gap-1.5 text-[#0F172A] truncate">
+                    <Users className="w-3.5 h-3.5 text-[#1677FF] shrink-0" />
+                    <span className="font-semibold truncate">{crewOnSite}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-amber-700 truncate justify-end">
+                    <Calendar className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span className="font-semibold truncate">{nextCheck}</span>
+                  </div>
+                </div>
+
+                {/* Field User Flow Action Buttons */}
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <button
+                    onClick={() => {
+                      if (onOpenDailyLogs) onOpenDailyLogs();
+                      else onSelectProject(p);
+                    }}
+                    className="h-9 px-3 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-xs"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Open Daily Log</span>
+                  </button>
+
+                  <button
+                    onClick={() => onSelectProject(p)}
+                    className="h-9 px-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:text-[#1677FF] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-2xs"
+                  >
+                    <CheckSquare className="w-3.5 h-3.5" />
+                    <span>Tasks & Punch</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Interactive Punch & Safety Checklist ── */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between px-0.5">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">On-Site Safety & Punch Checks</h2>
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+              Walkthrough Ready
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
+          {[
+            { id: 'fp-1', title: 'Verify hurricane tie-down clip schedule at Grid B-3', sub: 'Structural Framing', priority: 'Critical' },
+            { id: 'fp-2', title: 'Cover and cap exposed 220V conduit before Thursday rain', sub: 'MEP Coordination', priority: 'High Priority' },
+            { id: 'fp-3', title: 'Pressure test underground storm drainage line at Bay 2', sub: 'Civil Utilities', priority: 'Standard' },
+          ].map((item) => {
+            const isChecked = checkedFieldPunch.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                onClick={() => {
+                  setCheckedFieldPunch(prev => 
+                    prev.includes(item.id) ? prev.filter(x => x !== item.id) : [...prev, item.id]
+                  );
+                }}
+                className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors shrink-0 ${
+                    isChecked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#CBD5E1] bg-white'
+                  }`}>
+                    {isChecked && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className={`text-xs font-bold truncate ${isChecked ? 'line-through text-[#94A3B8]' : 'text-[#0F172A]'}`}>
+                      {item.title}
+                    </h4>
+                    <p className="text-[11px] text-[#64748B] truncate mt-0.5">{item.sub}</p>
+                  </div>
+                </div>
+
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                  item.priority === 'Critical' ? 'bg-rose-50 text-rose-600 border border-rose-200' :
+                  item.priority === 'High Priority' ? 'bg-amber-50 text-amber-600 border border-amber-200' :
+                  'bg-slate-50 text-slate-600 border border-slate-200'
+                }`}>
+                  {isChecked ? 'Verified ✓' : item.priority}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 

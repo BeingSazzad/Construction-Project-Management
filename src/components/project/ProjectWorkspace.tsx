@@ -105,8 +105,17 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onAddDailyLog,
   initialCalendarDate
 }) => {
+  const getDefaultSubTab = (role: UserRole) => {
+    switch (role) {
+      case 'finance': return 'budget';
+      case 'pm': return 'tasks';
+      case 'field': return 'daily-logs';
+      default: return 'overview';
+    }
+  };
+
   const [internalActiveTab, setInternalActiveTab] = useState<string>(
-    currentRole === 'finance' ? 'budget' : 'overview'
+    activeSubTab !== undefined ? activeSubTab : getDefaultSubTab(currentRole)
   );
   const activeTab = activeSubTab !== undefined ? activeSubTab : internalActiveTab;
   
@@ -117,23 +126,47 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
   const isQuickActionPage = ['tasks', 'punch', 'photos', 'documents'].includes(activeTab);
 
-  const allTabs = currentRole === 'finance'
-    ? [
-        { id: 'budget', label: 'Budget & Draws', icon: DollarSign },
-        { id: 'overview', label: 'Overview', icon: Layers },
-        { id: 'files', label: 'Files & Liens', icon: FolderClosed },
-        { id: 'schedule', label: 'Schedule', icon: Calendar },
-        { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-        { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-      ]
-    : [
-        { id: 'overview', label: 'Overview', icon: Layers },
-        { id: 'schedule', label: 'Schedule', icon: Calendar },
-        { id: 'budget', label: 'Budget', icon: DollarSign },
-        { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-        { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-        { id: 'files', label: 'Files', icon: FolderClosed },
-      ];
+  const getTabsForRole = (role: UserRole) => {
+    switch (role) {
+      case 'finance':
+        return [
+          { id: 'budget', label: 'Budget & Draws', icon: DollarSign },
+          { id: 'overview', label: 'Overview', icon: Layers },
+          { id: 'files', label: 'Files & Liens', icon: FolderClosed },
+          { id: 'schedule', label: 'Schedule', icon: Calendar },
+          { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+          { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+        ];
+      case 'pm':
+        return [
+          { id: 'tasks', label: 'Tasks & Stages', icon: CheckSquare },
+          { id: 'schedule', label: 'Schedule', icon: Calendar },
+          { id: 'overview', label: 'Overview', icon: Layers },
+          { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+          { id: 'files', label: 'Files & Submittals', icon: FolderClosed },
+          { id: 'budget', label: 'Budget', icon: DollarSign },
+        ];
+      case 'field':
+        return [
+          { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+          { id: 'tasks', label: 'Tasks & Punch', icon: CheckSquare },
+          { id: 'files', label: 'Site Photos & Plans', icon: FolderClosed },
+          { id: 'overview', label: 'Site Info', icon: Layers },
+          { id: 'schedule', label: 'Schedule', icon: Calendar },
+        ];
+      default: // admin / owner
+        return [
+          { id: 'overview', label: 'Overview', icon: Layers },
+          { id: 'schedule', label: 'Schedule', icon: Calendar },
+          { id: 'budget', label: 'Budget', icon: DollarSign },
+          { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+          { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
+          { id: 'files', label: 'Files', icon: FolderClosed },
+        ];
+    }
+  };
+
+  const allTabs = getTabsForRole(currentRole);
 
   return (
     <div className="w-full flex flex-col flex-1 bg-[#F8FAFC]">
