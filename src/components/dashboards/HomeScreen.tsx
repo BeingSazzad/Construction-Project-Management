@@ -90,8 +90,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </span>
       </div>
 
-      {/* ── 2. TOP 4-KPI SUITE (Standardized Lattice System) ── */}
-      <div className="grid grid-cols-4 gap-2">
+      {/* ── 2. TOP 3-KPI SUITE (Standardized Lattice System) ── */}
+      <div className="grid grid-cols-3 gap-2.5">
         {/* Card 1: Tasks Due */}
         <div 
           onClick={onOpenTasks}
@@ -152,27 +152,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <span className="text-[10px] text-[#64748B] font-medium block truncate">
             2 projects
-          </span>
-        </div>
-
-        {/* Card 4: Weather & Jobsite Atmospheric Advisory */}
-        <div 
-          onClick={() => setIsWeatherModalOpen(true)}
-          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
-        >
-          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-            <CloudRain className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-              82°F
-            </span>
-            <span className="text-[10px] text-[#64748B] font-medium block truncate">
-              Site weather
-            </span>
-          </div>
-          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FFF7E6] text-[#D97706] w-fit max-w-full truncate">
-            Rain Thu
           </span>
         </div>
       </div>
