@@ -210,13 +210,13 @@ export const PhotoUploadModal: React.FC<PhotoUploadModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full btn-lg bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] font-bold transition-all cursor-pointer"
+              className="w-full btn-modal-cancel"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-full btn-lg bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full btn-modal-submit"
             >
               <Upload className="w-4 h-4 stroke-[2.5]" />
               <span>Upload</span>

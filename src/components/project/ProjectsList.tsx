@@ -45,7 +45,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
         </p>
         <button
           onClick={onCreateProject}
-          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-card active:scale-[0.98] cursor-pointer"
+          className="btn-action btn-primary"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>New Project</span>

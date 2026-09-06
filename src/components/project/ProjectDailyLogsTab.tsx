@@ -122,7 +122,7 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
 
         <button
           onClick={() => setIsCreateLogOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#1366DB] text-white text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
+          className="btn-action btn-primary"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>New Log</span>

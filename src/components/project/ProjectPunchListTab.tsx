@@ -61,7 +61,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
         <button
           onClick={onCreatePunch}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          className="btn-action btn-primary"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>New Item</span>

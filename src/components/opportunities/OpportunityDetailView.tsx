@@ -357,7 +357,7 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
           <button
             type="button"
             onClick={handleConvert}
-            className="flex-1 h-11 rounded-xl bg-[#1677FF] hover:bg-[#125ecc] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-all active:scale-95"
+            className="flex-1 h-11 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] border border-[#1677FF] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-all active:scale-95"
           >
             <Sparkles className="w-4 h-4 stroke-[2.5]" />
             <span>Convert to Project</span>

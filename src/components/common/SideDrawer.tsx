@@ -2,7 +2,7 @@ import React from 'react';
 import { User, Project } from '../../types';
 import { 
   X, Users, Settings, LogOut, Building2, Calendar, 
-  Home, FileText, DollarSign, CheckSquare, ChevronRight, Sparkles
+  Home, FileText, DollarSign, CheckSquare, ChevronRight, Sparkles, TrendingUp
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -53,6 +53,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       description: `${projects.length} Active jobsites`,
       icon: Building2,
       badge: `${projects.length}`,
+    },
+    {
+      id: 'opportunities',
+      label: 'Opportunities & Deals',
+      description: 'Pre-construction pipeline & bids',
+      icon: TrendingUp,
     },
     {
       id: 'schedule',

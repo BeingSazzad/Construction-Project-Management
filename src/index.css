@@ -108,26 +108,29 @@ body {
 }
 
 /* Global Standardized Button Sizing Architecture */
-/* 1. Large Button (Height: 48px, Font: 18px extra bold) - Primary CTAs & Full-width Actions */
+/* 1. Large Button (Height: 44-48px, Font: 14-16px bold) - Primary CTAs & Full-width Actions */
 .btn-lg {
-  height: 48px !important;
-  font-size: 1.125rem !important; /* 18px */
-  font-weight: 800 !important; /* Extra bold */
-  padding-left: 1.5rem !important;
-  padding-right: 1.5rem !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  font-size: 0.875rem !important; /* 14px */
+  font-weight: 700 !important;
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
   border-radius: 0.75rem !important; /* rounded-xl (12px) */
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.5rem !important;
+  box-sizing: border-box !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer !important;
   white-space: nowrap !important;
 }
 
-/* 2. Medium Button (Height: 40px, Font: 14px bold) - Navigation & Secondary Triggers */
+/* 2. Medium Button (Height: 40px, Font: 13-14px bold) - Navigation & Secondary Triggers */
 .btn-md {
   height: 40px !important;
+  min-height: 40px !important;
   font-size: 0.875rem !important; /* 14px */
   font-weight: 700 !important;
   padding-left: 1rem !important;
@@ -137,42 +140,114 @@ body {
   align-items: center !important;
   justify-content: center !important;
   gap: 0.375rem !important;
+  box-sizing: border-box !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer !important;
   white-space: nowrap !important;
 }
 
-/* 3. Small Button (Height: 32px, Font: 12px bold) - Header Actions & Inline Controls */
-.btn-sm {
-  height: 32px !important;
+/* 3. Small / Action Button (Height: strictly 36px, Radius: 10px, Font: 12px bold) - Header Actions & Inline Controls */
+.btn-sm, .btn-action {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
   font-size: 0.75rem !important; /* 12px */
   font-weight: 700 !important;
   padding-left: 0.875rem !important; /* 14px / px-3.5 */
   padding-right: 0.875rem !important;
-  border-radius: 0.75rem !important; /* rounded-xl (12px) */
+  border-radius: 10px !important; /* Exact modern proportional radius */
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.375rem !important;
+  box-sizing: border-box !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer !important;
   white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .btn-primary {
   background-color: #1677FF !important;
   color: #FFFFFF !important;
+  border: 1px solid #1677FF !important;
+  box-shadow: 0 1px 2px rgba(22, 119, 255, 0.15) !important;
 }
 .btn-primary:hover {
   background-color: #0958D9 !important;
+  border-color: #0958D9 !important;
 }
+.btn-primary:active {
+  transform: scale(0.97) !important;
+}
+
 .btn-secondary {
   background-color: #FFFFFF !important;
   color: #0F172A !important;
-  border: 1px solid #E2E8F0 !important;
+  border: 1px solid #DDE1E7 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
 }
 .btn-secondary:hover {
   background-color: #F1F5F9 !important;
+}
+.btn-secondary:active {
+  transform: scale(0.97) !important;
+}
+
+/* Modal Action Buttons */
+.btn-modal-cancel {
+  height: 44px !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  background-color: #F2F2F7 !important;
+  color: #475569 !important;
+  border: 1px solid #DDE1E7 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.btn-modal-cancel:hover {
+  background-color: #EAEDF1 !important;
+  color: #0F172A !important;
+}
+.btn-modal-cancel:active {
+  transform: scale(0.98) !important;
+}
+
+.btn-modal-submit {
+  height: 44px !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  background-color: #1677FF !important;
+  color: #FFFFFF !important;
+  border: 1px solid #1677FF !important;
+  box-shadow: 0 1px 3px rgba(22, 119, 255, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.btn-modal-submit:hover {
+  background-color: #0958D9 !important;
+  border-color: #0958D9 !important;
+}
+.btn-modal-submit:active {
+  transform: scale(0.98) !important;
 }
 
 /* Global Standardized Input Box Architecture (Light) */

@@ -39,7 +39,7 @@ export const ProjectDocumentsTab: React.FC<ProjectDocumentsTabProps> = ({
 
         <button
           onClick={onUploadDocument}
-          className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all flex-shrink-0"
+          className="btn-action btn-primary"
         >
           <Upload className="w-3.5 h-3.5" />
           <span>Upload</span>

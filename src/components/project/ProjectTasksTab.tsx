@@ -322,9 +322,9 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
             if (onOpenCreateTaskModal) onOpenCreateTaskModal();
             else setIsCreateModalOpen(true);
           }}
-          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#1366DB] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all whitespace-nowrap shrink-0"
+          className="btn-action btn-primary"
         >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>Add Task</span>
         </button>
       </div>

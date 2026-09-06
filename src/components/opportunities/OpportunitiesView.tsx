@@ -131,8 +131,33 @@ const INITIAL_OPPORTUNITIES: Opportunity[] = [
   }
 ];
 
-export const OpportunitiesView: React.FC = () => {
-  const [opportunities, setOpportunities] = useState<Opportunity[]>(INITIAL_OPPORTUNITIES);
+export interface OpportunitiesViewProps {
+  opportunities?: Opportunity[];
+  onUpdateOpportunities?: (opps: Opportunity[]) => void;
+  onConvertToProject?: (deal: Opportunity) => void;
+  onBack?: () => void;
+}
+
+export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
+  opportunities: propOpportunities,
+  onUpdateOpportunities,
+  onConvertToProject,
+  onBack,
+}) => {
+  const [internalOpportunities, setInternalOpportunities] = useState<Opportunity[]>(INITIAL_OPPORTUNITIES);
+  const opportunities = propOpportunities || internalOpportunities;
+
+  const setOpportunities = (updater: Opportunity[] | ((prev: Opportunity[]) => Opportunity[])) => {
+    if (typeof updater === 'function') {
+      const next = updater(opportunities);
+      if (onUpdateOpportunities) onUpdateOpportunities(next);
+      else setInternalOpportunities(next);
+    } else {
+      if (onUpdateOpportunities) onUpdateOpportunities(updater);
+      else setInternalOpportunities(updater);
+    }
+  };
+
   const [showCreate, setShowCreate] = useState(false);
   const [selectedDeal, setSelectedDeal] = useState<Opportunity | null>(null);
   const [editingDeal, setEditingDeal] = useState<Opportunity | null>(null);
@@ -222,6 +247,7 @@ export const OpportunitiesView: React.FC = () => {
         onBack={() => setSelectedDeal(null)}
         onUpdate={handleSaveEditedDeal}
         onDelete={handleDeleteDeal}
+        onConvertToProject={onConvertToProject}
       />
     );
   }
@@ -269,7 +295,7 @@ export const OpportunitiesView: React.FC = () => {
 
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 h-9 px-3 rounded-xl bg-[#1677FF] hover:bg-[#125ecc] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          className="btn-action btn-primary"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>New</span>
@@ -525,7 +551,7 @@ export const OpportunitiesView: React.FC = () => {
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="mt-1 h-9 px-3.5 bg-[#1677FF] hover:bg-[#125ecc] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
+            className="mt-1 btn-action btn-primary"
           >
             + Create Opportunity
           </button>

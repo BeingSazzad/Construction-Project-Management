@@ -160,7 +160,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
         <button
           type="button"
           onClick={onClose}
-          className="btn-md border border-[#DDE1E7] bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] active:scale-95"
+          className="btn-modal-cancel flex-1"
         >
           Cancel
         </button>
@@ -168,11 +168,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
         <button
           type="submit"
           disabled={!isValid}
-          className={`btn-lg flex-1 shadow-xs ${
-            isValid
-              ? 'bg-[#1677FF] hover:bg-[#0958D9] text-white active:scale-95'
-              : 'bg-[#F2F2F7] text-[#9DA5B1] border border-[#DDE1E7] cursor-not-allowed'
-          }`}
+          className={`btn-modal-submit flex-1 ${!isValid ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <Check className="w-4 h-4 stroke-[2.5]" />
           <span>Create Master Budget</span>

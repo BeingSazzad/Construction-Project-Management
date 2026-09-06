@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Project, Task } from '../../types';
+import React, { useState, useMemo } from 'react';
+import { Project, Task, UserRole } from '../../types';
 import { 
   CheckSquare, Calendar, DollarSign, CloudRain, Sparkles, 
   ArrowRight, FileText, TrendingUp, Cloud, AlertCircle, 
@@ -18,6 +18,7 @@ interface HomeScreenProps {
   onOpenTasks: () => void;
   onOpenCalendar?: (date?: string) => void;
   onOpenBudget?: (project: Project) => void;
+  currentRole?: UserRole;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -30,6 +31,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenTasks,
   onOpenCalendar,
   onOpenBudget,
+  currentRole = 'admin',
 }) => {
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
   const snellProject = projects.find(p => p.id === 'proj-1') || projects[0];
@@ -37,6 +39,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // Current formatted date
   const todayDateFormatted = 'Fri, Sep 5, 2026';
+
+  // Dynamic live calculations so inputs/outputs across all roles reflect immediately
+  const totalBudget = useMemo(() => {
+    return projects.reduce((sum, p) => sum + (p.budget?.total || 0), 0);
+  }, [projects]);
+
+  const activeTasks = useMemo(() => {
+    return tasks.filter(t => t.status !== 'Completed');
+  }, [tasks]);
+
+  const overdueTasksCount = useMemo(() => {
+    const today = new Date('2026-09-06');
+    return activeTasks.filter(t => t.dueDate && new Date(t.dueDate) < today).length;
+  }, [activeTasks]);
+
+  const inspectionsCount = useMemo(() => {
+    return tasks.filter(t => 
+      t.title.toLowerCase().includes('inspect') || 
+      t.title.toLowerCase().includes('rough-in') ||
+      t.title.toLowerCase().includes('walk')
+    ).length;
+  }, [tasks]);
+
+  const formattedBudget = totalBudget >= 1000000 
+    ? `$${(totalBudget / 1000000).toFixed(2)}M` 
+    : `$${(totalBudget / 1000).toFixed(0)}K`;
 
   // Specific schedule items matching the reference specification
   const scheduleItems = [
@@ -72,14 +100,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     }
   ];
 
+  const ROLE_BADGE: Record<UserRole, { label: string; sub: string }> = {
+    admin: { label: 'Owner & Executive', sub: 'Portfolio Overview & Capital Health' },
+    pm: { label: 'Project Management', sub: 'Field Operations & Milestones' },
+    finance: { label: 'Project Finance', sub: 'Draws, Lien Waivers & Cashflow' },
+    field: { label: 'Lead Superintendent', sub: 'Daily Logs, QA & Site Safety' }
+  };
+
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
       {/* ── 1. DAILY OVERVIEW & DATE ── */}
       <div className="flex items-center justify-between pt-0.5">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#64748B]">
-          Daily Overview
-        </span>
+        <div>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] block">
+            {ROLE_BADGE[currentRole]?.label || 'Daily Overview'}
+          </span>
+          <span className="text-[11px] text-[#94A3B8] font-medium block">
+            {ROLE_BADGE[currentRole]?.sub}
+          </span>
+        </div>
         <span className="text-xs font-semibold text-[#64748B]">
           {todayDateFormatted}
         </span>
@@ -97,14 +137,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div>
             <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
-              5
+              {activeTasks.length}
             </span>
             <span className="text-[10px] text-[#64748B] font-medium block truncate">
               Tasks due
             </span>
           </div>
-          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#FFF0F0] text-[#E5484D] w-fit max-w-full truncate">
-            1 overdue
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold w-fit max-w-full truncate ${
+            overdueTasksCount > 0 
+              ? 'bg-[#FFF0F0] text-[#E5484D]' 
+              : 'bg-[#E9F9F3] text-[#10A976]'
+          }`}>
+            {overdueTasksCount > 0 ? `${overdueTasksCount} overdue` : 'On track'}
           </span>
         </div>
 
@@ -118,14 +162,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div>
             <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
-              2
+              {inspectionsCount}
             </span>
             <span className="text-[10px] text-[#64748B] font-medium block truncate">
               Inspections
             </span>
           </div>
           <span className="text-[10px] text-[#64748B] font-medium block truncate">
-            This week
+            Active items
           </span>
         </div>
 
@@ -139,14 +183,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div>
             <span className="text-sm font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-              $4.65M
+              {formattedBudget}
             </span>
             <span className="text-[10px] text-[#64748B] font-medium block truncate">
               Total budget
             </span>
           </div>
           <span className="text-[10px] text-[#64748B] font-medium block truncate">
-            2 projects
+            {projects.length} project{projects.length !== 1 ? 's' : ''}
           </span>
         </div>
       </div>

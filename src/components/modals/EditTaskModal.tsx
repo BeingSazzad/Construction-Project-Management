@@ -235,16 +235,16 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full btn-lg bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] font-bold transition-all cursor-pointer"
+              className="w-full btn-modal-cancel"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!title.trim()}
-              className="w-full btn-lg bg-[#1677FF] hover:bg-[#0958D9] disabled:opacity-50 text-white font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full btn-modal-submit disabled:opacity-50"
             >
-              <CheckCircle2 className="w-5 h-5" />
+              <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
               <span>Save Changes</span>
             </button>
           </div>

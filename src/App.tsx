@@ -49,7 +49,7 @@ import { DailyLogsHubView } from './components/dailylogs/DailyLogsHubView';
 import { DailyLogItem } from './types';
 
 // Opportunities & Budgets Hub
-import { OpportunitiesView } from './components/opportunities/OpportunitiesView';
+import { OpportunitiesView, Opportunity } from './components/opportunities/OpportunitiesView';
 import { CreateDealView } from './components/opportunities/CreateDealView';
 import { BudgetsHubView } from './components/budgets/BudgetsHubView';
 import { MessagesHubView } from './components/messages/MessagesHubView';
@@ -503,6 +503,128 @@ export function App() {
     setPunchItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
   };
 
+  const handleConvertOpportunityToProject = (deal: Opportunity) => {
+    const newProj: Project = {
+      id: `proj-${Date.now()}`,
+      name: deal.title,
+      code: `JOB-${projects.length + 101}`,
+      location: deal.address,
+      cityState: deal.address.split(',').slice(-2).join(',').trim() || 'Denver, CO',
+      status: 'Pre-Construction',
+      progress: 0,
+      startDate: deal.startDate || '2026-10-01',
+      targetEndDate: '2027-08-31',
+      clientName: deal.client,
+      type: 'Custom Home',
+      projectManager: {
+        id: 'u-pm-1',
+        name: 'Sarah Johnson',
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+      },
+      budget: {
+        total: deal.value,
+        committed: 0,
+        actual: 0,
+        paid: 0,
+        remaining: deal.value,
+        variance: 0,
+        costToComplete: deal.value,
+      },
+      metrics: {
+        totalTasks: 3,
+        completedTasks: 0,
+        overdueTasks: 0,
+        openPunchItems: 0,
+        totalMilestones: 4,
+        completedMilestones: 0,
+      },
+      thumbnail: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80',
+      description: deal.description || 'Custom luxury project converted from won deal.',
+    };
+
+    setProjects(prev => [newProj, ...prev]);
+
+    const newTasks: Task[] = [
+      {
+        id: `t-${Date.now()}-1`,
+        projectId: newProj.id,
+        projectName: newProj.name,
+        title: `Execute Prime Contract - ${deal.client}`,
+        description: 'Finalize and execute the owner-builder prime construction contract.',
+        status: 'In Progress',
+        priority: 'Critical',
+        assignee: {
+          id: 'u-pm-1',
+          name: 'Sarah Johnson',
+          avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+          role: 'Senior Project Manager'
+        },
+        startDate: '2026-09-06',
+        dueDate: '2026-09-15',
+        costCode: '01-1000',
+        subtasks: [],
+        attachmentsCount: 1,
+        notesCount: 0
+      },
+      {
+        id: `t-${Date.now()}-2`,
+        projectId: newProj.id,
+        projectName: newProj.name,
+        title: 'Initial Site Survey & Boundary Stakeout',
+        description: 'Conduct boundary and topographical land survey with GPS stakeout.',
+        status: 'Not Started',
+        priority: 'High',
+        assignee: {
+          id: 'u-field-1',
+          name: 'John Smith',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+          role: 'Lead Field Superintendent'
+        },
+        startDate: '2026-09-10',
+        dueDate: '2026-09-20',
+        costCode: '01-3000',
+        subtasks: [],
+        attachmentsCount: 0,
+        notesCount: 0
+      },
+      {
+        id: `t-${Date.now()}-3`,
+        projectId: newProj.id,
+        projectName: newProj.name,
+        title: `Establish CSI Division Master Budget ($${(deal.value / 1000000).toFixed(2)}M)`,
+        description: 'Set up 16-division CSI MasterFormat ledger and budget codes.',
+        status: 'Not Started',
+        priority: 'High',
+        assignee: {
+          id: 'u-fin-1',
+          name: 'Michael Chang',
+          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+          role: 'Director of Project Finance'
+        },
+        startDate: '2026-09-12',
+        dueDate: '2026-09-25',
+        costCode: '01-2000',
+        subtasks: [],
+        attachmentsCount: 0,
+        notesCount: 0
+      }
+    ];
+
+    setTasks(prev => [...newTasks, ...prev]);
+
+    const newNotif: NotificationItem = {
+      id: `notif-${Date.now()}`,
+      title: 'Deal Won & Converted to Project',
+      message: `${deal.title} was converted to an Active Project ($${(deal.value / 1000000).toFixed(2)}M). Tasks assigned to PM, Finance & Field.`,
+      timeAgo: 'Just now',
+      read: false,
+      type: 'budget',
+      projectId: newProj.id
+    };
+
+    setNotifications(prev => [newNotif, ...prev]);
+  };
+
   const handleAddPin = (pin: Partial<PlanGridPin>) => {
     const fullPin: PlanGridPin = {
       id: `pin-${Date.now()}`,
@@ -726,6 +848,7 @@ export function App() {
                   <HomeScreen
                     projects={projects}
                     tasks={tasks}
+                    currentRole={currentRole}
                     onSelectProject={handleSelectProject}
                     onOpenProjects={() => setActiveTab('projects')}
                     onOpenLatti={(query) => {
@@ -904,6 +1027,13 @@ export function App() {
                         setProjectSubTab(subTab || 'overview');
                       }
                     }}
+                  />
+                )}
+
+                {activeTab === 'opportunities' && (
+                  <OpportunitiesView
+                    onConvertToProject={handleConvertOpportunityToProject}
+                    onBack={() => setActiveTab('home')}
                   />
                 )}
               </>

@@ -229,20 +229,20 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           {onImportBudget && (
             <button
               onClick={onImportBudget}
-              className="h-8 px-3.5 text-xs font-bold text-[#475569] bg-white border border-[#E2E8F0] rounded-xl hover:bg-[#F1F5F9] flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95 whitespace-nowrap shrink-0"
+              className="btn-action btn-secondary"
               title="Import Budget Ledger"
             >
-              <Upload className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
+              <Upload className="w-3.5 h-3.5 text-[#68707C] shrink-0" />
               <span className="whitespace-nowrap">Import</span>
             </button>
           )}
 
           <button
             onClick={() => setIsAddCodeModalOpen(true)}
-            className="h-8 px-3.5 text-xs font-bold text-white bg-[#1677FF] hover:bg-[#0958D9] rounded-xl flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95 whitespace-nowrap shrink-0"
+            className="btn-action btn-primary"
             title="Add Cost Code"
           >
-            <Plus className="w-3.5 h-3.5 shrink-0" />
+            <Plus className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
             <span className="whitespace-nowrap">Add Code</span>
           </button>
         </div>
@@ -400,9 +400,9 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           <h3 className="text-sm font-bold text-[#171A1F]">Cost Items</h3>
           <button
             onClick={() => setIsAddCodeModalOpen(true)}
-            className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs"
+            className="btn-action btn-primary"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Add Item</span>
           </button>
         </div>
