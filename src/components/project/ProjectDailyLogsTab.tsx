@@ -91,78 +91,46 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
     return [...logItems, ...updateItems].sort((a, b) => b.sortDate.localeCompare(a.sortDate));
   }, [localLogs, localUpdates]);
 
+  const cleanAuthor = (authorName?: string) => {
+    if (!authorName) return 'Superintendent';
+    return authorName.replace(/\s*\(.*?\)/g, '').trim();
+  };
+
+  const getInitials = (name?: string) => {
+    if (!name) return 'FL';
+    const cleaned = cleanAuthor(name);
+    const parts = cleaned.split(' ').filter(Boolean);
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return (parts[0]?.substring(0, 2) || 'FL').toUpperCase();
+  };
+
   const latestLog = localLogs[0];
 
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-4 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
-      {/* ─── 1. Header & Unified Action ─── */}
+      {/* ─── 1. Header & Action ─── */}
       <div className="flex items-center justify-between px-0.5 pt-1">
         <div>
           <h2 className="text-lg font-bold text-[#0F172A] tracking-tight">
-            Daily Logs & Updates
+            Daily Logs
           </h2>
           <p className="text-xs text-[#64748B] font-medium">
-            {project.name} • Live chronological field stream
+            {project.name}
           </p>
         </div>
 
-        {/* Unified Post Action with Clean Dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => setIsActionMenuOpen(prev => !prev)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#1366DB] text-white text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
-          >
-            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Post Update</span>
-          </button>
-
-          {isActionMenuOpen && (
-            <>
-              <div 
-                className="fixed inset-0 z-20"
-                onClick={() => setIsActionMenuOpen(false)}
-              />
-              <div className="absolute right-0 mt-1.5 w-52 bg-white rounded-2xl border border-[#E2E8F0] shadow-xl p-1.5 z-30 flex flex-col gap-1 animate-scale-in">
-                <button
-                  onClick={() => {
-                    setIsActionMenuOpen(false);
-                    setIsCreateLogOpen(true);
-                  }}
-                  className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left hover:bg-[#F8FAFC] transition-colors cursor-pointer"
-                >
-                  <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-                    <FileText className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-[#0F172A] block leading-tight">Daily Field Log</span>
-                    <span className="text-[10px] text-[#64748B] block mt-0.5">Weather, crew & work summary</span>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setIsActionMenuOpen(false);
-                    setIsCreateUpdateOpen(true);
-                  }}
-                  className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left hover:bg-[#F8FAFC] transition-colors cursor-pointer"
-                >
-                  <div className="w-7 h-7 rounded-lg bg-[#F1F5F9] text-[#475569] flex items-center justify-center shrink-0">
-                    <Activity className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-[#0F172A] block leading-tight">Site Quick Notice</span>
-                    <span className="text-[10px] text-[#64748B] block mt-0.5">Photo, progress or decision</span>
-                  </div>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+        <button
+          onClick={() => setIsCreateLogOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#1366DB] text-white text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
+        >
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+          <span>New Log</span>
+        </button>
       </div>
 
-      {/* ─── 2. Top Site Condition Strip (Clean Single-Layer Metric) ─── */}
-      <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex items-center justify-between gap-2 text-xs">
+      {/* ─── 2. Site Overview Strip ─── */}
+      <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex items-center justify-between gap-1 text-xs">
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
             {latestLog?.weather?.condition?.toLowerCase().includes('rain') ? (
@@ -172,42 +140,49 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
             )}
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] text-[#64748B] font-medium block leading-none">Weather Today</span>
-            <span className="text-xs font-bold text-[#0F172A] truncate block mt-0.5">
-              {latestLog?.weather?.temperature || '78°F'} • {latestLog?.weather?.condition || 'Clear'}
+            <span className="text-[10px] text-[#64748B] font-medium block leading-none">Weather</span>
+            <span className="text-xs font-bold text-[#0F172A] block mt-0.5 whitespace-nowrap">
+              {latestLog?.weather?.temperature?.split('/')[0]?.trim() || '82°F'} {latestLog?.weather?.condition || 'Sunny'}
             </span>
           </div>
         </div>
 
-        <div className="h-6 w-px bg-[#E2E8F0] shrink-0" />
+        <div className="h-6 w-px bg-[#E2E8F0] shrink-0 mx-0.5" />
 
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
             <HardHat className="w-3.5 h-3.5" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] text-[#64748B] font-medium block leading-none">Active Workforce</span>
-            <span className="text-xs font-bold text-[#0F172A] truncate block mt-0.5">
-              {latestLog?.totalHeadcount || 18} Workers
+            <span className="text-[10px] text-[#64748B] font-medium block leading-none">Workforce</span>
+            <span className="text-xs font-bold text-[#0F172A] block mt-0.5 whitespace-nowrap">
+              {latestLog?.totalHeadcount || 24} Workers
             </span>
           </div>
         </div>
 
-        <div className="h-6 w-px bg-[#E2E8F0] shrink-0" />
+        <div className="h-6 w-px bg-[#E2E8F0] shrink-0 mx-0.5" />
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          <span className="text-[11px] font-bold text-emerald-700">
-            0 Incidents
-          </span>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-3.5 h-3.5" />
+          </div>
+          <div>
+            <span className="text-[10px] text-[#64748B] font-medium block leading-none">Safety</span>
+            <span className="text-xs font-bold text-emerald-700 block mt-0.5 whitespace-nowrap">
+              0 Incidents
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* ─── 3. Unified Chronological Activity Stream (Clean, No Duplicate Tabs) ─── */}
+      {/* ─── 3. Unified Chronological Activity Stream ─── */}
       <div className="flex flex-col gap-3">
         {mergedFeed.map(item => {
           if (item.type === 'daily_log') {
             const log = item.data;
+            const initials = getInitials(log.author);
+            const author = cleanAuthor(log.author);
             return (
               <div 
                 key={log.id}
@@ -217,16 +192,14 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="w-8 h-8 rounded-full bg-[#1677FF] text-white font-bold text-xs flex items-center justify-center shrink-0">
-                      JS
+                      {initials}
                     </div>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <h3 className="text-xs font-bold text-[#0F172A] truncate">
-                          {log.author}
-                        </h3>
-                      </div>
-                      <p className="text-[10px] text-[#64748B]">
-                        Superintendent • {log.date}
+                      <h3 className="text-xs font-bold text-[#0F172A] truncate">
+                        {author}
+                      </h3>
+                      <p className="text-[10px] text-[#64748B] truncate">
+                        Superintendent • {log.date?.replace('Yesterday · ', '') || 'Today'}
                       </p>
                     </div>
                   </div>
@@ -266,7 +239,7 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
                     <Sun className="w-3 h-3 text-amber-500" />
                     <span>{log.weather.condition}</span>
                     {log.deliveries && log.deliveries.length > 0 && (
-                      <span>• {log.deliveries.length} Deliveries</span>
+                      <span>• {log.deliveries.length} {log.deliveries.length === 1 ? 'Delivery' : 'Deliveries'}</span>
                     )}
                   </span>
 

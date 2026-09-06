@@ -113,7 +113,7 @@ export const MOCK_PROJECTS: Project[] = [
         date: 'Today · Sep 5',
         weather: {
           condition: 'Sunny',
-          temperature: '82°F / 28°C',
+          temperature: '82°F',
           windSpeed: '6 mph SW',
           precipitation: '0%',
           siteCondition: 'Dry'
@@ -142,7 +142,7 @@ export const MOCK_PROJECTS: Project[] = [
         materialsReceived: ['84 Lumber Framing Package (2 flatbeds)', '50 bundles EMT conduit', 'Simpson Strong-Tie hardware boxes'],
         safetyIncidents: '0 Incidents. Daily morning safety briefing conducted. Fall protection harnesses inspected.',
         safetyPassed: true,
-        author: 'John Smith (Field Superintendent)',
+        author: 'John Smith',
         photos: [
           'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80',
@@ -156,7 +156,7 @@ export const MOCK_PROJECTS: Project[] = [
         date: 'Yesterday · Sep 4',
         weather: {
           condition: 'Sunny',
-          temperature: '84°F / 29°C',
+          temperature: '84°F',
           windSpeed: '8 mph W',
           precipitation: '0%',
           siteCondition: 'Dry'
@@ -185,7 +185,7 @@ export const MOCK_PROJECTS: Project[] = [
         materialsReceived: ['Structural steel flitch plates (1 truck)', '12-inch corrugated drainage pipe (100 ft)'],
         safetyIncidents: '0 Incidents. Crane lift perimeter barricaded during heavy picks.',
         safetyPassed: true,
-        author: 'Sarah Johnson (Project Manager)',
+        author: 'Sarah Johnson',
         photos: [
           'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80'
@@ -198,7 +198,7 @@ export const MOCK_PROJECTS: Project[] = [
         date: 'Sep 3',
         weather: {
           condition: 'Partly Cloudy',
-          temperature: '81°F / 27°C',
+          temperature: '81°F',
           windSpeed: '11 mph E',
           precipitation: '10%',
           siteCondition: 'Normal'
@@ -220,7 +220,7 @@ export const MOCK_PROJECTS: Project[] = [
         materialsReceived: ['Ready-mix concrete (42 yards)'],
         safetyIncidents: '0 Incidents. Concrete chemical eye wash stations verified.',
         safetyPassed: true,
-        author: 'John Smith (Field Superintendent)',
+        author: 'John Smith',
         photos: [
           'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80'
         ]
@@ -232,7 +232,7 @@ export const MOCK_PROJECTS: Project[] = [
         date: 'Sep 2',
         weather: {
           condition: 'Clear',
-          temperature: '80°F / 27°C',
+          temperature: '80°F',
           windSpeed: '5 mph NW',
           precipitation: '0%',
           siteCondition: 'Dry'
