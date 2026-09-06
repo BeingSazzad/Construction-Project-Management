@@ -75,17 +75,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
-      {/* ── 1. GREETING & DATE ── */}
-      <div className="flex items-start justify-between gap-2 pt-1">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-[#0F172A] tracking-tight leading-tight">
-            Good morning, Avery
-          </h1>
-          <p className="text-xs text-[#64748B] mt-0.5 font-normal">
-            Let's keep your projects moving forward.
-          </p>
-        </div>
-        <span className="text-xs font-medium text-[#64748B] text-right shrink-0 mt-0.5">
+      {/* ── 1. DAILY OVERVIEW & DATE ── */}
+      <div className="flex items-center justify-between pt-0.5">
+        <span className="text-xs font-bold uppercase tracking-wider text-[#64748B]">
+          Daily Overview
+        </span>
+        <span className="text-xs font-semibold text-[#64748B]">
           {todayDateFormatted}
         </span>
       </div>
