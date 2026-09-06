@@ -3,7 +3,7 @@ import { Project, Task, UserRole } from '../../types';
 import { 
   CheckSquare, Calendar, DollarSign, CloudRain, Sparkles, 
   ArrowRight, FileText, TrendingUp, Cloud, AlertCircle, 
-  ChevronRight 
+  ChevronRight, Building2, Landmark
 } from 'lucide-react';
 import { ProjectCard } from '../common/ProjectCard';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
@@ -44,6 +44,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const totalBudget = useMemo(() => {
     return projects.reduce((sum, p) => sum + (p.budget?.total || 0), 0);
   }, [projects]);
+
+  const totalSpend = useMemo(() => {
+    return projects.reduce((sum, p) => sum + (p.budget?.actual || p.budget?.paid || 0), 0);
+  }, [projects]);
+
+  const remainingBudget = useMemo(() => {
+    return Math.max(0, totalBudget - totalSpend);
+  }, [totalBudget, totalSpend]);
+
+  const formattedSpend = useMemo(() => {
+    return totalSpend >= 1000000 
+      ? `$${(totalSpend / 1000000).toFixed(2)}M` 
+      : `$${Math.round(totalSpend / 1000)}k`;
+  }, [totalSpend]);
+
+  const formattedRemaining = useMemo(() => {
+    return remainingBudget >= 1000000 
+      ? `$${(remainingBudget / 1000000).toFixed(2)}M` 
+      : `$${Math.round(remainingBudget / 1000)}k`;
+  }, [remainingBudget]);
 
   const activeTasks = useMemo(() => {
     return tasks.filter(t => t.status !== 'Completed');
@@ -125,74 +145,160 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </span>
       </div>
 
-      {/* ── 2. TOP 3-KPI SUITE (Standardized Lattice System) ── */}
+      {/* ── 2. TOP 3-KPI SUITE (Role-Tailored & Synchronized) ── */}
       <div className="grid grid-cols-3 gap-2.5">
-        {/* Card 1: Tasks Due */}
-        <div 
-          onClick={onOpenTasks}
-          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
-        >
-          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-            <CheckSquare className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
-              {activeTasks.length}
+        {/* Card 1 */}
+        {currentRole === 'finance' ? (
+          <div 
+            onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
+            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+          >
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <DollarSign className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <span className="text-sm md:text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+                {formattedBudget}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+                Total budget
+              </span>
+            </div>
+            <span className="text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
+              {projects.length} sites
             </span>
-            <span className="text-[10px] text-[#64748B] font-medium block truncate">
-              Tasks due
+          </div>
+        ) : currentRole === 'admin' ? (
+          <div 
+            onClick={onOpenProjects}
+            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+          >
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <Building2 className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
+                {projects.length}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+                Active projects
+              </span>
+            </div>
+            <span className="text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
+              100% active
             </span>
           </div>
-          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold w-fit max-w-full truncate ${
-            overdueTasksCount > 0 
-              ? 'bg-[#FFF0F0] text-[#E5484D]' 
-              : 'bg-[#E9F9F3] text-[#10A976]'
-          }`}>
-            {overdueTasksCount > 0 ? `${overdueTasksCount} overdue` : 'On track'}
-          </span>
-        </div>
+        ) : (
+          <div 
+            onClick={onOpenTasks}
+            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+          >
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <CheckSquare className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
+                {activeTasks.length}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+                {currentRole === 'field' ? 'Site tasks' : 'Tasks due'}
+              </span>
+            </div>
+            <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold w-fit max-w-full truncate ${
+              overdueTasksCount > 0 
+                ? 'bg-[#FFF0F0] text-[#E5484D]' 
+                : 'bg-[#E9F9F3] text-[#10A976]'
+            }`}>
+              {overdueTasksCount > 0 ? `${overdueTasksCount} overdue` : 'On track'}
+            </span>
+          </div>
+        )}
 
-        {/* Card 2: Inspections */}
-        <div 
-          onClick={() => onOpenCalendar ? onOpenCalendar('2026-09-05') : onOpenTasks()}
-          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
-        >
-          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-            <Calendar className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
-              {inspectionsCount}
+        {/* Card 2 */}
+        {currentRole === 'finance' ? (
+          <div 
+            onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
+            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+          >
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <TrendingUp className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <span className="text-sm md:text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+                {formattedSpend}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+                Spend to date
+              </span>
+            </div>
+            <span className="text-[10px] text-[#1677FF] font-semibold bg-[#EAF3FF] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
+              {Math.round((totalSpend / (totalBudget || 1)) * 100)}% utilized
             </span>
+          </div>
+        ) : (
+          <div 
+            onClick={() => onOpenCalendar ? onOpenCalendar('2026-09-05') : onOpenTasks()}
+            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+          >
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <Calendar className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1">
+                {inspectionsCount}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+                Inspections
+              </span>
+            </div>
             <span className="text-[10px] text-[#64748B] font-medium block truncate">
-              Inspections
+              {currentRole === 'field' ? 'Site sign-offs' : 'Active items'}
             </span>
           </div>
-          <span className="text-[10px] text-[#64748B] font-medium block truncate">
-            Active items
-          </span>
-        </div>
+        )}
 
-        {/* Card 3: Total Budget */}
-        <div 
-          onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
-          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
-        >
-          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-            <DollarSign className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <span className="text-sm font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-              {formattedBudget}
+        {/* Card 3 */}
+        {currentRole === 'finance' ? (
+          <div 
+            onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
+            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+          >
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <Landmark className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <span className="text-sm md:text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+                {formattedRemaining}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+                Remaining
+              </span>
+            </div>
+            <span className="text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
+              Available
             </span>
+          </div>
+        ) : (
+          <div 
+            onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onSelectProject(snellProject)}
+            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
+          >
+            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <DollarSign className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <span className="text-sm font-bold text-[#0F172A] block leading-tight mt-1 truncate">
+                {formattedBudget}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium block truncate">
+                Total budget
+              </span>
+            </div>
             <span className="text-[10px] text-[#64748B] font-medium block truncate">
-              Total budget
+              {projects.length} project{projects.length !== 1 ? 's' : ''}
             </span>
           </div>
-          <span className="text-[10px] text-[#64748B] font-medium block truncate">
-            {projects.length} project{projects.length !== 1 ? 's' : ''}
-          </span>
-        </div>
+        )}
       </div>
 
       {/* ── 3. LATTI BRIEFING (AI HERO CARD) ── */}

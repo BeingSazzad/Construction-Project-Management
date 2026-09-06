@@ -4,6 +4,7 @@ interface LatticeLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'hero';
   layout?: 'stacked' | 'horizontal' | 'icon-only';
   showTagline?: boolean;
+  theme?: 'light' | 'dark';
   className?: string;
 }
 
@@ -11,6 +12,7 @@ export const LatticeLogo: React.FC<LatticeLogoProps> = ({
   size = 'md',
   layout = 'horizontal',
   showTagline = false,
+  theme = 'light',
   className = ''
 }) => {
   // SVG Icon sizes
@@ -47,7 +49,7 @@ export const LatticeLogo: React.FC<LatticeLogoProps> = ({
       viewBox="0 0 100 100" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"
-      className="drop-shadow-[0_0_12px_rgba(0,210,255,0.4)] flex-shrink-0"
+      className="drop-shadow-[0_2px_8px_rgba(22,119,255,0.25)] flex-shrink-0"
     >
       <defs>
         <linearGradient id="latticeGradTop" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -92,11 +94,17 @@ export const LatticeLogo: React.FC<LatticeLogoProps> = ({
     return (
       <div className={`flex flex-col items-center text-center select-none ${className}`}>
         <div className="mb-3">{IconSvg}</div>
-        <div className={`text-transparent bg-clip-text bg-gradient-to-r from-[#0066FF] via-[#00D2FF] to-[#00F0FF] ${textClassMap[size]}`}>
+        <div className={`font-black ${
+          theme === 'dark'
+            ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#0066FF] via-[#00D2FF] to-[#00F0FF]'
+            : 'text-[#0F172A]'
+        } ${textClassMap[size]}`}>
           LATTICE
         </div>
         {showTagline && (
-          <div className={`mt-1.5 text-cyan-400/90 uppercase ${taglineClassMap[size]}`}>
+          <div className={`mt-1.5 font-bold uppercase tracking-wider ${
+            theme === 'dark' ? 'text-cyan-400/90' : 'text-[#64748B]'
+          } ${taglineClassMap[size]}`}>
             BUILD BETTER. TOGETHER.
           </div>
         )}
@@ -109,11 +117,17 @@ export const LatticeLogo: React.FC<LatticeLogoProps> = ({
     <div className={`inline-flex items-center gap-3 select-none ${className}`}>
       {IconSvg}
       <div className="flex flex-col">
-        <span className={`text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-cyan-400 leading-none ${textClassMap[size]}`}>
+        <span className={`font-black leading-none ${
+          theme === 'dark'
+            ? 'text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-cyan-400'
+            : 'text-[#0F172A]'
+        } ${textClassMap[size]}`}>
           LATTICE
         </span>
         {showTagline && (
-          <span className={`mt-1 text-cyan-400/80 uppercase ${taglineClassMap[size]}`}>
+          <span className={`mt-1 uppercase tracking-wider ${
+            theme === 'dark' ? 'text-cyan-400/80' : 'text-[#64748B]'
+          } ${taglineClassMap[size]}`}>
             BUILD BETTER. TOGETHER.
           </span>
         )}
