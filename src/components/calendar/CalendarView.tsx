@@ -12,6 +12,7 @@ interface CalendarViewProps {
   onSelectProject?: (project: Project) => void;
   onAddEvent?: (event: CalendarEventItem) => void;
   isInline?: boolean;
+  initialDate?: string;
 }
 
 export const CalendarView: React.FC<CalendarViewProps> = ({
@@ -19,10 +20,20 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   events: initialEvents,
   onSelectProject,
   onAddEvent,
-  isInline = false
+  isInline = false,
+  initialDate
 }) => {
+  // Parse initial date if provided (default: Sep 5, 2026)
+  const initialDateObj = React.useMemo(() => {
+    if (initialDate) {
+      const [y, m, d] = initialDate.split('-').map(Number);
+      if (!isNaN(y) && !isNaN(m)) return new Date(y, m - 1, d || 1);
+    }
+    return new Date(2026, 8, 5);
+  }, [initialDate]);
+
   // Calendar Navigation State
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 8, 5)); // September 2026
+  const [currentDate, setCurrentDate] = useState(initialDateObj);
   const [viewMode, setViewMode] = useState<'month' | 'agenda'>('month');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEventItem | null>(null);
@@ -91,7 +102,32 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   }
 
   // Selected date state for day-click agenda preview
-  const [selectedDateStr, setSelectedDateStr] = useState<string>('2026-09-05');
+  const [selectedDateStr, setSelectedDateStr] = useState<string>(initialDate || '2026-09-05');
+
+  React.useEffect(() => {
+    if (initialDate) {
+      setSelectedDateStr(initialDate);
+      const [y, m, d] = initialDate.split('-').map(Number);
+      if (!isNaN(y) && !isNaN(m)) {
+        setCurrentDate(new Date(y, m - 1, d || 1));
+      }
+    }
+  }, [initialDate]);
+
+  // Helper for human-friendly dates (never raw ISO strings)
+  const formatHumanDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return dateStr;
+    const dateObj = new Date(y, m - 1, d);
+    const isToday = dateStr === '2026-09-05';
+    const isTomorrow = dateStr === '2026-09-06';
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    const formatted = dateObj.toLocaleDateString('en-US', options);
+    if (isToday) return `Today • ${formatted}`;
+    if (isTomorrow) return `Tomorrow • ${formatted}`;
+    return formatted;
+  };
 
   // Helper for dot colors based on event type
   const getEventDotColor = (type: CalendarEventType) => {
@@ -250,21 +286,50 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             </div>
           </div>
 
-          {/* ─── Selected Day Events Agenda Panel (Clean Divided List, No Box Inception) ─── */}
-          <div className="rounded-3xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs">
-            <div className="p-4 border-b border-[#EAEDF1] flex items-center justify-between">
-              <h3 className="text-xs font-bold text-[#171A1F] uppercase tracking-wider flex items-center gap-1.5">
-                <CalendarIcon className="w-3.5 h-3.5 text-[#1677FF]" />
-                <span>Events for {selectedDateStr}</span>
-              </h3>
-              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
-                {selectedDayEvents.length} {selectedDayEvents.length === 1 ? 'Event' : 'Events'}
-              </span>
+          {/* ─── Selected Day Events Agenda Panel (Executive, Interactive, No Dead Ends) ─── */}
+          <div className="rounded-2xl bg-white border border-[#DDE1E7] overflow-hidden shadow-xs">
+            <div className="p-3.5 border-b border-[#EAEDF1] flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+                  <CalendarIcon className="w-3.5 h-3.5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-xs font-bold text-[#171A1F] truncate">
+                    {formatHumanDate(selectedDateStr)}
+                  </h3>
+                  <p className="text-[10px] text-[#68707C]">
+                    {selectedDayEvents.length === 0 ? '0 events scheduled' : `${selectedDayEvents.length} event${selectedDayEvents.length > 1 ? 's' : ''} on site`}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="px-2.5 py-1 rounded-lg bg-[#1677FF] hover:bg-[#1366DB] text-white text-[11px] font-semibold flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
+              >
+                <Plus className="w-3 h-3 stroke-[2.5]" />
+                <span>+ Add</span>
+              </button>
             </div>
 
             {selectedDayEvents.length === 0 ? (
-              <div className="p-4 text-center text-xs text-[#68707C] font-medium">
-                No events scheduled on this date. Tap <strong className="text-[#1677FF]">+ Add</strong> to create one.
+              <div className="p-5 text-center flex flex-col items-center justify-center gap-2 bg-[#FAFBFC]">
+                <div className="w-9 h-9 rounded-full bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center">
+                  <CalendarIcon className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#171A1F]">No Events Scheduled</p>
+                  <p className="text-[11px] text-[#68707C] mt-0.5 max-w-[240px]">
+                    No milestones, inspections, or deliveries for this date.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="mt-1 px-3 py-1.5 rounded-lg bg-[#1677FF] hover:bg-[#1366DB] text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
+                >
+                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>+ Add to Schedule</span>
+                </button>
               </div>
             ) : (
               <div className="divide-y divide-[#F2F2F7]">
@@ -292,6 +357,47 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     </span>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* ─── Upcoming on Site (Prevents Dead End on Empty Days) ─── */}
+            {selectedDayEvents.length === 0 && eventsList.length > 0 && (
+              <div className="border-t border-[#EAEDF1] p-3 bg-white">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">
+                    Upcoming on Site
+                  </span>
+                  <span className="text-[10px] font-medium text-[#1677FF]">
+                    Next events
+                  </span>
+                </div>
+                <div className="divide-y divide-[#F2F2F7]">
+                  {eventsList.slice(0, 3).map(evt => (
+                    <div
+                      key={evt.id}
+                      onClick={() => {
+                        setSelectedDateStr(evt.date);
+                        setSelectedEvent(evt);
+                      }}
+                      className="py-2 flex items-center justify-between gap-2 hover:bg-[#F9FAFB] cursor-pointer rounded-lg px-1 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${getEventDotColor(evt.type)}`} />
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
+                            {evt.title}
+                          </p>
+                          <p className="text-[10px] text-[#68707C]">
+                            {evt.date} • {evt.time || 'All Day'}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${getEventBadgeColor(evt.type)}`}>
+                        {evt.type}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

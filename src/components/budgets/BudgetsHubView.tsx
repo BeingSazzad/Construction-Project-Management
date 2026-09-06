@@ -453,7 +453,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onSelectBudgetNa
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Actual Spend</span>
+                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Spent</span>
                   <span className="text-xs font-bold text-[#1677FF] block mt-0.5">
                     ${b.actual > 0 ? (b.actual / 1000000).toFixed(2) + 'M' : '0'}
                   </span>

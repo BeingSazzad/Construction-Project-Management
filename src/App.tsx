@@ -115,6 +115,7 @@ export function App() {
   const [dailyLogs, setDailyLogs] = useState<DailyLogItem[]>(() => 
     MOCK_PROJECTS.flatMap(p => p.dailyLogs || [])
   );
+  const [initialCalendarDate, setInitialCalendarDate] = useState<string>('2026-09-05');
 
   // Modals state
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
@@ -711,6 +712,7 @@ export function App() {
                 onCreateChangeOrder={() => setIsCreateChangeOrderOpen(true)}
                 onAddReport={handleAddReport}
                 onAddDailyLog={handleAddDailyLog}
+                initialCalendarDate={initialCalendarDate}
               />
             ) : (
               /* Global Hub Views */
@@ -731,7 +733,8 @@ export function App() {
                       handleSelectProject(projects[0]);
                       setProjectSubTab('tasks');
                     }}
-                    onOpenCalendar={() => {
+                    onOpenCalendar={(targetDate) => {
+                      if (targetDate) setInitialCalendarDate(targetDate);
                       handleSelectProject(projects[0]);
                       setProjectSubTab('schedule');
                     }}
@@ -834,6 +837,7 @@ export function App() {
                     events={calendarEvents}
                     onSelectProject={handleSelectProject}
                     onAddEvent={(evt) => setCalendarEvents(prev => [evt, ...prev])}
+                    initialDate={initialCalendarDate}
                   />
                 )}
 
@@ -925,8 +929,13 @@ export function App() {
             }}
             unreadNotifsCount={unreadNotifsCount}
             onNavigateTab={(tab) => {
-              setActiveProject(null);
-              setActiveTab(tab);
+              if (tab === 'schedule') {
+                handleSelectProject(projects[0]);
+                setProjectSubTab('schedule');
+              } else {
+                setActiveProject(null);
+                setActiveTab(tab);
+              }
             }}
             onOpenCreateProject={() => {
               setIsSideDrawerOpen(false);

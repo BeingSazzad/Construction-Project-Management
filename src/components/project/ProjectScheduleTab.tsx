@@ -11,10 +11,12 @@ interface ProjectScheduleTabProps {
   onUpdateTaskStatus?: (taskId: string, status: TaskStatus) => void;
   onAddTask?: (task: Partial<Task>) => void;
   isMilestoneView?: boolean;
+  initialDate?: string;
 }
 
 export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
   project,
+  initialDate
 }) => {
   // Scoped project schedule events (Milestones, inspections, deliveries, meetings)
   const [projectEvents, setProjectEvents] = useState<CalendarEventItem[]>(() => {
@@ -50,6 +52,7 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
           events={projectEvents}
           onAddEvent={handleAddEvent}
           isInline={true}
+          initialDate={initialDate}
         />
       </div>
     </div>

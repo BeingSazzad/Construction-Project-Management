@@ -1878,6 +1878,17 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
     notes: 'Tampa building inspector on-site. Engineer structural sign-off cards ready.'
   },
   {
+    id: 'evt-tomorrow',
+    title: 'Foundation Waterproofing & Drainage Inspection',
+    date: '2026-09-06',
+    type: 'Inspection',
+    projectId: 'proj-1',
+    projectName: 'Snell Isle Residence',
+    priority: 'Urgent',
+    time: '10:00 AM',
+    notes: 'Snell Isle Residence • City building inspector arrival at 10:00 AM. Inspect foundation perimeter drain tile and membrane wrap.'
+  },
+  {
     id: 'evt-2',
     title: 'MEP Rough-In Pre-Inspection',
     date: '2026-09-05',

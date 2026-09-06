@@ -63,6 +63,7 @@ interface ProjectWorkspaceProps {
   onCreateChangeOrder?: () => void;
   onAddReport?: (newReport: Partial<ReportItem>) => void;
   onAddDailyLog?: (newLog: DailyLogItem) => void;
+  initialCalendarDate?: string;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
@@ -89,11 +90,18 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onUploadDocument,
   onPreviewDocument,
   onExportReport,
+  onAddPlanPin,
+  onUpdatePinStatus,
+  onSendMessage,
+  onAddTasksFromTemplate,
+  onUpdateProjectStatus,
+  onOpenEditProject,
   onImportBudget,
   changeOrders,
   onCreateChangeOrder,
   onAddReport,
-  onAddDailyLog
+  onAddDailyLog,
+  initialCalendarDate
 }) => {
   const [internalActiveTab, setInternalActiveTab] = useState<string>('overview');
   const activeTab = activeSubTab !== undefined ? activeSubTab : internalActiveTab;
@@ -229,6 +237,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             ganttItems={ganttItems}
             onCreateTask={onCreateTask}
             onUpdateTaskStatus={onUpdateTaskStatus}
+            initialDate={initialCalendarDate}
           />
         )}
       </div>

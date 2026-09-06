@@ -312,48 +312,45 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
         </div>
       </div>
 
-      {/* ─── 3. 3-COLUMN KPI CARDS ROW (Total Budget • Total Spent • Remaining) ─── */}
+      {/* ─── 3. 3-COLUMN KPI CARDS ROW (Budget • Spent • Remaining) ─── */}
       <div className="grid grid-cols-3 gap-2">
-        {/* 1st: Total Budget */}
-        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5">
+        {/* 1st: Budget */}
+        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col justify-between min-h-[68px]">
+          <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-5 h-5 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <Landmark className="w-3 h-3" />
             </div>
-            <span className="text-xs font-semibold text-[#0F172A] truncate">Total Budget</span>
+            <span className="text-xs font-semibold text-[#0F172A] truncate">Budget</span>
           </div>
-          <span className="text-sm font-bold text-[#0F172A] mt-1">
+          <span className="text-sm font-bold text-[#0F172A] tracking-tight">
             ${(totalBudget / 1000000).toFixed(2)}M
           </span>
-          <span className="text-[10px] text-[#64748B] font-medium truncate">Planned budget</span>
         </div>
 
-        {/* 2nd: Total Spent */}
-        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5">
+        {/* 2nd: Spent */}
+        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col justify-between min-h-[68px]">
+          <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-5 h-5 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <CreditCard className="w-3 h-3" />
             </div>
-            <span className="text-xs font-semibold text-[#1677FF] truncate">Actual Spend</span>
+            <span className="text-xs font-semibold text-[#1677FF] truncate">Spent</span>
           </div>
-          <span className="text-sm font-bold text-[#1677FF] mt-1">
+          <span className="text-sm font-bold text-[#1677FF] tracking-tight">
             ${(totalActual / 1000000).toFixed(2)}M
           </span>
-          <span className="text-[10px] text-[#64748B] font-medium truncate">{progressPercent}% of budget</span>
         </div>
 
         {/* 3rd: Remaining */}
-        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5">
+        <div className="p-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-card flex flex-col justify-between min-h-[68px]">
+          <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-5 h-5 rounded-md bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
               <Wallet className="w-3 h-3" />
             </div>
             <span className="text-xs font-semibold text-[#10A976] truncate">Remaining</span>
           </div>
-          <span className="text-sm font-bold text-[#10A976] mt-1">
+          <span className="text-sm font-bold text-[#10A976] tracking-tight">
             ${(totalRemaining / 1000000).toFixed(2)}M
           </span>
-          <span className="text-[10px] text-[#64748B] font-medium truncate">Left to spend</span>
         </div>
       </div>
 

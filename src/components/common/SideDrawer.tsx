@@ -1,7 +1,7 @@
 import React from 'react';
 import { User, Project } from '../../types';
 import { 
-  X, Users, Settings, LogOut, Plus, Check, ArrowRight, Building2
+  X, Users, Settings, LogOut, Plus, Check, ArrowRight, Building2, Calendar
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -175,6 +175,24 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#68707C] px-1 pb-1 block">
               Quick Shortcuts
             </span>
+
+            {/* Master Schedule */}
+            <button
+              onClick={() => go('schedule')}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-[#F2F2F7] text-[#171A1F] font-medium transition-all text-left cursor-pointer group active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 text-[#1677FF]">
+                  <Calendar className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-semibold text-[#171A1F] group-hover:text-[#1677FF] transition-colors">
+                  Master Schedule
+                </span>
+              </div>
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
+                Active
+              </span>
+            </button>
 
             {/* Team Directory */}
             <button

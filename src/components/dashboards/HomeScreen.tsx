@@ -16,7 +16,7 @@ interface HomeScreenProps {
   onOpenLatti: (query?: string) => void;
   onOpenTask: (task: Task) => void;
   onOpenTasks: () => void;
-  onOpenCalendar?: () => void;
+  onOpenCalendar?: (date?: string) => void;
   onOpenBudget?: (project: Project) => void;
 }
 
@@ -115,7 +115,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Card 2: Inspections */}
         <div 
-          onClick={onOpenCalendar || onOpenTasks}
+          onClick={() => onOpenCalendar ? onOpenCalendar('2026-09-05') : onOpenTasks()}
           className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] overflow-hidden group"
         >
           <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
@@ -299,7 +299,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* Item 3: Inspection tomorrow */}
           <div 
-            onClick={() => onOpenTask(scheduleItems[0].task)}
+            onClick={() => onOpenCalendar ? onOpenCalendar('2026-09-06') : onOpenTask(scheduleItems[0].task)}
             className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F1F5F9]/50 transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3 min-w-0">
@@ -333,7 +333,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             Today's Schedule
           </h2>
           <button 
-            onClick={onOpenCalendar || onOpenTasks}
+            onClick={() => onOpenCalendar ? onOpenCalendar('2026-09-05') : onOpenTasks()}
             className="text-xs font-semibold text-[#1677FF] hover:underline cursor-pointer"
           >
             View schedule
@@ -344,7 +344,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {scheduleItems.map((item, idx) => (
             <div 
               key={item.id}
-              onClick={() => onOpenTask(item.task)}
+              onClick={() => {
+                if (item.id === 'sch-1' && onOpenCalendar) {
+                  onOpenCalendar('2026-09-05');
+                } else {
+                  onOpenTask(item.task);
+                }
+              }}
               className="flex items-center justify-between gap-3 hover:bg-[#F1F5F9]/50 p-1 rounded-xl transition-colors cursor-pointer relative"
             >
               {/* Left Time & Timeline Connector */}
