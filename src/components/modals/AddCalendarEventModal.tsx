@@ -62,7 +62,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
               <CalendarIcon className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-[#171A1F] leading-none">Add to Calendar</h2>
+              <h2 className="text-sm font-bold text-[#171A1F] leading-none">Add to Schedule</h2>
               <p className="text-[10px] text-[#68707C] mt-1">Schedule milestone, inspection, or task</p>
             </div>
           </div>
@@ -197,7 +197,7 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
               className="flex-1 py-2.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-xs font-bold text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Add to Calendar</span>
+              <span>Add to Schedule</span>
             </button>
           </div>
         </form>
