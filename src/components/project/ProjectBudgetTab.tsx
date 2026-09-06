@@ -273,52 +273,29 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-3.5 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
 
-      {/* ─── 1. COMPACT ACTION TOOLBAR (Zero Duplicate Header) ─── */}
+      {/* ─── 1. COMPACT ACTION TOOLBAR (Clean & Streamlined) ─── */}
       <div className="flex items-center justify-between pt-0.5 pb-0.5">
         <div>
           <h2 className="text-base font-bold text-[#0F172A] tracking-tight">
             Budget Ledger
           </h2>
           <p className="text-xs text-[#64748B] font-medium">
-            CSI MasterFormat • 16 Divisions
+            Cost breakdown &amp; expenses by trade
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          <button
-            onClick={() => setIsAddCategoryModalOpen(true)}
-            className="h-8 px-2.5 rounded-xl border border-[#DDE1E7] bg-white hover:bg-[#F8FAFC] text-[#0F172A] text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
-            title="Add New CSI Division / Category"
-          >
-            <Layers className="w-3.5 h-3.5 text-[#1677FF]" />
-            <span className="whitespace-nowrap hidden sm:inline">Add Division</span>
-            <span className="whitespace-nowrap sm:hidden">+ Division</span>
-          </button>
-
-          {onImportBudget && (
-            <button
-              onClick={onImportBudget}
-              className="btn-action btn-secondary"
-              title="Import Budget Ledger"
-            >
-              <Upload className="w-3.5 h-3.5 text-[#68707C] shrink-0" />
-              <span className="whitespace-nowrap">Import</span>
-            </button>
-          )}
-
-          <button
-            onClick={() => {
-              setIsCustomTrade(false);
-              setCustomTradeName('');
-              setIsAddCodeModalOpen(true);
-            }}
-            className="btn-action btn-primary"
-            title="Add Cost Code"
-          >
-            <Plus className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
-            <span className="whitespace-nowrap">Add Code</span>
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            setIsCustomTrade(false);
+            setCustomTradeName('');
+            setIsAddCodeModalOpen(true);
+          }}
+          className="btn-action btn-primary"
+          title="Add Budget Expense Item"
+        >
+          <Plus className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
+          <span className="whitespace-nowrap">Add Budget Item</span>
+        </button>
       </div>
 
       {/* ─── 2. EXECUTIVE HERO BUDGET CARD (Compact & Clean - No Duplication) ─── */}
@@ -715,12 +692,15 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
         </div>
       </div>
 
-      {/* ─── ADD COST CODE MODAL ─── */}
+      {/* ─── ADD BUDGET ITEM MODAL ─── */}
       {isAddCodeModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
           <div className="w-full max-w-[380px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-3 text-[#171A1F]">
             <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
-              <h3 className="text-sm font-bold text-[#171A1F]">Add Cost Code Item</h3>
+              <div>
+                <h3 className="text-sm font-bold text-[#171A1F]">Add Budget Expense Item</h3>
+                <p className="text-[11px] text-[#525866] mt-0.5">Record planned allocation and contractor commitment</p>
+              </div>
               <button
                 onClick={() => setIsAddCodeModalOpen(false)}
                 className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#525866] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
@@ -732,7 +712,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             <form onSubmit={handleAddCodeSubmit} className="flex flex-col gap-3 text-xs">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs text-[#525866] font-semibold">CSI Trade Division</label>
+                  <label className="text-xs text-[#525866] font-semibold">Trade Category / Division</label>
                   <button
                     type="button"
                     onClick={() => {
@@ -741,7 +721,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                     }}
                     className="text-[11px] font-bold text-[#1677FF] hover:underline cursor-pointer"
                   >
-                    {isCustomTrade ? '← Choose Existing' : '+ Custom Division'}
+                    {isCustomTrade ? '← Choose Existing' : '+ New Category'}
                   </button>
                 </div>
 
@@ -773,18 +753,18 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                       </option>
                     ))}
                     <option value="__add_new__" className="font-bold text-[#1677FF]">
-                      + Add New Division / Category...
+                      + Add New Category...
                     </option>
                   </select>
                 )}
               </div>
 
               <div>
-                <label className="text-xs text-[#525866] block mb-1 font-semibold">Cost Code Line Item Name *</label>
+                <label className="text-xs text-[#525866] block mb-1 font-semibold">Expense Item Name *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Slab Rebar Reinforcement"
+                  placeholder="e.g. Foundation Slab Rebar, Electrical Rough-in"
                   value={costCodeName}
                   onChange={(e) => setCostCodeName(e.target.value)}
                   className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3.5 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
@@ -793,7 +773,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs text-[#525866] block mb-1 font-semibold">Budget ($) *</label>
+                  <label className="text-xs text-[#525866] block mb-1 font-semibold">Planned Budget ($) *</label>
                   <input
                     type="number"
                     required
@@ -805,7 +785,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#525866] block mb-1 font-semibold">Committed ($)</label>
+                  <label className="text-xs text-[#525866] block mb-1 font-semibold">Committed Amount ($)</label>
                   <input
                     type="number"
                     placeholder="38000"
@@ -828,7 +808,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                   type="submit"
                   className="px-4 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer active:scale-95 transition-all"
                 >
-                  Save Item
+                  + Add to Budget
                 </button>
               </div>
             </form>
