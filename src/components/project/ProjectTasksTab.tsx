@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { Project, Task, TaskStatus } from '../../types';
 import { 
-  Plus, Download, Trash2, Check, 
+  Plus, Download, Trash2, Check, Pencil,
   ChevronDown, ChevronUp, Search,
   Layers, Hammer, Boxes, Sliders, Wrench, Building2,
   MoreVertical, X
 } from 'lucide-react';
 import { CreateTaskModal } from '../modals/CreateTaskModal';
+import { EditTaskModal, EditableTaskData } from '../modals/EditTaskModal';
 
 interface ProjectTasksTabProps {
   project: Project;
@@ -114,6 +115,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [isViewAll, setIsViewAll] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<EditableTaskData | null>(null);
 
   // Icon mapping
   const getStageIcon = (iconType: string) => {
@@ -174,6 +176,64 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         tasks: grp.tasks.filter(t => t.id !== taskId)
       };
     }));
+  };
+
+  const handleSaveTaskEdit = (updated: {
+    id: string;
+    title: string;
+    status: 'todo' | 'in-progress' | 'done';
+    priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+    costCode?: string;
+    assignee?: string;
+    dueDate?: string;
+    targetGroupId: string;
+  }) => {
+    if (!editingTask) return;
+
+    setStageGroups(prev => {
+      if (updated.targetGroupId === editingTask.groupId) {
+        return prev.map(grp => {
+          if (grp.id !== editingTask.groupId) return grp;
+          return {
+            ...grp,
+            tasks: grp.tasks.map(t => {
+              if (t.id !== updated.id) return t;
+              return {
+                ...t,
+                title: updated.title,
+                status: updated.status,
+                priority: updated.priority,
+                costCode: updated.costCode,
+                assignee: updated.assignee,
+                dueDate: updated.dueDate
+              };
+            })
+          };
+        });
+      }
+
+      const updatedTaskObj: TaskItem = {
+        id: updated.id,
+        title: updated.title,
+        status: updated.status,
+        priority: updated.priority,
+        costCode: updated.costCode,
+        assignee: updated.assignee,
+        dueDate: updated.dueDate
+      };
+
+      return prev.map(grp => {
+        if (grp.id === editingTask.groupId) {
+          return { ...grp, tasks: grp.tasks.filter(t => t.id !== updated.id) };
+        }
+        if (grp.id === updated.targetGroupId) {
+          return { ...grp, tasks: [...grp.tasks, updatedTaskObj] };
+        }
+        return grp;
+      });
+    });
+
+    setEditingTask(null);
   };
 
   // Total metrics
@@ -450,8 +510,35 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                               )}
                             </button>
 
+                            {/* Edit Button */}
                             <button
-                              onClick={() => deleteTask(group.id, task.id)}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingTask({
+                                  id: task.id,
+                                  title: task.title,
+                                  status: task.status,
+                                  priority: task.priority,
+                                  costCode: task.costCode,
+                                  assignee: task.assignee,
+                                  dueDate: task.dueDate,
+                                  groupId: group.id
+                                });
+                              }}
+                              className="w-6 h-6 rounded-md text-[#94A3B8] hover:text-[#1677FF] hover:bg-[#EAF3FF] flex items-center justify-center cursor-pointer transition-colors opacity-60 group-hover:opacity-100"
+                              title="Edit task"
+                            >
+                              <Pencil className="w-3 h-3" />
+                            </button>
+
+                            {/* Delete Button */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteTask(group.id, task.id);
+                              }}
                               className="w-6 h-6 rounded-md text-[#94A3B8] hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center cursor-pointer transition-colors opacity-60 group-hover:opacity-100"
                               title="Delete task"
                             >
@@ -491,6 +578,16 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
           ]);
           setIsCreateModalOpen(false);
         }}
+      />
+
+      {/* ─── EDIT TASK MODAL ─── */}
+      <EditTaskModal
+        isOpen={Boolean(editingTask)}
+        onClose={() => setEditingTask(null)}
+        task={editingTask}
+        stageGroups={stageGroups.map(g => ({ id: g.id, name: g.name }))}
+        onSave={handleSaveTaskEdit}
+        onDelete={(groupId, taskId) => deleteTask(groupId, taskId)}
       />
 
     </div>
