@@ -300,7 +300,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           <div className="flex flex-col gap-2.5">
-            {projects.slice(0, 3).map((p) => (
+            {projects.map((p) => (
               <ProjectCard
                 key={p.id}
                 project={p}
