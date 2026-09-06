@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { UserRole, Task, PunchItem } from '../../types';
 import { 
-  Send, AlertTriangle, FileText, Calendar, CloudRain, ChevronRight, CheckSquare, Sparkles 
+  Send, AlertTriangle, FileText, Calendar, CloudRain, ChevronRight, 
+  Sparkles, ArrowRight, Mic, CheckCircle2, DollarSign, Bot, RefreshCw
 } from 'lucide-react';
 
 interface LattiAssistantProps {
@@ -14,34 +15,40 @@ interface LattiAssistantProps {
   initialQuery?: string;
 }
 
-// Faceted Blue Diamond Latti Icon from Figma Screen 5
-const LattiGeometricIcon = () => (
-  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16">
-    <path d="M32 4L56 20L32 60L8 20L32 4Z" stroke="#1677FF" strokeWidth="2.5" strokeLinejoin="round" />
-    <path d="M8 20H56" stroke="#1677FF" strokeWidth="2.5" />
-    <path d="M32 4L22 20L32 60L42 20L32 4Z" stroke="#1677FF" strokeWidth="2" strokeLinejoin="round" fill="#EAF3FF" fillOpacity="0.4" />
-    <path d="M22 20L32 4L42 20" stroke="#1677FF" strokeWidth="2" />
-    <line x1="32" y1="20" x2="32" y2="60" stroke="#1677FF" strokeWidth="2" />
-  </svg>
-);
-
 interface ChatMessage {
   id: string;
   sender: 'user' | 'latti';
   text: string;
   timestamp: string;
-  actionItem?: {
+  metricBadge?: {
     label: string;
-    action: () => void;
+    value: string;
+    variant: 'danger' | 'warning' | 'info' | 'success';
+  };
+  actionButton?: {
+    label: string;
+    targetTab: string;
   };
 }
 
 export const LattiAssistant: React.FC<LattiAssistantProps> = ({
+  currentRole = 'admin',
+  activeProject,
   onNavigate,
   initialQuery,
 }) => {
   const [inputQuery, setInputQuery] = useState('');
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [isThinking, setIsThinking] = useState(false);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
+    {
+      id: 'welcome-msg',
+      sender: 'latti',
+      text: "Good morning! I'm monitoring active sites, weather forecasts, and CSI budget variances. How can I assist your team today?",
+      timestamp: 'Just now'
+    }
+  ]);
+
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialQuery && initialQuery.trim()) {
@@ -49,51 +56,58 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
     }
   }, [initialQuery]);
 
-  const insights = [
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory, isThinking]);
+
+  const INSIGHTS = [
     {
       id: 'ins-1',
       type: 'budget',
       icon: AlertTriangle,
       iconBg: 'bg-[#FEF2F2] text-[#EF4444]',
-      title: 'Budget risk',
-      titleColor: 'text-[#EF4444]',
-      description: 'Concrete costs on Snell Isle Residence are trending 8% over budget.',
-      actionTab: 'projects',
+      badge: 'High Priority',
+      badgeBg: 'bg-[#FEF2F2] text-[#EF4444]',
+      title: 'Snell Isle Concrete Variance',
+      description: 'Concrete line item is trending 8% ($14,200) over budget due to revised pier depths.',
+      actionTab: 'budgets',
+      actionLabel: 'Inspect Budget'
     },
     {
       id: 'ins-2',
-      type: 'permit',
-      icon: FileText,
-      iconBg: 'bg-[#EAF3FF] text-[#1677FF]',
-      title: 'Permit update',
-      titleColor: 'text-[#1677FF]',
-      description: 'Building permit for Snell Isle Residence is approved and ready for pickup.',
-      actionTab: 'projects',
-    },
-    {
-      id: 'ins-3',
-      type: 'schedule',
-      icon: Calendar,
-      iconBg: 'bg-[#EAF3FF] text-[#1677FF]',
-      title: 'Schedule conflict',
-      titleColor: 'text-[#1677FF]',
-      description: 'MEP Rough-In conflicts with Framing Inspection on May 16.',
-      actionTab: 'projects',
-    },
-    {
-      id: 'ins-4',
       type: 'weather',
       icon: CloudRain,
       iconBg: 'bg-[#FEF3C7] text-[#D97706]',
-      title: 'Weather impact alert',
-      titleColor: 'text-[#D97706]',
-      description: 'Heavy rain expected Thursday in Tampa may affect scheduled concrete pour. Recommendation: move pour or confirm weather protection.',
-      actionTab: 'projects',
+      badge: 'Weather Risk',
+      badgeBg: 'bg-[#FEF3C7] text-[#D97706]',
+      title: 'Thursday Pour Threat',
+      description: '85% chance of heavy rain and gusts >22mph in Tampa. Recommend moving concrete pour to Friday.',
+      actionTab: 'schedule',
+      actionLabel: 'View Schedule'
     },
+    {
+      id: 'ins-3',
+      type: 'permit',
+      icon: CheckCircle2,
+      iconBg: 'bg-[#EAF3FF] text-[#1677FF]',
+      badge: 'Milestone Ready',
+      badgeBg: 'bg-[#EAF3FF] text-[#1677FF]',
+      title: 'Structural Framing Inspection',
+      description: 'City inspector scheduled for tomorrow 10:00 AM. Checklist is 92% verified.',
+      actionTab: 'tasks',
+      actionLabel: 'Check Checklist'
+    }
   ];
 
-  const handleSend = (userText?: string) => {
-    const q = userText || inputQuery;
+  const QUICK_PROMPTS = [
+    "Summarize site activity today",
+    "Show budget variances & risk",
+    "Inspect Thursday rain impact",
+    "What tasks are due this week?"
+  ];
+
+  const handleSend = (queryText?: string) => {
+    const q = queryText || inputQuery;
     if (!q.trim()) return;
 
     const userMsg: ChatMessage = {
@@ -104,22 +118,35 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
     };
 
     setChatHistory(prev => [...prev, userMsg]);
-    if (!userText) setInputQuery('');
+    if (!queryText) setInputQuery('');
+    setIsThinking(true);
 
-    // Generate intelligent construction partner answer
     setTimeout(() => {
-      let reply = "I've analyzed all active project data for Snell Isle Residence and current milestones.";
+      let replyText = "I've analyzed real-time project telemetry across all active sites.";
+      let badge: ChatMessage['metricBadge'] | undefined = undefined;
+      let actionBtn: ChatMessage['actionButton'] | undefined = undefined;
 
-      if (q.toLowerCase().includes('weather') || q.toLowerCase().includes('rain') || q.toLowerCase().includes('pour')) {
-        reply = "Weather radar indicates an 85% probability of heavy rain and wind gusts over 22 mph this Thursday in Tampa, FL. I recommend delaying the Level 2 concrete pour to Friday morning or verifying site tarp coverage with Apex Ready-Mix.";
-      } else if (q.toLowerCase().includes('budget') || q.toLowerCase().includes('cost')) {
-        reply = "Snell Isle Residence has committed $1.42M against an original $1.84M budget ($860K remaining). Concrete line item has exceeded variance by $14,200 due to revised pier depths. Framing and electrical are tracking under budget.";
-      } else if (q.toLowerCase().includes('task') || q.toLowerCase().includes('note') || q.toLowerCase().includes('create')) {
-        reply = "I've drafted a task: 'Verify hurricane strap nailing schedule before framing inspection' assigned to John Smith for May 16. Tap to add directly to schedule.";
-      } else if (q.toLowerCase().includes('briefing') || q.toLowerCase().includes('morning') || q.toLowerCase().includes('today')) {
-        reply = "Good morning, Avery. Two projects need attention today. Snell Isle has a framing inspection tomorrow at 10:00 AM, and one framing invoice exceeds its category. Thursday rain will threaten exterior concrete. All other milestones are on track.";
+      const lower = q.toLowerCase();
+
+      if (lower.includes('budget') || lower.includes('cost') || lower.includes('variance') || lower.includes('money')) {
+        replyText = "Portfolio committed spend is $16.8M against $34.85M total. Snell Isle Residence has a $14,200 cost overrun in Division 03 (Concrete) due to soil bearing amendments. All other trade divisions remain within contingency limits.";
+        badge = { label: 'Variance Risk', value: '+$14.2K', variant: 'danger' };
+        actionBtn = { label: 'Open Portfolio Budgets', targetTab: 'budgets' };
+      } else if (lower.includes('rain') || lower.includes('weather') || lower.includes('storm') || lower.includes('forecast')) {
+        replyText = "Heavy tropical rain band is projected for Tampa between 1:00 PM and 6:00 PM this Thursday (0.85 in/hr). Concrete cure will be compromised if poured without heavy tarp protection. Recommend rescheduling to Friday morning.";
+        badge = { label: 'Precipitation', value: '85% Rain', variant: 'warning' };
+        actionBtn = { label: 'Adjust Milestone in Schedule', targetTab: 'schedule' };
+      } else if (lower.includes('task') || lower.includes('due') || lower.includes('overdue') || lower.includes('todo')) {
+        replyText = "You have 7 active tasks due this week. Priority item: 'Verify hurricane strap nailing schedule' before the City inspector arrives tomorrow at 10:00 AM.";
+        badge = { label: 'Tasks Due', value: '7 Pending', variant: 'info' };
+        actionBtn = { label: 'Review Project Tasks', targetTab: 'tasks' };
+      } else if (lower.includes('summary') || lower.includes('today') || lower.includes('briefing') || lower.includes('activity')) {
+        replyText = "Good morning! 2 sites require executive focus: Snell Isle has a municipal framing inspection tomorrow morning, and Downtown Tower had steel delivery #4 confirmed today. Zero safety incidents reported.";
+        badge = { label: 'Site Health', value: '100% Active', variant: 'success' };
+        actionBtn = { label: 'View All Projects', targetTab: 'projects' };
       } else {
-        reply = `Understood. Snell Isle Residence is 62% complete and on schedule. Next upcoming milestone is the Framing Inspection on May 16 at 10:00 AM. Let me know if you would like me to adjust the schedule or alert the team.`;
+        replyText = `Understood. I have logged and analyzed your query. Snell Isle Residence is currently at 62% progress and tracking on schedule for Q4 delivery. Let me know if you would like me to adjust any milestone or create a sub-tier task.`;
+        actionBtn = { label: 'Open Project Overview', targetTab: 'projects' };
       }
 
       setChatHistory(prev => [
@@ -127,124 +154,200 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
         {
           id: `lat-${Date.now()}`,
           sender: 'latti',
-          text: reply,
-          timestamp: 'Just now'
+          text: replyText,
+          timestamp: 'Just now',
+          metricBadge: badge,
+          actionButton: actionBtn
         }
       ]);
-    }, 450);
+      setIsThinking(false);
+    }, 400);
   };
 
   return (
-    <div className="w-full flex flex-col min-h-full px-5 py-5 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
+    <div className="w-full flex flex-col min-h-full px-4 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] animate-fade-in">
       
-      {/* ── 1. Geometric Diamond Latti Crystal Header (Figma Screen 5) ── */}
-      <div className="flex flex-col items-center text-center pt-2 pb-4">
-        <LattiGeometricIcon />
-        
-        <h2 className="text-xl font-bold tracking-tight text-[#171A1F] mt-3">
-          What needs my attention today?
-        </h2>
-        <p className="text-xs text-[#68707C] font-medium mt-1">
-          Here are the top insights from your projects.
-        </p>
+      {/* ── 1. SLEEK 10-YR PRODUCT DESIGNER HEADER ── */}
+      <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-[#EAEDF1]">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#1677FF] to-[#0958D9] text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-sm font-bold text-[#171A1F] tracking-tight">Latti Intelligence</h1>
+              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-[#EAF3FF] text-[#1677FF] tracking-wider uppercase">
+                Copilot
+              </span>
+            </div>
+            <p className="text-[11px] text-[#68707C] font-medium truncate">
+              {activeProject ? activeProject.name : '4 Active Job Sites Monitored'}
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setChatHistory([
+            {
+              id: 'welcome-reset',
+              sender: 'latti',
+              text: "Chat refreshed. How can I assist your construction workflows?",
+              timestamp: 'Just now'
+            }
+          ])}
+          className="w-8 h-8 rounded-lg bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 text-[#68707C] hover:text-[#1677FF] flex items-center justify-center cursor-pointer transition-all active:scale-95"
+          title="Reset Conversation"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+        </button>
       </div>
 
-      {/* ── 2. Top Insights Actionable Cards Feed ── */}
-      <div className="flex flex-col gap-3">
-        {insights.map((ins) => {
-          const Icon = ins.icon;
-          return (
-            <div
-              key={ins.id}
-              onClick={() => {
-                if (onNavigate) onNavigate(ins.actionTab);
-              }}
-              className="p-4 rounded-3xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 shadow-sm transition-all cursor-pointer flex items-start gap-3.5 group active:scale-[0.99]"
-            >
-              <div className={`w-9 h-9 rounded-2xl ${ins.iconBg} flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform`}>
-                <Icon className="w-4 h-4" />
-              </div>
+      {/* ── 2. EXECUTIVE BRIEFING / RADAR INSIGHTS ── */}
+      {chatHistory.length <= 1 && (
+        <div className="flex flex-col gap-2.5 mt-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-[#68707C] uppercase tracking-wider">
+              Priority Insights
+            </span>
+            <span className="text-[10px] text-[#1677FF] font-semibold">
+              Live updates
+            </span>
+          </div>
 
-              <div className="flex-1 min-w-0">
-                <div className={`text-xs font-bold ${ins.titleColor} flex items-center justify-between`}>
-                  <span>{ins.title}</span>
-                  <ChevronRight className="w-4 h-4 text-[#68707C] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+          {INSIGHTS.map((ins) => {
+            const Icon = ins.icon;
+            return (
+              <div
+                key={ins.id}
+                onClick={() => {
+                  if (onNavigate) onNavigate(ins.actionTab);
+                }}
+                className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/50 transition-all cursor-pointer shadow-card group active:scale-[0.99] flex items-start gap-3"
+              >
+                <div className={`w-8 h-8 rounded-xl ${ins.iconBg} flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-105 transition-transform`}>
+                  <Icon className="w-4 h-4" />
                 </div>
-                <p className="text-xs text-[#171A1F] font-medium leading-relaxed mt-1">
-                  {ins.description}
-                </p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1">
+                    <h3 className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
+                      {ins.title}
+                    </h3>
+                    <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full shrink-0 ${ins.badgeBg}`}>
+                      {ins.badge}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#4B5563] leading-relaxed mt-0.5">
+                    {ins.description}
+                  </p>
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-[#1677FF] mt-2 group-hover:underline">
+                    <span>{ins.actionLabel}</span>
+                    <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* ── 2.5 Quick Action Chips ── */}
-      <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-3">
-        <button
-          onClick={() => handleSend("Give me the daily project briefing")}
-          className="px-3 py-1.5 rounded-full bg-white border border-[#DDE1E7] hover:border-[#1677FF] text-xs font-semibold text-[#171A1F] whitespace-nowrap cursor-pointer transition-all shadow-sm active:scale-95"
-        >
-          Daily Briefing
-        </button>
-        <button
-          onClick={() => handleSend("What is the weather forecast for Thursday?")}
-          className="px-3 py-1.5 rounded-full bg-white border border-[#DDE1E7] hover:border-[#1677FF] text-xs font-semibold text-[#171A1F] whitespace-nowrap cursor-pointer transition-all shadow-sm active:scale-95"
-        >
-          Weather Radar
-        </button>
-        <button
-          onClick={() => handleSend("Turn note into task: Check hurricane straps")}
-          className="px-3 py-1.5 rounded-full bg-white border border-[#DDE1E7] hover:border-[#1677FF] text-xs font-semibold text-[#171A1F] whitespace-nowrap cursor-pointer transition-all shadow-sm active:scale-95"
-        >
-          Note to Task
-        </button>
-      </div>
-
-      {/* ── 3. Chat History Stream (if any questions asked) ── */}
-      {chatHistory.length > 0 && (
-        <div className="flex flex-col gap-2.5 pt-2 pb-2">
-          {chatHistory.map((msg) => (
-            <div 
-              key={msg.id}
-              className={`p-3.5 rounded-2xl text-xs leading-relaxed max-w-[88%] shadow-sm ${
-                msg.sender === 'user' 
-                  ? 'bg-[#1677FF] text-white self-end font-semibold' 
-                  : 'bg-white border border-[#DDE1E7] text-[#171A1F] self-start font-medium'
-              }`}
-            >
-              {msg.text}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* ── 4. Bottom Fixed Input Bar (Figma Screen 5) ── */}
-      <div className="mt-auto pt-4 sticky bottom-16 bg-[#F2F2F7] pb-2">
+      {/* ── 3. CHAT CONVERSATION STREAM ── */}
+      <div className="flex flex-col gap-3 my-3">
+        {chatHistory.map((msg) => {
+          const isUser = msg.sender === 'user';
+          return (
+            <div 
+              key={msg.id}
+              className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
+            >
+              <div
+                className={`p-3.5 rounded-2xl max-w-[88%] text-xs leading-relaxed shadow-xs ${
+                  isUser 
+                    ? 'bg-[#1677FF] text-white rounded-br-xs font-medium' 
+                    : 'bg-white border border-[#DDE1E7] text-[#171A1F] rounded-bl-xs'
+                }`}
+              >
+                {!isUser && msg.metricBadge && (
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${
+                      msg.metricBadge.variant === 'danger' ? 'bg-[#FEF2F2] text-[#EF4444] border border-[#FCA5A5]' :
+                      msg.metricBadge.variant === 'warning' ? 'bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A]' :
+                      msg.metricBadge.variant === 'success' ? 'bg-[#E9F9F3] text-[#10A976] border border-[#A7F3D0]' :
+                      'bg-[#EAF3FF] text-[#1677FF] border border-[#BFDBFE]'
+                    }`}>
+                      {msg.metricBadge.label}: {msg.metricBadge.value}
+                    </span>
+                  </div>
+                )}
+
+                <p className="whitespace-pre-wrap">{msg.text}</p>
+
+                {!isUser && msg.actionButton && (
+                  <button
+                    onClick={() => {
+                      if (onNavigate && msg.actionButton) onNavigate(msg.actionButton.targetTab);
+                    }}
+                    className="mt-2.5 w-full py-1.5 px-3 rounded-lg bg-[#F2F4F7] hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 text-xs font-bold text-[#1677FF] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                  >
+                    <span>{msg.actionButton.label}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+              <span className="text-[9px] text-[#9DA5B1] font-medium px-1 mt-1">
+                {msg.timestamp}
+              </span>
+            </div>
+          );
+        })}
+
+        {isThinking && (
+          <div className="flex items-center gap-2 p-3 bg-white border border-[#DDE1E7] rounded-2xl w-fit shadow-xs animate-pulse">
+            <Bot className="w-4 h-4 text-[#1677FF]" />
+            <span className="text-xs text-[#68707C] font-semibold">Latti is analyzing project data...</span>
+          </div>
+        )}
+        <div ref={chatEndRef} />
+      </div>
+
+      {/* ── 4. QUICK SUGGESTION PILLS ── */}
+      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2 shrink-0">
+        {QUICK_PROMPTS.map((prompt, idx) => (
+          <button
+            key={idx}
+            onClick={() => handleSend(prompt)}
+            className="px-2.5 py-1.5 rounded-full bg-white border border-[#DDE1E7] hover:border-[#1677FF] text-[11px] font-semibold text-[#4B5563] hover:text-[#1677FF] whitespace-nowrap cursor-pointer transition-all shadow-xs shrink-0 active:scale-95"
+          >
+            {prompt}
+          </button>
+        ))}
+      </div>
+
+      {/* ── 5. FIXED ELEVATED INPUT BAR ── */}
+      <div className="mt-auto pt-2 sticky bottom-16 bg-[#F2F2F7] pb-1">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSend();
           }}
-          className="flex items-center gap-2 p-1.5 bg-white border border-[#DDE1E7] focus-within:border-[#1677FF] rounded-full shadow-sm transition-all"
+          className="flex items-center gap-2 p-1.5 bg-white border border-[#DDE1E7] focus-within:border-[#1677FF] rounded-2xl shadow-card transition-all"
         >
           <input
             type="text"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
-            placeholder="Ask Latti anything..."
-            className="flex-1 bg-transparent px-4 text-xs text-[#171A1F] placeholder-[#68707C] outline-none"
+            placeholder="Ask Latti about budgets, schedules, permits..."
+            className="flex-1 bg-transparent px-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none"
           />
           <button
             type="submit"
             disabled={!inputQuery.trim()}
-            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0 ${
               inputQuery.trim() 
-                ? 'bg-[#1677FF] text-white shadow-sm' 
-                : 'bg-[#EAEDF1] text-[#68707C]'
+                ? 'bg-[#1677FF] text-white shadow-sm active:scale-95' 
+                : 'bg-[#EAEDF1] text-[#9DA5B1]'
             }`}
           >
-            <Send className="w-4 h-4 ml-0.5" />
+            <Send className="w-3.5 h-3.5 ml-0.5" />
           </button>
         </form>
       </div>

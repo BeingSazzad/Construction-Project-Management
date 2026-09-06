@@ -19,7 +19,7 @@ export const ProjectDocumentsTab: React.FC<ProjectDocumentsTabProps> = ({
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['All', 'Plans', 'Drawings', 'PDFs', 'Contracts', 'Logistics'];
+  const categories = ['All', 'Plans', 'Drawings', 'Field Reports', 'PDFs', 'Contracts', 'Logistics'];
 
   const filteredDocs = documents.filter(doc => {
     if (activeCategory !== 'All' && doc.category !== activeCategory) return false;

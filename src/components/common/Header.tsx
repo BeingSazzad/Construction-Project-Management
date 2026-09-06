@@ -166,7 +166,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <h1 className="text-sm md:text-base font-bold text-[#171A1F] tracking-tight leading-tight">
                   {customTitle || getTabTitle(activeTab)}
                 </h1>
-                <p className="text-[10px] text-[#68707C] font-medium">Lattice Construction</p>
               </div>
             </div>
           </div>

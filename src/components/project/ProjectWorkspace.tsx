@@ -43,6 +43,7 @@ interface ProjectWorkspaceProps {
   chatMessages?: ProjectChatMessage[];
   onOpenTask: (task: Task) => void;
   onCreateTask: () => void;
+  onAddTask?: (task: Partial<Task>) => void;
   onOpenPunch: (item: PunchItem) => void;
   onCreatePunch: () => void;
   onUpdatePunchStatus: (punchId: string, status: PunchStatus) => void;
@@ -81,6 +82,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   reports,
   onOpenTask,
   onCreateTask,
+  onAddTask,
   onOpenPunch,
   onCreatePunch,
   onUpdatePunchStatus,
@@ -225,6 +227,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             tasks={tasks}
             onOpenTask={onOpenTask}
             onCreateTask={onCreateTask}
+            onAddTask={onAddTask}
             onUpdateStatus={onUpdateTaskStatus}
           />
         )}

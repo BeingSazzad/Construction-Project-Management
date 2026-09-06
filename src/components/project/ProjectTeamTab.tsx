@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Project } from '../../types';
 import { 
-  Phone, UserPlus, Crown, Search, X, UserCheck, Trash2, MoreVertical
+  Phone, UserPlus, Crown, Search, X, UserCheck, Trash2, MoreVertical, User
 } from 'lucide-react';
+import { EmployeeProfileModal, EmployeeProfileData } from '../modals/EmployeeProfileModal';
 
 interface ProjectTeamTabProps {
   project?: Project;
@@ -101,7 +102,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
   }
 ];
 
-export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
+export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
   const [assignedStaff, setAssignedStaff] = useState<ProjectStaff[]>([
     COMPANY_DIRECTORY[0], // Lead PM
     COMPANY_DIRECTORY[1], // Superintendent
@@ -113,6 +114,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<'directory' | 'invite'>('directory');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProfileStaff, setSelectedProfileStaff] = useState<EmployeeProfileData | null>(null);
 
   // Form State for external invites
   const [inviteName, setInviteName] = useState('');
@@ -248,18 +250,32 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
         </div>
 
         <div className="p-3.5 rounded-2xl bg-white border border-[#DDE1E7] flex items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-3 min-w-0">
+          <div 
+            onClick={() => setSelectedProfileStaff({
+              id: leadPM.id,
+              name: leadPM.name,
+              role: leadPM.role,
+              company: leadPM.company,
+              phone: leadPM.phone,
+              email: leadPM.email,
+              avatar: leadPM.avatar,
+              type: leadPM.type,
+              isOnSite: leadPM.isOnSite,
+              projectName: project?.name || 'Riverside Office Complex'
+            })}
+            className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer group"
+          >
             <div className="relative">
               <img
                 src={leadPM.avatar}
                 alt={leadPM.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-[#1677FF] shadow-xs"
+                className="w-12 h-12 rounded-full object-cover border-2 border-[#1677FF] shadow-xs group-hover:scale-105 transition-transform"
               />
               <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" />
             </div>
 
             <div className="min-w-0">
-              <h3 className="text-sm font-bold text-[#171A1F] truncate">{leadPM.name}</h3>
+              <h3 className="text-sm font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">{leadPM.name}</h3>
               <p className="text-xs text-[#1677FF] font-semibold truncate mt-0.5">
                 {leadPM.role}
               </p>
@@ -268,6 +284,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
 
           <a
             href={`tel:${leadPM.phone}`}
+            onClick={(e) => e.stopPropagation()}
             className="w-9 h-9 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white flex items-center justify-center cursor-pointer shadow-xs active:scale-95 transition-transform flex-shrink-0"
             title={`Call ${leadPM.name}`}
           >
@@ -293,12 +310,26 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
               key={staff.id}
               className="p-3 rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 flex items-center justify-between gap-3 shadow-xs transition-all relative"
             >
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div 
+                onClick={() => setSelectedProfileStaff({
+                  id: staff.id,
+                  name: staff.name,
+                  role: staff.role,
+                  company: staff.company,
+                  phone: staff.phone,
+                  email: staff.email,
+                  avatar: staff.avatar,
+                  type: staff.type,
+                  isOnSite: staff.isOnSite,
+                  projectName: project?.name || 'Riverside Office Complex'
+                })}
+                className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer group"
+              >
                 <div className="relative flex-shrink-0">
                   <img
                     src={staff.avatar}
                     alt={staff.name}
-                    className="w-10 h-10 rounded-full object-cover border border-[#DDE1E7]"
+                    className="w-10 h-10 rounded-full object-cover border border-[#DDE1E7] group-hover:scale-105 transition-transform"
                   />
                   <span className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white ${
                     staff.isOnSite ? 'bg-emerald-500' : 'bg-slate-400'
@@ -307,7 +338,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-xs font-bold text-[#171A1F] truncate">{staff.name}</h4>
+                    <h4 className="text-xs font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">{staff.name}</h4>
                     <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded border ${
                       staff.type === 'gc'
                         ? 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/20'
@@ -341,6 +372,29 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
                       onClick={() => setActiveMenuId(null)} 
                     />
                     <div className="absolute right-3 top-12 w-48 bg-white border border-[#DDE1E7] rounded-xl shadow-xl p-1 z-30 flex flex-col gap-0.5 animate-fade-in text-[#171A1F]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveMenuId(null);
+                          setSelectedProfileStaff({
+                            id: staff.id,
+                            name: staff.name,
+                            role: staff.role,
+                            company: staff.company,
+                            phone: staff.phone,
+                            email: staff.email,
+                            avatar: staff.avatar,
+                            type: staff.type,
+                            isOnSite: staff.isOnSite,
+                            projectName: project?.name || 'Riverside Office Complex'
+                          });
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-lg text-[#171A1F] hover:bg-[#F2F2F7] font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+                      >
+                        <User className="w-3.5 h-3.5 text-[#1677FF]" />
+                        <span>View Profile</span>
+                      </button>
+
                       <a
                         href={`tel:${staff.phone}`}
                         onClick={() => setActiveMenuId(null)}
@@ -600,6 +654,13 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
           </div>
         </div>
       )}
+
+      {/* EMPLOYEE PROFILE DETAIL MODAL */}
+      <EmployeeProfileModal
+        member={selectedProfileStaff}
+        isOpen={!!selectedProfileStaff}
+        onClose={() => setSelectedProfileStaff(null)}
+      />
 
     </div>
   );

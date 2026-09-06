@@ -210,7 +210,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
               </div>
               <div>
                 <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Inspection</span>
-                <span className={`text-xs font-bold block mt-0.5 ${isFullyComplete ? 'text-[#10B981]' : 'text-[#D97706]'}`}>
+                <span className={`text-xs font-bold block mt-0.5 ${isFullyComplete ? 'text-[#1677FF]' : 'text-[#D97706]'}`}>
                   {isFullyComplete ? 'Passed' : 'Pending'}
                 </span>
               </div>
@@ -270,7 +270,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                 >
                   {/* Clean circular checkbox */}
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
-                    st.completed ? 'bg-[#10B981] text-white' : 'border-2 border-[#DDE1E7] bg-white'
+                    st.completed ? 'bg-[#1677FF] text-white shadow-xs' : 'border-2 border-[#DDE1E7] bg-white'
                   }`}>
                     {st.completed && <Check className="w-3 h-3 stroke-[3]" />}
                   </div>
@@ -283,7 +283,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
                   </div>
 
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${
-                    st.completed ? 'bg-[#ECFDF5] text-[#10B981]' : 'bg-[#F2F2F7] text-[#68707C]'
+                    st.completed ? 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20' : 'bg-[#F2F2F7] text-[#68707C]'
                   }`}>
                     {st.completed ? 'Done' : 'To-Do'}
                   </span>
@@ -298,7 +298,7 @@ export const MilestoneDetailsModal: React.FC<MilestoneDetailsModalProps> = ({
             <div className="grid grid-cols-2 gap-2.5">
               <div className="relative rounded-xl overflow-hidden border border-[#EAEDF1] group h-20">
                 <img 
-                  src="https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=400&auto=format&fit=crop&q=80" 
+                  src="https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80" 
                   alt="Field QA Sign-off" 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                 />

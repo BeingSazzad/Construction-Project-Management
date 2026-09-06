@@ -86,7 +86,10 @@ import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp, Layers,
 
 export function App() {
   // Navigation & View State
-  const [appView, setAppView] = useState<'auth' | 'onboarding' | 'workspace'>('workspace');
+  const [appView, setAppView] = useState<'auth' | 'onboarding' | 'workspace'>(() => {
+    // Show onboarding once — persisted via localStorage
+    return localStorage.getItem('lattice_onboarded') ? 'workspace' : 'onboarding';
+  });
   const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [currentRole, setCurrentRole] = useState<UserRole>('admin'); // Default to Company Owner (Phase 1 Focus)
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -271,6 +274,7 @@ export function App() {
   };
 
   const handleCompleteOnboarding = (role: UserRole) => {
+    localStorage.setItem('lattice_onboarded', 'true');
     setCurrentRole(role);
     setAppView('workspace');
     setActiveTab('home');
@@ -284,6 +288,8 @@ export function App() {
     setNotifications(MOCK_NOTIFICATIONS);
     setActiveProject(null);
     setActiveTab('home');
+    // Optionally clear onboarding flag to re-show onboarding
+    // localStorage.removeItem('lattice_onboarded');
   };
 
   const handleUpdateProjectStatus = (projectId: string, newStatus: ProjectStatus) => {
@@ -373,35 +379,67 @@ export function App() {
   };
 
   const handleCreateTask = (newTask: Partial<Task>) => {
+    const targetProjectId = newTask.projectId || (activeProject ? activeProject.id : projects[0].id);
+    const targetProject = projects.find(p => p.id === targetProjectId) || activeProject || projects[0];
+
     const fullTask: Task = {
-      id: `tsk-${Date.now()}`,
-      projectId: activeProject ? activeProject.id : projects[0].id,
-      projectName: activeProject ? activeProject.name : projects[0].name,
+      id: newTask.id || `tsk-${Date.now()}`,
+      projectId: targetProjectId,
+      projectName: newTask.projectName || targetProject.name,
       title: newTask.title || 'New Construction Task',
       description: newTask.description || '',
-      assignee: {
+      assignee: newTask.assignee || {
         id: currentUser.id,
         name: currentUser.name,
         avatar: currentUser.avatar,
         role: currentUser.roleTitle
       },
-      startDate: newTask.startDate || '2025-05-20',
+      startDate: newTask.startDate || new Date().toISOString().split('T')[0],
       dueDate: newTask.dueDate || '2025-05-25',
       priority: newTask.priority || 'Medium',
       status: newTask.status || 'Not Started',
-      milestone: newTask.milestone || 'Structural Phase',
+      milestone: newTask.milestone || 'General Construction',
+      stageId: newTask.stageId,
       costCode: newTask.costCode || '03-3000',
       subtasks: newTask.subtasks || [
-        { id: 'st-1', title: 'Verify site clearance', completed: false },
-        { id: 'st-2', title: 'Quality signoff', completed: false }
+        { id: `st-${Date.now()}-1`, title: 'Verify site clearance', completed: false },
+        { id: `st-${Date.now()}-2`, title: 'Quality signoff', completed: false }
       ],
-      attachmentsCount: 1,
-      notesCount: 0,
-      photos: []
+      attachmentsCount: newTask.attachmentsCount || 0,
+      notesCount: newTask.notesCount || 0,
+      photos: newTask.photos || []
     };
 
-    setTasks(prev => [fullTask, ...prev]);
+    setTasks(prev => {
+      const updated = [fullTask, ...prev];
+      const projTasks = updated.filter(t => t.projectId === targetProjectId);
+      const completedCount = projTasks.filter(t => t.status === 'Completed').length;
+      const nextProgress = projTasks.length > 0 ? Math.round((completedCount / projTasks.length) * 100) : 0;
+
+      setProjects(prevProjects => prevProjects.map(p => {
+        if (p.id === targetProjectId) {
+          const updatedProj = {
+            ...p,
+            progress: nextProgress,
+            metrics: {
+              ...p.metrics,
+              totalTasks: projTasks.length,
+              completedTasks: completedCount
+            }
+          };
+          if (activeProject && activeProject.id === p.id) {
+            setActiveProject(updatedProj);
+          }
+          return updatedProj;
+        }
+        return p;
+      }));
+
+      return updated;
+    });
+
     setIsCreateTaskOpen(false);
+    setIsCreateTaskModalOpen(false);
   };
 
   const handleAddTasksFromTemplate = (templateTasks: Partial<Task>[]) => {
@@ -725,7 +763,7 @@ export function App() {
         /* 3. MAIN WORKSPACE APP */
         <div className="w-full h-full flex flex-col justify-between relative bg-[#F7F9FC] text-[#0F172A] font-sans">
           {/* Top Sticky Header */}
-          {activeTab !== 'notifications' && activeTab !== 'budgets' && activeTab !== 'more' && (
+          {activeTab !== 'notifications' && activeTab !== 'budgets' && activeTab !== 'more' && activeTab !== 'account' && activeTab !== 'team' && (
             <Header
               currentUser={currentUser}
               activeProject={activeProject}
@@ -742,11 +780,11 @@ export function App() {
                 setActiveProject(null);
                 setActiveTab('latti');
               }}
-              onOpenSettings={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('more'); }}
+              onOpenSettings={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('account'); }}
               onOpenDrawer={() => setIsSideDrawerOpen(true)}
               onNavigateTab={(tab) => {
                 setActiveBudgetName(null);
-                if (tab === 'home' || tab === 'projects' || tab === 'calendar' || tab === 'daily-logs' || tab === 'budgets' || tab === 'team' || tab === 'latti' || tab === 'more') {
+                if (tab === 'home' || tab === 'projects' || tab === 'calendar' || tab === 'daily-logs' || tab === 'budgets' || tab === 'team' || tab === 'latti' || tab === 'more' || tab === 'account') {
                   setActiveProject(null);
                   setActiveTab(tab);
                 } else {
@@ -820,6 +858,7 @@ export function App() {
                 chatMessages={chatMessages}
                 onOpenTask={(t) => setSelectedTask(t)}
                 onCreateTask={() => setIsCreateTaskModalOpen(true)}
+                onAddTask={handleCreateTask}
                 onOpenPunch={(p) => setSelectedTask(null)}
                 onCreatePunch={() => setIsCreatePunchOpen(true)}
                 onUpdatePunchStatus={handleUpdatePunchStatus}
@@ -870,6 +909,8 @@ export function App() {
                       handleSelectProject(proj);
                       setProjectSubTab('budget');
                     }}
+                    onOpenBudgetsHub={() => setActiveTab('budgets')}
+                    onOpenDailyLogs={() => setActiveTab('daily-logs')}
                   />
                 )}
 
@@ -910,8 +951,8 @@ export function App() {
                   />
                 )}
 
-                {/* 4. SETTINGS & PROFILE HUB */}
-                {activeTab === 'more' && (
+                {/* 4. ACCOUNT & PROFILE HUB */}
+                {(activeTab === 'account' || activeTab === 'more') && (
                   <SettingsView
                     currentUser={currentUser}
                     onSignOut={() => setAppView('auth')}
@@ -930,7 +971,7 @@ export function App() {
 
                 {/* 5. TEAM DIRECTORY FALLBACK */}
                 {activeTab === 'team' && (
-                  <TeamHubView />
+                  <TeamHubView currentRole={currentRole} onBack={() => setActiveTab('home')} />
                 )}
 
                 {/* 9. NOTIFICATIONS DRAWER */}
@@ -971,13 +1012,13 @@ export function App() {
                 )}
 
                 {activeTab === 'budgets' && (
-                  <ProjectBudgetTab
-                    project={activeProject || projects[0]}
-                    categories={categories}
-                    onImportBudget={() => setIsImportBudgetOpen(true)}
+                  <BudgetsHubView
+                    projects={projects}
+                    onOpenImportBudget={() => setIsImportBudgetOpen(true)}
                     onBack={() => setActiveTab('home')}
                   />
                 )}
+
 
                 {activeTab === 'messages' && (
                   <MessagesHubView
@@ -1064,10 +1105,10 @@ export function App() {
               setActiveProject(null);
               if (tab === 'company' || tab === 'support' || tab === 'security') {
                 setSettingsSubView(tab);
-                setActiveTab('more');
-              } else if (tab === 'settings') {
+                setActiveTab('account');
+              } else if (tab === 'settings' || tab === 'account') {
                 setSettingsSubView('main');
-                setActiveTab('more');
+                setActiveTab('account');
               } else {
                 setActiveTab(tab);
               }

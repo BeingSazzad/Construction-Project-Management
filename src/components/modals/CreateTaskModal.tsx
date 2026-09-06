@@ -9,6 +9,8 @@ interface CreateTaskModalProps {
   project?: Project | null;
   onClose: () => void;
   onCreate: (task: Partial<Task>) => void;
+  stageOptions?: { id: string; name: string }[];
+  initialStageId?: string;
 }
 
 const MILESTONE_COST_CODE_MAP: Record<string, string> = {
@@ -30,7 +32,9 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   isOpen,
   project,
   onClose,
-  onCreate
+  onCreate,
+  stageOptions,
+  initialStageId
 }) => {
   const milestoneOptions = DEFAULT_PROJECT_MILESTONES.map(m => `${m.code} ${m.name}`);
   const initialMilestone = milestoneOptions[2] || 'MS-03 Structural Framing & Concrete Slabs';
@@ -43,25 +47,32 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     d.setDate(d.getDate() + 7);
     return d.toISOString().split('T')[0];
   });
+  const [selectedStageId, setSelectedStageId] = useState(initialStageId || (stageOptions && stageOptions[0]?.id) || '');
   const [milestone, setMilestone] = useState(initialMilestone);
   const [costCode, setCostCode] = useState(() => getAutoCostCode(initialMilestone));
-  const [showCostCodeOverride, setShowCostCodeOverride] = useState(false);
   const [location, setLocation] = useState('Level 12 Deck');
   const [assigneeName, setAssigneeName] = useState('John Smith');
+
+  React.useEffect(() => {
+    if (initialStageId) {
+      setSelectedStageId(initialStageId);
+    } else if (stageOptions && stageOptions.length > 0 && !selectedStageId) {
+      setSelectedStageId(stageOptions[0].id);
+    }
+  }, [initialStageId, stageOptions]);
 
   if (!isOpen) return null;
 
   const handleMilestoneChange = (newMilestone: string) => {
     setMilestone(newMilestone);
-    if (!showCostCodeOverride) {
-      setCostCode(getAutoCostCode(newMilestone));
-    }
+    setCostCode(getAutoCostCode(newMilestone));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
+    const stageName = stageOptions?.find(s => s.id === selectedStageId)?.name;
     onCreate({
       title: title.trim(),
       description: description.trim(),
@@ -69,7 +80,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       status: 'Not Started',
       dueDate,
       startDate: new Date().toISOString().split('T')[0],
-      milestone,
+      milestone: stageName || milestone,
+      stageId: selectedStageId || undefined,
       costCode: costCode.split(' ')[0],
       location,
       projectId: project?.id || 'proj-1',
@@ -91,7 +103,6 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     // Reset & Close
     setTitle('');
     setDescription('');
-    setShowCostCodeOverride(false);
     onClose();
   };
 
@@ -122,8 +133,9 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A] flex items-center justify-center cursor-pointer transition-colors"
+            className="w-7 h-7 rounded-full bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -146,6 +158,24 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 text-xs text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all"
             />
           </div>
+
+          {/* Construction Phase / Stage Selection */}
+          {stageOptions && stageOptions.length > 0 && (
+            <div>
+              <label className="text-xs font-semibold text-[#475569] mb-1 block">
+                Construction Stage / Phase
+              </label>
+              <CustomSelect
+                value={selectedStageId}
+                onChange={(val) => setSelectedStageId(val)}
+                options={stageOptions.map(s => ({
+                  value: s.id,
+                  label: s.name
+                }))}
+                size="md"
+              />
+            </div>
+          )}
 
           {/* Description & Scope */}
           <div>
@@ -183,7 +213,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             </div>
           </div>
 
-          {/* Milestone (Full-Width with Smart Auto-Mapped Cost Code) */}
+          {/* Milestone & Schedule Phase */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-[#475569] block">
               Milestone & Schedule Phase
@@ -195,63 +225,14 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               size="md"
               fullWidth={true}
             />
-
-            {/* Smart Linked Cost Code Badge (Finance Assurance) */}
-            {!showCostCodeOverride ? (
-              <div className="flex items-center justify-between text-[10px] text-[#64748B] pt-0.5 px-0.5">
-                <span className="flex items-center gap-1.5 truncate">
-                  <span className="text-[#94A3B8]">Auto-linked Cost Code:</span>
-                  <span className="font-mono font-bold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.5 rounded text-[10px]">
-                    {costCode.split(' ')[0]}
-                  </span>
-                  <span className="text-[#475569] font-medium truncate">
-                    {costCode.split(' ').slice(1).join(' ')}
-                  </span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setShowCostCodeOverride(true)}
-                  className="text-[10px] font-semibold text-[#1677FF] hover:underline cursor-pointer shrink-0 ml-2"
-                >
-                  Change
-                </button>
-              </div>
-            ) : (
-              /* Optional Accounting Override Drawer */
-              <div className="p-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex flex-col gap-1.5 animate-fade-in mt-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#475569]">
-                    Finance Cost Code Override
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowCostCodeOverride(false);
-                      setCostCode(getAutoCostCode(milestone));
-                    }}
-                    className="text-[10px] font-medium text-[#1677FF] hover:underline cursor-pointer"
-                  >
-                    Reset to Auto
-                  </button>
-                </div>
-                <CustomSelect
-                  value={costCode}
-                  onChange={(val) => setCostCode(val)}
-                  options={[
-                    '01-3100 General Conditions',
-                    '02-1000 Earthwork & Site Clearing',
-                    '03-3000 Cast-in-Place Concrete',
-                    '06-1000 Superstructure Framing',
-                    '08-4400 Glazing & Windows',
-                    '09-2200 Interior Finishes & Drywall',
-                    '22-0000 Plumbing',
-                    '26-0000 Electrical'
-                  ]}
-                  size="sm"
-                  fullWidth={true}
-                />
-              </div>
-            )}
+            {/* Auto-linked cost code indicator (read-only) */}
+            <div className="flex items-center gap-1.5 text-[10px] text-[#64748B] px-0.5">
+              <span className="text-[#94A3B8]">Cost Code:</span>
+              <span className="font-mono font-bold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.5 rounded">
+                {costCode.split(' ')[0]}
+              </span>
+              <span className="text-[#475569] truncate">{costCode.split(' ').slice(1).join(' ')}</span>
+            </div>
           </div>
 
           {/* Location & Assignee */}

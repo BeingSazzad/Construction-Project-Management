@@ -7,9 +7,10 @@ import {
 
 interface HelpSupportProps {
   onBack: () => void;
+  onNavigateTab?: (tab: string) => void;
 }
 
-export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
+export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack, onNavigateTab }) => {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [ticketSubject, setTicketSubject] = useState('');
   const [ticketCategory, setTicketCategory] = useState('General Inquiry');
@@ -64,7 +65,6 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
         </button>
         <div>
           <h1 className="text-base font-bold text-[#171A1F] tracking-tight leading-tight">Help & Support</h1>
-          <p className="text-xs text-[#68707C] font-medium mt-0.5">Jobsite assistance & documentation</p>
         </div>
       </div>
 
@@ -76,68 +76,80 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
 
         <a
           href="tel:+18005558900"
-          className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]"
+          className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 shadow-xs">
               <Phone className="w-4 h-4 text-[#1677FF]" />
             </div>
-            <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#171A1F] block">Phone Hotline</span>
-              <span className="text-[11px] text-[#68707C]">1-800-555-8900 (Mon–Fri 6am–10pm)</span>
-            </div>
+            <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Phone Hotline</span>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+          <span className="text-xs font-semibold text-[#1677FF] flex items-center gap-1">
+            <span>1-800-555-8900</span>
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+          </span>
         </a>
 
         <a
           href="mailto:support@latticebuild.com"
-          className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]"
+          className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 shadow-xs">
               <Mail className="w-4 h-4 text-[#1677FF]" />
             </div>
-            <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#171A1F] block">Email Support</span>
-              <span className="text-[11px] text-[#68707C]">support@latticebuild.com</span>
-            </div>
+            <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Email Support</span>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+          <span className="text-xs font-medium text-[#64748B] flex items-center gap-1">
+            <span>support@latticebuild.com</span>
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+          </span>
         </a>
 
-        <div className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]">
+        <button
+          type="button"
+          onClick={() => onNavigateTab ? onNavigateTab('latti') : undefined}
+          className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7] text-left"
+        >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 shadow-xs">
               <MessageSquare className="w-4 h-4 text-[#1677FF]" />
             </div>
-            <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#171A1F] block">Live Chat</span>
-              <span className="text-[11px] text-[#68707C]">Real-time jobsite support</span>
+            <div>
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors block">Live Chat</span>
+              <span className="text-[10px] text-[#64748B]">Instant help with Latti AI</span>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Online</span>
-            <ChevronRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-[#1677FF] transition-colors" />
+            <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">Online</span>
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
           </div>
-        </div>
+        </button>
 
-        <div className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]">
+        <button
+          type="button"
+          onClick={() => {
+            setExpandedFaq(0);
+            const el = document.getElementById('faq-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7] text-left"
+        >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0 shadow-xs">
               <BookOpen className="w-4 h-4 text-[#1677FF]" />
             </div>
-            <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#171A1F] block">Knowledge Base</span>
-              <span className="text-[11px] text-[#68707C]">Guides & step-by-step tutorials</span>
+            <div>
+              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors block">Knowledge Base</span>
+              <span className="text-[10px] text-[#64748B]">Guides & FAQ answers</span>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#9DA5B1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
-        </div>
+          <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+        </button>
       </div>
 
       {/* ─── FAQ Accordion ─── */}
-      <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
+      <div id="faq-section" className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
         <div className="px-4 pt-3 pb-2 flex items-center justify-between">
           <p className="text-[10px] font-bold uppercase tracking-wider text-[#68707C]">Frequently Asked Questions</p>
           <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">{faqs.length}</span>
@@ -182,13 +194,13 @@ export const HelpSupport: React.FC<HelpSupportProps> = ({ onBack }) => {
 
         <div className="p-4">
           {ticketSent ? (
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-3 animate-fade-in">
-              <div className="w-8 h-8 rounded-xl bg-emerald-100 border border-emerald-200 flex items-center justify-center flex-shrink-0">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <div className="p-4 bg-[#EAF3FF] border border-[#1677FF]/25 rounded-2xl flex items-start gap-3 animate-fade-in">
+              <div className="w-8 h-8 rounded-xl bg-[#1677FF] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
                 <p className="text-xs font-bold text-[#171A1F]">Request Sent</p>
-                <p className="text-xs text-emerald-700 mt-0.5">We received your inquiry and will follow up shortly.</p>
+                <p className="text-xs text-[#1677FF] mt-0.5 font-medium">We received your inquiry and will follow up shortly.</p>
               </div>
             </div>
           ) : (

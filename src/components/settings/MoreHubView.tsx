@@ -75,6 +75,7 @@ const BackHeader: React.FC<{ title: string; onBack: () => void }> = ({ title, on
 export const MoreHubView: React.FC<MoreHubViewProps> = ({
   currentUser,
   onSignOut,
+  onNavigateTab,
 }) => {
   const [userData, setUserData] = useState<User>(currentUser);
   const [subView, setSubView] = useState<
@@ -109,7 +110,7 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
   }
 
   if (subView === 'support') {
-    return <HelpSupport onBack={() => setSubView('main')} />;
+    return <HelpSupport onBack={() => setSubView('main')} onNavigateTab={onNavigateTab} />;
   }
 
   if (subView === 'terms')              return <TermsAndConditions onBack={() => setSubView('main')} />;

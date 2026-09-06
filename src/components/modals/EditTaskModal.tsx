@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { X, Pencil, Trash2, CheckCircle2 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
+import { TaskStatus, Priority } from '../../types';
 
 export interface EditableTaskData {
   id: string;
   title: string;
-  status: 'todo' | 'in-progress' | 'done';
-  priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+  status: TaskStatus;
+  priority?: Priority;
   costCode?: string;
   assignee?: string;
   dueDate?: string;
@@ -21,8 +22,8 @@ interface EditTaskModalProps {
   onSave: (updatedTask: {
     id: string;
     title: string;
-    status: 'todo' | 'in-progress' | 'done';
-    priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+    status: TaskStatus;
+    priority?: Priority;
     costCode?: string;
     assignee?: string;
     dueDate?: string;
@@ -41,8 +42,8 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
 }) => {
   const [title, setTitle] = useState('');
   const [groupId, setGroupId] = useState('');
-  const [status, setStatus] = useState<'todo' | 'in-progress' | 'done'>('todo');
-  const [priority, setPriority] = useState<'Low' | 'Medium' | 'High' | 'Critical'>('Medium');
+  const [status, setStatus] = useState<TaskStatus>('Not Started');
+  const [priority, setPriority] = useState<Priority>('Medium');
   const [assignee, setAssignee] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [costCode, setCostCode] = useState('');
@@ -52,7 +53,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
     if (task) {
       setTitle(task.title || '');
       setGroupId(task.groupId || (stageGroups[0]?.id || ''));
-      setStatus(task.status || 'todo');
+      setStatus(task.status || 'Not Started');
       setPriority(task.priority || 'Medium');
       setAssignee(task.assignee || '');
       setDueDate(task.dueDate || '');
@@ -161,11 +162,12 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
               </label>
               <CustomSelect
                 value={status}
-                onChange={(val) => setStatus(val as 'todo' | 'in-progress' | 'done')}
+                onChange={(val) => setStatus(val as TaskStatus)}
                 options={[
-                  { value: 'todo', label: 'To Do' },
-                  { value: 'in-progress', label: 'In Progress' },
-                  { value: 'done', label: 'Completed (Done)' }
+                  { value: 'Not Started', label: 'Not Started (To Do)' },
+                  { value: 'In Progress', label: 'In Progress' },
+                  { value: 'Blocked', label: 'Blocked' },
+                  { value: 'Completed', label: 'Completed' }
                 ]}
               />
             </div>

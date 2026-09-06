@@ -41,6 +41,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
   const [type, setType] = useState<string>(PROJECT_TYPES[0]);
   const [pmName, setPmName] = useState(AVAILABLE_PMS[0].name);
   const [totalBudget, setTotalBudget] = useState('');
+  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [targetEndDate, setTargetEndDate] = useState('');
   const [description, setDescription] = useState('');
   const [masterCode, setMasterCode] = useState('');
@@ -75,7 +76,7 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
       cityState: cityState.trim() || (address.includes(',') ? address.split(',')[1]?.trim() || 'Austin, TX' : 'Austin, TX'),
       status: 'Planning',
       progress: 0,
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: startDate || new Date().toISOString().split('T')[0],
       targetEndDate: targetEndDate || '2026-06-30',
       budget: {
         total: budgetNum,
@@ -315,8 +316,20 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
           </div>
 
-          {/* Target Completion Date & Master Code */}
+          {/* Timeline: Start Date & Target Completion Date */}
           <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+
             <div>
               <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
                 Target Completion Date
@@ -328,20 +341,21 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
                 className={inputClass}
               />
             </div>
+          </div>
 
-            <div>
-              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
-                Master Code (Optional)
-              </label>
-              <input
-                type="text"
-                maxLength={4}
-                value={masterCode}
-                onChange={(e) => setMasterCode(e.target.value.replace(/\D/g, ''))}
-                placeholder="e.g. 1042"
-                className={inputClass}
-              />
-            </div>
+          {/* Master Code */}
+          <div>
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
+              Master Code (Optional)
+            </label>
+            <input
+              type="text"
+              maxLength={4}
+              value={masterCode}
+              onChange={(e) => setMasterCode(e.target.value.replace(/\D/g, ''))}
+              placeholder="e.g. 1042"
+              className={inputClass}
+            />
           </div>
 
           {/* Project Scope & Description */}

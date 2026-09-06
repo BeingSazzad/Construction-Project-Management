@@ -1,104 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
-  Plus, Layers, FileSpreadsheet, Search, Trash2, Wallet, Archive, Download
+  Plus, Search, ChevronLeft, ChevronRight, ArrowRight, 
+  FileSpreadsheet, Layers, Sparkles, Check
 } from 'lucide-react';
 import { BudgetDetailView } from './BudgetDetailView';
 import { CreateProjectBudgetModal } from '../modals/CreateProjectBudgetModal';
-import { CreateTemplateModal } from '../modals/CreateTemplateModal';
 import { MOCK_PROJECTS } from '../../data/mockData';
+import { Project } from '../../types';
 
 export interface BudgetCardItem {
   id: string;
+  projectId?: string;
   name: string;
   subtitle: string;
-  type: 'Standalone budget' | 'Project linked';
+  type: 'Project linked' | 'Standalone budget';
   totalBudget: number;
-  estimated: number;
   committed: number;
   actual: number;
+  remaining: number;
   progress: number;
   itemsCount: number;
-  status: 'DRAFT' | 'ACTIVE' | 'APPROVED';
+  status: 'ACTIVE' | 'DRAFT' | 'APPROVED';
 }
-
-const INITIAL_BUDGET_CARDS: BudgetCardItem[] = [
-  {
-    id: 'b-1',
-    name: 'Snell Isle Residence',
-    subtitle: 'Project linked · 1428 Snell Isle Blvd',
-    type: 'Project linked',
-    totalBudget: 4650000,
-    estimated: 4650000,
-    committed: 3800000,
-    actual: 3250000,
-    progress: 70,
-    itemsCount: 128,
-    status: 'ACTIVE'
-  },
-  {
-    id: 'b-2',
-    name: 'Downtown Commercial Highrise',
-    subtitle: 'Project linked · Metro Core Tower',
-    type: 'Project linked',
-    totalBudget: 12500000,
-    estimated: 12500000,
-    committed: 11000000,
-    actual: 9800000,
-    progress: 78,
-    itemsCount: 215,
-    status: 'ACTIVE'
-  },
-  {
-    id: 'b-3',
-    name: 'Greenfield Technology Hub',
-    subtitle: 'Project linked · Phase 1 Campus',
-    type: 'Project linked',
-    totalBudget: 8400000,
-    estimated: 8400000,
-    committed: 5200000,
-    actual: 3780000,
-    progress: 45,
-    itemsCount: 94,
-    status: 'ACTIVE'
-  },
-  {
-    id: 'b-4',
-    name: 'Bayshore Custom Villa',
-    subtitle: 'Standalone budget · Waterfront Lot 12',
-    type: 'Standalone budget',
-    totalBudget: 3500000,
-    estimated: 3500000,
-    committed: 1200000,
-    actual: 850000,
-    progress: 25,
-    itemsCount: 71,
-    status: 'DRAFT'
-  },
-  {
-    id: 'b-5',
-    name: 'Residential Master Standard',
-    subtitle: 'Standalone budget · CSI 16-Division',
-    type: 'Standalone budget',
-    totalBudget: 5800000,
-    estimated: 5800000,
-    committed: 4100000,
-    actual: 3200000,
-    progress: 55,
-    itemsCount: 71,
-    status: 'DRAFT'
-  }
-];
 
 const TEMPLATE_BUDGET_CARDS: BudgetCardItem[] = [
   {
     id: 'tmpl-1',
     name: 'Commercial Highrise Master (71 Divisions)',
-    subtitle: 'Template · Full CSI MasterFormat',
+    subtitle: 'Full CSI MasterFormat Standard',
     type: 'Standalone budget',
     totalBudget: 15000000,
-    estimated: 15000000,
     committed: 0,
     actual: 0,
+    remaining: 15000000,
     progress: 0,
     itemsCount: 71,
     status: 'DRAFT'
@@ -106,12 +40,12 @@ const TEMPLATE_BUDGET_CARDS: BudgetCardItem[] = [
   {
     id: 'tmpl-2',
     name: 'Custom Residential Build (50 Divisions)',
-    subtitle: 'Template · Luxury Single Family',
+    subtitle: 'Luxury Coastal Single Family',
     type: 'Standalone budget',
     totalBudget: 4200000,
-    estimated: 4200000,
     committed: 0,
     actual: 0,
+    remaining: 4200000,
     progress: 0,
     itemsCount: 50,
     status: 'DRAFT'
@@ -119,22 +53,22 @@ const TEMPLATE_BUDGET_CARDS: BudgetCardItem[] = [
   {
     id: 'tmpl-3',
     name: 'Multi-Family Interior Renovation (28 Divisions)',
-    subtitle: 'Template · Tenant Fit-Out Ledger',
+    subtitle: 'Tenant Fit-Out Ledger & Finishes',
     type: 'Standalone budget',
     totalBudget: 2100000,
-    estimated: 2100000,
     committed: 0,
     actual: 0,
+    remaining: 2100000,
     progress: 0,
     itemsCount: 28,
     status: 'DRAFT'
   }
 ];
 
-// SVG Donut Graphic Component using Apple Light Tokens
+// SVG Donut Graphic Component with calibrated Apple/Lattice Design System tokens
 const BudgetDonutChart = ({ paidPct, committedPct, remainingPct }: { paidPct: number; committedPct: number; remainingPct: number }) => {
-  const size = 96;
-  const strokeWidth = 12;
+  const size = 92;
+  const strokeWidth = 11;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
@@ -143,72 +77,125 @@ const BudgetDonutChart = ({ paidPct, committedPct, remainingPct }: { paidPct: nu
   const remainingDash = (remainingPct / 100) * circumference;
 
   return (
-    <div className="relative flex items-center justify-center flex-shrink-0">
+    <div className="relative flex items-center justify-center shrink-0">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#EAEDF1" strokeWidth={strokeWidth} />
-        {/* Paid: Primary Blue */}
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#E2E8F0" strokeWidth={strokeWidth} />
+        {/* Paid: Sapphire Blue #1677FF */}
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#1677FF" strokeWidth={strokeWidth} strokeDasharray={`${paidDash} ${circumference - paidDash}`} strokeDashoffset={0} strokeLinecap="round" />
-        {/* Committed: Cyan/Sky Blue */}
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#13C2C2" strokeWidth={strokeWidth} strokeDasharray={`${committedDash} ${circumference - committedDash}`} strokeDashoffset={-paidDash} strokeLinecap="round" />
-        {/* Remaining: Emerald Green */}
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#52C41A" strokeWidth={strokeWidth} strokeDasharray={`${remainingDash} ${circumference - remainingDash}`} strokeDashoffset={-(paidDash + committedDash)} strokeLinecap="round" />
+        {/* Committed: Sky Blue #0EA5E9 */}
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0EA5E9" strokeWidth={strokeWidth} strokeDasharray={`${committedDash} ${circumference - committedDash}`} strokeDashoffset={-paidDash} strokeLinecap="round" />
+        {/* Remaining: Emerald #10A976 */}
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#10A976" strokeWidth={strokeWidth} strokeDasharray={`${remainingDash} ${circumference - remainingDash}`} strokeDashoffset={-(paidDash + committedDash)} strokeLinecap="round" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-[10px] text-[#68707C] font-bold uppercase tracking-wider">Paid</span>
-        <span className="text-xs font-black text-[#171A1F]">{paidPct.toFixed(0)}%</span>
+        <span className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Paid</span>
+        <span className="text-xs font-black text-[#0F172A]">{paidPct.toFixed(0)}%</span>
       </div>
     </div>
   );
 };
 
 interface BudgetsHubViewProps {
+  projects?: Project[];
   onOpenImportBudget?: () => void;
   onSelectBudgetName?: (name: string | null) => void;
+  onBack?: () => void;
 }
 
-export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onSelectBudgetName }) => {
+export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ 
+  projects = MOCK_PROJECTS,
+  onSelectBudgetName, 
+  onBack 
+}) => {
   const [activeTab, setActiveTab] = useState<'project' | 'templates' | 'archived'>('project');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBudgetId, setSelectedBudgetId] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  
-  // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isCreateTemplateOpen, setIsCreateTemplateOpen] = useState(false);
-  
-  const [budgets, setBudgets] = useState<BudgetCardItem[]>(INITIAL_BUDGET_CARDS);
-  const [templatesList, setTemplatesList] = useState<BudgetCardItem[]>(TEMPLATE_BUDGET_CARDS);
 
-  const handleDeleteBudget = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (confirm('Are you sure you want to delete this item?')) {
-      if (activeTab === 'templates') {
-        setTemplatesList(prev => prev.filter(b => b.id !== id));
-      } else {
-        setBudgets(prev => prev.filter(b => b.id !== id));
-      }
+  // 1. DYNAMIC SYNCHRONIZATION WITH REAL PROJECT DATA (Zero mismatch!)
+  const projectBudgetCards: BudgetCardItem[] = useMemo(() => {
+    return projects.map((p, idx) => {
+      const total = p.budget?.total || 4650000;
+      const actual = p.budget?.actual || p.budget?.paid || 3250000;
+      const committed = p.budget?.committed || Math.round(total * 0.85);
+      const remaining = Math.max(0, total - actual);
+      const progress = Math.min(100, Math.round((actual / (total || 1)) * 100));
+
+      const itemsCountMap: Record<string, number> = {
+        'proj-1': 128,
+        'proj-2': 215,
+        'proj-3': 160,
+        'proj-4': 94,
+        'proj-5': 71,
+      };
+
+      return {
+        id: `b-${p.id}`,
+        projectId: p.id,
+        name: p.name,
+        subtitle: `${p.location || 'Job Site'} · ${p.clientName || 'Commercial'}`,
+        type: 'Project linked',
+        totalBudget: total,
+        committed,
+        actual,
+        remaining,
+        progress,
+        itemsCount: itemsCountMap[p.id] || 96,
+        status: p.status === 'Completed' ? 'APPROVED' : 'ACTIVE'
+      };
+    });
+  }, [projects]);
+
+  // Dynamic Portfolio Totals (Exactly identical to HomeScreen!)
+  const portfolioTotal = useMemo(() => {
+    return projectBudgetCards.reduce((sum, b) => sum + b.totalBudget, 0);
+  }, [projectBudgetCards]);
+
+  const portfolioPaid = useMemo(() => {
+    return projectBudgetCards.reduce((sum, b) => sum + b.actual, 0);
+  }, [projectBudgetCards]);
+
+  const portfolioCommitted = useMemo(() => {
+    return projectBudgetCards.reduce((sum, b) => sum + b.committed, 0);
+  }, [projectBudgetCards]);
+
+  const portfolioRemaining = useMemo(() => {
+    return Math.max(0, portfolioTotal - portfolioPaid);
+  }, [portfolioTotal, portfolioPaid]);
+
+  const paidPct = useMemo(() => {
+    return Math.min(100, Math.round((portfolioPaid / (portfolioTotal || 1)) * 100));
+  }, [portfolioPaid, portfolioTotal]);
+
+  const committedPct = useMemo(() => {
+    return Math.min(100 - paidPct, Math.max(0, Math.round(((portfolioCommitted - portfolioPaid) / (portfolioTotal || 1)) * 100)));
+  }, [portfolioCommitted, portfolioPaid, portfolioTotal, paidPct]);
+
+  const remainingPct = useMemo(() => {
+    return Math.max(0, 100 - paidPct - committedPct);
+  }, [paidPct, committedPct]);
+
+  const formatCurrency = (val: number) => {
+    if (val >= 1000000) {
+      return `$${(val / 1000000).toFixed(2)}M`;
     }
+    return `$${Math.round(val / 1000)}K`;
   };
 
-  const getFilteredBudgets = () => {
-    let list = budgets;
-    if (activeTab === 'templates') {
-      list = templatesList;
-    } else if (activeTab === 'archived') {
-      list = [];
-    }
+  const filteredBudgets = useMemo(() => {
+    let list = activeTab === 'project' ? projectBudgetCards :
+               activeTab === 'templates' ? TEMPLATE_BUDGET_CARDS : [];
 
     if (!searchQuery.trim()) return list;
 
+    const q = searchQuery.toLowerCase();
     return list.filter(b => 
-      b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
+      b.name.toLowerCase().includes(q) || 
+      b.subtitle.toLowerCase().includes(q)
     );
-  };
+  }, [activeTab, projectBudgetCards, searchQuery]);
 
-  const filteredBudgets = getFilteredBudgets();
-
-  // 1. If user drilled down into a specific budget sheet details page
+  // Drilldown to specific budget spreadsheet
   if (selectedBudgetId) {
     return (
       <BudgetDetailView 
@@ -221,28 +208,14 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onSelectBudgetNa
     );
   }
 
-  // 2. If user opens Create Budget as a full-screen dedicated page
+  // Create budget page
   if (isCreateModalOpen) {
     return (
       <CreateProjectBudgetModal
         isFullScreenPage={true}
         onClose={() => setIsCreateModalOpen(false)}
-        projects={MOCK_PROJECTS}
+        projects={projects}
         onCreateBudget={(budgetData) => {
-          const newBudget: BudgetCardItem = {
-            id: `b-${Date.now()}`,
-            name: budgetData.budgetName || 'New Commercial Budget',
-            subtitle: budgetData.attachType === 'project' ? 'Project linked' : 'Standalone budget',
-            type: budgetData.attachType === 'project' ? 'Project linked' : 'Standalone budget',
-            totalBudget: 5000000,
-            estimated: 5000000,
-            committed: 0,
-            actual: 0,
-            progress: 0,
-            itemsCount: 71,
-            status: 'DRAFT'
-          };
-          setBudgets(prev => [newBudget, ...prev]);
           setIsCreateModalOpen(false);
         }}
       />
@@ -250,275 +223,219 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ onSelectBudgetNa
   }
 
   return (
-    <div className="w-full flex flex-col gap-4 px-5 py-5 pb-32 font-sans max-w-[430px] md:max-w-3xl mx-auto text-[#171A1F] animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-4 px-4 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
-      {/* ─── 1. PAGE HEADER ─── */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0">
-            <Wallet className="w-5 h-5" />
-          </div>
+      {/* ─── 1. CLEAN SENIOR DESIGNER HEADER (ZERO TRUNCATION) ─── */}
+      <div className="flex items-center justify-between gap-3 pt-1">
+        <div className="flex items-center gap-2.5 min-w-0">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="w-9 h-9 rounded-xl bg-white hover:bg-[#F1F5F9] border border-[#E2E8F0] flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0 shadow-xs"
+              title="Back"
+            >
+              <ChevronLeft className="w-4 h-4 text-[#0F172A]" />
+            </button>
+          )}
           <div className="min-w-0">
-            <h1 className="text-xl font-bold text-[#171A1F] tracking-tight leading-tight truncate">
-              Budgets & Financials
+            <h1 className="text-base font-bold text-[#0F172A] tracking-tight truncate leading-tight">
+              Portfolio Budgets
             </h1>
-            <p className="text-xs text-[#68707C] font-medium truncate">
-              Committed costs, actual spend, and variance ledger
+            <p className="text-[11px] text-[#64748B] font-medium truncate mt-0.5">
+              Capital allocations & CSI job cost ledger
             </p>
           </div>
         </div>
 
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all flex-shrink-0"
+          className="btn-action btn-primary"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           <span>New Budget</span>
         </button>
       </div>
 
-      {/* ─── 2. EXECUTIVE PORTFOLIO FINANCIAL HEALTH CARD ─── */}
-      <div className="p-5 rounded-3xl bg-white border border-[#DDE1E7] shadow-xs flex items-center justify-between gap-4">
-        <BudgetDonutChart paidPct={81.7} committedPct={10.7} remainingPct={7.6} />
+      {/* ─── 2. EXECUTIVE CAPITAL CARD (Dynamic Synchronized Data) ─── */}
+      <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-card flex items-center justify-between gap-4">
+        <BudgetDonutChart 
+          paidPct={paidPct} 
+          committedPct={committedPct} 
+          remainingPct={remainingPct} 
+        />
 
-        <div className="flex flex-col justify-center gap-2 flex-1 min-w-0">
+        <div className="flex flex-col justify-center flex-1 min-w-0">
           <div>
-            <span className="text-[10px] text-[#68707C] font-bold uppercase tracking-wider block">Master Portfolio Budget</span>
-            <h2 className="text-xl font-black text-[#171A1F] tracking-tight leading-none mt-0.5">$26.07M</h2>
+            <span className="text-[10px] text-[#64748B] font-bold uppercase tracking-wider block">
+              Master Portfolio Capital
+            </span>
+            <h2 className="text-xl font-black text-[#0F172A] tracking-tight leading-none mt-1">
+              {formatCurrency(portfolioTotal)}
+            </h2>
           </div>
 
-          <div className="flex flex-col gap-1.5 pt-2 border-t border-[#EAEDF1]">
+          <div className="flex flex-col gap-1.5 pt-2.5 mt-2 border-t border-[#F1F5F9]">
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1677FF] flex-shrink-0" />
-                <span className="text-[#68707C] truncate">Paid:</span>
-              </div>
-              <span className="font-bold text-[#171A1F] ml-2">$21.32M</span>
+              <span className="flex items-center gap-1.5 text-[#64748B] font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#1677FF]" /> Paid:
+              </span>
+              <span className="font-bold text-[#0F172A]">{formatCurrency(portfolioPaid)} ({paidPct}%)</span>
             </div>
 
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#13C2C2] flex-shrink-0" />
-                <span className="text-[#68707C] truncate">Committed:</span>
-              </div>
-              <span className="font-bold text-[#13C2C2] ml-2">$2.78M</span>
+              <span className="flex items-center gap-1.5 text-[#64748B] font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#0EA5E9]" /> Committed:
+              </span>
+              <span className="font-bold text-[#0EA5E9]">{formatCurrency(portfolioCommitted)}</span>
             </div>
 
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#52C41A] flex-shrink-0" />
-                <span className="text-[#68707C] truncate">Remaining:</span>
-              </div>
-              <span className="font-bold text-[#389E0D] ml-2">$1.97M</span>
+              <span className="flex items-center gap-1.5 text-[#64748B] font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#10A976]" /> Contingency:
+              </span>
+              <span className="font-bold text-[#10A976]">{formatCurrency(portfolioRemaining)}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ─── 3. SUB-NAVIGATION FILTER TABS ─── */}
-      <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 text-xs">
+      {/* ─── 3. SEGMENTED TABS (Fits 430px perfectly with ZERO clipping) ─── */}
+      <div className="bg-[#F1F5F9] p-1 rounded-xl grid grid-cols-3 gap-1">
         <button
           onClick={() => setActiveTab('project')}
-          className={`px-4 py-2 rounded-full transition-all whitespace-nowrap cursor-pointer flex-shrink-0 flex items-center gap-2 font-bold ${
+          className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-center truncate ${
             activeTab === 'project'
-              ? 'bg-[#1677FF] text-white shadow-xs'
-              : 'bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7]'
+              ? 'bg-white text-[#0F172A] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          <Wallet className="w-3.5 h-3.5" />
-          <span>Project Budgets</span>
+          Projects ({projectBudgetCards.length})
         </button>
 
         <button
           onClick={() => setActiveTab('templates')}
-          className={`px-4 py-2 rounded-full transition-all whitespace-nowrap cursor-pointer flex-shrink-0 flex items-center gap-2 font-bold ${
+          className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-center truncate ${
             activeTab === 'templates'
-              ? 'bg-[#1677FF] text-white shadow-xs'
-              : 'bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7]'
+              ? 'bg-white text-[#0F172A] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          <Layers className="w-3.5 h-3.5" />
-          <span>CSI Master Templates</span>
+          Templates ({TEMPLATE_BUDGET_CARDS.length})
         </button>
 
         <button
           onClick={() => setActiveTab('archived')}
-          className={`px-4 py-2 rounded-full transition-all whitespace-nowrap cursor-pointer flex-shrink-0 flex items-center gap-2 font-bold ${
+          className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer text-center truncate ${
             activeTab === 'archived'
-              ? 'bg-[#1677FF] text-white shadow-xs'
-              : 'bg-[#F2F2F7] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7]'
+              ? 'bg-white text-[#0F172A] shadow-xs'
+              : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          <Archive className="w-3.5 h-3.5" />
-          <span>Archived</span>
+          Archived (0)
         </button>
       </div>
 
-      {/* ─── 4. SEARCH BAR ─── */}
-      <div className="relative flex items-center">
-        <Search className="w-4 h-4 text-[#9DA5B1] absolute left-3.5 pointer-events-none" />
+      {/* ─── 4. SEARCH BAR (Single hairline input) ─── */}
+      <div className="relative">
+        <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by name, project, address..."
-          className="w-full h-10 pl-10 pr-8 rounded-xl bg-white border border-[#DDE1E7] text-[#171A1F] text-xs font-medium placeholder-[#9DA5B1] focus:outline-none focus:border-[#1677FF] transition-colors shadow-xs"
+          placeholder="Search by project name or address..."
+          className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl pl-9 pr-3 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF] transition-colors shadow-xs"
         />
-        {searchQuery && (
-          <button
-            onClick={() => setSearchQuery('')}
-            className="absolute right-3 text-[#9DA5B1] hover:text-[#171A1F] text-xs cursor-pointer"
-          >
-            ✕
-          </button>
-        )}
       </div>
 
-      {/* ─── 5. BUDGET CARDS LIST & TEMPLATE LAUNCHER ─── */}
+      {/* ─── 5. PROJECT BUDGET CARDS LIST ─── */}
       <div className="flex flex-col gap-3">
-        {/* If Templates Tab is Active: Show + New Budget Template Launch Card */}
-        {activeTab === 'templates' && (
-          <button
-            onClick={() => setIsCreateTemplateOpen(true)}
-            className="p-4 rounded-2xl bg-white border-2 border-dashed border-[#DDE1E7] hover:border-[#1677FF] transition-all cursor-pointer shadow-xs flex items-center justify-between gap-3 group active:scale-[0.99]"
+        {filteredBudgets.map((item) => (
+          <div
+            key={item.id}
+            onClick={() => {
+              setSelectedBudgetId(item.id);
+              if (onSelectBudgetName) onSelectBudgetName(item.name);
+            }}
+            className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/50 transition-all cursor-pointer group active:scale-[0.99] flex flex-col gap-3"
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Plus className="w-5 h-5 stroke-[2.5]" />
-              </div>
-              <div className="text-left min-w-0">
-                <h3 className="text-sm font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">
-                  Create Budget Template
+            {/* Header: Title + Status */}
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">
+                  {item.name}
                 </h3>
-                <p className="text-xs text-[#68707C] font-medium truncate mt-0.5">
-                  Build custom CSI MasterFormat template layout
+                <p className="text-[11px] text-[#64748B] truncate mt-0.5 font-medium">
+                  {item.subtitle}
                 </p>
               </div>
-            </div>
-            <span className="text-xs font-bold text-[#1677FF] bg-[#EAF3FF] px-3 py-1.5 rounded-xl border border-[#1677FF]/20 group-hover:bg-[#1677FF] group-hover:text-white transition-all flex-shrink-0">
-              + New Template
-            </span>
-          </button>
-        )}
 
-        {filteredBudgets.length === 0 ? (
-          <div className="p-8 rounded-3xl bg-white border border-[#DDE1E7] text-center flex flex-col items-center justify-center gap-2 shadow-xs">
-            <Wallet className="w-8 h-8 text-[#9DA5B1] mb-1" />
-            <p className="text-sm font-bold text-[#171A1F]">No {activeTab === 'templates' ? 'templates' : 'budgets'} found</p>
-            <p className="text-xs text-[#68707C]">Try adjusting your search query or create a new budget.</p>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                item.status === 'ACTIVE' ? 'bg-[#E9F9F3] text-[#10A976]' :
+                item.status === 'APPROVED' ? 'bg-[#EAF3FF] text-[#1677FF]' :
+                'bg-[#F1F5F9] text-[#64748B]'
+              }`}>
+                {item.status}
+              </span>
+            </div>
+
+            {/* 3-Column Financial Metrics Bar */}
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5 grid grid-cols-3 gap-2">
+              <div>
+                <span className="text-[9px] font-bold text-[#64748B] uppercase tracking-wider block">
+                  Budget
+                </span>
+                <span className="text-xs font-bold text-[#0F172A] block mt-0.5">
+                  {formatCurrency(item.totalBudget)}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[9px] font-bold text-[#64748B] uppercase tracking-wider block">
+                  Spent
+                </span>
+                <span className="text-xs font-bold text-[#1677FF] block mt-0.5">
+                  {formatCurrency(item.actual)}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[9px] font-bold text-[#64748B] uppercase tracking-wider block">
+                  Remaining
+                </span>
+                <span className="text-xs font-bold text-[#10A976] block mt-0.5">
+                  {formatCurrency(item.remaining)}
+                </span>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full bg-[#E2E8F0] h-1.5 rounded-full overflow-hidden">
+              <div 
+                className="bg-[#1677FF] h-full rounded-full transition-all duration-300"
+                style={{ width: `${item.progress}%` }}
+              />
+            </div>
+
+            {/* Bottom Meta & Action */}
+            <div className="flex items-center justify-between pt-1 border-t border-[#F1F5F9] text-[11px]">
+              <span className="text-[#64748B] font-medium">
+                {item.itemsCount} cost line items
+              </span>
+              <div className="flex items-center gap-1 font-bold text-[#1677FF] group-hover:translate-x-0.5 transition-transform">
+                <span>View Ledger</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </div>
+            </div>
           </div>
-        ) : (
-          filteredBudgets.map((b) => (
-            <div
-              key={b.id}
-              onClick={() => {
-                setSelectedBudgetId(b.id);
-                if (onSelectBudgetName) onSelectBudgetName(b.name);
-              }}
-              className="p-4.5 rounded-3xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/50 transition-all cursor-pointer flex flex-col gap-3 shadow-xs active:scale-[0.99] group"
-            >
-              {/* Card Header */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3 min-w-0 flex-1">
-                  <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
-                    <Wallet className="w-4.5 h-4.5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-bold text-[#171A1F] group-hover:text-[#1677FF] transition-colors truncate">
-                      {b.name}
-                    </h3>
-                    <p className="text-xs text-[#68707C] mt-0.5 truncate font-medium">
-                      {b.subtitle}
-                    </p>
-                  </div>
-                </div>
+        ))}
 
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border flex-shrink-0 uppercase tracking-wider ${
-                  b.status === 'ACTIVE'
-                    ? 'bg-[#E6F7ED] text-[#389E0D] border-[#B7EB8F]'
-                    : b.status === 'APPROVED'
-                    ? 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/30'
-                    : 'bg-[#F2F2F7] text-[#68707C] border-[#DDE1E7]'
-                }`}>
-                  {b.status}
-                </span>
-              </div>
-
-              {/* Clean Metric Strip (No 4 Mini Gray Boxes) */}
-              <div className="grid grid-cols-3 gap-2 pt-2.5 border-t border-[#EAEDF1] text-left">
-                <div>
-                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Budget</span>
-                  <span className="text-xs font-bold text-[#171A1F] block mt-0.5">
-                    ${b.totalBudget > 0 ? (b.totalBudget / 1000000).toFixed(2) + 'M' : '0'}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Spent</span>
-                  <span className="text-xs font-bold text-[#1677FF] block mt-0.5">
-                    ${b.actual > 0 ? (b.actual / 1000000).toFixed(2) + 'M' : '0'}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-[#68707C] font-semibold uppercase tracking-wider block">Remaining</span>
-                  <span className="text-xs font-bold text-emerald-700 block mt-0.5">
-                    ${((b.totalBudget - b.actual) / 1000000).toFixed(2)}M
-                  </span>
-                </div>
-              </div>
-
-              {/* Card Footer Meta */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#EAEDF1] text-xs text-[#68707C] font-medium">
-                <span className="flex items-center gap-1">
-                  <span className="font-semibold text-[#171A1F]">{b.itemsCount} cost line items</span>
-                </span>
-                
-                <button
-                  onClick={(e) => handleDeleteBudget(b.id, e)}
-                  className="p-1.5 rounded-lg text-[#9DA5B1] hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
-                  title="Delete budget"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))
+        {filteredBudgets.length === 0 && (
+          <div className="p-8 text-center bg-white border border-[#E2E8F0] rounded-2xl shadow-xs">
+            <p className="text-xs text-[#64748B] font-medium">No budgets found matching "{searchQuery}"</p>
+          </div>
         )}
       </div>
 
-      {/* Create Budget Template Modal */}
-      {isCreateTemplateOpen && (
-        <CreateTemplateModal
-          isOpen={isCreateTemplateOpen}
-          onClose={() => setIsCreateTemplateOpen(false)}
-          onCreateTemplate={(tmplData) => {
-            const newTmpl: BudgetCardItem = {
-              id: `tmpl-${Date.now()}`,
-              name: tmplData.name,
-              subtitle: `Template · ${tmplData.projectType}`,
-              type: 'Standalone budget',
-              totalBudget: 4500000,
-              estimated: 4500000,
-              committed: 0,
-              actual: 0,
-              progress: 0,
-              itemsCount: 50,
-              status: 'DRAFT'
-            };
-            setTemplatesList(prev => [newTmpl, ...prev]);
-            setSelectedBudgetId(newTmpl.id);
-            setToastMessage('Template created');
-            setTimeout(() => setToastMessage(null), 3000);
-          }}
-        />
-      )}
-
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#171A1F] border border-[#DDE1E7] px-4 py-2.5 rounded-2xl text-xs font-bold text-white shadow-2xl flex items-center gap-2 animate-fade-in">
-          <span className="w-2 h-2 rounded-full bg-[#52C41A]" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { User, Project } from '../../types';
 import { 
   X, Users, Settings, LogOut, FileText, Bell, 
-  ChevronRight, ShieldCheck, HelpCircle
+  ChevronRight, ShieldCheck, HelpCircle, Wallet
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -42,6 +42,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
 
   const OPERATIONS_ITEMS = [
     {
+      id: 'budgets',
+      label: 'Portfolio Budgets',
+      description: 'Capital health & multi-project ledger',
+      icon: Wallet,
+    },
+    {
       id: 'team',
       label: 'Team Directory',
       description: 'GC staff & trade subcontractors',
@@ -71,9 +77,9 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
       subView: 'company',
     },
     {
-      id: 'settings',
-      label: 'Settings & Preferences',
-      description: 'Offline sync & field preferences',
+      id: 'account',
+      label: 'Account & Settings',
+      description: 'Profile, security & preferences',
       icon: Settings,
       subView: 'main',
     },

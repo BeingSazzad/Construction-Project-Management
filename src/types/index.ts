@@ -136,6 +136,7 @@ export interface Task {
   notesCount: number;
   photos?: string[];
   location?: string;
+  stageId?: string;
 }
 
 export interface ChangeOrder {

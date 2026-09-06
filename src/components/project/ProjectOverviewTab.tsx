@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Project, Task, SitePhoto, DocumentItem, PunchItem, ChangeOrder } from '../../types';
 import { 
   Calendar, Check, ChevronRight, Users, FileText, CloudRain, 
-  Landmark, Camera, CheckSquare 
+  Landmark, Camera, CheckSquare, MapPin, Clock, User 
 } from 'lucide-react';
 import { CreateDailyLogModal } from '../modals/CreateDailyLogModal';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
 import { MilestoneDetailsModal, MilestoneItem } from '../modals/MilestoneDetailsModal';
+import { EmployeeProfileModal, EmployeeProfileData } from '../modals/EmployeeProfileModal';
+import { ProjectStageModal } from '../modals/ProjectStageModal';
 
 interface ProjectOverviewTabProps {
   project: Project;
@@ -28,6 +30,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   project,
   tasks = [],
   documents = [],
+  punchItems = [],
   onSelectTab,
   onNavigate,
   onCreateTask,
@@ -37,6 +40,16 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   const [isCreateDailyLogOpen, setIsCreateDailyLogOpen] = useState(false);
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
   const [selectedMilestone, setSelectedMilestone] = useState<MilestoneItem | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeProfileData | null>(null);
+  const [isStageModalOpen, setIsStageModalOpen] = useState(false);
+  const [selectedStageModalId, setSelectedStageModalId] = useState('stg-4');
+  const [projectStages, setProjectStages] = useState(project.stages || [
+    { id: 'stg-1', name: 'Design', status: 'Complete' as const },
+    { id: 'stg-2', name: 'Permits', status: 'Complete' as const },
+    { id: 'stg-3', name: 'Pre-Con', status: 'Complete' as const },
+    { id: 'stg-4', name: 'Construction', status: 'In Progress' as const },
+    { id: 'stg-5', name: 'Closeout', status: 'Upcoming' as const }
+  ]);
 
   const handleTabChange = (tabId: string) => {
     if (onSelectTab) onSelectTab(tabId);
@@ -44,22 +57,9 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   };
 
   const handleStageClick = (stageId: string) => {
-    if (stageId === 'stg-1' || stageId === 'stg-2') {
-      handleTabChange('documents');
-    } else if (stageId === 'stg-5') {
-      handleTabChange('punch');
-    } else {
-      handleTabChange('schedule');
-    }
+    setSelectedStageModalId(stageId);
+    setIsStageModalOpen(true);
   };
-
-  const stages = [
-    { id: 'stg-1', name: 'Design', status: 'Complete' },
-    { id: 'stg-2', name: 'Permits', status: 'Complete' },
-    { id: 'stg-3', name: 'Pre-Con', status: 'Complete' },
-    { id: 'stg-4', name: 'Construction', status: 'In Progress' },
-    { id: 'stg-5', name: 'Closeout', status: 'Upcoming' }
-  ];
 
   const fallbackCover = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80";
 
@@ -126,7 +126,91 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ── 2. 4-Column Metric Suite Card ── */}
+      {/* ── 2. Project Specifications (Lattice Level 3 Global Card) ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card">
+        <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-[#F1F5F9]">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF]" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">
+              Project Specifications
+            </h3>
+          </div>
+          <span className="text-[10px] font-mono text-[#64748B] bg-[#F8FAFC] px-2 py-0.5 rounded-md border border-[#E2E8F0]">
+            {project.code || 'PRJ-SPEC'}
+          </span>
+        </div>
+
+        {/* 2-Column Grid strictly following 4px grid and Lattice tokens */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          {/* 1. Address */}
+          <div className="flex items-start gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+              <MapPin className="w-4 h-4 stroke-[2]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+                Address
+              </span>
+              <p className="text-xs font-bold text-[#0F172A] leading-snug line-clamp-2 mt-0.5">
+                {project.location || '400 Lakeview Blvd'}
+              </p>
+              <p className="text-[11px] text-[#64748B] truncate leading-tight mt-0.5">
+                {project.cityState || 'Orlando, FL'}
+              </p>
+            </div>
+          </div>
+
+          {/* 2. Lead PM & GC Owner */}
+          <div className="flex items-start gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+              <User className="w-4 h-4 stroke-[2]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+                Lead PM
+              </span>
+              <p className="text-xs font-bold text-[#0F172A] leading-tight truncate mt-0.5">
+                {project.projectManager?.name || 'Elena Rossi'}
+              </p>
+              <p className="text-[11px] text-[#64748B] truncate leading-tight mt-0.5">
+                Client: {project.clientName || 'Texas Commercial LLC'}
+              </p>
+            </div>
+          </div>
+
+          {/* 3. Start Date */}
+          <div className="flex items-start gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+              <Calendar className="w-4 h-4 stroke-[2]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+                Start Date
+              </span>
+              <p className="text-xs font-bold text-[#0F172A] leading-tight font-mono mt-0.5">
+                {project.startDate || '2024-11-01'}
+              </p>
+            </div>
+          </div>
+
+          {/* 4. Target End Date */}
+          <div className="flex items-start gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 mt-0.5">
+              <Clock className="w-4 h-4 stroke-[2]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+                Target End
+              </span>
+              <p className="text-xs font-bold text-[#0F172A] leading-tight font-mono mt-0.5">
+                {project.targetEndDate || '2026-05-30'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 3. 4-Column Metric Suite Card ── */}
       <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3 sm:p-3.5 shadow-card">
         <div className="grid grid-cols-4 divide-x divide-[#F1F5F9]">
           {/* Metric 1: Budget */}
@@ -154,26 +238,28 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               <Calendar className="w-4 h-4 stroke-[2]" />
             </div>
             <span className="text-xs sm:text-xs font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full tracking-tight">
-              Aug 30, 2025
+              {project.targetEndDate
+                ? new Date(project.targetEndDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : 'TBD'}
             </span>
             <span className="text-[10px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
               Target Date
             </span>
           </div>
 
-          {/* Metric 3: Team Members */}
+          {/* Metric 3: Active Tasks */}
           <div 
-            onClick={() => handleTabChange('team')}
+            onClick={() => handleTabChange('tasks')}
             className="flex flex-col items-start px-2 sm:px-3 cursor-pointer group"
           >
             <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
-              <Users className="w-4 h-4 stroke-[2]" />
+              <CheckSquare className="w-4 h-4 stroke-[2]" />
             </div>
             <span className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
-              12
+              {tasks.filter(t => t.projectId === project.id && t.status !== 'Completed').length || 10}
             </span>
             <span className="text-[10px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
-              Team Members
+              Active Tasks
             </span>
           </div>
 
@@ -236,16 +322,18 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
 
         {/* Horizontal Stepper */}
         <div className="relative flex items-start justify-between pt-1">
-          {/* Background Connecting Line - passes precisely through center of 24px circles (top: 15px) */}
+          {/* Background Connecting Line */}
           <div className="absolute top-[15px] left-6 right-6 h-[2px] bg-[#E2E8F0] z-0" />
           
           {/* Active Fill Line - Lattice Blue up to current stage */}
           <div 
-            className="absolute top-[15px] left-6 h-[2px] bg-[#1677FF] z-0 transition-all"
-            style={{ width: '68%' }}
+            className="absolute top-[15px] left-6 h-[2px] bg-[#1677FF] z-0 transition-all duration-500"
+            style={{ 
+              width: `${Math.max(12, Math.min(92, ((projectStages.findIndex(s => s.status === 'In Progress') !== -1 ? projectStages.findIndex(s => s.status === 'In Progress') : 4) / 4) * 88))}%` 
+            }}
           />
 
-          {stages.map((stage) => {
+          {projectStages.map((stage) => {
             const isComplete = stage.status === 'Complete';
             const isInProgress = stage.status === 'In Progress';
 
@@ -256,12 +344,12 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                 className="flex flex-col items-center text-center relative z-10 flex-1 min-w-0 px-0.5 cursor-pointer group active:scale-95 transition-transform"
                 title={`View ${stage.name} Phase Details`}
               >
-                {/* Circle Indicator: Lattice Blue for complete (NO BLACK!), blue ring with dot for in-progress */}
+                {/* Circle Indicator */}
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all shrink-0 ${
                   isComplete
                     ? 'bg-[#1677FF] text-white shadow-xs'
                     : isInProgress
-                    ? 'border-2 border-[#1677FF] bg-white text-[#1677FF] shadow-xs'
+                    ? 'border-2 border-[#1677FF] bg-white text-[#1677FF] shadow-xs ring-2 ring-[#1677FF]/20'
                     : 'border-2 border-[#CBD5E1] bg-[#F8FAFC]'
                 }`}>
                   {isComplete && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
@@ -298,13 +386,13 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             code: 'MS-03',
             name: 'Framing & Structural Inspection',
             subcontractor: 'Apex Framing Specialists',
-            dates: 'May 16, 2025 · 10:00 AM',
+            dates: 'Sep 18, 2026 · 10:00 AM',
             duration: '1 day',
-            progress: 75,
+            progress: 40,
             status: 'In Progress',
             budgetAllocation: 380000,
             inspectionPassed: false,
-            tasksCount: { completed: 3, total: 4 }
+            tasksCount: { completed: 2, total: 5 }
           })}
           className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer group min-h-[104px]"
         >
@@ -319,11 +407,11 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               Upcoming Milestone
             </span>
             <h4 className="text-xs font-bold text-[#0F172A] mt-0.5 truncate group-hover:text-[#1677FF] transition-colors">
-              Framing Inspection
+              Framing & Structural Inspection
             </h4>
           </div>
           <p className="text-xs text-[#64748B] font-medium mt-1">
-            May 16, 2025 • 10:00 AM
+            Sep 18, 2026 • 10:00 AM
           </p>
         </div>
 
@@ -352,7 +440,129 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ── 6. Recent Activity Feed ── */}
+      {/* ── 6. Dedicated Assigned Team (Horizontal Headshots Only) ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card flex flex-col gap-2.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center">
+              <Users className="w-3.5 h-3.5 stroke-[2.5]" />
+            </div>
+            <h3 className="text-xs font-bold text-[#0F172A] tracking-tight">
+              Assigned Team
+            </h3>
+            <span className="text-[10px] font-semibold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
+              4 On-Site
+            </span>
+          </div>
+
+          <button 
+            onClick={() => handleTabChange('team')}
+            className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
+          >
+            <span>View All</span>
+            <ChevronRight className="w-3 h-3" />
+          </button>
+        </div>
+
+        {/* Horizontal Headshots Row */}
+        <div className="flex items-center gap-3.5 overflow-x-auto py-1 no-scrollbar">
+          {[
+            {
+              id: 'emp-1',
+              name: project.projectManager?.name || 'Sarah Johnson',
+              role: 'Lead Project Manager',
+              company: 'Lattice Construction',
+              phone: '+1 (555) 345-6789',
+              email: 'sarah.j@averymarsh.com',
+              avatar: project.projectManager?.avatar || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+              isOnSite: true,
+              type: 'gc' as const,
+              projectName: project.name
+            },
+            {
+              id: 'emp-2',
+              name: 'John Smith',
+              role: 'Lead Field Superintendent',
+              company: 'Lattice Construction',
+              phone: '+1 (555) 567-8901',
+              email: 'john.s@averymarsh.com',
+              avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+              isOnSite: true,
+              type: 'gc' as const,
+              projectName: project.name
+            },
+            {
+              id: 'emp-3',
+              name: 'Emily Brown',
+              role: 'Site Safety Officer',
+              company: 'Lattice Construction',
+              phone: '+1 (555) 789-0123',
+              email: 'emily.b@averymarsh.com',
+              avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+              isOnSite: false,
+              type: 'gc' as const,
+              projectName: project.name
+            },
+            {
+              id: 'emp-5',
+              name: 'Carlos Ortiz',
+              role: 'Earthwork Site Foreman',
+              company: 'Earthworks Pro LLC',
+              phone: '+1 (555) 234-5678',
+              email: 'carlos@earthworkspro.com',
+              avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+              isOnSite: true,
+              type: 'trade' as const,
+              projectName: project.name
+            }
+          ].map((member) => (
+            <button
+              key={member.id}
+              onClick={() => setSelectedEmployee(member)}
+              className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer focus:outline-none"
+              title={`${member.name} (${member.role}) - Click for profile`}
+            >
+              <div className="relative">
+                <img 
+                  src={member.avatar} 
+                  alt={member.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-xs ring-1 ring-[#E2E8F0] group-hover:ring-2 group-hover:ring-[#1677FF] group-hover:scale-105 transition-all"
+                />
+                {member.isOnSite ? (
+                  <span 
+                    className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#10B981] border-2 border-white shadow-xs" 
+                    title="Currently On Site" 
+                  />
+                ) : (
+                  <span 
+                    className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#94A3B8] border-2 border-white shadow-xs" 
+                    title="Off-Site" 
+                  />
+                )}
+              </div>
+              <span className="text-[11px] font-semibold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate max-w-[66px] text-center leading-tight">
+                {member.name.split(' ')[0]}
+              </span>
+            </button>
+          ))}
+
+          {/* "+3 More / View All" Avatar Button */}
+          <button
+            onClick={() => handleTabChange('team')}
+            className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer focus:outline-none"
+            title="View all team members and trades"
+          >
+            <div className="w-12 h-12 rounded-full bg-[#F8FAFC] border-2 border-dashed border-[#CBD5E1] group-hover:border-[#1677FF] text-[#64748B] group-hover:text-[#1677FF] flex items-center justify-center text-xs font-bold transition-all group-hover:scale-105">
+              +3
+            </div>
+            <span className="text-[11px] font-semibold text-[#64748B] group-hover:text-[#1677FF] transition-colors text-center leading-tight">
+              View All
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── 7. Recent Activity Feed ── */}
       <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card flex flex-col gap-2.5">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-bold text-[#0F172A] tracking-tight">
@@ -512,6 +722,33 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           }}
         />
       )}
+
+      {/* EMPLOYEE PROFILE DETAIL MODAL */}
+      <EmployeeProfileModal
+        member={selectedEmployee}
+        isOpen={!!selectedEmployee}
+        onClose={() => setSelectedEmployee(null)}
+        onNavigateToTeam={() => {
+          setSelectedEmployee(null);
+          handleTabChange('team');
+        }}
+      />
+
+      {/* PROJECT STAGE & LIFECYCLE MODAL */}
+      <ProjectStageModal
+        isOpen={isStageModalOpen}
+        onClose={() => setIsStageModalOpen(false)}
+        project={project}
+        tasks={tasks}
+        punchItems={punchItems}
+        currentStageId={selectedStageModalId}
+        onUpdateStage={(stageId, updatedStages, newProg) => {
+          setProjectStages(updatedStages);
+          if (newProg !== undefined) {
+            project.progress = newProg;
+          }
+        }}
+      />
 
     </div>
   );

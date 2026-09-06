@@ -127,7 +127,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   }
 
   if (subView === 'support') {
-    return <HelpSupport onBack={() => setSubView('main')} />;
+    return <HelpSupport onBack={() => setSubView('main')} onNavigateTab={onNavigateTab} />;
   }
 
   if (subView === 'ai-disclaimer') {
@@ -655,8 +655,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // ─── MAIN SETTINGS & PROFILE SCREEN ───
   return (
     <div className="w-full flex flex-col gap-3 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
-      {/* ─── Top Header (Single Clean Header: Back to Home) ─── */}
-      <div className="flex items-center gap-2.5 pb-2 mb-1 border-b border-[#EAEDF1]">
+      <div className="flex items-center gap-3">
         <button
           onClick={() => onNavigateTab ? onNavigateTab('home') : null}
           className="w-9 h-9 rounded-xl bg-[#F2F2F7] hover:bg-[#EAEDF1] border border-[#DDE1E7] text-[#171A1F] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs flex-shrink-0"
@@ -666,53 +665,61 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </button>
         <div>
           <h1 className="text-sm md:text-base font-bold text-[#171A1F] tracking-tight leading-tight">
-            Settings & Profile
+            Account & Profile
           </h1>
-          <p className="text-[10px] text-[#68707C] font-medium">
-            {userData.company || 'Lattice Construction'}
-          </p>
         </div>
       </div>
       
 
 
-      {/* ─── 1. HERO PROFILE CARD ─── */}
+      {/* ─── 1. HERO PROFILE CARD (Executive Midnight & Vibrant Royal Blue) ─── */}
       <div
         onClick={() => setSubView('profile')}
-        className="bg-white border border-[#DDE1E7] hover:border-[#1677FF]/50 rounded-3xl shadow-xs overflow-hidden cursor-pointer group active:scale-[0.99] transition-all"
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0B1E3B] via-[#094CA6] to-[#1677FF] p-4 text-white shadow-[0_10px_28px_rgba(22,119,255,0.22)] cursor-pointer group active:scale-[0.99] transition-all border border-white/15"
       >
-        {/* Avatar + Name Row */}
-        <div className="p-4 flex items-center gap-3.5">
+        {/* Subtle decorative glow orb */}
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-[#1677FF]/30 rounded-full blur-xl pointer-events-none" />
+
+        {/* Avatar + Identity Info */}
+        <div className="relative z-10 flex items-center gap-3.5">
           <div className="relative flex-shrink-0">
-            {/* Gradient ring */}
-            <div className="w-[58px] h-[58px] rounded-full bg-gradient-to-br from-[#1677FF] via-[#60A5FA] to-[#818CF8] p-[2.5px]">
+            <div className="w-[60px] h-[60px] rounded-2xl bg-white/15 p-0.5 border border-white/25 shadow-md backdrop-blur-xs">
               <img
                 src={userData.avatar}
                 alt={userData.name}
-                className="w-full h-full rounded-full object-cover bg-white"
+                className="w-full h-full rounded-[14px] object-cover bg-slate-800"
               />
             </div>
-            <span className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow-sm" />
+            <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#0B1E3B] shadow-sm flex items-center justify-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            </span>
           </div>
 
           <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-bold text-[#171A1F] truncate leading-tight group-hover:text-[#1677FF] transition-colors">
-              {userData.name}
-            </h2>
-            <p className="text-xs font-semibold text-[#68707C] truncate mt-0.5">
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-[15px] font-bold text-white truncate tracking-tight leading-tight group-hover:text-blue-100 transition-colors">
+                {userData.name}
+              </h2>
+              <CheckCircle2 className="w-3.5 h-3.5 text-blue-200 flex-shrink-0" />
+            </div>
+
+            <p className="text-[11px] font-medium text-blue-100/90 truncate mt-0.5">
               {userData.roleTitle || (isFieldStaff ? 'Lead Superintendent' : 'Managing Principal & Founder')}
             </p>
-            {/* Company chip */}
-            <div className="flex items-center gap-1.5 mt-1.5">
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] text-[10px] font-semibold text-[#171A1F]">
-                <Building className="w-2.5 h-2.5 text-[#1677FF]" />
-                <span className="truncate max-w-[130px]">{userData.company || 'Lattice Construction'}</span>
-                <ChevronRight className="w-2.5 h-2.5 text-[#9DA5B1]" />
+
+            {/* Company & Role Chip */}
+            <div className="flex items-center gap-1.5 mt-2">
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white/15 hover:bg-white/20 border border-white/20 text-[10px] font-semibold text-white transition-colors">
+                <Building className="w-2.5 h-2.5 text-blue-200" />
+                <span className="truncate max-w-[130px]">{userData.company || 'Avery & Marsh Construction'}</span>
+                <ChevronRight className="w-2.5 h-2.5 text-white/60" />
               </div>
             </div>
           </div>
 
-          <div className="w-8 h-8 rounded-xl bg-[#F7F8FA] border border-[#EAEDF1] text-[#68707C] group-hover:bg-[#EAF3FF] group-hover:text-[#1677FF] group-hover:border-[#1677FF]/30 flex items-center justify-center transition-all flex-shrink-0">
+          {/* Edit Button */}
+          <div className="w-8 h-8 rounded-xl bg-white/15 border border-white/20 text-white group-hover:bg-white/25 flex items-center justify-center transition-all flex-shrink-0 shadow-xs">
             <Edit3 className="w-3.5 h-3.5" />
           </div>
         </div>
@@ -720,213 +727,189 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       {/* ─── ACCOUNT MENU ─── */}
       {isFieldStaff ? (
-        <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
-          <div className="px-4 pt-3 pb-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#9DA5B1]">Field Operations & Safety</p>
+        <div className="bg-white border border-slate-200/90 rounded-2xl shadow-[0_2px_10px_rgba(15,23,42,0.03)] overflow-hidden divide-y divide-slate-100">
+          <div className="px-4 pt-3 pb-2 bg-slate-50/50 border-b border-slate-100">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              Field Operations & Safety
+            </p>
           </div>
 
           {/* Safety Badges & Certs */}
-          <button onClick={() => setSubView('certifications')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          <button onClick={() => setSubView('certifications')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Award className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Award className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <span className="text-xs font-semibold text-[#171A1F] block">Safety Badges & Certifications</span>
-              </div>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Safety Badges & Certifications</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">4 Valid</span>
-              <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">4 Valid</span>
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
             </div>
           </button>
 
-          <button onClick={() => setSubView('equipment')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          {/* Assigned Equipment */}
+          <button onClick={() => setSubView('equipment')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Wrench className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Wrench className="w-4 h-4" />
               </div>
-              <span className="text-xs font-semibold text-[#171A1F]">Assigned Equipment & Tools</span>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Assigned Equipment & Tools</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">4 Items</span>
-              <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">4 Items</span>
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
             </div>
           </button>
 
-          <button onClick={() => setSubView('field-sync')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          {/* Field Sync & Offline Storage */}
+          <button onClick={() => setSubView('field-sync')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Wifi className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Wifi className="w-4 h-4" />
               </div>
-              <span className="text-xs font-semibold text-[#171A1F]">Field Sync & Offline Storage</span>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Field Sync & Offline Storage</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-cyan-800 bg-cyan-50 px-2 py-0.5 rounded-full border border-cyan-200">Auto-Sync</span>
-              <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">Auto-Sync</span>
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
             </div>
           </button>
 
-          <button onClick={() => setSubView('emergency')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          {/* Emergency Site Contacts */}
+          <button onClick={() => setSubView('emergency')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <AlertOctagon className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <AlertOctagon className="w-4 h-4" />
               </div>
-              <span className="text-xs font-semibold text-[#171A1F]">Emergency Site Contacts</span>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Emergency Site Contacts</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">911 Active</span>
-              <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
+              <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">911 Active</span>
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
             </div>
           </button>
         </div>
       ) : (
         /* ─── COMPANY OWNER / ADMIN MODULES ─── */
-        <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
-          <div className="px-4 pt-3 pb-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#9DA5B1]">Workspace & Company</p>
+        <div className="bg-white border border-slate-200/90 rounded-2xl shadow-[0_2px_10px_rgba(15,23,42,0.03)] overflow-hidden divide-y divide-slate-100">
+          <div className="px-4 pt-3 pb-2 bg-slate-50/50 border-b border-slate-100">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF]" />
+              Workspace & Company
+            </p>
           </div>
 
           {/* Company Profile */}
-          <button onClick={() => setSubView('company')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          <button onClick={() => setSubView('company')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Building className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Building className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <span className="text-xs font-semibold text-[#171A1F] block">Workspace</span>
-                <span className="text-[10px] text-[#68707C]">Manage your company, team and projects</span>
-              </div>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Workspace & Company Profile</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </button>
 
           {/* Subscription & Billing */}
-          <button onClick={() => setSubView('billing')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          <button onClick={() => setSubView('billing')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Crown className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Crown className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <span className="text-xs font-semibold text-[#171A1F] block">Subscription</span>
-                <span className="text-[10px] text-[#68707C]">Manage your plan and billing</span>
-              </div>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Subscription & Invoicing</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Trial</span>
-              <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">Trial</span>
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
             </div>
           </button>
 
-          {/* Lattice Verified Score */}
-          <button onClick={() => setSubView('verified')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Award className="w-4 h-4 text-[#1677FF]" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-semibold text-[#171A1F] block">Lattice Verified™ Score</span>
-                <span className="text-[10px] text-[#68707C]">Trust score & credentials</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-violet-800 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-200">Score 33</span>
-              <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
-            </div>
-          </button>
 
           {/* Team Directory */}
-          <button onClick={() => onNavigateTab?.('team')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          <button onClick={() => onNavigateTab?.('team')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Users className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Users className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <span className="text-xs font-semibold text-[#171A1F] block">Team Staff & Directory</span>
-                <span className="text-[10px] text-[#68707C]">View and manage team members</span>
-              </div>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Team Staff & Directory</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </button>
 
           {/* Milestones Hub */}
-          <button onClick={() => onNavigateTab?.('milestones')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+          <button onClick={() => onNavigateTab?.('milestones')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-                <Flag className="w-4 h-4 text-[#1677FF]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+                <Flag className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <span className="text-xs font-semibold text-[#171A1F] block">Company Milestone Tracker</span>
-                <span className="text-[10px] text-[#68707C]">Track project milestones & phases</span>
-              </div>
+              <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Company Milestone Tracker</span>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </button>
         </div>
       )}
 
       {/* ─── PREFERENCES & SECURITY ─── */}
-      <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
-        <div className="px-4 pt-3 pb-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#9DA5B1]">Preferences & Security</p>
+      <div className="bg-white border border-slate-200/90 rounded-2xl shadow-[0_2px_10px_rgba(15,23,42,0.03)] overflow-hidden divide-y divide-slate-100">
+        <div className="px-4 pt-3 pb-2 bg-slate-50/50 border-b border-slate-100">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF]" />
+            Preferences & Security
+          </p>
         </div>
 
         {/* Notifications */}
-        <button onClick={() => setSubView('notifications')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+        <button onClick={() => setSubView('notifications')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-              <Bell className="w-4 h-4 text-[#1677FF]" />
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+              <Bell className="w-4 h-4" />
             </div>
-            <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#171A1F] block">Notifications</span>
-              <span className="text-[10px] text-[#68707C]">Choose what you want to be notified about</span>
-            </div>
+            <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Notifications</span>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+            <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">
               {pushMasterEnabled ? 'On' : 'Off'}
             </span>
-            <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors" />
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
           </div>
         </button>
 
         {/* Security & Password */}
-        <button onClick={() => setSubView('security')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+        <button onClick={() => setSubView('security')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-              <Lock className="w-4 h-4 text-[#1677FF]" />
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+              <Lock className="w-4 h-4" />
             </div>
-            <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#171A1F] block">
-                {isFieldStaff ? 'Security & PIN' : 'Security & Password'}
-              </span>
-              <span className="text-[10px] text-[#68707C]">Keep your account secure</span>
-            </div>
+            <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
+              {isFieldStaff ? 'Security & PIN' : 'Security & Password'}
+            </span>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+          <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
         </button>
 
         {/* Help & Support */}
-        <button onClick={() => setSubView('support')} className="w-full py-3 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F2F2F7] group">
+        <button onClick={() => setSubView('support')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center flex-shrink-0">
-              <HelpCircle className="w-4 h-4 text-[#1677FF]" />
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-xs">
+              <HelpCircle className="w-4 h-4" />
             </div>
-            <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#171A1F] block">
-                {isFieldStaff ? 'Field Guides & Help' : 'Help & Support'}
-              </span>
-              <span className="text-[10px] text-[#68707C]">Get help or contact our team</span>
-            </div>
+            <span className="text-xs font-bold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">
+              {isFieldStaff ? 'Field Guides & Help' : 'Help & Support'}
+            </span>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+          <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
         </button>
       </div>
 
       {/* ─── LEGAL ─── */}
-      <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
-        <div className="px-4 pt-3 pb-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#9DA5B1]">Legal</p>
+      <div className="bg-white border border-slate-200/90 rounded-2xl shadow-[0_2px_10px_rgba(15,23,42,0.03)] overflow-hidden divide-y divide-slate-100">
+        <div className="px-4 pt-3 pb-2 bg-slate-50/50 border-b border-slate-100">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+            Legal & Compliance
+          </p>
         </div>
         {[
           { label: 'Privacy Policy',      view: 'privacy' as const,             Icon: ShieldCheck },
@@ -938,13 +921,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <button
             key={view}
             onClick={() => setSubView(view)}
-            className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F2F2F7]"
+            className="w-full py-3 px-4 flex items-center justify-between text-left hover:bg-slate-50/70 transition-colors cursor-pointer group active:bg-slate-100/70"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <Icon className="w-4 h-4 text-[#9DA5B1] flex-shrink-0" />
-              <span className="text-xs font-medium text-[#68707C] group-hover:text-[#171A1F] transition-colors">{label}</span>
+              <Icon className="w-4 h-4 text-[#94A3B8] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
+              <span className="text-xs font-medium text-[#64748B] group-hover:text-[#171A1F] transition-colors">{label}</span>
             </div>
-            <ChevronRight className="w-3.5 h-3.5 text-[#DDE1E7] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+            <ChevronRight className="w-3.5 h-3.5 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
           </button>
         ))}
       </div>
@@ -952,16 +935,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* ─── SIGN OUT ─── */}
       <button
         onClick={onSignOut}
-        className="w-full py-3.5 px-4 rounded-2xl bg-white hover:bg-rose-50 border border-[#DDE1E7] hover:border-rose-200 flex items-center gap-3 cursor-pointer transition-all active:scale-[0.99] shadow-xs group"
+        className="w-full py-3.5 px-4 rounded-2xl bg-white hover:bg-rose-50/80 border border-slate-200/90 hover:border-rose-200 flex items-center gap-3 cursor-pointer transition-all active:scale-[0.99] shadow-[0_2px_8px_rgba(15,23,42,0.02)] group"
       >
-        <div className="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200/70 flex items-center justify-center flex-shrink-0">
-          <LogOut className="w-4 h-4 text-rose-500" />
+        <div className="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200/80 flex items-center justify-center flex-shrink-0 shadow-xs">
+          <LogOut className="w-4 h-4 text-rose-600" />
         </div>
-        <span className="text-xs font-semibold text-rose-500 flex-1 text-left">Sign Out</span>
-        <ChevronRight className="w-4 h-4 text-[#DDE1E7] group-hover:text-rose-400 transition-colors" />
+        <span className="text-xs font-bold text-rose-600 flex-1 text-left">Sign Out</span>
+        <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-rose-500 transition-colors" />
       </button>
 
-      <p className="text-center text-[10px] text-[#DDE1E7] pb-2">Lattice v1.0.0</p>
+      <p className="text-center text-[10px] text-slate-400 font-medium pb-2">Lattice Construction OS · v1.0.0</p>
 
     </div>
   );

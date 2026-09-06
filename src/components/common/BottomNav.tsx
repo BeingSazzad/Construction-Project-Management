@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, FolderKanban, Plus, Sparkles, MoreHorizontal } from 'lucide-react';
+import { Folder, Plus, User } from 'lucide-react';
 
 interface BottomNavProps {
   activeTab: string;
@@ -8,104 +8,143 @@ interface BottomNavProps {
   onOpenDrawer?: () => void;
 }
 
+// 1. Home Icon (Filled house when active, outline when inactive)
+const HomeNavIcon = ({ active }: { active: boolean }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    className={`w-5 h-5 transition-transform duration-200 ${active ? 'scale-105' : ''}`}
+    fill={active ? 'currentColor' : 'none'}
+    stroke="currentColor" 
+    strokeWidth={active ? '0' : '1.9'}
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M3 10.5L12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5H15a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1H4.5A1.5 1.5 0 0 1 3 20v-9.5z" />
+  </svg>
+);
+
+// 2. Modern AI Rosette Icon (Matches exact inspiration rosette swirl)
+const LattiRosetteIcon = ({ active }: { active: boolean }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth={active ? '2.1' : '1.8'}
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={`w-5 h-5 transition-transform duration-200 ${active ? 'scale-105' : ''}`}
+  >
+    {/* Concentric curved interlocking spiral rosette petals */}
+    <path d="M12 2.5a4 4 0 0 1 3.5 2.1l.4.7 1.9-.3a4 4 0 0 1 4.5 3.3l.1.8 1.4 1.3a4 4 0 0 1 .4 5.5l-.5.6.5.6a4 4 0 0 1-.4 5.5l-1.4 1.3-.1.8a4 4 0 0 1-4.5 3.3l-1.9-.3-.4.7A4 4 0 0 1 12 21.5a4 4 0 0 1-3.5-2.1l-.4-.7-1.9.3a4 4 0 0 1-4.5-3.3l-.1-.8-1.4-1.3a4 4 0 0 1-.4-5.5l.5-.6-.5-.6a4 4 0 0 1 .4-5.5l1.4-1.3.1-.8A4 4 0 0 1 6.2 5l1.9.3.4-.7A4 4 0 0 1 12 2.5z" />
+    <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+    <path d="M12 8v8" />
+    <path d="M8.5 10l7 4" />
+    <path d="M8.5 14l7-4" />
+  </svg>
+);
+
 export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
   onTabChange,
   onQuickAction,
 }) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#EAEDF1] font-sans shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
-      <div className="max-w-5xl mx-auto px-3 h-16 flex items-center justify-around relative">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-40 bg-white/95 backdrop-blur-md border-t border-x border-[#E2E8F0] font-sans shadow-[0_-4px_24px_rgba(15,23,42,0.06)]">
+      <div className="w-full px-2 h-16 flex items-center justify-around relative">
         
         {/* 1. HOME */}
         <button
           onClick={() => onTabChange('home')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 relative transition-all duration-200 cursor-pointer active:scale-95 group ${
-            activeTab === 'home' ? 'text-[#1677FF]' : 'text-[#68707C] hover:text-[#171A1F]'
+          className={`flex-1 h-full flex flex-col items-center justify-center relative transition-all duration-200 cursor-pointer active:scale-95 group ${
+            activeTab === 'home' ? 'text-[#1677FF]' : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          <Home className={`w-5 h-5 transition-transform duration-200 ${
-            activeTab === 'home' ? 'scale-110 text-[#1677FF] stroke-[2.4]' : 'stroke-[1.8]'
-          }`} />
-          <span className={`text-[10px] tracking-tight mt-1 leading-none ${
-            activeTab === 'home' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#68707C]'
+          {/* Active Top Line Indicator */}
+          {activeTab === 'home' && (
+            <span className="absolute top-0 w-11 h-[3px] bg-[#1677FF] rounded-full animate-fade-in" />
+          )}
+
+          <HomeNavIcon active={activeTab === 'home'} />
+          <span className={`text-[11px] tracking-tight mt-1 leading-none ${
+            activeTab === 'home' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#64748B]'
           }`}>
             Home
           </span>
-          {activeTab === 'home' && (
-            <span className="w-1 h-1 bg-[#1677FF] rounded-full mt-1" />
-          )}
         </button>
 
         {/* 2. PROJECTS */}
         <button
           onClick={() => onTabChange('projects')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 relative transition-all duration-200 cursor-pointer active:scale-95 group ${
-            activeTab === 'projects' ? 'text-[#1677FF]' : 'text-[#68707C] hover:text-[#171A1F]'
+          className={`flex-1 h-full flex flex-col items-center justify-center relative transition-all duration-200 cursor-pointer active:scale-95 group ${
+            activeTab === 'projects' ? 'text-[#1677FF]' : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          <FolderKanban className={`w-5 h-5 transition-transform duration-200 ${
-            activeTab === 'projects' ? 'scale-110 text-[#1677FF] stroke-[2.4]' : 'stroke-[1.8]'
+          {/* Active Top Line Indicator */}
+          {activeTab === 'projects' && (
+            <span className="absolute top-0 w-11 h-[3px] bg-[#1677FF] rounded-full animate-fade-in" />
+          )}
+
+          <Folder className={`w-5 h-5 transition-transform duration-200 ${
+            activeTab === 'projects' ? 'scale-105 text-[#1677FF] stroke-[2.2]' : 'stroke-[1.8]'
           }`} />
-          <span className={`text-[10px] tracking-tight mt-1 leading-none ${
-            activeTab === 'projects' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#68707C]'
+          <span className={`text-[11px] tracking-tight mt-1 leading-none ${
+            activeTab === 'projects' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#64748B]'
           }`}>
             Projects
           </span>
-          {activeTab === 'projects' && (
-            <span className="w-1 h-1 bg-[#1677FF] rounded-full mt-1" />
-          )}
         </button>
 
-        {/* 3. CENTRAL ADD (+) ACTION */}
+        {/* 3. CENTRAL SQUIRCLE (+) ACTION BUTTON */}
         <div className="flex-1 flex items-center justify-center">
           <button
             onClick={onQuickAction}
-            className="w-11 h-11 rounded-full bg-[#1677FF] hover:bg-[#0958D9] text-white flex items-center justify-center shadow-md shadow-blue-500/25 transition-all cursor-pointer active:scale-95 group -mt-1.5"
-            title="Create New (Task, Update, Expense, Photo, Doc)"
+            className="w-12 h-12 rounded-[16px] bg-[#1677FF] hover:bg-[#0958D9] text-white flex items-center justify-center shadow-md shadow-[#1677FF]/35 transition-all cursor-pointer active:scale-95 group -mt-2"
+            title="Create New (Task, Daily Log, Photo, Expense)"
           >
-            <Plus className="w-5 h-5 text-white stroke-[2.5] group-hover:rotate-90 transition-transform duration-200" />
+            <Plus className="w-5 h-5 text-white stroke-[2.2] group-hover:rotate-90 transition-transform duration-200" />
           </button>
         </div>
 
         {/* 4. LATTI AI */}
         <button
           onClick={() => onTabChange('latti')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 relative transition-all duration-200 cursor-pointer active:scale-95 group ${
-            activeTab === 'latti' ? 'text-[#1677FF]' : 'text-[#68707C] hover:text-[#171A1F]'
+          className={`flex-1 h-full flex flex-col items-center justify-center relative transition-all duration-200 cursor-pointer active:scale-95 group ${
+            activeTab === 'latti' ? 'text-[#1677FF]' : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          <Sparkles className={`w-5 h-5 transition-transform duration-200 ${
-            activeTab === 'latti' ? 'scale-110 text-[#1677FF] stroke-[2.4]' : 'stroke-[1.8]'
-          }`} />
-          <span className={`text-[10px] tracking-tight mt-1 leading-none ${
-            activeTab === 'latti' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#68707C]'
-          }`}>
-            Latti
-          </span>
+          {/* Active Top Line Indicator */}
           {activeTab === 'latti' && (
-            <span className="w-1 h-1 bg-[#1677FF] rounded-full mt-1" />
+            <span className="absolute top-0 w-11 h-[3px] bg-[#1677FF] rounded-full animate-fade-in" />
           )}
+
+          <LattiRosetteIcon active={activeTab === 'latti'} />
+          <span className={`text-[11px] tracking-tight mt-1 leading-none ${
+            activeTab === 'latti' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#64748B]'
+          }`}>
+            Latti AI
+          </span>
         </button>
 
-        {/* 5. MORE */}
+        {/* 5. ACCOUNT */}
         <button
-          onClick={() => onTabChange('more')}
-          className={`flex-1 flex flex-col items-center justify-center py-1 relative transition-all duration-200 cursor-pointer active:scale-95 group ${
-            activeTab === 'more' ? 'text-[#1677FF]' : 'text-[#68707C] hover:text-[#171A1F]'
+          onClick={() => onTabChange('account')}
+          className={`flex-1 h-full flex flex-col items-center justify-center relative transition-all duration-200 cursor-pointer active:scale-95 group ${
+            activeTab === 'account' || activeTab === 'more' ? 'text-[#1677FF]' : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          <MoreHorizontal className={`w-5 h-5 transition-transform duration-200 ${
-            activeTab === 'more' ? 'scale-110 text-[#1677FF] stroke-[2.4]' : 'stroke-[1.8]'
-          }`} />
-          <span className={`text-[10px] tracking-tight mt-1 leading-none ${
-            activeTab === 'more' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#68707C]'
-          }`}>
-            More
-          </span>
-          {activeTab === 'more' && (
-            <span className="w-1 h-1 bg-[#1677FF] rounded-full mt-1" />
+          {/* Active Top Line Indicator */}
+          {(activeTab === 'account' || activeTab === 'more') && (
+            <span className="absolute top-0 w-11 h-[3px] bg-[#1677FF] rounded-full animate-fade-in" />
           )}
+
+          <User className={`w-5 h-5 transition-transform duration-200 ${
+            activeTab === 'account' || activeTab === 'more' ? 'scale-105 text-[#1677FF] stroke-[2.2]' : 'stroke-[1.8]'
+          }`} />
+          <span className={`text-[11px] tracking-tight mt-1 leading-none ${
+            activeTab === 'account' || activeTab === 'more' ? 'font-bold text-[#1677FF]' : 'font-medium text-[#64748B]'
+          }`}>
+            Account
+          </span>
         </button>
 
       </div>

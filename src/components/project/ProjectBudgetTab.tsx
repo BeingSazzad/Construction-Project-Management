@@ -31,6 +31,13 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   const [costCodeName, setCostCodeName] = useState('');
   const [budgetAmount, setBudgetAmount] = useState('');
   const [committedAmount, setCommittedAmount] = useState('');
+  const [isCustomTrade, setIsCustomTrade] = useState(false);
+  const [customTradeName, setCustomTradeName] = useState('');
+
+  // Add Division / Category Modal State
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryBudget, setNewCategoryBudget] = useState('');
 
   // Edit Code Form State
   const [editingCode, setEditingCode] = useState<CostCodeGroup | null>(null);
@@ -57,9 +64,35 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleAddCategorySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+
+    const catBudget = Number(newCategoryBudget) || 0;
+    const newCatId = `cat-${Date.now()}`;
+    const newCategory: TradeCategory = {
+      id: newCatId,
+      name: newCategoryName.trim(),
+      icon: 'Layers',
+      estimatedCost: catBudget,
+      actualCost: 0,
+      committedCost: 0,
+      costCodes: []
+    };
+
+    setCategories(prev => [...prev, newCategory]);
+    setExpandedCategories(prev => ({ ...prev, [newCatId]: true }));
+    setNewCategoryName('');
+    setNewCategoryBudget('');
+    setIsAddCategoryModalOpen(false);
+  };
+
   const handleAddCodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!costCodeName.trim() || !budgetAmount) return;
+
+    const finalTradeName = isCustomTrade ? customTradeName.trim() : tradeName.trim();
+    if (!finalTradeName) return;
 
     const newCode: CostCodeGroup = {
       code: `0${Math.floor(10 + Math.random() * 89)}-${Math.floor(100 + Math.random() * 900)}`,
@@ -87,23 +120,45 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
       ]
     };
 
-    setCategories(prev => prev.map(cat => {
-      if (cat.name.includes(tradeName.split('–')[1]?.trim() || 'Foundation')) {
-        const updatedCodes = [...cat.costCodes, newCode];
-        return {
-          ...cat,
-          estimatedCost: updatedCodes.reduce((sum, cc) => sum + cc.estimatedCost, 0),
-          actualCost: updatedCodes.reduce((sum, cc) => sum + cc.actualCost, 0),
-          committedCost: updatedCodes.reduce((sum, cc) => sum + cc.committedCost, 0),
-          costCodes: updatedCodes
-        };
-      }
-      return cat;
-    }));
+    const existingCatIndex = categories.findIndex(
+      cat => cat.name.toLowerCase() === finalTradeName.toLowerCase() ||
+             cat.name.includes(finalTradeName.split('–')[1]?.trim() || finalTradeName)
+    );
+
+    if (existingCatIndex !== -1) {
+      setCategories(prev => prev.map((cat, idx) => {
+        if (idx === existingCatIndex) {
+          const updatedCodes = [...cat.costCodes, newCode];
+          return {
+            ...cat,
+            estimatedCost: updatedCodes.reduce((sum, cc) => sum + cc.estimatedCost, 0),
+            actualCost: updatedCodes.reduce((sum, cc) => sum + cc.actualCost, 0),
+            committedCost: updatedCodes.reduce((sum, cc) => sum + cc.committedCost, 0),
+            costCodes: updatedCodes
+          };
+        }
+        return cat;
+      }));
+    } else {
+      const newCatId = `cat-${Date.now()}`;
+      const newCategory: TradeCategory = {
+        id: newCatId,
+        name: finalTradeName,
+        icon: 'Layers',
+        estimatedCost: Number(budgetAmount),
+        actualCost: Number(committedAmount) || 0,
+        committedCost: Number(committedAmount) || 0,
+        costCodes: [newCode]
+      };
+      setCategories(prev => [...prev, newCategory]);
+      setExpandedCategories(prev => ({ ...prev, [newCatId]: true }));
+    }
 
     setCostCodeName('');
     setBudgetAmount('');
     setCommittedAmount('');
+    setIsCustomTrade(false);
+    setCustomTradeName('');
     setIsAddCodeModalOpen(false);
   };
 
@@ -225,7 +280,17 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => setIsAddCategoryModalOpen(true)}
+            className="h-8 px-2.5 rounded-xl border border-[#DDE1E7] bg-white hover:bg-[#F8FAFC] text-[#0F172A] text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+            title="Add New CSI Division / Category"
+          >
+            <Layers className="w-3.5 h-3.5 text-[#1677FF]" />
+            <span className="whitespace-nowrap hidden sm:inline">Add Division</span>
+            <span className="whitespace-nowrap sm:hidden">+ Division</span>
+          </button>
+
           {onImportBudget && (
             <button
               onClick={onImportBudget}
@@ -238,7 +303,11 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           )}
 
           <button
-            onClick={() => setIsAddCodeModalOpen(true)}
+            onClick={() => {
+              setIsCustomTrade(false);
+              setCustomTradeName('');
+              setIsAddCodeModalOpen(true);
+            }}
             className="btn-action btn-primary"
             title="Add Cost Code"
           >
@@ -563,18 +632,52 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
             <form onSubmit={handleAddCodeSubmit} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-xs text-[#525866] block mb-1 font-semibold">CSI Trade Division</label>
-                <select
-                  value={tradeName}
-                  onChange={(e) => setTradeName(e.target.value)}
-                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
-                >
-                  <option value="01 – Site Preparation">01 – Site Preparation</option>
-                  <option value="02 – Foundation & Structure">02 – Foundation & Structure</option>
-                  <option value="03 – MEP (Mechanical, Electrical, Plumbing)">03 – MEP (Mechanical, Electrical, Plumbing)</option>
-                  <option value="04 – Finishes">04 – Finishes</option>
-                  <option value="05 – Other Costs">05 – Other Costs</option>
-                </select>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs text-[#525866] font-semibold">CSI Trade Division</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCustomTrade(!isCustomTrade);
+                      if (!isCustomTrade) setCustomTradeName('');
+                    }}
+                    className="text-[11px] font-bold text-[#1677FF] hover:underline cursor-pointer"
+                  >
+                    {isCustomTrade ? '← Choose Existing' : '+ Custom Division'}
+                  </button>
+                </div>
+
+                {isCustomTrade ? (
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 06 – Roofing & Cladding"
+                    value={customTradeName}
+                    onChange={(e) => setCustomTradeName(e.target.value)}
+                    className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl px-3 text-[#171A1F] text-xs outline-none font-medium"
+                  />
+                ) : (
+                  <select
+                    value={tradeName}
+                    onChange={(e) => {
+                      if (e.target.value === '__add_new__') {
+                        setIsCustomTrade(true);
+                        setCustomTradeName('');
+                      } else {
+                        setTradeName(e.target.value);
+                      }
+                    }}
+                    className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </option>
+                    ))}
+                    <option value="__add_new__" className="font-bold text-[#1677FF]">
+                      + Add New Division / Category...
+                    </option>
+                  </select>
+                )}
               </div>
 
               <div>
@@ -703,6 +806,71 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                   className="px-4 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer active:scale-95 transition-all"
                 >
                   Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ─── ADD DIVISION / CATEGORY MODAL ─── */}
+      {isAddCategoryModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[380px] bg-white border border-[#DDE1E7] rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 text-[#171A1F]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
+              <div>
+                <h3 className="text-sm font-bold text-[#171A1F]">Add CSI Trade Division</h3>
+                <p className="text-xs text-[#525866] mt-0.5">Create a new budget category / division</p>
+              </div>
+              <button
+                onClick={() => setIsAddCategoryModalOpen(false)}
+                className="w-7 h-7 rounded-full bg-[#F2F2F7] text-[#525866] hover:text-[#171A1F] flex items-center justify-center cursor-pointer text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddCategorySubmit} className="flex flex-col gap-3 text-xs">
+              <div>
+                <label className="text-xs text-[#525866] block mb-1 font-semibold">
+                  Division Code & Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. 06 – Roofing & Waterproofing"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-[#525866] block mb-1 font-semibold">
+                  Planned Division Budget ($ USD)
+                </label>
+                <input
+                  type="number"
+                  placeholder="e.g. 125000 (Optional initial budget)"
+                  value={newCategoryBudget}
+                  onChange={(e) => setNewCategoryBudget(e.target.value)}
+                  className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF]"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#EAEDF1] mt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsAddCategoryModalOpen(false)}
+                  className="px-3 py-2 rounded-xl bg-[#F2F2F7] text-[#171A1F] text-xs font-semibold cursor-pointer hover:bg-[#EAEDF1]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs cursor-pointer active:scale-95 transition-all"
+                >
+                  Create Division
                 </button>
               </div>
             </form>
