@@ -36,7 +36,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         classes: 'bg-[#E9F9F3] text-[#10A976]'
       };
     }
-    if (s.includes('attention') || s.includes('risk') || s.includes('hold') || project.id === 'proj-2') {
+    if (s.includes('attention') || s.includes('risk') || s.includes('hold') || s.includes('delay')) {
       return {
         label: '• Needs Attention',
         classes: 'bg-[#FFF7E6] text-[#F59E0B]'

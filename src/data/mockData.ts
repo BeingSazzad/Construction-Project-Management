@@ -268,7 +268,7 @@ export const MOCK_PROJECTS: Project[] = [
     code: 'DCT-2024',
     location: '1200 Michigan Ave',
     cityState: 'Chicago, IL',
-    status: 'In Progress',
+    status: 'At Risk',
     progress: 42,
     startDate: '2024-04-15',
     targetEndDate: '2026-03-20',
