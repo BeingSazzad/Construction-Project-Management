@@ -30,7 +30,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
             onClick={() => onChange(option.id)}
             className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center select-none active:scale-[0.98] ${
               isActive
-                ? 'bg-white text-[#1677FF] shadow-xs'
+                ? 'bg-[#1677FF] text-white shadow-xs'
                 : 'text-[#68707C] hover:text-[#171A1F] font-semibold'
             }`}
           >

@@ -292,7 +292,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <button
                   onClick={() => setPhotoQuality('optimized')}
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                    photoQuality === 'optimized' ? 'bg-white text-[#171A1F] shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
+                    photoQuality === 'optimized' ? 'bg-[#1677FF] text-white shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
                   }`}
                 >
                   Fast (1080p)
@@ -300,7 +300,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <button
                   onClick={() => setPhotoQuality('high')}
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                    photoQuality === 'high' ? 'bg-white text-[#171A1F] shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
+                    photoQuality === 'high' ? 'bg-[#1677FF] text-white shadow-xs' : 'text-[#68707C] hover:text-[#171A1F]'
                   }`}
                 >
                   High (4K)

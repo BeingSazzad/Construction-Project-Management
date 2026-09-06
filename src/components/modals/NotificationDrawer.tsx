@@ -80,7 +80,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
               onClick={() => setFilter('all')}
               className={`flex-1 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 filter === 'all'
-                  ? 'bg-white text-[#171A1F] shadow-xs font-bold'
+                  ? 'bg-[#1677FF] text-white shadow-xs font-bold'
                   : 'text-[#68707C] hover:text-[#171A1F]'
               }`}
             >
@@ -90,7 +90,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
               onClick={() => setFilter('unread')}
               className={`flex-1 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 filter === 'unread'
-                  ? 'bg-white text-[#171A1F] shadow-xs font-bold'
+                  ? 'bg-[#1677FF] text-white shadow-xs font-bold'
                   : 'text-[#68707C] hover:text-[#171A1F]'
               }`}
             >

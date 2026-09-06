@@ -171,7 +171,7 @@ export const LatticeVerifiedView: React.FC<LatticeVerifiedViewProps> = ({ curren
             onClick={() => setActiveTab(tab.id)}
             className={`py-2 rounded-xl text-xs font-bold transition-all cursor-pointer truncate px-1 ${
               activeTab === tab.id
-                ? 'bg-white text-[#171A1F] shadow-xs'
+                ? 'bg-[#1677FF] text-white font-bold shadow-xs'
                 : 'text-[#68707C] hover:text-[#171A1F]'
             }`}
           >

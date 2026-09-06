@@ -434,7 +434,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
                 onClick={() => setModalTab('directory')}
                 className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
                   modalTab === 'directory'
-                    ? 'bg-white text-[#171A1F] shadow-xs'
+                    ? 'bg-[#1677FF] text-white shadow-xs'
                     : 'text-[#68707C] hover:text-[#171A1F] font-semibold'
                 }`}
               >
@@ -445,7 +445,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = () => {
                 onClick={() => setModalTab('invite')}
                 className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
                   modalTab === 'invite'
-                    ? 'bg-white text-[#171A1F] shadow-xs'
+                    ? 'bg-[#1677FF] text-white shadow-xs'
                     : 'text-[#68707C] hover:text-[#171A1F] font-semibold'
                 }`}
               >

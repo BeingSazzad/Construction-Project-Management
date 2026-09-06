@@ -63,7 +63,7 @@ export const DealAnalyzerModal: React.FC<DealAnalyzerModalProps> = ({
             onClick={() => setScenario(s.id as any)}
             className={`flex-1 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer text-center ${
               scenario === s.id
-                ? 'bg-white text-[#171A1F] shadow-xs'
+                ? 'bg-[#1677FF] text-white shadow-xs'
                 : 'text-[#68707C] hover:text-[#171A1F]'
             }`}
           >

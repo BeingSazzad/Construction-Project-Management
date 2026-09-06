@@ -71,13 +71,13 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
           />
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 p-1 bg-[#F1F5F9] rounded-xl">
+        {/* Filter Switcher */}
+        <div className="flex items-center gap-1.5 p-1 bg-[#F1F5F9] rounded-xl border border-[#E2E8F0]">
           <button
             onClick={() => setActiveFilter('active')}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeFilter === 'active' 
-                ? 'bg-white text-[#1677FF] shadow-xs' 
+                ? 'bg-[#1677FF] text-white shadow-xs' 
                 : 'text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
@@ -85,9 +85,9 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
           </button>
           <button
             onClick={() => setActiveFilter('completed')}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeFilter === 'completed' 
-                ? 'bg-white text-[#1677FF] shadow-xs' 
+                ? 'bg-[#1677FF] text-white shadow-xs' 
                 : 'text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
@@ -95,9 +95,9 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
           </button>
           <button
             onClick={() => setActiveFilter('all')}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeFilter === 'all' 
-                ? 'bg-white text-[#1677FF] shadow-xs' 
+                ? 'bg-[#1677FF] text-white shadow-xs' 
                 : 'text-[#64748B] hover:text-[#0F172A]'
             }`}
           >

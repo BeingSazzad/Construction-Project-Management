@@ -40,25 +40,25 @@ export const ProjectFilesTab: React.FC<ProjectFilesTabProps> = ({
         <div className="flex items-center p-1 rounded-2xl bg-[#E2E8F0]/70 border border-[#E2E8F0]">
           <button
             onClick={() => setActiveSubTab('documents')}
-            className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none active:scale-[0.98] ${
               activeSubTab === 'documents'
-                ? 'bg-white text-[#1677FF] shadow-xs'
+                ? 'bg-[#1677FF] text-white shadow-xs'
                 : 'text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
-            <FileText className="w-3.5 h-3.5" />
+            <FileText className={`w-3.5 h-3.5 ${activeSubTab === 'documents' ? 'text-white' : 'text-[#64748B]'}`} />
             <span>Documents ({documents.length})</span>
           </button>
 
           <button
             onClick={() => setActiveSubTab('photos')}
-            className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none active:scale-[0.98] ${
               activeSubTab === 'photos'
-                ? 'bg-white text-[#1677FF] shadow-xs'
+                ? 'bg-[#1677FF] text-white shadow-xs'
                 : 'text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
-            <Camera className="w-3.5 h-3.5" />
+            <Camera className={`w-3.5 h-3.5 ${activeSubTab === 'photos' ? 'text-white' : 'text-[#64748B]'}`} />
             <span>Photos ({photos.length})</span>
           </button>
         </div>
