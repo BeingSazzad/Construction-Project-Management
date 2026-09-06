@@ -303,13 +303,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 </div>
               </div>
 
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="px-2.5 py-1 rounded-lg bg-[#1677FF] hover:bg-[#1366DB] text-white text-[11px] font-semibold flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
-              >
-                <Plus className="w-3 h-3 stroke-[2.5]" />
-                <span>+ Add</span>
-              </button>
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-1 rounded-full shrink-0">
+                {selectedDayEvents.length} {selectedDayEvents.length === 1 ? 'Event' : 'Events'}
+              </span>
             </div>
 
             {selectedDayEvents.length === 0 ? (
@@ -325,10 +321,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 </div>
                 <button
                   onClick={() => setIsAddModalOpen(true)}
-                  className="mt-1 px-3 py-1.5 rounded-lg bg-[#1677FF] hover:bg-[#1366DB] text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
+                  className="mt-0.5 text-xs font-semibold text-[#1677FF] hover:text-[#0958D9] hover:underline flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>+ Add to Schedule</span>
+                  <Plus className="w-3 h-3 stroke-[2.5]" />
+                  <span>Schedule event for this date</span>
                 </button>
               </div>
             ) : (
