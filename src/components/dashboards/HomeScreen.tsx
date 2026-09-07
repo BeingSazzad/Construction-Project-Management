@@ -1,36 +1,50 @@
 import React, { useState, useMemo } from 'react';
-import { Project, Task, UserRole } from '../../types';
+import { Project, Task, UserRole, DailyLogItem, PunchItem, ChangeOrder, Subcontractor } from '../../types';
 import { 
   CheckSquare, Calendar, DollarSign, CloudRain, Sparkles, 
   ArrowRight, FileText, TrendingUp, Cloud, AlertCircle, 
   ChevronRight, Building2, HardHat, ShieldCheck, Users,
   Clock, AlertTriangle, Phone, CheckCircle2, ChevronDown,
   Layers, Hammer, FileSpreadsheet, Eye, Plus, Wrench,
-  Landmark, Receipt, FileCheck, ArrowUpRight, Check, Info, Sun
+  Landmark, Receipt, FileCheck, ArrowUpRight, Check, Info, Sun, X
 } from 'lucide-react';
 import { ProjectCard } from '../common/ProjectCard';
 import { WeatherImpactModal } from '../modals/WeatherImpactModal';
+import { ProjectManagerDashboard } from './ProjectManagerDashboard';
 
 interface HomeScreenProps {
   projects: Project[];
   tasks: Task[];
+  dailyLogs?: DailyLogItem[];
+  punchItems?: PunchItem[];
+  changeOrders?: ChangeOrder[];
+  subcontractors?: Subcontractor[];
   onSelectProject: (project: Project) => void;
   onOpenProjects: () => void;
   onOpenLatti: (query?: string) => void;
   onOpenTask: (task: Task) => void;
-  onOpenTasks: () => void;
+  onOpenTasks: (projectId?: string) => void;
   onOpenCalendar?: (date?: string) => void;
   onOpenBudget?: (project: Project) => void;
   onOpenBudgetsHub?: () => void;
   onOpenDailyLogs?: () => void;
+  onOpenPunchList?: () => void;
   onOpenApprovePayApp?: () => void;
   onOpenLienWaiver?: () => void;
+  onOpenCreateDraw?: () => void;
+  onCreateTask?: () => void;
+  onCreatePunch?: () => void;
+  onCreateChangeOrder?: () => void;
   currentRole?: UserRole;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   projects,
   tasks,
+  dailyLogs = [],
+  punchItems = [],
+  changeOrders = [],
+  subcontractors = [],
   onSelectProject,
   onOpenProjects,
   onOpenLatti,
@@ -40,15 +54,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenBudget,
   onOpenBudgetsHub,
   onOpenDailyLogs,
+  onOpenPunchList,
   onOpenApprovePayApp,
   onOpenLienWaiver,
+  onOpenCreateDraw,
+  onCreateTask,
+  onCreatePunch,
+  onCreateChangeOrder,
   currentRole = 'admin',
 }) => {
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
+  const [isRiskAuditModalOpen, setIsRiskAuditModalOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<{ id: string; vendor: string; amount: string; desc: string; date: string; csiCode: string; retainage: string; lienWaiverStatus: string } | null>(null);
+  const [selectedCrew, setSelectedCrew] = useState<{ id: string; trade: string; count: string; task: string; status: string; foreman: string; phone: string; zone: string; safetyTailgate: boolean } | null>(null);
   const [approvedInvoices, setApprovedInvoices] = useState<string[]>([]);
   const [financeProjectFilter, setFinanceProjectFilter] = useState<'all' | 'variance' | 'draws'>('all');
   const [financeToast, setFinanceToast] = useState<string | null>(null);
-  const [checkedFieldPunch, setCheckedFieldPunch] = useState<string[]>(['fp-1']);
+  const [checkedFieldPunch, setCheckedFieldPunch] = useState<string[]>(['c-1', 'c-2', 'c-3']);
+  const [fieldToast, setFieldToast] = useState<string | null>(null);
   const snellProject = projects.find(p => p.id === 'proj-1') || projects[0];
 
   const todayDateFormatted = 'Fri, Sep 5, 2026';
@@ -195,7 +218,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Executive Capital Health Card */}
         <div 
-          onClick={onOpenBudgetsHub}
+          onClick={() => setIsRiskAuditModalOpen(true)}
           className="p-3 sm:p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2 group"
         >
           {/* Header row */}
@@ -234,27 +257,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           {/* Bar Legend */}
-          <div className="flex items-center gap-5 pt-0.5">
+          <div className="flex items-center justify-between pt-1">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#1677FF] shrink-0" />
-              <div className="flex flex-col">
-                <span className="text-[10px] text-[#64748B] font-medium leading-none">Paid</span>
-                <span className="text-[10px] font-bold text-[#0F172A] leading-tight mt-0.5">48%</span>
-              </div>
+              <span className="text-[11px] text-[#64748B] font-medium">Paid</span>
+              <span className="text-[11px] font-bold text-[#0F172A]">48%</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#60A5FA] shrink-0" />
-              <div className="flex flex-col">
-                <span className="text-[10px] text-[#64748B] font-medium leading-none">Committed</span>
-                <span className="text-[10px] font-bold text-[#0F172A] leading-tight mt-0.5">35%</span>
-              </div>
+              <span className="text-[11px] text-[#64748B] font-medium">Committed</span>
+              <span className="text-[11px] font-bold text-[#0F172A]">35%</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#BAE6FD] shrink-0" />
-              <div className="flex flex-col">
-                <span className="text-[10px] text-[#64748B] font-medium leading-none">Contingency</span>
-                <span className="text-[10px] font-bold text-[#0F172A] leading-tight mt-0.5">17%</span>
-              </div>
+              <span className="text-[11px] text-[#64748B] font-medium">Contingency</span>
+              <span className="text-[11px] font-bold text-[#0F172A]">17%</span>
             </div>
           </div>
         </div>
@@ -283,7 +300,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           <div className="flex items-center gap-2 pt-0.5">
             <button 
-              onClick={() => onOpenBudgetsHub ? onOpenBudgetsHub() : null}
+              onClick={() => setIsRiskAuditModalOpen(true)}
               className="h-8 px-3.5 rounded-full bg-[#F1F6FE] hover:bg-[#E5EFFF] border border-[#DCE8F8] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
             >
               <FileText className="w-3.5 h-3.5" />
@@ -323,628 +340,397 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
         </div>
 
+        {/* Weather Impact Modal */}
+        {isWeatherModalOpen && (
+          <WeatherImpactModal
+            isOpen={isWeatherModalOpen}
+            onClose={() => setIsWeatherModalOpen(false)}
+            project={snellProject}
+            onOpenSchedule={() => {
+              setIsWeatherModalOpen(false);
+              if (onOpenCalendar) onOpenCalendar('2026-09-06');
+            }}
+            onOpenDailyLog={() => {
+              setIsWeatherModalOpen(false);
+              if (onOpenDailyLogs) onOpenDailyLogs();
+            }}
+          />
+        )}
+
+        {/* Executive Risk Audit Modal */}
+        {isRiskAuditModalOpen && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-white w-full max-w-md rounded-3xl border border-[#E2E8F0] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up">
+              {/* Header */}
+              <div className="p-4 sm:p-5 border-b border-[#F1F5F9] flex items-center justify-between bg-gradient-to-r from-[#F8FAFC] to-white">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-[#FFF7E6] text-[#D97706] flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-[#0F172A] leading-tight">Executive Risk Audit</h3>
+                    <p className="text-xs text-[#64748B] mt-0.5">Snell Isle Residence · Phase 2 Variance</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsRiskAuditModalOpen(false)}
+                  className="w-8 h-8 rounded-full hover:bg-[#F1F5F9] text-[#64748B] flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
+                {/* 3 Metric Pills */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] text-center">
+                    <span className="text-[10px] text-[#64748B] font-semibold block uppercase">CSI Code</span>
+                    <span className="text-xs font-bold text-[#0F172A] mt-0.5 block">03 30 00</span>
+                  </div>
+                  <div className="bg-[#FFF0F0] p-2.5 rounded-xl border border-[#FEE2E2] text-center">
+                    <span className="text-[10px] text-[#E5484D] font-semibold block uppercase">Variance</span>
+                    <span className="text-xs font-bold text-[#E5484D] mt-0.5 block">+$14,200 (+8%)</span>
+                  </div>
+                  <div className="bg-[#E9F9F3] p-2.5 rounded-xl border border-[#D1FADF] text-center">
+                    <span className="text-[10px] text-[#10A976] font-semibold block uppercase">Contingency</span>
+                    <span className="text-xs font-bold text-[#10A976] mt-0.5 block">$185k Reserve</span>
+                  </div>
+                </div>
+
+                {/* Audit Narrative */}
+                <div className="bg-[#F8FAFC] rounded-2xl p-3.5 border border-[#E2E8F0] space-y-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#1677FF] block">
+                    Root Cause Analysis
+                  </span>
+                  <p className="text-xs text-[#334155] leading-relaxed">
+                    Cast-in-Place concrete pier depths were revised from 18ft to 24ft due to waterfront sandy subsoil testing by Madrid CPWG geotechnical engineers. 6 additional helical micropiles were installed to reach load-bearing limestone.
+                  </p>
+                </div>
+
+                {/* Mitigation & Protection */}
+                <div className="bg-[#EAF3FF]/40 rounded-2xl p-3.5 border border-[#DCE8F8] space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-[#1677FF]" />
+                    <span className="text-xs font-bold text-[#1677FF]">Contingency Absorption</span>
+                  </div>
+                  <p className="text-xs text-[#334155] leading-relaxed">
+                    This $14,200 variance is 100% absorbed by Snell Isle Phase 1 contingency savings ($185,000 available). Owner capital balance remains fully protected with zero schedule slippage.
+                  </p>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-4 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-end gap-2">
+                <button
+                  onClick={() => setIsRiskAuditModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:bg-[#E2E8F0]/60 transition-all cursor-pointer"
+                >
+                  Dismiss
+                </button>
+                <button
+                  onClick={() => {
+                    setIsRiskAuditModalOpen(false);
+                    if (onOpenBudgetsHub) onOpenBudgetsHub();
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#1677FF] hover:bg-[#0F5FD7] transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
+                >
+                  <DollarSign className="w-3.5 h-3.5" />
+                  <span>Inspect Budget Ledger</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     );
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 2. PROJECT MANAGER DASHBOARD (Sarah Johnson)
+  // 2. PROJECT MANAGER DASHBOARD (Sarah Johnson - 10 Yrs Experience)
   // ─────────────────────────────────────────────────────────────
   if (currentRole === 'pm') {
     return (
-      <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
-        
-        {/* Context Bar */}
-        <div className="flex items-center justify-between pt-0.5">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-[11px] text-[#64748B] font-semibold uppercase tracking-wider">
-              Project Delivery & Milestones
-            </span>
-          </div>
-          <span className="text-xs font-semibold text-[#64748B]">{todayDateFormatted}</span>
-        </div>
-
-        {/* 3 PM Operational KPIs */}
-        <div className="grid grid-cols-3 gap-2.5">
-          <div 
-            onClick={onOpenTasks}
-            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
-          >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-              <CheckSquare className="w-3.5 h-3.5" />
-            </div>
-            <div>
-              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-                {activeTasks.length} Tasks
-              </span>
-              <span className="text-[10px] text-[#64748B] font-medium block truncate">
-                Due This Week
-              </span>
-            </div>
-            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full w-fit max-w-full truncate ${
-              overdueTasksCount > 0 ? 'bg-[#FFF0F0] text-[#E5484D]' : 'bg-[#E9F9F3] text-[#10A976]'
-            }`}>
-              {overdueTasksCount > 0 ? `${overdueTasksCount} overdue` : 'On track'}
-            </span>
-          </div>
-
-          <div 
-            onClick={() => onOpenCalendar ? onOpenCalendar('2026-09-06') : onOpenTasks()}
-            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
-          >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-              <Calendar className="w-3.5 h-3.5" />
-            </div>
-            <div>
-              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-                3 Milestones
-              </span>
-              <span className="text-[10px] text-[#64748B] font-medium block truncate">
-                Critical Path
-              </span>
-            </div>
-            <span className="text-[10px] text-[#1677FF] font-semibold bg-[#EAF3FF] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-              Next: Tomorrow
-            </span>
-          </div>
-
-          <div 
-            onClick={onOpenProjects}
-            className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
-          >
-            <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-              <FileText className="w-3.5 h-3.5" />
-            </div>
-            <div>
-              <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-                4 Submittals
-              </span>
-              <span className="text-[10px] text-[#64748B] font-medium block truncate">
-                Open Reviews
-              </span>
-            </div>
-            <span className="text-[10px] text-[#F59E0B] font-semibold bg-[#FFF7E6] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-              2 Awaiting PM
-            </span>
-          </div>
-        </div>
-
-        {/* Milestone Focus Alert */}
-        <div 
-          onClick={() => onOpenCalendar ? onOpenCalendar('2026-09-06') : onOpenTasks()}
-          className="p-4 rounded-2xl bg-gradient-to-br from-[#1677FF] to-[#0958D9] text-white shadow-card cursor-pointer hover:shadow-lg transition-all"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full">
-              Tomorrow · 10:00 AM
-            </span>
-            <span className="text-xs font-semibold text-white/90">Snell Isle Residence</span>
-          </div>
-          <h3 className="text-base font-bold mt-2 leading-tight">
-            City Structural Framing & Shear Inspection
-          </h3>
-          <p className="text-xs text-white/80 mt-1 leading-relaxed">
-            Inspector Frank Rodriguez confirmed. Checklist is 92% complete. Hurricane strap schedule pending final verification.
-          </p>
-          <div className="mt-3 flex items-center justify-between border-t border-white/20 pt-2.5 text-xs font-semibold">
-            <span>View Inspection Checklist</span>
-            <ArrowRight className="w-4 h-4" />
-          </div>
-        </div>
-
-        {/* Today's Schedule & Action Items */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between px-0.5">
-            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Today's Field Agenda</h2>
-            <button onClick={() => onOpenCalendar ? onOpenCalendar() : onOpenTasks()} className="text-xs font-semibold text-[#1677FF] hover:underline">
-              Full Schedule
-            </button>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
-            {[
-              { time: '10:00 AM', title: 'Pre-Pour Rebar Walkthrough', loc: 'Snell Isle · Grid A-D', badge: 'Completed', color: 'text-emerald-600 bg-emerald-50' },
-              { time: '01:30 PM', title: 'MEP Coordination Sub-Tier Meeting', loc: 'Virtual / Field Office', badge: 'In Progress', color: 'text-blue-600 bg-blue-50' },
-              { time: '04:00 PM', title: 'Submittal Sign-off: Impact Glazing', loc: 'Downtown Tower', badge: 'Pending', color: 'text-amber-600 bg-amber-50' },
-            ].map((item, idx) => (
-              <div key={idx} className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="text-xs font-bold text-[#64748B] w-16 shrink-0">{item.time}</span>
-                  <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-[#0F172A] truncate">{item.title}</h4>
-                    <p className="text-[11px] text-[#64748B] truncate mt-0.5">{item.loc}</p>
-                  </div>
-                </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${item.color}`}>
-                  {item.badge}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── PM Active Projects Delivery Pipeline (PM Project User Flow) ── */}
-        <div className="flex flex-col gap-2.5">
-          <div className="flex items-center justify-between px-0.5">
-            <div>
-              <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Projects Delivery</h2>
-              <p className="text-[11px] text-[#64748B]">Tap to manage tasks, stages & trade schedules</p>
-            </div>
-            <button onClick={onOpenProjects} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5">
-              <span>See all ({projects.length})</span>
-              <ChevronRight className="w-3 h-3" />
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {projects.slice(0, 3).map((p) => {
-              const projTasks = tasks.filter(t => t.projectId === p.id);
-              const doneCount = projTasks.filter(t => t.status === 'Completed').length;
-              const totalCount = projTasks.length || 12;
-              const pct = Math.round((doneCount / totalCount) * 100);
-
-              let milestoneNotice = 'Pre-Pour Inspection: Tomorrow 10:00 AM';
-              let submittalNotice = '2 Submittals Awaiting Sign-off';
-              if (p.id === 'proj-2') {
-                milestoneNotice = 'Framing Inspection: Sep 14';
-                submittalNotice = 'All Submittals Approved ✓';
-              } else if (p.id === 'proj-3') {
-                milestoneNotice = 'MEP Rough-in Review: Sep 18';
-                submittalNotice = '1 Submittal Under Review';
-              }
-
-              return (
-                <div
-                  key={p.id}
-                  className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#1677FF]/50 shadow-card p-4 transition-all duration-200 flex flex-col gap-3 group"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3
-                          onClick={() => onSelectProject(p)}
-                          className="text-sm font-bold text-[#0F172A] hover:text-[#1677FF] cursor-pointer truncate transition-colors"
-                        >
-                          {p.name}
-                        </h3>
-                        <span className="text-[10px] font-bold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-md shrink-0">
-                          {p.code || 'JOB-101'}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-[#64748B] truncate mt-0.5">{p.location} · Lead PM: Sarah Johnson</p>
-                    </div>
-
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20 shrink-0">
-                      {p.status}
-                    </span>
-                  </div>
-
-                  {/* Task Completion Bar */}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-xs font-semibold">
-                      <span className="text-[#64748B]">Task Progress:</span>
-                      <span className="text-[#0F172A] font-bold">
-                        {doneCount}/{totalCount} Completed ({pct}%)
-                      </span>
-                    </div>
-                    <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#1677FF] rounded-full transition-all duration-500"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Operational Vitals */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#F1F5F9] text-[11px]">
-                    <div className="flex items-center gap-1.5 text-[#0F172A] truncate">
-                      <Calendar className="w-3.5 h-3.5 text-[#1677FF] shrink-0" />
-                      <span className="font-semibold truncate">{milestoneNotice}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[#64748B] truncate justify-end">
-                      <FileText className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                      <span className="font-semibold text-amber-700 truncate">{submittalNotice}</span>
-                    </div>
-                  </div>
-
-                  {/* PM Project User Flow Actions */}
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <button
-                      onClick={() => onSelectProject(p)}
-                      className="h-9 px-3 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-xs"
-                    >
-                      <CheckSquare className="w-3.5 h-3.5" />
-                      <span>Tasks & Stages</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        if (onOpenCalendar) onOpenCalendar('2026-09-06');
-                        else onSelectProject(p);
-                      }}
-                      className="h-9 px-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:text-[#1677FF] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-2xs"
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>Gantt Schedule</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-      </div>
+      <ProjectManagerDashboard
+        projects={projects}
+        tasks={tasks}
+        dailyLogs={dailyLogs}
+        punchItems={punchItems}
+        changeOrders={changeOrders}
+        subcontractors={subcontractors}
+        onSelectProject={onSelectProject}
+        onOpenProjects={onOpenProjects}
+        onOpenLatti={onOpenLatti}
+        onOpenTask={onOpenTask}
+        onOpenTasks={onOpenTasks}
+        onOpenCalendar={onOpenCalendar}
+        onOpenDailyLogs={onOpenDailyLogs}
+        onOpenPunchList={onOpenPunchList}
+        onCreateTask={onCreateTask}
+        onCreatePunch={onCreatePunch}
+        onCreateChangeOrder={onCreateChangeOrder}
+      />
     );
   }
 
   // ─────────────────────────────────────────────────────────────
-  // ─────────────────────────────────────────────────────────────
-  // 3. FINANCE / CONTROLLER DASHBOARD & PROJECT USER FLOW (Michael Chang)
+  // 3. FINANCE DIRECTOR DASHBOARD (Michael Chang)
   // ─────────────────────────────────────────────────────────────
   if (currentRole === 'finance') {
-    // Filter projects according to financial status
-    const filteredFinanceProjects = projects.filter(p => {
-      if (financeProjectFilter === 'variance') {
-        return p.id === 'proj-1' || p.id === 'proj-2';
-      }
-      if (financeProjectFilter === 'draws') {
-        return p.id === 'proj-1' || p.id === 'proj-3';
-      }
-      return true;
-    });
-
-    const triggerFinanceToast = (msg: string) => {
-      setFinanceToast(msg);
-      setTimeout(() => setFinanceToast(null), 3000);
-    };
+    const pendingInvoicesCount = Math.max(0, 3 - approvedInvoices.length);
 
     return (
-      <div className="w-full flex-1 flex flex-col gap-4 px-4 sm:px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
+      <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
         
-        {/* Floating Finance Action Toast */}
+        {/* Toast Notification */}
         {financeToast && (
-          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-[#0F172A] text-white px-4 py-2.5 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-2 text-xs font-semibold animate-fade-in">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-[#0F172A] text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 border border-slate-700 animate-slide-in">
+            <CheckCircle2 className="w-4 h-4 text-[#10A976]" />
             <span>{financeToast}</span>
           </div>
         )}
 
-        {/* ── Header Context Bar ── */}
-        <div className="flex items-center justify-between pt-0.5">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse ring-4 ring-emerald-50 shrink-0" />
-            <div>
-              <span className="text-[11px] text-[#0F172A] font-bold uppercase tracking-wider block leading-tight">
-                Capital Control & Job Costing
+        {/* ── 1. HERO CARD: AIA G702 CYCLE FOCUS ── */}
+        <div 
+          onClick={onOpenBudgetsHub}
+          className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F4F8FF] to-white p-4 sm:p-5 shadow-xs hover:border-[#1677FF]/40 transition-all cursor-pointer group"
+        >
+          <div className="flex items-start justify-between gap-3">
+            {/* Left: Focus & Live Status */}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
+                  Finance Focus
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#10A976] whitespace-nowrap shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#10A976] animate-pulse" />
+                  Draw #04 In Review
+                </span>
+              </div>
+
+              <div className="mt-1.5">
+                <h2 className="text-base sm:text-lg font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors tracking-tight truncate leading-snug">
+                  AIA G702 Pay App Cycle
+                </h2>
+                <p className="text-xs text-[#64748B] font-medium mt-0.5 truncate leading-snug">
+                  Snell Isle Residence · Lender inspector review Friday
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Date & Weather Pill */}
+            <div className="flex flex-col items-end shrink-0">
+              <span className="text-xs font-semibold text-[#0F172A]">
+                {todayDateFormatted}
               </span>
-              <span className="text-[10px] text-[#64748B] font-medium">AIA G702 Cycle · Sep 2026</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsWeatherModalOpen(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white border border-[#DCE8F8] text-xs font-medium transition-all cursor-pointer shadow-xs active:scale-95 group/w"
+                title="View site conditions"
+              >
+                <Sun className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
+                <span className="font-bold text-[#0F172A]">82°F</span>
+                <span className="text-[#64748B] text-[11px]">Sunny</span>
+              </button>
             </div>
           </div>
-          <span className="text-xs font-semibold text-[#64748B]">{todayDateFormatted}</span>
         </div>
 
-        {/* ── 1. PORTFOLIO CAPITAL ALLOCATION HERO MATRIX ── */}
-        <div className="bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white rounded-3xl p-5 shadow-xl border border-slate-800 relative overflow-hidden">
-          {/* Subtle Ambient Backlight Glow */}
-          <div className="absolute -top-16 -right-16 w-44 h-44 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="flex items-center justify-between gap-2 relative z-10">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-xl bg-white/10 flex items-center justify-center text-emerald-400">
-                <Landmark className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-semibold text-slate-300">Portfolio Capital Committed</span>
+        {/* ── 2. EXACT 3 FINANCE KPIS ── */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+          <div 
+            onClick={onOpenBudgetsHub}
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <Receipt className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              4 Active Contracts
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+                Total Invoiced
+              </span>
+              <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+                $16.82M
+              </span>
+            </div>
+          </div>
+
+          <div 
+            onClick={onOpenBudgetsHub}
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <Clock className="w-3.5 h-3.5" />
+            </div>
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+                Pending AP
+              </span>
+              <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+                $133.1K
+              </span>
+            </div>
+          </div>
+
+          <div 
+            onClick={() => onOpenCreateDraw ? onOpenCreateDraw() : (onOpenBudgetsHub ? onOpenBudgetsHub() : null)}
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
+          >
+            <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+              <Landmark className="w-3.5 h-3.5" />
+            </div>
+            <div className="mt-2">
+              <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+                Bank Draws
+              </span>
+              <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+                Draw #04
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 3. PORTFOLIO CAPITAL COMMITTED CARD ── */}
+        <div 
+          onClick={onOpenBudgetsHub}
+          className="p-3 sm:p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2 group"
+        >
+          {/* Header row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+                PORTFOLIO CAPITAL COMMITTED
+              </span>
+              <Info className="w-3 h-3 text-[#94A3B8]" />
+            </div>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976]">
+              100% Balanced
             </span>
           </div>
 
-          <div className="mt-3 relative z-10">
-            <div className="flex items-baseline justify-between">
-              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          {/* Value + Circular Arrow Button */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight leading-tight">
                 $34,850,000
-              </span>
-              <span className="text-xs font-bold text-emerald-400">
-                $16.82M Invoiced (48.3%)
-              </span>
+              </h3>
+              <p className="text-[10px] sm:text-[11px] text-[#64748B] font-medium tracking-tight mt-0.5 leading-snug truncate">
+                $16.8M Paid (48%) · $12.1M Committed (35%) · $5.95M Contingency (17%)
+              </p>
             </div>
-
-            {/* Tri-Tone Capital Progress Bar */}
-            <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex gap-0.5 mt-2.5 p-0.5 border border-slate-700">
-              <div className="h-full bg-emerald-500 rounded-l-full transition-all duration-500" style={{ width: '40.7%' }} title="Paid & Disbursed: $14.2M" />
-              <div className="h-full bg-amber-400 transition-all duration-500" style={{ width: '7.6%' }} title="Pending Review: $2.62M" />
-              <div className="h-full bg-slate-700 rounded-r-full transition-all duration-500" style={{ width: '51.7%' }} title="Unbilled Balance: $18.03M" />
-            </div>
-
-            <div className="flex items-center justify-between text-[10px] font-semibold text-slate-400 mt-2">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Disbursed $14.2M
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" /> In Review $2.62M
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-slate-600 inline-block" /> Unbilled $18.0M
-              </span>
+            <div className="w-7 h-7 rounded-full bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center group-hover:bg-[#1677FF] group-hover:text-white transition-all shrink-0">
+              <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
 
-          {/* 3 Capital Vitals Strip */}
-          <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-700/80 relative z-10">
-            <div className="flex flex-col">
-              <span className="text-[10px] text-slate-400 font-medium">Retainage Escrow</span>
-              <span className="text-sm font-bold text-white mt-0.5 tracking-tight">$1,240,000</span>
-              <span className="text-[9px] text-emerald-400 font-semibold">10% Standard Held</span>
+          {/* Segmented Continuous Progress Bar */}
+          <div className="w-full h-2 rounded-full bg-[#F1F5F9] overflow-hidden flex gap-0.5 mt-0.5">
+            <div className="h-full bg-[#1677FF] rounded-l-full" style={{ width: '48%' }} />
+            <div className="h-full bg-[#60A5FA]" style={{ width: '35%' }} />
+            <div className="h-full bg-[#BAE6FD] rounded-r-full" style={{ width: '17%' }} />
+          </div>
+
+          {/* Bar Legend - Clean justify-between inline alignment */}
+          <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#1677FF] shrink-0" />
+              <span className="text-[11px] text-[#64748B] font-medium">Paid</span>
+              <span className="text-[11px] font-bold text-[#0F172A]">48%</span>
             </div>
-            <div className="flex flex-col border-x border-slate-700/80 px-2">
-              <span className="text-[10px] text-slate-400 font-medium">30-Day Outflow</span>
-              <span className="text-sm font-bold text-amber-300 mt-0.5 tracking-tight">$890,000</span>
-              <span className="text-[9px] text-slate-400 font-semibold">Draw #4 Anticipated</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#60A5FA] shrink-0" />
+              <span className="text-[11px] text-[#64748B] font-medium">Committed</span>
+              <span className="text-[11px] font-bold text-[#0F172A]">35%</span>
             </div>
-            <div className="flex flex-col pl-1">
-              <span className="text-[10px] text-slate-400 font-medium">Contingency Pool</span>
-              <span className="text-sm font-bold text-white mt-0.5 tracking-tight">$1,450,000</span>
-              <span className="text-[9px] text-emerald-400 font-semibold">92% Unbroken</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#BAE6FD] shrink-0" />
+              <span className="text-[11px] text-[#64748B] font-medium">Contingency</span>
+              <span className="text-[11px] font-bold text-[#0F172A]">17%</span>
             </div>
           </div>
         </div>
 
-        {/* ── 2. QUICK ACTIONS TRIO ── */}
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={onOpenApprovePayApp}
-            className="p-3 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:bg-[#F8FAFC] flex flex-col items-center justify-center text-center gap-1.5 shadow-xs transition-all cursor-pointer group active:scale-[0.98]"
+        {/* ── 4. QUICK FINANCIAL ACTIONS (Lender Draws, Lien Waivers & Disbursals) ── */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+          <button 
+            onClick={onOpenCreateDraw}
+            className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
           >
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center group-hover:scale-105 transition-transform shadow-2xs">
-              <Receipt className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-bold text-[#0F172A] leading-tight">Pay Application</span>
-            <span className="text-[9px] font-semibold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">3 Pending</span>
+            <Landmark className="w-3.5 h-3.5 text-[#1677FF]" />
+            <span className="truncate">Lender Draw</span>
           </button>
-
-          <button
+          <button 
             onClick={onOpenLienWaiver}
-            className="p-3 rounded-2xl bg-white border border-[#E2E8F0] hover:border-emerald-500 hover:bg-[#F8FAFC] flex flex-col items-center justify-center text-center gap-1.5 shadow-xs transition-all cursor-pointer group active:scale-[0.98]"
+            className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
           >
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform shadow-2xs">
-              <ShieldCheck className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-bold text-[#0F172A] leading-tight">Lien Waiver Audit</span>
-            <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Record New</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-[#1677FF]" />
+            <span className="truncate">Lien Waivers</span>
           </button>
-
-          <button
-            onClick={onOpenBudgetsHub}
-            className="p-3 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:bg-[#F8FAFC] flex flex-col items-center justify-center text-center gap-1.5 shadow-xs transition-all cursor-pointer group active:scale-[0.98]"
+          <button 
+            onClick={onOpenApprovePayApp}
+            className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
           >
-            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-105 transition-transform shadow-2xs">
-              <FileSpreadsheet className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-bold text-[#0F172A] leading-tight">CSI MasterFormat</span>
-            <span className="text-[9px] font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full">50 Divisions</span>
+            <FileCheck className="w-3.5 h-3.5 text-[#1677FF]" />
+            <span className="truncate">Pay Apps</span>
           </button>
         </div>
 
-        {/* ── 3. PROJECT FINANCIAL USER FLOW (Active Projects with Financial Health) ── */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between px-0.5">
-            <div>
-              <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Project Financial Portfolios</h2>
-              <p className="text-[11px] text-[#64748B]">Tap any project to inspect budget & cost code ledgers</p>
-            </div>
-            <button 
-              onClick={onOpenProjects}
-              className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5"
-            >
-              <span>See all ({projects.length})</span>
-              <ChevronRight className="w-3 h-3" />
-            </button>
-          </div>
-
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 bg-[#F1F5F9] p-1 rounded-xl border border-[#E2E8F0]">
-            <button
-              onClick={() => setFinanceProjectFilter('all')}
-              className={`flex-1 py-1 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-                financeProjectFilter === 'all'
-                  ? 'bg-white text-[#0F172A] shadow-xs'
-                  : 'text-[#64748B] hover:text-[#0F172A]'
-              }`}
-            >
-              All Projects ({projects.length})
-            </button>
-            <button
-              onClick={() => setFinanceProjectFilter('variance')}
-              className={`flex-1 py-1 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-                financeProjectFilter === 'variance'
-                  ? 'bg-white text-[#EF4444] shadow-xs'
-                  : 'text-[#64748B] hover:text-[#EF4444]'
-              }`}
-            >
-              Cost Alerts (2)
-            </button>
-            <button
-              onClick={() => setFinanceProjectFilter('draws')}
-              className={`flex-1 py-1 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-                financeProjectFilter === 'draws'
-                  ? 'bg-white text-[#1677FF] shadow-xs'
-                  : 'text-[#64748B] hover:text-[#1677FF]'
-              }`}
-            >
-              Active Draws (2)
-            </button>
-          </div>
-
-          {/* Dedicated Project Financial Cards List */}
-          <div className="flex flex-col gap-3">
-            {filteredFinanceProjects.map((proj) => {
-              const totalB = proj.budget?.total || 10500000;
-              const spentB = proj.budget?.actual || proj.budget?.paid || Math.round(totalB * 0.49);
-              const pct = Math.min(100, Math.round((spentB / totalB) * 100));
-
-              // Specific financial profile per project
-              let varianceLabel = 'On Plan (±0.0%)';
-              let varianceBadgeClass = 'bg-slate-100 text-slate-700 border-slate-200';
-              let drawInfo = 'Draw #2: Approved ($380K)';
-              let lienStatus = '100% Lien Waivers On File ✓';
-
-              if (proj.id === 'proj-1') {
-                varianceLabel = '+$14.2K Over (Div 03 Concrete)';
-                varianceBadgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
-                drawInfo = 'Draw #4: $410K Pending Inspection';
-                lienStatus = '12/12 Waivers Cleared ✓';
-              } else if (proj.id === 'proj-2') {
-                varianceLabel = '-$8.5K Under (Div 06 Framing)';
-                varianceBadgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-                drawInfo = 'Draw #3: $520K Funded';
-                lienStatus = '8/8 Waivers Cleared ✓';
-              } else if (proj.id === 'proj-3') {
-                varianceLabel = 'On Target (0.2% Contingency)';
-                varianceBadgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
-                drawInfo = 'Draw #1: $290K Funded';
-                lienStatus = '1 Pending Sub Waiver';
-              }
-
-              return (
-                <div 
-                  key={proj.id}
-                  className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#1677FF]/50 shadow-card p-4 transition-all duration-200 flex flex-col gap-3 group"
-                >
-                  {/* Card Header */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 
-                          onClick={() => onOpenBudget ? onOpenBudget(proj) : onSelectProject(proj)}
-                          className="text-sm font-bold text-[#0F172A] hover:text-[#1677FF] cursor-pointer truncate transition-colors"
-                        >
-                          {proj.name}
-                        </h3>
-                        <span className="text-[10px] font-bold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-md shrink-0">
-                          {proj.code || 'JOB-101'}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-[#64748B] truncate mt-0.5">{proj.location} · {proj.clientName || 'Private Client'}</p>
-                    </div>
-
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border shrink-0 ${varianceBadgeClass}`}>
-                      {varianceLabel}
-                    </span>
-                  </div>
-
-                  {/* Financial Bar */}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-xs font-semibold">
-                      <span className="text-[#64748B]">Invoiced to Date:</span>
-                      <span className="text-[#0F172A] font-bold">
-                        ${(spentB / 1000000).toFixed(2)}M <span className="text-[#64748B] font-normal">/ ${(totalB / 1000000).toFixed(2)}M</span> ({pct}%)
-                      </span>
-                    </div>
-                    <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          proj.id === 'proj-1' ? 'bg-rose-500' : 'bg-[#1677FF]'
-                        }`}
-                        style={{ width: `${pct}%` }} 
-                      />
-                    </div>
-                  </div>
-
-                  {/* Vitals Strip */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#F1F5F9] text-[11px]">
-                    <div className="flex items-center gap-1.5 text-[#0F172A] truncate">
-                      <Receipt className="w-3.5 h-3.5 text-[#1677FF] shrink-0" />
-                      <span className="font-semibold truncate">{drawInfo}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[#0F172A] truncate justify-end">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span className="font-semibold text-emerald-700 truncate">{lienStatus}</span>
-                    </div>
-                  </div>
-
-                  {/* Direct Finance User Flow Action Buttons */}
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <button
-                      onClick={() => onOpenBudget ? onOpenBudget(proj) : onSelectProject(proj)}
-                      className="h-9 px-3 rounded-xl bg-[#EAF3FF] hover:bg-[#dbeafe] text-[#1677FF] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95"
-                    >
-                      <DollarSign className="w-3.5 h-3.5" />
-                      <span>Inspect Budget</span>
-                    </button>
-
-                    <button
-                      onClick={onOpenApprovePayApp}
-                      className="h-9 px-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:text-[#1677FF] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-2xs"
-                    >
-                      <FileCheck className="w-3.5 h-3.5" />
-                      <span>Review Pay App</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ── 4. TRADE INVOICE APPROVAL QUEUE (Accounts Payable) ── */}
+        {/* ── 5. TRADE INVOICE APPROVAL QUEUE (Compact Divider List, ZERO Card Bloat) ── */}
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between px-0.5">
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Trade Invoices Needing Approval</h2>
-              <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                3 Pending
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Trade Invoices Needing Approval</h2>
+              <span className="text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] px-2 py-0.5 rounded-full">
+                {pendingInvoicesCount} Pending
               </span>
             </div>
-            <button onClick={onOpenBudgetsHub} className="text-xs font-semibold text-[#1677FF] hover:underline">
-              Ledger Hub
+            <button onClick={onOpenBudgetsHub} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer">
+              <span>Ledger</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
           <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
             {[
-              { id: 'inv-1', vendor: 'Apex Concrete Masters', amount: '$84,200', desc: 'Pay App #04 · STEM Walls & Footings', date: 'Due Sep 8', lien: 'Conditional Lien Attached' },
-              { id: 'inv-2', vendor: '84 Lumber Building Materials', amount: '$36,500', desc: 'Package delivery #2 · Framing lumber', date: 'Due Sep 10', lien: 'Lien Waiver Verified ✓' },
-              { id: 'inv-3', vendor: 'Sunbelt Equipment Rentals', amount: '$12,400', desc: '50-Ton Mobile Crane rental', date: 'Due Sep 12', lien: 'Awaiting Sub Waiver' },
+              { id: 'inv-1', vendor: 'Apex Concrete Masters', amount: '$84,200', desc: 'Pay App #04 · STEM Walls & Footings', date: 'Due Sep 8', csiCode: '03 30 00 Cast-in-Place Concrete', retainage: '$8,420 (10%)', lienWaiverStatus: 'Progress Conditional on File' },
+              { id: 'inv-2', vendor: '84 Lumber Building Materials', amount: '$36,500', desc: 'Package delivery #2 · Framing lumber', date: 'Due Sep 10', csiCode: '06 11 00 Wood Framing & Trusses', retainage: '$3,650 (10%)', lienWaiverStatus: 'Materialman Release Stamped' },
+              { id: 'inv-3', vendor: 'Sunbelt Equipment Rentals', amount: '$12,400', desc: '50-Ton Mobile Crane rental', date: 'Due Sep 12', csiCode: '01 54 00 Construction Equipment', retainage: '$0 (Net 30)', lienWaiverStatus: 'Rental Release Attached' },
             ].map((inv) => {
               const isApproved = approvedInvoices.includes(inv.id);
               return (
-                <div key={inv.id} className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors">
+                <div 
+                  key={inv.id} 
+                  onClick={() => setSelectedInvoice(inv)}
+                  className="p-3 sm:p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
+                >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-xs font-bold text-[#0F172A] truncate">{inv.vendor}</h4>
-                      <span className="text-xs font-black text-[#0F172A]">{inv.amount}</span>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">{inv.vendor}</h4>
+                      <span className="text-xs font-bold text-[#0F172A] shrink-0">{inv.amount}</span>
                     </div>
                     <p className="text-[11px] text-[#64748B] truncate mt-0.5">
                       {inv.desc} · <span className="text-[#D97706] font-medium">{inv.date}</span>
                     </p>
-                    <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1 mt-1">
-                      <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                      {inv.lien}
-                    </span>
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
-                      onClick={onOpenApprovePayApp}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#F8FAFC] hover:bg-[#F1F5F9] border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] transition-all cursor-pointer"
-                    >
-                      Details
-                    </button>
-                    <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         if (!isApproved) {
                           setApprovedInvoices(prev => [...prev, inv.id]);
-                          triggerFinanceToast(`Invoice from ${inv.vendor} approved for payment!`);
+                          setFinanceToast(`✓ Invoice from ${inv.vendor} approved for payment!`);
+                          setTimeout(() => setFinanceToast(null), 3000);
                         }
                       }}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer active:scale-95 shrink-0 ${
+                      className={`h-7 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                         isApproved 
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default' 
-                          : 'bg-[#1677FF] hover:bg-[#0958D9] text-white shadow-xs'
+                          ? 'bg-[#E9F9F3] text-[#10A976] cursor-default' 
+                          : 'bg-[#1677FF] hover:bg-[#0F5FD7] text-white shadow-xs'
                       }`}
                     >
                       {isApproved ? 'Approved ✓' : 'Approve'}
@@ -956,78 +742,141 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
         </div>
 
-        {/* ── 5. FLAGSHIP AIA G702 / G703 DRAW PROGRESSION (Snell Isle) ── */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card p-4 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center">
-                <FileText className="w-4 h-4" />
+        {/* ── 6. ACTIVE PROJECTS MULTI-PROJECT ROLLUP ── */}
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-center justify-between px-0.5">
+            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Active Projects</h2>
+            <button 
+              onClick={onOpenProjects} 
+              className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <span>See all ({projects.length})</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-2.5">
+            {projects.map((p) => (
+              <ProjectCard
+                key={p.id}
+                project={p}
+                onClick={() => onSelectProject(p)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Weather Impact Modal */}
+        {isWeatherModalOpen && (
+          <WeatherImpactModal
+            isOpen={isWeatherModalOpen}
+            onClose={() => setIsWeatherModalOpen(false)}
+            project={snellProject}
+            onOpenSchedule={() => {
+              setIsWeatherModalOpen(false);
+              if (onOpenCalendar) onOpenCalendar('2026-09-06');
+            }}
+            onOpenDailyLog={() => {
+              setIsWeatherModalOpen(false);
+              if (onOpenDailyLogs) onOpenDailyLogs();
+            }}
+          />
+        )}
+
+        {/* Invoice Detail & ACH Approval Modal */}
+        {selectedInvoice && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-white w-full max-w-md rounded-3xl border border-[#E2E8F0] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up">
+              {/* Header */}
+              <div className="p-4 sm:p-5 border-b border-[#F1F5F9] flex items-center justify-between bg-gradient-to-r from-[#F8FAFC] to-white">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+                    <Receipt className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-[#0F172A] leading-tight">Trade Invoice Audit</h3>
+                    <p className="text-xs text-[#64748B] mt-0.5">{selectedInvoice.vendor}</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedInvoice(null)}
+                  className="w-8 h-8 rounded-full hover:bg-[#F1F5F9] text-[#64748B] flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-              <div>
-                <h3 className="text-xs font-bold text-[#0F172A]">AIA G702 Draw Schedule (Snell Isle)</h3>
-                <p className="text-[10px] text-[#64748B]">Commercial Bank Loan Draw Progression</p>
+
+              {/* Body */}
+              <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
+                {/* 3 Metric Pills */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] text-center">
+                    <span className="text-[10px] text-[#64748B] font-semibold block uppercase">Gross Billing</span>
+                    <span className="text-xs font-bold text-[#0F172A] mt-0.5 block">{selectedInvoice.amount}</span>
+                  </div>
+                  <div className="bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] text-center">
+                    <span className="text-[10px] text-[#64748B] font-semibold block uppercase">Retainage</span>
+                    <span className="text-xs font-bold text-[#0F172A] mt-0.5 block">{selectedInvoice.retainage}</span>
+                  </div>
+                  <div className="bg-[#E9F9F3] p-2.5 rounded-xl border border-[#D1FADF] text-center">
+                    <span className="text-[10px] text-[#10A976] font-semibold block uppercase">Due Date</span>
+                    <span className="text-xs font-bold text-[#10A976] mt-0.5 block">{selectedInvoice.date}</span>
+                  </div>
+                </div>
+
+                {/* Scope & CSI */}
+                <div className="bg-[#F8FAFC] rounded-2xl p-3.5 border border-[#E2E8F0] space-y-1.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block">
+                    Scope of Work & CSI Division
+                  </span>
+                  <p className="text-xs font-semibold text-[#0F172A]">{selectedInvoice.desc}</p>
+                  <p className="text-xs text-[#64748B]">{selectedInvoice.csiCode}</p>
+                </div>
+
+                {/* Compliance & Lien Waiver */}
+                <div className="bg-[#EAF3FF]/40 rounded-2xl p-3.5 border border-[#DCE8F8] space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-[#1677FF]" />
+                    <span className="text-xs font-bold text-[#1677FF]">Lien Waiver Status</span>
+                  </div>
+                  <p className="text-xs text-[#334155] leading-relaxed">
+                    {selectedInvoice.lienWaiverStatus}. Subcontractor certificate of insurance is valid through Dec 2026.
+                  </p>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-4 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-end gap-2">
+                <button
+                  onClick={() => setSelectedInvoice(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:bg-[#E2E8F0]/60 transition-all cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    const invId = selectedInvoice.id;
+                    const vendor = selectedInvoice.vendor;
+                    if (!approvedInvoices.includes(invId)) {
+                      setApprovedInvoices(prev => [...prev, invId]);
+                    }
+                    setFinanceToast(`✓ ACH Payment released for ${vendor}!`);
+                    setSelectedInvoice(null);
+                    setTimeout(() => setFinanceToast(null), 3000);
+                  }}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs flex items-center gap-1.5 ${
+                    approvedInvoices.includes(selectedInvoice.id)
+                      ? 'bg-[#E9F9F3] text-[#10A976]'
+                      : 'text-white bg-[#1677FF] hover:bg-[#0F5FD7]'
+                  }`}
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>{approvedInvoices.includes(selectedInvoice.id) ? 'Approved' : 'Authorize ACH Release'}</span>
+                </button>
               </div>
             </div>
-            <button
-              onClick={() => triggerFinanceToast('G702 Application PDF exported to downloads!')}
-              className="text-xs font-bold text-[#1677FF] hover:underline flex items-center gap-1"
-            >
-              <span>Export G702 PDF</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </button>
           </div>
-
-          <div className="grid grid-cols-5 gap-1 pt-2 border-t border-[#F1F5F9]">
-            {[
-              { num: 'Draw 1', amt: '$480K', status: 'Funded', color: 'bg-emerald-500' },
-              { num: 'Draw 2', amt: '$620K', status: 'Funded', color: 'bg-emerald-500' },
-              { num: 'Draw 3', amt: '$750K', status: 'Funded', color: 'bg-emerald-500' },
-              { num: 'Draw 4', amt: '$410K', status: 'In Review', color: 'bg-amber-400 ring-2 ring-amber-200 animate-pulse' },
-              { num: 'Draw 5', amt: '$890K', status: 'Pending', color: 'bg-slate-200' },
-            ].map((draw, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center p-1.5 rounded-xl bg-[#F8FAFC]">
-                <div className={`w-3 h-3 rounded-full mb-1 ${draw.color}`} />
-                <span className="text-[10px] font-bold text-[#0F172A]">{draw.num}</span>
-                <span className="text-[9px] font-extrabold text-[#1677FF] mt-0.5">{draw.amt}</span>
-                <span className="text-[8px] text-[#64748B] font-medium mt-0.5">{draw.status}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── 6. CSI MASTERFORMAT DIVISION WATCHLIST ── */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between px-0.5">
-            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">CSI Division Variance Tracking</h2>
-            <button onClick={onOpenBudgetsHub} className="text-xs font-semibold text-[#1677FF] hover:underline">
-              All Divisions
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { code: 'Div 03', name: 'Concrete', est: '$480K', variance: '+$14.2K', isOver: true, note: 'Pier amendment' },
-              { code: 'Div 06', name: 'Wood & Plastics', est: '$650K', variance: '-$8.5K', isOver: false, note: 'Lumber savings' },
-              { code: 'Div 05', name: 'Metals & Steel', est: '$120K', variance: '-$2.0K', isOver: false, note: 'Rebar lock' },
-              { code: 'Div 26', name: 'Electrical', est: '$380K', variance: '$0.0K', isOver: null, note: 'On budget' },
-            ].map((d, i) => (
-              <div key={i} className="p-3 bg-white rounded-2xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-[#64748B]">{d.code}</span>
-                  <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${
-                    d.isOver === true ? 'bg-rose-50 text-rose-600 border border-rose-200' :
-                    d.isOver === false ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' :
-                    'bg-slate-50 text-slate-600 border border-slate-200'
-                  }`}>
-                    {d.variance}
-                  </span>
-                </div>
-                <h4 className="text-xs font-bold text-[#0F172A] mt-1 truncate">{d.name}</h4>
-                <p className="text-[10px] text-[#64748B] mt-0.5 truncate">Est: {d.est} · {d.note}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
 
       </div>
     );
@@ -1039,305 +888,307 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
-      {/* Context Bar */}
-      <div className="flex items-center justify-between pt-0.5">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-          <span className="text-[11px] text-[#64748B] font-semibold uppercase tracking-wider">
-            Project Field Command & Safety
-          </span>
+      {/* ── 1. HERO CARD: TODAY'S OPERATIONAL FOCUS ── */}
+      <div 
+        onClick={() => onSelectProject(snellProject)}
+        className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F4F8FF] to-white p-4 sm:p-5 shadow-xs hover:border-[#1677FF]/40 transition-all cursor-pointer group"
+      >
+        <div className="flex items-start justify-between gap-3">
+          {/* Left: Focus & Live Status */}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
+                Field Focus
+              </span>
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#10A976] whitespace-nowrap shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10A976] animate-pulse" />
+                24 on site · 2 Crews
+              </span>
+            </div>
+
+            <div className="mt-1.5">
+              <h2 className="text-base sm:text-lg font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors tracking-tight truncate leading-snug">
+                Framing Walkthrough Prep
+              </h2>
+              <p className="text-xs text-[#64748B] font-medium mt-0.5 truncate leading-snug">
+                Snell Isle Residence · Inspector Frank Rodriguez at 10 AM
+              </p>
+            </div>
+          </div>
+
+          {/* Right: Date & Weather Pill */}
+          <div className="flex flex-col items-end shrink-0">
+            <span className="text-xs font-semibold text-[#0F172A]">
+              {todayDateFormatted}
+            </span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsWeatherModalOpen(true);
+              }}
+              className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white border border-[#DCE8F8] text-xs font-medium transition-all cursor-pointer shadow-xs active:scale-95 group/w"
+              title="View site conditions"
+            >
+              <Sun className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
+              <span className="font-bold text-[#0F172A]">82°F</span>
+              <span className="text-[#64748B] text-[11px]">Sunny</span>
+            </button>
+          </div>
         </div>
-        <span className="text-xs font-semibold text-[#64748B]">{todayDateFormatted}</span>
       </div>
 
-      {/* 3 Field KPIs */}
-      <div className="grid grid-cols-3 gap-2.5">
+      {/* ── 2. EXACT 3 FIELD KPIS ── */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
         <div 
           onClick={onOpenDailyLogs}
-          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
+          className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
         >
-          <div className="w-6 h-6 rounded-md bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-            <Users className="w-3.5 h-3.5" />
+          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <HardHat className="w-3.5 h-3.5" />
           </div>
-          <div>
-            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-              24 Workers
+          <div className="mt-2">
+            <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+              Headcount
             </span>
-            <span className="text-[10px] text-[#64748B] font-medium block truncate">
-              On Site Today
+            <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+              24 Crew
             </span>
           </div>
-          <span className="text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-            2 Trade Crews
-          </span>
         </div>
 
         <div 
           onClick={onOpenDailyLogs}
-          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
+          className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
         >
-          <div className="w-6 h-6 rounded-md bg-[#FFF7E6] text-[#D97706] flex items-center justify-center shrink-0">
-            <Clock className="w-3.5 h-3.5" />
+          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <FileText className="w-3.5 h-3.5" />
           </div>
-          <div>
-            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-              Daily Log
+          <div className="mt-2">
+            <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+              Daily Field Log
             </span>
-            <span className="text-[10px] text-[#64748B] font-medium block truncate">
-              Due 4:30 PM
+            <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+              Drafting
             </span>
           </div>
-          <span className="text-[10px] text-[#D97706] font-semibold bg-[#FFF7E6] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-            In Progress
-          </span>
         </div>
 
         <div 
-          onClick={onOpenTasks}
-          className="bg-white rounded-xl border border-[#E2E8F0] p-2.5 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[96px] group"
+          onClick={() => onOpenTasks()}
+          className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
         >
-          <div className="w-6 h-6 rounded-md bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
             <ShieldCheck className="w-3.5 h-3.5" />
           </div>
-          <div>
-            <span className="text-base font-bold text-[#0F172A] block leading-tight mt-1 truncate">
-              0 Incidents
-            </span>
-            <span className="text-[10px] text-[#64748B] font-medium block truncate">
+          <div className="mt-2">
+            <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
               Safety Record
             </span>
+            <span className="text-sm sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+              0 Incidents
+            </span>
           </div>
-          <span className="text-[10px] text-[#10A976] font-semibold bg-[#E9F9F3] px-1.5 py-0.5 rounded-full w-fit max-w-full truncate">
-            142 Days Clean
-          </span>
         </div>
       </div>
 
-      {/* Hero Field Daily Log Card */}
-      <div 
-        onClick={onOpenDailyLogs}
-        className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/50 transition-all cursor-pointer flex flex-col gap-2.5 group"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#1677FF]" />
-            <span className="text-xs font-bold text-[#0F172A]">Snell Isle Today's Field Log (Sep 5)</span>
-          </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Drafting</span>
-        </div>
-        <p className="text-xs text-[#475569] leading-relaxed">
-          Logged 24 workers, 2 material deliveries (84 Lumber package), and 4 site progress photos. Ready for end-of-day superintendent sign-off.
-        </p>
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onOpenDailyLogs) onOpenDailyLogs();
-          }}
-          className="w-full py-2 px-3 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all mt-1"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>Open & Complete Today's Daily Log</span>
-        </button>
-      </div>
-
-      {/* Site Weather Radar & Thursday Storm Alert */}
-      <div 
-        onClick={() => setIsWeatherModalOpen(true)}
-        className="p-4 rounded-2xl bg-[#FFFBEB] border border-[#FDE68A] shadow-card flex items-start gap-3 cursor-pointer hover:bg-[#FEF3C7] transition-all"
-      >
-        <div className="w-8 h-8 rounded-xl bg-[#F59E0B] text-white flex items-center justify-center shrink-0 mt-0.5">
-          <CloudRain className="w-4 h-4" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-[#92400E]">Thursday Pour Weather Threat</h3>
-            <span className="text-[10px] font-bold text-[#92400E]">85% Rain</span>
-          </div>
-          <p className="text-xs text-[#B45309] mt-0.5 leading-relaxed">
-            Radar projects 0.85 in/hr rain in Tampa between 1:00 PM and 6:00 PM. Concrete cure will fail without tarp coverage. Recommend rescheduling pour to Friday morning.
-          </p>
-        </div>
-      </div>
-
-      {/* Active Subcontractors on Site */}
-      <div className="flex flex-col gap-2">
+      {/* ── 3. CITY INSPECTION READINESS (Field Superintendent's Core Morning Focus) ── */}
+      <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between px-0.5">
-          <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Trade Crews On Site</h2>
-          <span className="text-xs text-[#64748B]">24 Total Crew</span>
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">City Inspection Checklist</h2>
+            <span className="text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] px-2 py-0.5 rounded-full">
+              {checkedFieldPunch.length}/4 Verified
+            </span>
+          </div>
+          <button onClick={onOpenDailyLogs} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer">
+            <span>Daily Log</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Progress Tracker Bar */}
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[#0F172A]">
+              Framing & Hurricane Tie-Down Walkthrough
+            </span>
+            <span className="text-[10px] font-bold text-[#10A976] bg-[#E9F9F3] px-2 py-0.5 rounded-full">
+              {Math.round((checkedFieldPunch.length / 4) * 100)}% Ready
+            </span>
+          </div>
+          <div className="w-full h-2 rounded-full bg-[#F1F5F9] overflow-hidden">
+            <div 
+              className="h-full bg-[#10A976] rounded-full transition-all duration-300" 
+              style={{ width: `${Math.max(10, Math.round((checkedFieldPunch.length / 4) * 100))}%` }} 
+            />
+          </div>
+          <p className="text-[10px] text-[#64748B]">
+            City of Tampa Inspector Frank Rodriguez arrives tomorrow 10:00 AM
+          </p>
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
           {[
-            { trade: 'Structural Framing', sub: 'Apex Concrete Masters', crew: 14, lead: 'Marcus Rivera', phone: '+1 (555) 304-2849' },
-            { trade: 'Electrical & MEP', sub: 'Prime Electrical & Mechanical', crew: 10, lead: 'Dave K.', phone: '+1 (555) 491-9201' },
-          ].map((c, idx) => (
-            <div key={idx} className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors">
+            { id: 'c-1', title: 'Simpson Strong-Tie Straps & Hold-Downs', area: 'Wall Grid 4B & Rafters', code: 'FBC-2024', priority: 'Critical' },
+            { id: 'c-2', title: 'Shear Wall Edge (6" o.c.) & Field Nailing (12" o.c.)', area: 'Level 2 Structural Shear', code: 'Eng S-202', priority: 'High' },
+            { id: 'c-3', title: 'Signed Stamped Permit Drawings in Job Box', area: 'Jobsite Lockbox #1', code: 'Admin', priority: 'High' },
+            { id: 'c-4', title: 'Florida Building Code Permit Inspection Card Posted', area: 'Front Entrance Board', code: 'Compliance', priority: 'Critical' },
+          ].map((item) => {
+            const isChecked = checkedFieldPunch.includes(item.id);
+            return (
+              <div 
+                key={item.id} 
+                onClick={() => {
+                  if (isChecked) {
+                    setCheckedFieldPunch(prev => prev.filter(id => id !== item.id));
+                  } else {
+                    setCheckedFieldPunch(prev => [...prev, item.id]);
+                    setFieldToast(`✓ ${item.title} verified for City Inspection!`);
+                    setTimeout(() => setFieldToast(null), 3000);
+                  }
+                }}
+                className="p-3 sm:p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all shrink-0 ${
+                    isChecked 
+                      ? 'bg-[#10A976] border-[#10A976] text-white' 
+                      : 'border-[#CBD5E1] bg-white group-hover:border-[#1677FF]'
+                  }`}>
+                    {isChecked && <Check className="w-3.5 h-3.5" />}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <h4 className={`text-xs sm:text-sm font-bold truncate leading-tight transition-colors ${
+                      isChecked ? 'text-[#64748B] line-through' : 'text-[#0F172A]'
+                    }`}>
+                      {item.title}
+                    </h4>
+                    <p className="text-[11px] text-[#64748B] truncate mt-0.5 leading-tight">
+                      {item.area} · <span className="font-medium text-[#475569]">{item.code}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                    isChecked 
+                      ? 'bg-[#E9F9F3] text-[#10A976]' 
+                      : item.priority === 'Critical'
+                      ? 'bg-[#FFF0F0] text-[#E5484D]'
+                      : 'bg-[#FFF7E6] text-[#D97706]'
+                  }`}>
+                    {isChecked ? 'Verified ✓' : item.priority}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 6. ACTIVE TRADE CREWS ON SITE (Compact Divider List, ZERO Card Bloat) ── */}
+      <div className="flex flex-col gap-2.5">
+        <div className="flex items-center justify-between px-0.5">
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Active Trade Crews on Site</h2>
+            <span className="text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] px-2 py-0.5 rounded-full">
+              24 Men
+            </span>
+          </div>
+          <button onClick={onOpenDailyLogs} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer">
+            <span>Daily Log</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
+          {[
+            { id: 'crw-1', trade: 'Titan Framing Systems', count: '14 Carpenters', task: 'Level 2 Structural Joists & Shear Panels', status: 'On Schedule', foreman: 'Mike Callahan (Lead)', phone: '+1 (555) 456-7890', zone: 'Level 2 Grid A-D', safetyTailgate: true },
+            { id: 'crw-2', trade: 'Gulfstream Plumbing Co.', count: '6 Plumbers', task: 'Under-slab rough-in & pressure testing', status: 'On Schedule', foreman: 'Dave Vance (Master Plumber)', phone: '+1 (555) 234-5678', zone: 'Ground Slab Trench 3', safetyTailgate: true },
+            { id: 'crw-3', trade: 'General Site Labor', count: '4 Workers', task: 'Clean-up, trash haul & material staging', status: 'Active', foreman: 'Carlos Mendoza (Lead)', phone: '+1 (555) 876-5432', zone: 'Jobsite Perimeter & Staging', safetyTailgate: true },
+          ].map((crew) => (
+            <div 
+              key={crew.id} 
+              onClick={() => setSelectedCrew(crew)}
+              className="p-3 sm:p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
+            >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-xs font-bold text-[#0F172A] truncate">{c.trade}</h4>
-                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-blue-50 text-blue-700">{c.crew} crew</span>
+                  <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">{crew.trade}</h4>
+                  <span className="text-xs font-medium text-[#64748B] shrink-0">· {crew.count}</span>
                 </div>
-                <p className="text-[11px] text-[#64748B] truncate mt-0.5">{c.sub} · Lead: {c.lead}</p>
+                <p className="text-[11px] text-[#64748B] truncate mt-0.5">
+                  {crew.task}
+                </p>
               </div>
 
-              <a 
-                href={`tel:${c.phone}`}
-                className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center hover:bg-[#1677FF] hover:text-white transition-all shrink-0 shadow-xs"
-                title={`Call ${c.lead}`}
-              >
-                <Phone className="w-3.5 h-3.5" />
-              </a>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976]">
+                  {crew.status}
+                </span>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── Active Projects & Field User Flow ── */}
+      {/* ── 5. DAILY FIELD LOG STATION (Field Superintendent Trailer Log) ── */}
+      <div 
+        onClick={onOpenDailyLogs}
+        className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 sm:p-4 shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
+      >
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <FileText className="w-4 h-4" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] truncate">
+                Daily Field Log #42
+              </h4>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976] shrink-0">
+                24 Men Logged
+              </span>
+            </div>
+            <p className="text-[11px] text-[#64748B] truncate mt-0.5">
+              Snell Isle Residence · Ready for Lead PM Sarah Johnson sign-off
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onOpenDailyLogs) onOpenDailyLogs();
+          }}
+          className="h-7 px-3 rounded-lg text-xs font-bold bg-[#1677FF] hover:bg-[#0F5FD7] text-white shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
+        >
+          Open Log
+        </button>
+      </div>
+
+      {/* ── 6. ACTIVE PROJECTS MULTI-PROJECT ROLLUP ── */}
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center justify-between px-0.5">
-          <div>
-            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">Active Projects</h2>
-            <p className="text-[11px] text-[#64748B]">Tap project to open daily log or log photos</p>
-          </div>
-          <button onClick={onOpenProjects} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5">
-            <span>All Projects ({projects.length})</span>
-            <ChevronRight className="w-3 h-3" />
+          <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Active Projects</h2>
+          <button 
+            onClick={onOpenProjects} 
+            className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            <span>See all ({projects.length})</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="flex flex-col gap-3">
-          {projects.slice(0, 3).map((p) => {
-            let crewOnSite = '14 Tradesmen on Site';
-            let nextCheck = 'Pre-Pour Rebar Inspection: Tomorrow 10 AM';
-            let punchCount = '2 Punch items open';
-
-            if (p.id === 'proj-2') {
-              crewOnSite = '10 Workers (Framing)';
-              nextCheck = 'Framing Shear Sign-off: Sep 14';
-              punchCount = '0 Punch items';
-            } else if (p.id === 'proj-3') {
-              crewOnSite = '8 Workers (Underground MEP)';
-              nextCheck = 'Plumbing Inspection: Sep 18';
-              punchCount = '1 Punch item';
-            }
-
-            return (
-              <div
-                key={p.id}
-                className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-amber-400 shadow-card p-4 transition-all duration-200 flex flex-col gap-3 group"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3
-                        onClick={() => onSelectProject(p)}
-                        className="text-sm font-bold text-[#0F172A] hover:text-[#1677FF] cursor-pointer truncate transition-colors"
-                      >
-                        {p.name}
-                      </h3>
-                      <span className="text-[10px] font-bold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-md shrink-0">
-                        {p.code || 'JOB-101'}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#64748B] truncate mt-0.5">{p.location}</p>
-                  </div>
-
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                    Active Project
-                  </span>
-                </div>
-
-                {/* Field Vitals Strip */}
-                <div className="grid grid-cols-2 gap-2 text-[11px] bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0]">
-                  <div className="flex items-center gap-1.5 text-[#0F172A] truncate">
-                    <Users className="w-3.5 h-3.5 text-[#1677FF] shrink-0" />
-                    <span className="font-semibold truncate">{crewOnSite}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-amber-700 truncate justify-end">
-                    <Calendar className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                    <span className="font-semibold truncate">{nextCheck}</span>
-                  </div>
-                </div>
-
-                {/* Field User Flow Action Buttons */}
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  <button
-                    onClick={() => {
-                      if (onOpenDailyLogs) onOpenDailyLogs();
-                      else onSelectProject(p);
-                    }}
-                    className="h-9 px-3 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-xs"
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>Open Daily Log</span>
-                  </button>
-
-                  <button
-                    onClick={() => onSelectProject(p)}
-                    className="h-9 px-3 rounded-xl bg-white border border-[#E2E8F0] hover:border-[#1677FF] hover:text-[#1677FF] text-[#0F172A] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95 shadow-2xs"
-                  >
-                    <CheckSquare className="w-3.5 h-3.5" />
-                    <span>Tasks & Punch</span>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── Interactive Punch & Safety Checklist ── */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between px-0.5">
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">On-Site Safety & Punch Checks</h2>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-              Walkthrough Ready
-            </span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
-          {[
-            { id: 'fp-1', title: 'Verify hurricane tie-down clip schedule at Grid B-3', sub: 'Structural Framing', priority: 'Critical' },
-            { id: 'fp-2', title: 'Cover and cap exposed 220V conduit before Thursday rain', sub: 'MEP Coordination', priority: 'High Priority' },
-            { id: 'fp-3', title: 'Pressure test underground storm drainage line at Bay 2', sub: 'Civil Utilities', priority: 'Standard' },
-          ].map((item) => {
-            const isChecked = checkedFieldPunch.includes(item.id);
-            return (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setCheckedFieldPunch(prev => 
-                    prev.includes(item.id) ? prev.filter(x => x !== item.id) : [...prev, item.id]
-                  );
-                }}
-                className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors shrink-0 ${
-                    isChecked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#CBD5E1] bg-white'
-                  }`}>
-                    {isChecked && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className={`text-xs font-bold truncate ${isChecked ? 'line-through text-[#94A3B8]' : 'text-[#0F172A]'}`}>
-                      {item.title}
-                    </h4>
-                    <p className="text-[11px] text-[#64748B] truncate mt-0.5">{item.sub}</p>
-                  </div>
-                </div>
-
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                  item.priority === 'Critical' ? 'bg-rose-50 text-rose-600 border border-rose-200' :
-                  item.priority === 'High Priority' ? 'bg-amber-50 text-amber-600 border border-amber-200' :
-                  'bg-slate-50 text-slate-600 border border-slate-200'
-                }`}>
-                  {isChecked ? 'Verified ✓' : item.priority}
-                </span>
-              </div>
-            );
-          })}
+        <div className="flex flex-col gap-2.5">
+          {projects.map((p) => (
+            <ProjectCard
+              key={p.id}
+              project={p}
+              onClick={() => onSelectProject(p)}
+            />
+          ))}
         </div>
       </div>
 
@@ -1355,6 +1206,105 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             if (onOpenDailyLogs) onOpenDailyLogs();
           }}
         />
+      )}
+
+      {/* Trade Crew Deployment & Safety Modal */}
+      {selectedCrew && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white w-full max-w-md rounded-3xl border border-[#E2E8F0] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up">
+            {/* Header */}
+            <div className="p-4 sm:p-5 border-b border-[#F1F5F9] flex items-center justify-between bg-gradient-to-r from-[#F8FAFC] to-white">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+                  <HardHat className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#0F172A] leading-tight">Trade Crew Deployment</h3>
+                  <p className="text-xs text-[#64748B] mt-0.5">{selectedCrew.trade}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedCrew(null)}
+                className="w-8 h-8 rounded-full hover:bg-[#F1F5F9] text-[#64748B] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
+              {/* 3 Metric Pills */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] text-center">
+                  <span className="text-[10px] text-[#64748B] font-semibold block uppercase">Headcount</span>
+                  <span className="text-xs font-bold text-[#0F172A] mt-0.5 block">{selectedCrew.count}</span>
+                </div>
+                <div className="bg-[#E9F9F3] p-2.5 rounded-xl border border-[#D1FADF] text-center">
+                  <span className="text-[10px] text-[#10A976] font-semibold block uppercase">Site Status</span>
+                  <span className="text-xs font-bold text-[#10A976] mt-0.5 block">{selectedCrew.status}</span>
+                </div>
+                <div className="bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] text-center">
+                  <span className="text-[10px] text-[#64748B] font-semibold block uppercase">Zone</span>
+                  <span className="text-xs font-bold text-[#0F172A] mt-0.5 block truncate">{selectedCrew.zone}</span>
+                </div>
+              </div>
+
+              {/* Active Scope of Work */}
+              <div className="bg-[#F8FAFC] rounded-2xl p-3.5 border border-[#E2E8F0] space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block">
+                  Assigned Scope of Work
+                </span>
+                <p className="text-xs font-semibold text-[#0F172A]">{selectedCrew.task}</p>
+              </div>
+
+              {/* Foreman Contact & Safety */}
+              <div className="bg-[#EAF3FF]/40 rounded-2xl p-3.5 border border-[#DCE8F8] space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-[#1677FF]" />
+                    <span className="text-xs font-bold text-[#1677FF]">Foreman & Safety Briefing</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#10A976] bg-[#E9F9F3] px-2 py-0.5 rounded-full">
+                    Tailgate Verified ✓
+                  </span>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <div>
+                    <span className="text-xs font-bold text-[#0F172A] block">{selectedCrew.foreman}</span>
+                    <span className="text-xs text-[#64748B] block">{selectedCrew.phone}</span>
+                  </div>
+                  <a
+                    href={`tel:${selectedCrew.phone}`}
+                    className="h-8 px-3 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Call</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="p-4 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-end gap-2">
+              <button
+                onClick={() => setSelectedCrew(null)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:bg-[#E2E8F0]/60 transition-all cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedCrew(null);
+                  if (onOpenDailyLogs) onOpenDailyLogs();
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#1677FF] hover:bg-[#0F5FD7] transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Open Daily Log</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

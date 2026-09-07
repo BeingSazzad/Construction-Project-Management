@@ -810,6 +810,10 @@ export function App() {
                   <HomeScreen
                     projects={projects}
                     tasks={tasks}
+                    dailyLogs={dailyLogs}
+                    punchItems={punchItems}
+                    changeOrders={changeOrders}
+                    subcontractors={subcontractors}
                     currentRole={currentRole}
                     onSelectProject={handleSelectProject}
                     onOpenProjects={() => setActiveTab('projects')}
@@ -818,8 +822,9 @@ export function App() {
                       setActiveTab('latti');
                     }}
                     onOpenTask={(t) => setSelectedTask(t)}
-                    onOpenTasks={() => {
-                      handleSelectProject(projects[0]);
+                    onOpenTasks={(projectId) => {
+                      const targetProj = projectId ? projects.find(p => p.id === projectId) || projects[0] : projects[0];
+                      handleSelectProject(targetProj);
                       setProjectSubTab('tasks');
                     }}
                     onOpenCalendar={(targetDate) => {
@@ -836,8 +841,16 @@ export function App() {
                       setProjectSubTab('budget');
                     }}
                     onOpenDailyLogs={() => setActiveTab('daily-logs')}
+                    onOpenPunchList={() => {
+                      handleSelectProject(projects[0]);
+                      setProjectSubTab('punch');
+                    }}
                     onOpenApprovePayApp={() => setIsApprovePayAppOpen(true)}
                     onOpenLienWaiver={() => setIsRecordLienWaiverOpen(true)}
+                    onOpenCreateDraw={() => setIsCreateDrawOpen(true)}
+                    onCreateTask={() => setIsCreateTaskModalOpen(true)}
+                    onCreatePunch={() => setIsCreatePunchOpen(true)}
+                    onCreateChangeOrder={() => setIsCreateChangeOrderOpen(true)}
                   />
                 )}
 
@@ -1250,6 +1263,137 @@ export function App() {
           onDelete={handleDeleteProject}
         />
       )}
+
+      {/* APPROVE PAY APPLICATION MODAL */}
+      <ApprovePayAppModal
+        isOpen={isApprovePayAppOpen}
+        onClose={() => setIsApprovePayAppOpen(false)}
+        projects={projects}
+        subcontractors={subcontractors}
+        onDisburse={(subName, amount) => {
+          setNotifications(prev => [
+            {
+              id: `notif-${Date.now()}`,
+              title: 'Pay Application Approved',
+              message: `$${amount.toLocaleString()} ACH disbursement approved for ${subName}.`,
+              timeAgo: 'Just now',
+              read: false,
+              type: 'budget'
+            },
+            ...prev
+          ]);
+          setIsApprovePayAppOpen(false);
+        }}
+      />
+
+      {/* PROCESS LIEN WAIVER MODAL */}
+      <ProcessLienWaiverModal
+        isOpen={isRecordLienWaiverOpen}
+        onClose={() => setIsRecordLienWaiverOpen(false)}
+        subcontractors={subcontractors}
+        onRecordWaiver={(waiver) => {
+          setLienWaivers(prev => [
+            {
+              id: `lw-${Date.now()}`,
+              projectId: waiver.projectId || 'proj-1',
+              subcontractorName: waiver.subcontractorName || 'Subcontractor',
+              trade: waiver.trade || 'General',
+              amount: waiver.amount || 0,
+              type: waiver.type || 'Progress Unconditional',
+              status: waiver.status || 'Signed & Active',
+              invoiceRef: waiver.invoiceRef || 'INV-2026-001',
+              dateSubmitted: waiver.dateSubmitted || new Date().toISOString().split('T')[0]
+            },
+            ...prev
+          ]);
+          setNotifications(prev => [
+            {
+              id: `notif-${Date.now()}`,
+              title: 'Lien Waiver Stamped & Recorded',
+              message: `${waiver.type} for ${waiver.subcontractorName} ($${waiver.amount?.toLocaleString()}) recorded.`,
+              timeAgo: 'Just now',
+              read: false,
+              type: 'task'
+            },
+            ...prev
+          ]);
+          setIsRecordLienWaiverOpen(false);
+        }}
+      />
+
+      {/* REQUEST LENDER DRAW MODAL */}
+      <CreateDrawModal
+        isOpen={isCreateDrawOpen}
+        onClose={() => setIsCreateDrawOpen(false)}
+        projects={projects}
+        onCreateDraw={(draw) => {
+          setDraws(prev => [
+            {
+              id: `draw-${Date.now()}`,
+              projectId: draw.projectId || 'proj-1',
+              drawNumber: draws.length + 1,
+              milestoneTitle: draw.milestoneTitle || 'Structural Framing Complete',
+              requestedAmount: draw.requestedAmount || 350000,
+              approvedAmount: draw.approvedAmount || 350000,
+              fundedAmount: 0,
+              status: draw.status || 'In Lender Review',
+              requestDate: draw.requestDate || new Date().toISOString().split('T')[0],
+              lenderName: draw.lenderName || 'Texas Capital Bank Commercial',
+              inspectorName: draw.inspectorName || 'David Miller, PE',
+              inspectionPassed: draw.inspectionPassed ?? true
+            },
+            ...prev
+          ]);
+          setNotifications(prev => [
+            {
+              id: `notif-${Date.now()}`,
+              title: 'Bank Draw Submitted',
+              message: `Draw #${draws.length + 1} ($${draw.requestedAmount?.toLocaleString()}) submitted to ${draw.lenderName}.`,
+              timeAgo: 'Just now',
+              read: false,
+              type: 'budget'
+            },
+            ...prev
+          ]);
+          setIsCreateDrawOpen(false);
+        }}
+      />
+
+      {/* CREATE CHANGE ORDER MODAL */}
+      <CreateChangeOrderModal
+        isOpen={isCreateChangeOrderOpen}
+        onClose={() => setIsCreateChangeOrderOpen(false)}
+        projectId={activeProject ? activeProject.id : 'proj-1'}
+        onCreate={(newCO) => {
+          setChangeOrders(prev => [
+            {
+              id: `co-${Date.now()}`,
+              projectId: newCO.projectId || 'proj-1',
+              title: newCO.title || 'Change Order',
+              description: newCO.description || '',
+              amount: newCO.amount || 0,
+              timeImpact: newCO.timeImpact || 0,
+              category: newCO.category || 'General',
+              requestedBy: newCO.requestedBy || 'Client',
+              status: 'Pending',
+              createdDate: newCO.createdDate || new Date().toISOString().split('T')[0]
+            },
+            ...prev
+          ]);
+          setNotifications(prev => [
+            {
+              id: `notif-${Date.now()}`,
+              title: 'Change Order Drafted',
+              message: `Change Order "${newCO.title}" ($${newCO.amount?.toLocaleString()}) created.`,
+              timeAgo: 'Just now',
+              read: false,
+              type: 'task'
+            },
+            ...prev
+          ]);
+          setIsCreateChangeOrderOpen(false);
+        }}
+      />
 
     </DeviceFrame>
   );
