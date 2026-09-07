@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LATTICE — Owner Role Architecture & Backend Specifications</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1677FF;
+      --primary-dark: #0F5FD7;
+      --primary-light: #EAF3FF;
+      --navy: #0F172A;
+      --slate-700: #334155;
+      --slate-500: #64748B;
+      --slate-200: #E2E8F0;
+      --slate-100: #F1F5F9;
+      --slate-50: #F8FAFC;
+      --green: #10A976;
+      --green-light: #E9F9F3;
+      --amber: #D97706;
+      --amber-light: #FFF7E6;
+      --red: #E5484D;
+      --red-light: #FFF0F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--navy);
+      background-color: #F8FAFC;
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* Floating Action Bar */
+    .top-action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .top-action-bar .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    .top-action-bar .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .btn-download-pdf {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(22, 119, 255, 0.4);
+    }
+
+    .btn-download-pdf:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 56px 64px;
+      border-radius: 24px;
+      border: 1px solid var(--slate-200);
+      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.07);
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.8px;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 16px 0 24px 0;
+      border-bottom: 1px solid var(--slate-200);
+      margin-bottom: 36px;
+      font-size: 13px;
+      color: var(--slate-500);
+    }
+
+    .doc-meta strong {
+      color: var(--navy);
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-top: 44px;
+      margin-bottom: 16px;
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 22px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-top: 28px;
+      margin-bottom: 12px;
+      letter-spacing: -0.2px;
+    }
+
+    h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-700);
+      margin-top: 18px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      color: var(--slate-700);
+      font-size: 14.5px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    ul, ol {
+      margin-left: 24px;
+      margin-bottom: 18px;
+      color: var(--slate-700);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Visual Blueprint Box */
+    .blueprint-box {
+      background: #0F172A;
+      color: #E2E8F0;
+      border-radius: 16px;
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      margin: 24px 0;
+      overflow-x: auto;
+      border: 1px solid #1E293B;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Cards Breakdown Table */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 20px 0 28px 0;
+      border: 1px solid var(--slate-200);
+      border-radius: 14px;
+      overflow: hidden;
+      font-size: 13.5px;
+    }
+
+    th {
+      background: var(--slate-50);
+      color: var(--navy);
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--slate-200);
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--slate-100);
+      color: var(--slate-700);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) td {
+      background: #FAFCFE;
+    }
+
+    /* Code Blocks */
+    pre {
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 18px 20px;
+      border-radius: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      overflow-x: auto;
+      margin: 14px 0 22px 0;
+      border: 1px solid #1E293B;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--slate-100);
+      color: var(--primary-dark);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 12.5px;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* Callout Alert Boxes */
+    .callout {
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin: 20px 0;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      border: 1px solid transparent;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    .callout-info {
+      background: var(--primary-light);
+      border-color: #DCE8F8;
+      color: #034694;
+    }
+
+    .callout-success {
+      background: var(--green-light);
+      border-color: #D1FADF;
+      color: #065F46;
+    }
+
+    .callout-warning {
+      background: var(--amber-light);
+      border-color: #FEEBC8;
+      color: #92400E;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-green { background: var(--green-light); color: var(--green); }
+    .badge-blue { background: var(--primary-light); color: var(--primary); }
+    .badge-amber { background: var(--amber-light); color: var(--amber); }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .top-action-bar {
+        display: none !important;
+      }
+      .container {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        max-width: 100%;
+      }
+      h2 {
+        page-break-before: auto;
+      }
+      pre, table, .blueprint-box {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar -->
+  <div class="top-action-bar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span>LATTICE</span>
+      <span style="opacity: 0.5; font-weight: 400;">| Executive Role Architecture Spec</span>
+    </div>
+    <button class="btn-download-pdf" onclick="window.print()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Download / Print as PDF
+    </button>
+  </div>
+
+  <div class="container">
+    <div class="header-badge">Executive Architecture Blueprint</div>
+    <h1>Owner / Executive Role Specification</h1>
+    <p style="font-size: 16px; color: var(--slate-500); margin-bottom: 0;">
+      Comprehensive Feature Catalog, Business Value Rationale, Data Contracts & Backend API Specifications.
+    </p>
+
+    <div class="doc-meta">
+      <div><strong>Role Identifier:</strong> <code>admin</code> (Company Owner / GC Principal)</div>
+      <div><strong>Persona:</strong> Avery Scott (Managing Partner)</div>
+      <div><strong>Platform:</strong> LATTICE Construction Management</div>
+      <div><strong>Version:</strong> 1.0.0 (Production Ready)</div>
+    </div>
+
+    <!-- Section 1: Mental Model -->
+    <h2>1. Executive Overview & Mental Model</h2>
+    <p>
+      The <strong>Company Owner</strong> (Avery Scott) operates at the 30,000-foot strategic layer of the construction enterprise. 
+      Unlike a Field Superintendent managing daily trade crews or a Project Manager handling RFIs and submittals, <strong>the Owner cares about portfolio solvency, bank draw status, risk containment, and overall capital protection</strong>.
+    </p>
+
+    <div class="callout callout-info">
+      <div>
+        <strong>Core Executive Questions Answered by This Dashboard:</strong>
+        <ul style="margin: 8px 0 0 20px;">
+          <li>Is our overall portfolio capital ($34.85M) healthy and protected against margin erosion?</li>
+          <li>Are active site variances being absorbed by contingency reserves without dipping into company profits?</li>
+          <li>Did trade crews show up today (Live Headcount: 94 on site)?</li>
+          <li>Are there critical-path inspection roadblocks that threaten client handover dates?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 2: Visual Architecture -->
+    <h2>2. Visual Architecture & Layout Anatomy</h2>
+    <p>The Owner dashboard is structured into 5 cohesive tiers designed for 3-second rapid comprehension:</p>
+
+    <div class="blueprint-box">
+┌────────────────────────────────────────────────────────────────────────┐
+│                        OWNER DASHBOARD ANATOMY                         │
+├────────────────────────────────────────────────────────────────────────┤
+│ 1. HERO OPERATIONAL FOCUS (Live Telemetry, Headcount, Weather)         │
+├────────────────────────────────────────────────────────────────────────┤
+│ 2. 3 EXECUTIVE PORTFOLIO KPIS (Total Budget, Spend Disbursed, Sites)   │
+├────────────────────────────────────────────────────────────────────────┤
+│ 3. EXECUTIVE CAPITAL BALANCE CARD (Paid, Committed, Contingency Bar)   │
+├────────────────────────────────────────────────────────────────────────┤
+│ 4. LATTI AI EXECUTIVE BRIEFING (Predictive Cost Overrun & Risk Alert)  │
+├────────────────────────────────────────────────────────────────────────┤
+│ 5. ACTIVE PROJECTS ROLLUP (Multi-Project Cards & Portfolio Health)     │
+├────────────────────────────────────────────────────────────────────────┤
+│ 6. EXECUTIVE MODALS (Risk Audit Breakdown & Crane Weather Radar)       │
+└────────────────────────────────────────────────────────────────────────┘
+    </div>
+
+    <!-- Section 3: Feature Breakdown -->
+    <h2>3. Comprehensive Feature-by-Feature Breakdown</h2>
+
+    <!-- Feature 1 -->
+    <h3>Feature 1: Hero Operational Focus & Site Telemetry Card</h3>
+    <p>
+      <strong>Visual Presentation:</strong> Soft gradient card (<code>#EAF3FF</code> to <code>#FFFFFF</code>) with blue hairline border.
+    </p>
+    <p>
+      <strong>Business Value:</strong> Provides an immediate visual pulse of today's highest-stakes operational milestone across all 7 projects.
+    </p>
+    <ul>
+      <li><strong>Today's Focus Badge:</strong> Highlights the priority event of the day.</li>
+      <li><strong>Live Headcount (<code>94 on site</code>):</strong> Pulsing green dot showing aggregated manpower across active jobsites. If manpower drops below threshold, owners know delays are imminent.</li>
+      <li><strong>Milestone Headline (<code>City Framing Walkthrough</code>):</strong> Highlights the critical-path inspection with City of Tampa Inspector arriving at 10:00 AM.</li>
+      <li><strong>Live Weather Pill (<code>82°F Sunny</code>):</strong> Tapping opens the 3-day crane radar and concrete cure risk modal.</li>
+    </ul>
+
+    <p><strong>Backend API Endpoint:</strong> <code>GET /api/v1/owner/site-pulse</code></p>
+    <pre><code>{
+  "focusMilestone": {
+    "id": "ms-101",
+    "projectId": "proj-1",
+    "projectName": "Snell Isle Residence",
+    "title": "City Framing Walkthrough",
+    "scheduledTime": "2026-09-05T10:00:00Z",
+    "inspector": "Frank Rodriguez (City of Tampa)",
+    "criticalPath": true
+  },
+  "liveTelemetry": {
+    "totalHeadcountOnSite": 94,
+    "activeSubcontractorCrews": 6,
+    "timestamp": "2026-09-05T08:30:00Z"
+  },
+  "weather": {
+    "tempFahrenheit": 82,
+    "condition": "Sunny",
+    "windSpeedMph": 8,
+    "precipitationChance": 10,
+    "isCraneHalted": false
+  }
+}</code></pre>
+
+    <!-- Feature 2 -->
+    <h3>Feature 2: The 3 Core Executive KPIs</h3>
+    <p>
+      Positioned directly below the hero card in a clean 3-column responsive grid.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Metric Card</th>
+          <th>Value</th>
+          <th>Executive Meaning & Rationale</th>
+          <th>Backend Aggregation Formula</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Total Budget</strong></td>
+          <td><code>$34.85M</code></td>
+          <td>Sum of all signed client contracts under active construction.</td>
+          <td><code>SUM(projects.budget.total)</code></td>
+        </tr>
+        <tr>
+          <td><strong>Total Spend</strong></td>
+          <td><code>$16.82M</code></td>
+          <td>Cumulative capital paid out to trades and vendors via ACH/wire.</td>
+          <td><code>SUM(projects.budget.actual + projects.budget.paid)</code></td>
+        </tr>
+        <tr>
+          <td><strong>Active Projects</strong></td>
+          <td><code>7 Active</code></td>
+          <td>Count of active jobsites under construction.</td>
+          <td><code>COUNT(projects WHERE status = 'In Progress')</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Feature 3 -->
+    <h3>Feature 3: Executive Capital Balance & Contingency Reserve Card</h3>
+    <p>
+      <strong>The Problem:</strong> Construction projects fail when unexpected site conditions eat through contingency buffers, destroying company margins.<br>
+      <strong>The Solution:</strong> Displays real-time breakdown of total company capital into 3 vital buckets:
+    </p>
+    <ul>
+      <li><span class="badge badge-blue">Paid 48% ($16.8M)</span> — Capital already wired to trades.</li>
+      <li><span class="badge badge-blue" style="background:#E0F2FE; color:#0284C7;">Committed 35% ($12.1M)</span> — Signed subcontracts and purchase orders pending billing.</li>
+      <li><span class="badge badge-green">Contingency 17% ($5.95M)</span> — Unspent buffer protecting company profit margins.</li>
+      <li><strong>Status Badge (<span class="badge badge-green">Protected</span>):</strong> Reassures the owner that cost variances have not breached the reserve threshold.</li>
+    </ul>
+
+    <!-- Feature 4 -->
+    <h3>Feature 4: Latti AI Executive Briefing (Predictive Risk Intelligence)</h3>
+    <p>
+      Synthesizes 500+ cost line items into a crisp, 2-sentence executive summary:
+    </p>
+    <div class="callout callout-warning">
+      <div>
+        <strong>Real-World Scenario Shown:</strong><br>
+        <em>"Snell Isle concrete costs are running 8% (+$14,200) over budget due to revised pier depths. Thursday rainfall threatens exterior concrete cure. All other projects are tracking within contingency thresholds."</em>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Button 1: <code>Inspect Budget Risks</code>:</strong> Opens the Executive Risk Audit modal detailing the CSI 03 30 00 soil test variance.</li>
+      <li><strong>Button 2: <code>Ask Copilot</code>:</strong> Opens Latti AI chat preloaded with <em>"Show owner risk analysis"</em>.</li>
+    </ul>
+
+    <!-- Feature 5 & 6 -->
+    <h3>Feature 5 & 6: Multi-Project Rollup & Executive Modals</h3>
+    <ul>
+      <li><strong>Active Projects Rollup:</strong> Shows individual cards for Snell Isle, Downtown Commercial, Greenfield, and Sunset Villas with thumbnail, contract value, schedule status, and PM contact.</li>
+      <li><strong>Executive Risk Audit Modal:</strong> Details geotechnical soil findings from Madrid CPWG requiring piers deepened from 18ft to 24ft, confirming that Snell Isle's $185K Phase 1 contingency absorbed the cost with zero client delay.</li>
+      <li><strong>Weather Impact Modal:</strong> Shows 3-day radar, high-wind crane stop threshold (>25 mph), and schedule adjustments.</li>
+    </ul>
+
+    <!-- Section 4: DB Schema -->
+    <h2>4. Recommended Database Schema (PostgreSQL / Relational)</h2>
+    <pre><code>-- 1. Projects Master Table
+CREATE TABLE projects (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    city VARCHAR(100),
+    state VARCHAR(50),
+    status VARCHAR(50) NOT NULL DEFAULT 'In Progress',
+    start_date DATE NOT NULL,
+    target_end_date DATE NOT NULL,
+    progress_percentage NUMERIC(5,2) DEFAULT 0.00
+);
+
+-- 2. Project Budgets & Contingencies
+CREATE TABLE project_budgets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    total_budget NUMERIC(15,2) NOT NULL,
+    committed_amount NUMERIC(15,2) DEFAULT 0.00,
+    actual_spent_amount NUMERIC(15,2) DEFAULT 0.00,
+    contingency_reserve NUMERIC(15,2) DEFAULT 0.00,
+    currency VARCHAR(3) DEFAULT 'USD'
+);
+
+-- 3. CSI Cost Code Variances Table
+CREATE TABLE cost_code_variances (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    csi_code VARCHAR(20) NOT NULL, -- e.g. '03 30 00'
+    division_name VARCHAR(100) NOT NULL, -- 'Cast-in-Place Concrete'
+    budgeted_amount NUMERIC(15,2) NOT NULL,
+    actual_amount NUMERIC(15,2) NOT NULL,
+    variance_amount NUMERIC(15,2) GENERATED ALWAYS AS (actual_amount - budgeted_amount) STORED,
+    root_cause_summary TEXT,
+    is_contingency_absorbed BOOLEAN DEFAULT TRUE
+);</code></pre>
+
+    <!-- Section 5: Bengali Guide -->
+    <h2>5. Backend টিমকে যেভাবে সংক্ষেপে উপস্থাপন করবেন (Quick Presentation Guide in Bengali)</h2>
+    <div class="callout callout-success">
+      <div>
+        <p style="margin-bottom: 8px;"><strong>ডেভেলপারদের সাথে আলোচনার মূল বিষয়গুলো:</strong></p>
+        <ol style="margin-left: 20px; margin-bottom: 0;">
+          <li><strong>অনারের মূল চাহিদা:</strong> অনার কোনো টুলস বা চেকলিস্ট দেখতে চান না। তিনি দেখেন মোট কত টাকা ইনভেস্ট হয়েছে (<code>Total Budget</code>), কত খরচ হয়েছে (<code>Total Spend</code>), এবং কোম্পানির লাভের জন্য রাখা ইমার্জেন্সি বাফার (<code>Contingency</code>) ঠিক আছে কি না।</li>
+          <li><strong>লাইভ হেডকাউন্ট (<code>94 on site</code>):</strong> ফিল্ড সুপারিনটেনডেন্ট সকালে যে ডেইলি লগ তৈরি করেন, সেখানকার সব সাবকন্ট্রাক্টরের লোকবল যোগ করে স্বয়ংক্রিয়ভাবে অনার ড্যাশবোর্ডে লাইভ দেখানো হয়।</li>
+          <li><strong>ক্যাপিটাল ব্যালেন্স বার (<code>Paid 48%, Committed 35%, Contingency 17%</code>):</strong> ব্যাকএন্ডকে এই ৩টি ফিল্ডের রেশিও এপিআই-এর মাধ্যমে পাঠাতে হবে।</li>
+          <li><strong>Latti AI ও রিস্ক অডিট:</strong> যখনই কোনো কস্ট কোডে বাজেট অতিরিক্ত খরচ হয় (যেমন: ফাউন্ডেশন পাইলিংয়ে +$14,200), তখন ব্যাকএন্ড AI ইঞ্জিন এটি ডিটেক্ট করে অনারকে জানাবে যে টাকাটি কন্টিনজেন্সি রিজার্ভ থেকে কভার হয়েছে কি না।</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
