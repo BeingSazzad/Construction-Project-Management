@@ -5,6 +5,7 @@ import {
   Building2, Layers, Wrench, LayoutGrid, HardHat, FileCheck2
 } from 'lucide-react';
 import { MilestoneDetailsModal, MilestoneItem } from '../modals/MilestoneDetailsModal';
+import { StatusBadge } from '../common/StatusBadge';
 
 interface MilestonesHubViewProps {
   projects: Project[];
@@ -14,47 +15,9 @@ interface MilestonesHubViewProps {
   onBack?: () => void;
 }
 
-// Standardized icons matching Lattice design system tokens
-const SlabsIcon = () => (
-  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-2xs">
-    <Building2 className="w-5 h-5 stroke-[2]" />
-  </div>
-);
-
-const TrussIcon = () => (
-  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FFF7E6] border border-[#F59E0B]/25 text-[#F59E0B] flex items-center justify-center flex-shrink-0 shadow-2xs">
-    <Layers className="w-5 h-5 stroke-[2]" />
-  </div>
-);
-
-const MepPipeIcon = () => (
-  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center flex-shrink-0 shadow-2xs">
-    <Wrench className="w-5 h-5 stroke-[2]" />
-  </div>
-);
-
-const GlazingIcon = () => (
-  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FFF7E6] border border-[#F59E0B]/25 text-[#F59E0B] flex items-center justify-center flex-shrink-0 shadow-2xs">
-    <LayoutGrid className="w-5 h-5 stroke-[2]" />
-  </div>
-);
-
-const ExcavatorIcon = () => (
-  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#E9F9F3] border border-[#10A976]/25 text-[#10A976] flex items-center justify-center flex-shrink-0 shadow-2xs">
-    <HardHat className="w-5 h-5 stroke-[2]" />
-  </div>
-);
-
-const PermitFileIcon = () => (
-  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#E9F9F3] border border-[#10A976]/25 text-[#10A976] flex items-center justify-center flex-shrink-0 shadow-2xs">
-    <FileCheck2 className="w-5 h-5 stroke-[2]" />
-  </div>
-);
-
 type MilestoneData = MilestoneItem & {
   projectId: string;
   projectName: string;
-  dotColor?: string;
   iconType?: 'slabs' | 'trusses' | 'mep' | 'glazing' | 'excavation' | 'permits';
 };
 
@@ -72,7 +35,6 @@ const INITIAL_MILESTONES: MilestoneData[] = [
     status: 'In Progress',
     budgetAllocation: 850000,
     inspectionPassed: false,
-    dotColor: 'bg-[#1677FF]',
     iconType: 'slabs'
   },
   {
@@ -88,7 +50,6 @@ const INITIAL_MILESTONES: MilestoneData[] = [
     status: 'Upcoming',
     budgetAllocation: 380000,
     inspectionPassed: false,
-    dotColor: 'bg-[#F59E0B]',
     iconType: 'trusses'
   },
   {
@@ -104,7 +65,6 @@ const INITIAL_MILESTONES: MilestoneData[] = [
     status: 'In Progress',
     budgetAllocation: 920000,
     inspectionPassed: false,
-    dotColor: 'bg-[#1677FF]',
     iconType: 'mep'
   },
   {
@@ -120,7 +80,6 @@ const INITIAL_MILESTONES: MilestoneData[] = [
     status: 'Upcoming',
     budgetAllocation: 540000,
     inspectionPassed: false,
-    dotColor: 'bg-[#F59E0B]',
     iconType: 'glazing'
   },
   {
@@ -182,7 +141,15 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      const target = event.target as HTMLElement;
+      if (
+        !target ||
+        target.tagName === 'HTML' ||
+        target.closest?.('[id*="figma"], [class*="figma"], [id*="html-to-design"], [class*="html-to-design"], [id*="h2d"], [class*="h2d"], [data-figma], [data-h2d], [data-extension], [id*="extension"], [class*="extension"]')
+      ) {
+        return;
+      }
+      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
         setIsProjectDropdownOpen(false);
       }
     };
@@ -225,22 +192,33 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
   });
 
   const renderMilestoneIcon = (item: MilestoneData) => {
+    let Icon = Building2;
+    const nameLower = item.name.toLowerCase();
+    if (item.iconType === 'trusses' || nameLower.includes('framing') || nameLower.includes('truss')) {
+      Icon = Layers;
+    } else if (item.iconType === 'mep' || nameLower.includes('mep') || nameLower.includes('utility')) {
+      Icon = Wrench;
+    } else if (item.iconType === 'glazing' || nameLower.includes('curtain') || nameLower.includes('glazing') || nameLower.includes('glass')) {
+      Icon = LayoutGrid;
+    } else if (item.iconType === 'excavation' || nameLower.includes('excavation') || nameLower.includes('prep') || nameLower.includes('site')) {
+      Icon = HardHat;
+    } else if (item.iconType === 'permits' || nameLower.includes('permit') || nameLower.includes('approval')) {
+      Icon = FileCheck2;
+    }
+
     if (item.status === 'Completed') {
-      if (item.iconType === 'permits' || item.name.toLowerCase().includes('permit') || item.name.toLowerCase().includes('approval')) {
-        return <PermitFileIcon />;
-      }
-      return <ExcavatorIcon />;
+      return (
+        <div className="w-10 h-10 rounded-xl bg-[#E9F9F3] border border-[#10A976]/25 text-[#10A976] flex items-center justify-center flex-shrink-0 shadow-2xs">
+          <Icon className="w-5 h-5 stroke-[2]" />
+        </div>
+      );
     }
-    if (item.iconType === 'slabs' || item.name.toLowerCase().includes('concrete') || item.name.toLowerCase().includes('slab')) {
-      return <SlabsIcon />;
-    }
-    if (item.iconType === 'trusses' || item.name.toLowerCase().includes('framing') || item.name.toLowerCase().includes('truss')) {
-      return <TrussIcon />;
-    }
-    if (item.iconType === 'mep' || item.name.toLowerCase().includes('mep') || item.name.toLowerCase().includes('utility')) {
-      return <MepPipeIcon />;
-    }
-    return <GlazingIcon />;
+
+    return (
+      <div className="w-10 h-10 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#334155] group-hover:bg-[#EAF3FF] group-hover:border-[#1677FF]/30 group-hover:text-[#1677FF] flex items-center justify-center flex-shrink-0 transition-all shadow-2xs">
+        <Icon className="w-5 h-5 stroke-[2]" />
+      </div>
+    );
   };
 
   const handleAddMilestoneSubmit = (e: React.FormEvent) => {
@@ -261,7 +239,6 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
       status: 'Upcoming',
       budgetAllocation: 250000,
       inspectionPassed: false,
-      dotColor: 'bg-[#F59E0B]',
       iconType: 'trusses'
     };
 
@@ -347,7 +324,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
             placeholder={activeTab === 'milestones' ? "Search milestones..." : "Search tasks..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 bg-white border border-[#E2E8F0] rounded-2xl pl-10 pr-4 text-xs sm:text-sm text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF] transition-all shadow-2xs"
+            className="w-full h-11 bg-white border border-[#E2E8F0] rounded-xl pl-10 pr-4 text-xs sm:text-sm text-[#0F172A] placeholder-[#94A3B8] outline-none focus:border-[#1677FF] transition-all shadow-2xs"
           />
           {searchQuery && (
             <button
@@ -364,7 +341,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           <button
             type="button"
             onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
-            className="h-11 px-3.5 bg-white border border-[#E2E8F0] rounded-2xl text-xs sm:text-sm text-[#0F172A] font-medium flex items-center gap-2 cursor-pointer shadow-2xs hover:border-slate-300 transition-all"
+            className="h-11 px-3.5 bg-white border border-[#E2E8F0] rounded-xl text-xs sm:text-sm text-[#0F172A] font-medium flex items-center gap-2 cursor-pointer shadow-2xs hover:border-slate-300 transition-all"
           >
             <span className="truncate max-w-[105px] sm:max-w-[130px]">
               {selectedProjectName}
@@ -373,7 +350,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           </button>
 
           {isProjectDropdownOpen && (
-            <div className="absolute right-0 top-full mt-1.5 w-52 bg-white border border-[#E2E8F0] rounded-2xl shadow-xl z-30 py-1 text-xs">
+            <div className="absolute right-0 top-full mt-1.5 w-52 bg-white border border-[#E2E8F0] rounded-xl shadow-xl z-30 py-1 text-xs">
               <button
                 type="button"
                 onClick={() => { setSelectedProjectId('all'); setIsProjectDropdownOpen(false); }}
@@ -433,23 +410,23 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                   <div className="flex items-start gap-3.5">
                     {renderMilestoneIcon(ms)}
 
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-                      {/* Row 1: Status Dot + Full Title + Chevron */}
+                    <div className="flex-1 min-w-0 flex flex-col gap-2">
+                      {/* Row 1: Clean Title + Status Badge + Chevron */}
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${ms.status === 'In Progress' ? 'bg-[#1677FF]' : 'bg-[#F59E0B]'}`} />
-                          <h3 className="text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors">
-                            {ms.name}
-                          </h3>
-                        </div>
+                        <h3 className="text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors flex-1 min-w-0">
+                          {ms.name}
+                        </h3>
 
-                        <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <StatusBadge status={ms.status} size="xs" />
+                          <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-transform" />
+                        </div>
                       </div>
 
-                      {/* Row 2: Code Badge + Project Name + Calendar Date */}
+                      {/* Row 2: Code Chip + Project Name + Calendar Date */}
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="px-2 py-0.5 rounded-md bg-[#EAF3FF] text-[#1677FF] text-[11px] font-bold flex-shrink-0">
+                          <span className="px-1.5 py-0.5 rounded bg-[#F1F5F9] border border-[#E2E8F0] text-[#475569] text-[10px] font-bold font-mono tracking-wide flex-shrink-0">
                             {ms.code || 'MS-00'}
                           </span>
                           <span className="text-xs text-[#64748B] font-medium truncate">
@@ -464,15 +441,19 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                       </div>
 
                       {/* Row 3: Progress Bar */}
-                      <div className="flex items-center gap-3 pt-1">
-                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="flex items-center gap-3 pt-0.5">
+                        <div className="flex-1 h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-[#1677FF] transition-all duration-300"
+                            className={`h-full rounded-full transition-all duration-300 ${
+                              ms.progress > 0 ? 'bg-[#1677FF]' : 'bg-transparent'
+                            }`}
                             style={{ width: `${ms.progress}%` }}
                           />
                         </div>
-                        <span className="text-[11px] text-[#64748B] font-medium flex-shrink-0">
-                          {ms.progress}% complete
+                        <span className={`text-[11px] font-medium flex-shrink-0 ${
+                          ms.progress > 0 ? 'text-[#1677FF] font-semibold' : 'text-[#94A3B8]'
+                        }`}>
+                          {ms.progress > 0 ? `${ms.progress}% complete` : '0% complete'}
                         </span>
                       </div>
                     </div>
@@ -509,26 +490,24 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                   <div className="flex items-start gap-3.5">
                     {renderMilestoneIcon(ms)}
 
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-                      {/* Row 1: Check Icon + Full Title + Chevron */}
+                    <div className="flex-1 min-w-0 flex flex-col gap-2">
+                      {/* Row 1: Title + Status Badge + Chevron */}
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <div className="w-4 h-4 rounded-full bg-[#10A976] flex items-center justify-center flex-shrink-0">
-                            <Check className="w-2.5 h-2.5 text-white stroke-[3]" />
-                          </div>
-                          <h3 className="text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#10A976] transition-colors">
-                            {ms.name}
-                          </h3>
-                        </div>
+                        <h3 className="text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#10A976] transition-colors flex-1 min-w-0">
+                          {ms.name}
+                        </h3>
 
-                        <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#10A976] group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <StatusBadge status="Completed" size="xs" />
+                          <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#10A976] group-hover:translate-x-0.5 transition-transform" />
+                        </div>
                       </div>
 
-                      {/* Row 2: Completed Badge + Project Name + Calendar Date */}
+                      {/* Row 2: Code Chip + Project Name + Calendar Date */}
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="px-2 py-0.5 rounded-md bg-[#E9F9F3] text-[#10A976] text-[11px] font-bold flex-shrink-0">
-                            Completed
+                          <span className="px-1.5 py-0.5 rounded bg-[#F1F5F9] border border-[#E2E8F0] text-[#475569] text-[10px] font-bold font-mono tracking-wide flex-shrink-0">
+                            {ms.code || 'MS-00'}
                           </span>
                           <span className="text-xs text-[#64748B] font-medium truncate">
                             {ms.projectName}
@@ -542,8 +521,8 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                       </div>
 
                       {/* Row 3: Progress Bar (Full Green) */}
-                      <div className="flex items-center gap-3 pt-1">
-                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="flex items-center gap-3 pt-0.5">
+                        <div className="flex-1 h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full bg-[#10A976] transition-all duration-300"
                             style={{ width: `100%` }}
@@ -578,15 +557,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
                   <h3 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
                     {task.title}
                   </h3>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 border ${
-                    task.status === 'Completed'
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : task.status === 'In Progress'
-                      ? 'bg-[#EAF3FF] text-[#1677FF] border-[#1677FF]/20'
-                      : 'bg-amber-50 text-amber-700 border-amber-200'
-                  }`}>
-                    {task.status}
-                  </span>
+                  <StatusBadge status={task.status} size="xs" />
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-slate-500 font-medium">

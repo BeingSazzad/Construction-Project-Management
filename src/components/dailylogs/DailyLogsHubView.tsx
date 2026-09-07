@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Project, DailyLogItem } from '../../types';
+import { Project, DailyLogItem, User } from '../../types';
 import { 
-  Plus, Search, Calendar, Users, Sun, CloudRain, 
-  Building2, ArrowUpRight, Trash2
+  Plus, Search, Calendar, ChevronRight
 } from 'lucide-react';
 import { CreateDailyLogModal } from '../modals/CreateDailyLogModal';
+import { DailyLogDetailModal } from '../modals/DailyLogDetailModal';
 
 interface DailyLogsHubViewProps {
   projects: Project[];
   dailyLogs: DailyLogItem[];
+  currentUser?: User;
   onAddDailyLog: (newLog: DailyLogItem) => void;
   onDeleteLog?: (logId: string) => void;
   onNavigateToProject?: (projectId: string, tab?: string) => void;
@@ -17,11 +18,13 @@ interface DailyLogsHubViewProps {
 export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
   projects,
   dailyLogs,
+  currentUser,
   onAddDailyLog,
   onDeleteLog,
   onNavigateToProject
 }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedLogForModal, setSelectedLogForModal] = useState<DailyLogItem | null>(null);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -35,34 +38,42 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
       (log.visitors && log.visitors.toLowerCase().includes(q)) ||
       (log.equipment && log.equipment.toLowerCase().includes(q)) ||
       (log.deliveries && log.deliveries.some(d => d.toLowerCase().includes(q))) ||
-      log.materialsReceived.some(m => m.toLowerCase().includes(q));
+      (log.materialsReceived && log.materialsReceived.some(m => m.toLowerCase().includes(q)));
     return matchesProject && matchesSearch;
   });
 
+  const cleanAuthor = (authorName?: string) => {
+    if (!authorName) return 'Superintendent';
+    return authorName.replace(/\s*\(.*?\)/g, '').trim();
+  };
+
   return (
-    <div className="w-full flex-1 flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
+    <div className="w-full flex-1 flex flex-col gap-3.5 px-4 py-3.5 pb-28 font-sans max-w-[440px] md:max-w-2xl mx-auto text-[#0F172A] bg-[#F8FAFC] animate-fade-in">
 
       {/* ── Top Subtitle & Action Bar ── */}
       <div className="flex items-center justify-between pt-0.5">
-        <p className="text-xs text-[#68707C] font-medium">Project field progress & crew activity</p>
+        <div>
+          <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Daily Field Logs</h2>
+          <p className="text-xs text-[#64748B] font-medium">Project field progress, workforce & safety</p>
+        </div>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] active:scale-95 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 flex-shrink-0"
+          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#1677FF]/90 active:scale-95 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 flex-shrink-0"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>New Log</span>
         </button>
       </div>
 
       {/* ── Search ── */}
       <div className="relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#68707C] pointer-events-none" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8] pointer-events-none" />
         <input
           type="text"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          placeholder="Search logs, notes, visitors…"
-          className="w-full h-10 bg-white border border-[#DDE1E7] focus:border-[#1677FF] rounded-xl pl-9 pr-3 text-xs text-[#171A1F] placeholder-[#9DA5B1] outline-none transition-colors shadow-xs"
+          placeholder="Search logs, notes, visitors, deliveries…"
+          className="w-full h-10 bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl pl-9 pr-3 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none transition-colors shadow-2xs font-medium"
         />
       </div>
 
@@ -70,10 +81,10 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
       <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
         <button
           onClick={() => setSelectedProjectFilter('all')}
-          className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 border ${
+          className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer flex-shrink-0 border ${
             selectedProjectFilter === 'all'
-              ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-xs'
-              : 'bg-white text-[#68707C] hover:text-[#171A1F] hover:bg-[#F2F2F7] border-[#DDE1E7]'
+              ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-2xs'
+              : 'bg-white text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] border-[#E2E8F0] font-medium'
           }`}
         >
           All · {dailyLogs.length}
@@ -85,15 +96,15 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
             <button
               key={p.id}
               onClick={() => setSelectedProjectFilter(p.id)}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 flex items-center gap-1.5 border ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 flex items-center gap-1.5 border ${
                 isSelected
-                  ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-xs'
-                  : 'bg-white text-[#68707C] hover:text-[#171A1F] hover:bg-[#F2F2F7] border-[#DDE1E7]'
+                  ? 'bg-[#1677FF] border-[#1677FF] text-white font-bold shadow-2xs'
+                  : 'bg-white text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] border-[#E2E8F0]'
               }`}
             >
-              <span className="truncate max-w-[100px]">{p.name}</span>
+              <span className="truncate max-w-[120px]">{p.name}</span>
               {count > 0 && (
-                <span className={`text-[10px] font-bold ${isSelected ? 'text-white' : 'text-[#68707C]'}`}>
+                <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-[#64748B]'}`}>
                   {count}
                 </span>
               )}
@@ -103,96 +114,102 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
       </div>
 
       {/* ── Log Cards ── */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {filteredLogs.length === 0 ? (
-          <div className="py-12 flex flex-col items-center gap-2 text-center bg-white border border-[#DDE1E7] rounded-3xl p-8 shadow-xs">
-            <Calendar className="w-8 h-8 text-[#9DA5B1]" />
-            <p className="text-xs font-semibold text-[#171A1F]">No logs found</p>
-            <p className="text-xs text-[#68707C] max-w-[220px]">
+          <div className="py-12 flex flex-col items-center gap-2 text-center bg-white border border-[#E2E8F0] rounded-3xl p-8 shadow-card">
+            <Calendar className="w-8 h-8 text-[#94A3B8]" />
+            <p className="text-xs font-semibold text-[#0F172A]">No field logs found</p>
+            <p className="text-xs text-[#64748B] max-w-[220px]">
               No logs recorded for this filter. Tap "New Log" to create one.
             </p>
           </div>
         ) : (
-          filteredLogs.map(log => (
-            <article
-              key={log.id}
-              className="relative rounded-2xl bg-white border border-[#DDE1E7] hover:border-[#1677FF]/40 transition-all overflow-hidden group shadow-xs p-4 flex flex-col gap-3"
-            >
-              {/* Row 1: Identity + status badge */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF] flex-shrink-0">
-                    <Building2 className="w-4 h-4" />
+          filteredLogs.map(log => {
+            const author = cleanAuthor(log.author);
+            const initials = author.split(' ').map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'JS';
+            const isIssue = Boolean(
+              log.status?.toLowerCase().includes('issue') || 
+              log.status?.toLowerCase().includes('delay') || 
+              log.safetyPassed === false
+            );
+            const issueLabel = log.status || (log.safetyPassed === false ? '1 issue' : undefined);
+            const hasPhotos = log.photos && log.photos.length > 0;
+            const dateStr = log.date.includes('Sep') ? `Tue, ${log.date}` : log.date;
+
+            return (
+              <div
+                key={log.id}
+                onClick={() => setSelectedLogForModal(log)}
+                className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card hover:border-[#1677FF]/40 hover:shadow-md transition-all cursor-pointer group flex flex-col gap-2.5"
+              >
+                {/* Header Row: Author Avatar + Name & Date/Time + Project Tag + Optional Issue Tag + Chevron */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-full bg-[#EAF3FF] text-[#1677FF] font-bold text-xs flex items-center justify-center shrink-0 border border-[#1677FF]/20 shadow-2xs">
+                      {initials}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h4 className="text-xs font-bold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors leading-tight">
+                          {author}
+                        </h4>
+                        {selectedProjectFilter === 'all' && (
+                          <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-md">
+                            {log.projectName}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#64748B] font-normal leading-tight mt-0.5 truncate">
+                        {dateStr} · {log.time || '5:42 PM'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="text-xs sm:text-sm font-bold text-[#171A1F] truncate leading-tight">
-                      {log.projectName}
-                    </h3>
-                    <p className="text-xs text-[#68707C] font-medium leading-tight mt-0.5">
-                      {log.date}
-                    </p>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    {isIssue && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        <span>{issueLabel}</span>
+                      </span>
+                    )}
+                    <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors" />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                    {log.totalHeadcount} on-site
-                  </span>
-                  {onNavigateToProject && (
-                    <button
-                      onClick={() => onNavigateToProject(log.projectId, 'dailylogs')}
-                      className="w-7 h-7 rounded-lg bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] border border-[#DDE1E7] flex items-center justify-center transition-colors cursor-pointer"
-                      title="Open project logs"
-                    >
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              </div>
+                {/* Row 2: Work Summary Snippet */}
+                <p className="text-xs text-[#334155] leading-relaxed line-clamp-2 font-normal">
+                  {log.workSummary}
+                </p>
 
-              {/* Row 2: Weather & Quick Tags */}
-              <div className="flex items-center gap-2 text-xs text-[#68707C]">
-                <div className="flex items-center gap-1 bg-[#F7F8FA] px-2 py-0.5 rounded-lg border border-[#EAEDF1]">
-                  {log.weather.condition.toLowerCase().includes('rain') ? (
-                    <CloudRain className="w-3 h-3 text-[#1677FF]" />
-                  ) : (
-                    <Sun className="w-3 h-3 text-amber-500" />
-                  )}
-                  <span>{log.weather.temperature} · {log.weather.condition}</span>
-                </div>
-                <div className="flex items-center gap-1 bg-[#F7F8FA] px-2 py-0.5 rounded-lg border border-[#EAEDF1]">
-                  <Users className="w-3 h-3 text-[#1677FF]" />
-                  <span>{log.totalHeadcount} workers</span>
-                </div>
+                {/* Row 3: Compact 3-Photo Thumbnails */}
+                {hasPhotos && (
+                  <div className="grid grid-cols-3 gap-2 pt-0.5">
+                    {log.photos!.slice(0, 3).map((photoUrl, pIdx) => (
+                      <div 
+                        key={pIdx}
+                        className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 border border-[#E2E8F0] shadow-2xs group-hover:border-[#1677FF]/30 transition-all"
+                      >
+                        <img 
+                          src={photoUrl} 
+                          alt={`Site Preview ${pIdx + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                          loading="lazy"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80';
+                          }}
+                        />
+                        {pIdx === 2 && log.photos!.length > 3 && (
+                          <div className="absolute inset-0 bg-black/45 backdrop-blur-2xs flex items-center justify-center text-white text-xs font-bold">
+                            +{log.photos!.length - 3}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-
-              {/* Row 3: Summary Text */}
-              <p className="text-xs text-[#171A1F] bg-[#F7F8FA] p-3 rounded-xl border border-[#EAEDF1] leading-relaxed">
-                {log.workSummary}
-              </p>
-
-              {/* Row 4: Author Footer */}
-              <div className="flex items-center justify-between text-xs text-[#68707C] pt-1.5 border-t border-[#EAEDF1]">
-                <span>By: {log.author}</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-emerald-700 font-semibold">{log.safetyIncidents}</span>
-                  {onDeleteLog && (
-                    <button
-                      onClick={() => {
-                        if (window.confirm(`Delete field log for ${log.projectName} (${log.date})?`)) {
-                          onDeleteLog(log.id);
-                        }
-                      }}
-                      className="w-6 h-6 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
-                      title="Delete log"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </article>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -201,7 +218,15 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         projects={projects}
+        currentUser={currentUser}
         onSaveLog={onAddDailyLog}
+      />
+
+      {/* Daily Log Detail Modal */}
+      <DailyLogDetailModal
+        isOpen={!!selectedLogForModal}
+        onClose={() => setSelectedLogForModal(null)}
+        log={selectedLogForModal}
       />
     </div>
   );

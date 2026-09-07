@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { UserRole } from '../../types';
 import {
   RotateCcw, Compass, LogIn, ChevronDown, Check,
@@ -36,7 +36,15 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (roleDropdownRef.current && !roleDropdownRef.current.contains(event.target as Node)) {
+      const target = event.target as HTMLElement;
+      if (
+        !target ||
+        target.tagName === 'HTML' ||
+        target.closest?.('[id*="figma"], [class*="figma"], [id*="html-to-design"], [class*="html-to-design"], [id*="h2d"], [class*="h2d"], [data-figma], [data-h2d], [data-extension], [id*="extension"], [class*="extension"]')
+      ) {
+        return;
+      }
+      if (roleDropdownRef.current && !roleDropdownRef.current.contains(target)) {
         setIsRoleDropdownOpen(false);
       }
     };

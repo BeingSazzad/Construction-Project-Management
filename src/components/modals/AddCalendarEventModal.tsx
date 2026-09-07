@@ -10,6 +10,8 @@ interface AddCalendarEventModalProps {
   onClose: () => void;
   projects: Project[];
   onAddEvent: (event: CalendarEventItem) => void;
+  onUpdateEvent?: (event: CalendarEventItem) => void;
+  editingEvent?: CalendarEventItem | null;
   initialDate?: string;
   defaultProjectId?: string;
 }
@@ -19,6 +21,8 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
   onClose,
   projects,
   onAddEvent,
+  onUpdateEvent,
+  editingEvent,
   initialDate,
   defaultProjectId
 }) => {
@@ -31,18 +35,35 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
   const [location, setLocation] = useState('');
   const [notes, setNotes] = useState('');
 
+  const isEditing = Boolean(editingEvent);
+
+  // Pre-fill when editing or reset when adding
+  React.useEffect(() => {
+    if (editingEvent) {
+      setTitle(editingEvent.title || '');
+      setDate(editingEvent.date || initialDate || '2026-09-05');
+      setType(editingEvent.type || 'Inspection');
+      setProjectId(editingEvent.projectId || defaultProjectId || (projects.length === 1 ? projects[0].id : ''));
+      setPriority(editingEvent.priority || 'Medium');
+      setTime(editingEvent.time || '09:00 AM');
+      setLocation(editingEvent.location || '');
+      setNotes(editingEvent.notes || '');
+    } else {
+      setTitle('');
+      setDate(initialDate || '2026-09-05');
+      setType('Inspection');
+      setPriority('Medium');
+      setTime('09:00 AM');
+      setLocation('');
+      setNotes('');
+      if (defaultProjectId) setProjectId(defaultProjectId);
+      else if (projects.length === 1) setProjectId(projects[0].id);
+    }
+  }, [editingEvent, initialDate, defaultProjectId, projects, isOpen]);
+
   // Determine if this modal is being opened from within a specific project context
   const isProjectScoped = Boolean(defaultProjectId) || projects.length === 1;
   const currentProject = projects.find(p => p.id === (projectId || defaultProjectId)) || (projects.length === 1 ? projects[0] : null);
-
-  React.useEffect(() => {
-    if (defaultProjectId) setProjectId(defaultProjectId);
-    else if (projects.length === 1) setProjectId(projects[0].id);
-  }, [defaultProjectId, projects]);
-
-  React.useEffect(() => {
-    if (initialDate) setDate(initialDate);
-  }, [initialDate]);
 
   if (!isOpen) return null;
 
@@ -53,24 +74,36 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
     const assignedProjId = projectId || (isProjectScoped && currentProject ? currentProject.id : undefined);
     const selectedProj = projects.find(p => p.id === assignedProjId) || currentProject;
 
-    const newEvent: CalendarEventItem = {
-      id: `evt-${Date.now()}`,
-      title: title.trim(),
-      date,
-      type,
-      projectId: assignedProjId,
-      projectName: selectedProj?.name,
-      priority,
-      time,
-      location: location.trim() || undefined,
-      notes: notes.trim() || undefined
-    };
+    if (isEditing && editingEvent && onUpdateEvent) {
+      const updated: CalendarEventItem = {
+        ...editingEvent,
+        title: title.trim(),
+        date,
+        type,
+        projectId: assignedProjId,
+        projectName: selectedProj?.name || editingEvent.projectName,
+        priority,
+        time,
+        location: location.trim() || undefined,
+        notes: notes.trim() || undefined
+      };
+      onUpdateEvent(updated);
+    } else {
+      const newEvent: CalendarEventItem = {
+        id: `evt-${Date.now()}`,
+        title: title.trim(),
+        date,
+        type,
+        projectId: assignedProjId,
+        projectName: selectedProj?.name,
+        priority,
+        time,
+        location: location.trim() || undefined,
+        notes: notes.trim() || undefined
+      };
+      onAddEvent(newEvent);
+    }
 
-    onAddEvent(newEvent);
-    // Reset fields
-    setTitle('');
-    setLocation('');
-    setNotes('');
     onClose();
   };
 
@@ -96,8 +129,12 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
               <CalendarIcon className="w-4 h-4 stroke-[2.2]" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-[#171A1F] leading-none">Add to Schedule</h2>
-              <p className="text-[11px] text-[#68707C] mt-1 font-medium">Milestone, municipal inspection, or site event</p>
+              <h2 className="text-sm font-bold text-[#171A1F] leading-none">
+                {isEditing ? 'Edit Schedule Event' : 'Add to Schedule'}
+              </h2>
+              <p className="text-[11px] text-[#68707C] mt-1 font-medium">
+                {isEditing ? 'Update milestone, inspection or site event details' : 'Milestone, municipal inspection, or site event'}
+              </p>
             </div>
           </div>
           <button
@@ -290,8 +327,17 @@ export const AddCalendarEventModal: React.FC<AddCalendarEventModalProps> = ({
               type="submit"
               className="flex-1 h-11 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-xs font-bold text-white shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>Add to Schedule</span>
+              {isEditing ? (
+                <>
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Save Changes</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
+                  <span>Add to Schedule</span>
+                </>
+              )}
             </button>
           </div>
         </form>

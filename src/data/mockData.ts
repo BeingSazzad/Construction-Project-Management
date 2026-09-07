@@ -114,7 +114,11 @@ export const MOCK_PROJECTS: Project[] = [
         id: 'dl-101',
         projectId: 'proj-1',
         projectName: 'Snell Isle Residence',
-        date: 'Today · Sep 5',
+        address: '1840 Brightwaters Blvd NE · St. Petersburg, FL',
+        date: 'Sep 5',
+        time: '5:42 PM',
+        authorRole: 'Superintendent',
+        lastEdited: '6:03 PM',
         weather: {
           condition: 'Sunny',
           temperature: '82°F',
@@ -123,8 +127,8 @@ export const MOCK_PROJECTS: Project[] = [
           siteCondition: 'Dry'
         },
         totalHeadcount: 24,
-        visitors: 'City of Tampa Building Inspector (Structural framing walkthrough)',
-        deliveries: ['84 Lumber Framing Package (2 flatbeds)', '50 bundles EMT conduit'],
+        visitors: 'City of Tampa Building Inspector (Structural framing walkthrough · 9:00 AM)',
+        deliveries: ['Lumber framing package, EMT conduit, hardware (3 deliveries received)'],
         equipment: '50-ton Mobile Crane, Genie GTH-844 Telehandler',
         crews: [
           {
@@ -142,13 +146,13 @@ export const MOCK_PROJECTS: Project[] = [
             notes: 'Level 2 rough-in home runs and sub-panel feeders installed'
           }
         ],
-        workSummary: 'Completed level 2 structural floor framing, installed hurricane clips and tie-down holdowns on west shear wall. Electrical rough-in conduits ran to main distribution panel. Site safety check passed 100%.',
+        workSummary: 'Completed Level 2 structural floor framing, including hurricane clips and west shear-wall tie-downs. Electrical rough-in continued to the main distribution panel.',
         materialsReceived: ['84 Lumber Framing Package (2 flatbeds)', '50 bundles EMT conduit', 'Simpson Strong-Tie hardware boxes'],
-        safetyIncidents: '0 Incidents. Daily morning safety briefing conducted. Fall protection harnesses inspected.',
+        safetyIncidents: 'Daily morning safety briefing conducted. Fall protection harnesses inspected.',
         safetyPassed: true,
         author: 'John Smith',
         photos: [
-          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80'
         ]
@@ -157,7 +161,12 @@ export const MOCK_PROJECTS: Project[] = [
         id: 'dl-102',
         projectId: 'proj-1',
         projectName: 'Snell Isle Residence',
-        date: 'Yesterday · Sep 4',
+        address: '1840 Brightwaters Blvd NE · St. Petersburg, FL',
+        date: 'Sep 4',
+        time: '5:18 PM',
+        status: '1 Issue',
+        authorRole: 'Superintendent',
+        lastEdited: '5:45 PM',
         weather: {
           condition: 'Sunny',
           temperature: '84°F',
@@ -165,7 +174,7 @@ export const MOCK_PROJECTS: Project[] = [
           precipitation: '0%',
           siteCondition: 'Dry'
         },
-        totalHeadcount: 22,
+        totalHeadcount: 18,
         visitors: 'Arthur Vance (Client site visit with Architect)',
         deliveries: ['Structural steel flitch plates (1 truck)'],
         equipment: 'Cat 320 Excavator, Forklift #2',
@@ -173,23 +182,23 @@ export const MOCK_PROJECTS: Project[] = [
           {
             trade: 'Framing & Steel',
             subcontractor: 'Apex Concrete Masters',
-            workersCount: 12,
+            workersCount: 10,
             hoursWorked: 8,
             notes: 'Set primary structural steel beam over great room opening'
           },
           {
             trade: 'Earthworks & Site',
             subcontractor: 'Earthworks Pro LLC',
-            workersCount: 10,
+            workersCount: 8,
             hoursWorked: 8,
             notes: 'Finalized exterior perimeter grading and storm drainage swale'
           }
         ],
-        workSummary: 'Erected great room structural steel beam with mobile crane. Completed exterior rough grading to prevent pooling ahead of Thursday rain advisory.',
+        workSummary: 'Concrete pour delayed due to heavy afternoon rain advisory. Formwork and rebar prep completed on west wing.',
         materialsReceived: ['Structural steel flitch plates (1 truck)', '12-inch corrugated drainage pipe (100 ft)'],
-        safetyIncidents: '0 Incidents. Crane lift perimeter barricaded during heavy picks.',
+        safetyIncidents: 'Zero incidents. Crane lift perimeter barricaded during heavy picks.',
         safetyPassed: true,
-        author: 'Sarah Johnson',
+        author: 'Mike Chen',
         photos: [
           'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80'
@@ -199,7 +208,11 @@ export const MOCK_PROJECTS: Project[] = [
         id: 'dl-103',
         projectId: 'proj-1',
         projectName: 'Snell Isle Residence',
+        address: '1840 Brightwaters Blvd NE · St. Petersburg, FL',
         date: 'Sep 3',
+        time: '5:16 PM',
+        authorRole: 'Superintendent',
+        lastEdited: '5:30 PM',
         weather: {
           condition: 'Partly Cloudy',
           temperature: '81°F',
@@ -207,7 +220,7 @@ export const MOCK_PROJECTS: Project[] = [
           precipitation: '10%',
           siteCondition: 'Normal'
         },
-        totalHeadcount: 18,
+        totalHeadcount: 22,
         visitors: 'Universal Engineering Sciences (Concrete break testing tech)',
         deliveries: ['Ready-mix concrete trucks (4 loads)'],
         equipment: 'Putzmeister 38Z Concrete Boom Pump',
@@ -215,25 +228,39 @@ export const MOCK_PROJECTS: Project[] = [
           {
             trade: 'Concrete & Foundations',
             subcontractor: 'Concrete Solutions Inc.',
-            workersCount: 18,
+            workersCount: 14,
             hoursWorked: 8,
             notes: 'Poured grade beams and STEM walls on grid A-D'
+          },
+          {
+            trade: 'Formwork Carpentry',
+            subcontractor: 'Apex Concrete Masters',
+            workersCount: 8,
+            hoursWorked: 8,
+            notes: 'Formwork stripping and curing blanket installation'
           }
         ],
-        workSummary: 'Poured 42 yards of 4,000 PSI concrete for foundation STEM walls. 7-day cylinder break tests passed at 3,850 PSI (exceeding 3,500 PSI spec). Clean finish troweled.',
+        workSummary: 'Site preparation and formwork installation continued. Poured 42 yards of 4,000 PSI concrete for foundation STEM walls.',
         materialsReceived: ['Ready-mix concrete (42 yards)'],
-        safetyIncidents: '0 Incidents. Concrete chemical eye wash stations verified.',
+        safetyIncidents: 'Zero incidents. Concrete chemical eye wash stations verified.',
         safetyPassed: true,
         author: 'John Smith',
         photos: [
-          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80'
+          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80'
         ]
       },
       {
         id: 'dl-104',
         projectId: 'proj-1',
         projectName: 'Snell Isle Residence',
+        address: '1840 Brightwaters Blvd NE · St. Petersburg, FL',
         date: 'Sep 2',
+        time: '5:10 PM',
+        authorRole: 'Superintendent',
+        lastEdited: '5:25 PM',
         weather: {
           condition: 'Clear',
           temperature: '80°F',
@@ -241,24 +268,76 @@ export const MOCK_PROJECTS: Project[] = [
           precipitation: '0%',
           siteCondition: 'Dry'
         },
-        totalHeadcount: 16,
+        totalHeadcount: 20,
         visitors: 'Geotechnical Soil Engineer (Soil bearing verification)',
         deliveries: ['Rebar #5 and #6 bundles (2 trailers)'],
         equipment: 'CAT 308 Mini Excavator, Vibratory Plate Compactor',
         crews: [
           {
-            trade: 'Earthwork & Foundations',
-            subcontractor: 'Earthworks Pro LLC',
-            workersCount: 16,
+            trade: 'Electrical & Conduit',
+            subcontractor: 'Prime Electrical & Mechanical',
+            workersCount: 12,
             hoursWorked: 8,
-            notes: 'Excavated grade beam trenches and tied rebar cages'
+            notes: 'Underground conduit trenching and stub-ups'
+          },
+          {
+            trade: 'Earthworks & Site',
+            subcontractor: 'Earthworks Pro LLC',
+            workersCount: 8,
+            hoursWorked: 8,
+            notes: 'Backfilling and soil compaction'
           }
         ],
-        workSummary: 'Geotechnical engineer tested soil bearing compaction at 3,000 PSF (approved). Installed vapor barrier and tied continuous rebar reinforcement.',
+        workSummary: 'Electrical underground conduit installation and inspections passed with zero citations.',
         materialsReceived: ['Rebar bundles (8 tons)', '15-mil Stego Wrap Vapor Barrier rolls'],
-        safetyIncidents: '0 Incidents. Trench shoring safety inspection signed off.',
+        safetyIncidents: 'Zero incidents. Trench shoring safety inspection signed off.',
         safetyPassed: true,
-        author: 'John Smith (Field Superintendent)'
+        author: 'Alex Rivera',
+        photos: [
+          'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80'
+        ]
+      },
+      {
+        id: 'dl-105',
+        projectId: 'proj-1',
+        projectName: 'Snell Isle Residence',
+        address: '1840 Brightwaters Blvd NE · St. Petersburg, FL',
+        date: 'Sep 1',
+        time: '5:08 PM',
+        status: 'Normal Day',
+        authorRole: 'Superintendent',
+        lastEdited: '5:20 PM',
+        weather: {
+          condition: 'Sunny',
+          temperature: '85°F',
+          windSpeed: '4 mph S',
+          precipitation: '0%',
+          siteCondition: 'Dry'
+        },
+        totalHeadcount: 16,
+        visitors: 'City Inspector & Staging Coordinator',
+        deliveries: ['Site temporary power generator and job trailer'],
+        equipment: 'Jobsite Forklift',
+        crews: [
+          {
+            trade: 'General Site Setup',
+            subcontractor: 'Lattice General Field Crew',
+            workersCount: 16,
+            hoursWorked: 8,
+            notes: 'Mobilization, fence installation, silt barriers'
+          }
+        ],
+        workSummary: 'Mobilization and site setup completed. Perimeter silt fencing and job trailer electrical connected.',
+        materialsReceived: ['Perimeter safety barriers, silt fencing rolls'],
+        safetyIncidents: 'Zero incidents recorded.',
+        safetyPassed: true,
+        author: 'John Smith',
+        photos: [
+          'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80'
+        ]
       }
     ]
   },
@@ -1643,7 +1722,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-1',
     projectId: 'proj-1',
-    title: 'Architectural Plan - Rev 03',
+    title: 'Architectural Plans (Rev 03)',
     category: 'Plans',
     fileSize: '24.5 MB',
     fileType: 'PDF',
@@ -1655,7 +1734,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-2',
     projectId: 'proj-1',
-    title: 'Structural Drawing - L12 Deck & Slabs',
+    title: 'Structural Drawings (L12)',
     category: 'Drawings',
     fileSize: '18.7 MB',
     fileType: 'PDF',
@@ -1667,7 +1746,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-3',
     projectId: 'proj-1',
-    title: 'MEP Layout - Level 5 Riser Diagram',
+    title: 'MEP Riser Diagram',
     category: 'Drawings',
     fileSize: '14.2 MB',
     fileType: 'PDF',
@@ -1679,7 +1758,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-4',
     projectId: 'proj-1',
-    title: 'Submittal - Concrete Mix 5000 PSI High Early',
+    title: 'Concrete Mix Submittal',
     category: 'PDFs',
     fileSize: '4.8 MB',
     fileType: 'PDF',
@@ -1691,7 +1770,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-5',
     projectId: 'proj-1',
-    title: 'Site Safety Logistics & Crane Radius Plan',
+    title: 'Site Safety Logistics',
     category: 'Site Logistics',
     fileSize: '8.3 MB',
     fileType: 'PDF',
@@ -1703,7 +1782,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-6',
     projectId: 'proj-1',
-    title: 'Prime Contractor Agreement & GMP Exhibit',
+    title: 'Prime Contractor Agreement',
     category: 'Contracts',
     fileSize: '3.6 MB',
     fileType: 'PDF',
@@ -1715,7 +1794,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-7',
     projectId: 'proj-1',
-    title: 'City Building Permit #BLD-2026-8941 & Approved Set',
+    title: 'City Building Permit #8941',
     category: 'Permits',
     fileSize: '6.2 MB',
     fileType: 'PDF',
@@ -1727,7 +1806,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-8',
     projectId: 'proj-1',
-    title: 'Interior Millwork, Tile & Plumbing Selections Sheet',
+    title: 'Interior Selections Sheet',
     category: 'Selections',
     fileSize: '4.5 MB',
     fileType: 'PDF',
@@ -1739,7 +1818,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-9',
     projectId: 'proj-1',
-    title: 'Ready-Mix Concrete Batch Invoice #INV-8832',
+    title: 'Concrete Invoice #8832',
     category: 'Receipts & Invoices',
     fileSize: '840 KB',
     fileType: 'PDF',
@@ -1751,13 +1830,13 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-10',
     projectId: 'proj-1',
-    title: 'Structural Steel Column Mill Test & Delivery Receipt',
-    category: 'Receipts & Invoices',
+    title: 'HVAC Commissioning Report',
+    category: 'Reports',
     fileSize: '1.2 MB',
     fileType: 'PDF',
-    version: 'Verified',
-    uploadedBy: 'Steel Masters LLC',
-    uploadDate: 'May 18, 2025',
+    version: 'v1.0',
+    uploadedBy: 'Apex Air Systems',
+    uploadDate: 'May 11, 2025',
     url: '#'
   }
 ];
@@ -1908,12 +1987,18 @@ export const MOCK_DAILY_LOGS: DailyLogItem[] = [
       '1,200 ft 3/4" EMT conduit + junction fittings (Prime Electrical)',
       '8 sections 6" schedule 40 chilled water pipe'
     ],
+    deliveries: [
+      '3 truckloads ready-mix 5000 PSI concrete (Apex)',
+      '1,200 ft 3/4" EMT conduit + junction fittings (Prime Electrical)',
+      '8 sections 6" schedule 40 chilled water pipe'
+    ],
     safetyIncidents: 'Zero incidents or near-misses. Morning safety meeting focused on fall arrest systems.',
     safetyPassed: true,
     author: 'John Smith (Lead Superintendent)',
     photos: [
-      'https://images.unsplash.com/photo-1541888946425-d0fbb18f15f0?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&auto=format&fit=crop&q=80'
     ]
   },
   {
@@ -1964,9 +2049,17 @@ export const MOCK_DAILY_LOGS: DailyLogItem[] = [
       '2 reels 500kcmil copper feeder cable',
       '50 bundles 3" cast iron no-hub pipe'
     ],
-    safetyIncidents: 'No safety incidents recorded.',
+    deliveries: [
+      '2 reels 500kcmil copper feeder cable',
+      '50 bundles 3" cast iron no-hub pipe'
+    ],
+    safetyIncidents: 'Zero safety incidents or near-misses recorded.',
     safetyPassed: true,
-    author: 'John Smith (Lead Superintendent)'
+    author: 'John Smith (Lead Superintendent)',
+    photos: [
+      'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80'
+    ]
   }
 ];
 

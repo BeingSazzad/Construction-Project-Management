@@ -82,7 +82,17 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
   // Close 3-dot menus on window click
   useEffect(() => {
-    const handleGlobalClick = () => setOpenMenuTaskId(null);
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        !target ||
+        target.tagName === 'HTML' ||
+        target.closest?.('[id*="figma"], [class*="figma"], [id*="html-to-design"], [class*="html-to-design"], [id*="h2d"], [class*="h2d"], [data-figma], [data-h2d], [data-extension], [id*="extension"], [class*="extension"]')
+      ) {
+        return;
+      }
+      setOpenMenuTaskId(null);
+    };
     window.addEventListener('click', handleGlobalClick);
     return () => window.removeEventListener('click', handleGlobalClick);
   }, []);

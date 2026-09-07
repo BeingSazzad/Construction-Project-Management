@@ -132,7 +132,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
         return [
           { id: 'budget', label: 'Budget & Draws', icon: DollarSign },
           { id: 'overview', label: 'Overview', icon: Layers },
-          { id: 'files', label: 'Files & Liens', icon: FolderClosed },
+          { id: 'documents', label: 'Docs', icon: FileText },
           { id: 'schedule', label: 'Schedule', icon: Calendar },
           { id: 'tasks', label: 'Tasks', icon: CheckSquare },
           { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
@@ -143,14 +143,14 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           { id: 'schedule', label: 'Schedule', icon: Calendar },
           { id: 'overview', label: 'Overview', icon: Layers },
           { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-          { id: 'files', label: 'Files & Submittals', icon: FolderClosed },
+          { id: 'documents', label: 'Docs', icon: FileText },
           { id: 'budget', label: 'Budget', icon: DollarSign },
         ];
       case 'field':
         return [
           { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
           { id: 'tasks', label: 'Tasks & Punch', icon: CheckSquare },
-          { id: 'files', label: 'Site Photos & Plans', icon: FolderClosed },
+          { id: 'documents', label: 'Docs', icon: FileText },
           { id: 'overview', label: 'Site Info', icon: Layers },
           { id: 'schedule', label: 'Schedule', icon: Calendar },
         ];
@@ -161,7 +161,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           { id: 'budget', label: 'Budget', icon: DollarSign },
           { id: 'tasks', label: 'Tasks', icon: CheckSquare },
           { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-          { id: 'files', label: 'Files', icon: FolderClosed },
+          { id: 'documents', label: 'Docs', icon: FileText },
         ];
     }
   };
@@ -176,7 +176,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           {allTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id || 
-              (tab.id === 'files' && (activeTab === 'documents' || activeTab === 'photos')) ||
+              (tab.id === 'documents' && (activeTab === 'documents' || activeTab === 'docs' || activeTab === 'files')) ||
               (tab.id === 'daily-logs' && activeTab === 'updates') ||
               (tab.id === 'tasks' && activeTab === 'punch');
 
@@ -200,7 +200,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
       {/* Main Workspace Body Content */}
       <div className="flex-1 overflow-y-auto">
-        {(activeTab === 'overview' || !['updates', 'daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule', 'files'].includes(activeTab)) && (
+        {(activeTab === 'overview' || !['updates', 'daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'docs', 'files', 'schedule'].includes(activeTab)) && (
           <ProjectOverviewTab
             project={project}
             tasks={tasks}
@@ -228,14 +228,19 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {(activeTab === 'files' || activeTab === 'documents' || activeTab === 'photos') && (
-          <ProjectFilesTab
+        {(activeTab === 'documents' || activeTab === 'docs' || activeTab === 'files') && (
+          <ProjectDocumentsTab
             project={project}
             documents={documents}
-            photos={photos}
-            initialSubTab={activeTab === 'photos' ? 'photos' : 'documents'}
             onUploadDocument={onUploadDocument}
             onPreviewDocument={onPreviewDocument}
+          />
+        )}
+
+        {activeTab === 'photos' && (
+          <ProjectPhotosTab
+            project={project}
+            photos={photos}
             onUploadPhoto={onUploadPhoto}
             onPreviewPhoto={onPreviewPhoto}
           />

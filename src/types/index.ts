@@ -309,6 +309,11 @@ export interface DailyLogItem {
   projectId: string;
   projectName: string;
   date: string;
+  time?: string;
+  status?: 'Normal Day' | '1 Issue' | 'Weather Delay' | string;
+  address?: string;
+  authorRole?: string;
+  lastEdited?: string;
   weather: {
     condition: 'Sunny' | 'Partly Cloudy' | 'Rainy' | 'Windy' | 'Clear' | string;
     temperature: string;
@@ -320,7 +325,7 @@ export interface DailyLogItem {
   visitors?: string;
   deliveries?: string[];
   equipment?: string;
-  crews: {
+  crews?: {
     trade: string;
     subcontractor: string;
     workersCount: number;
@@ -328,9 +333,9 @@ export interface DailyLogItem {
     notes?: string;
   }[];
   workSummary: string;
-  materialsReceived: string[];
-  safetyIncidents: string;
-  safetyPassed: boolean;
+  materialsReceived?: string[];
+  safetyIncidents?: string;
+  safetyPassed?: boolean;
   author: string;
   photos?: string[];
 }

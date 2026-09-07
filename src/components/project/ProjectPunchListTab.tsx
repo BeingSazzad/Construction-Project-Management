@@ -51,10 +51,18 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      const target = e.target as HTMLElement;
+      if (
+        !target ||
+        target.tagName === 'HTML' ||
+        target.closest?.('[id*="figma"], [class*="figma"], [id*="html-to-design"], [class*="html-to-design"], [id*="h2d"], [class*="h2d"], [data-figma], [data-h2d], [data-extension], [id*="extension"], [class*="extension"]')
+      ) {
+        return;
+      }
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setActiveMenuId(null);
       }
-      if (statusMenuRef.current && !statusMenuRef.current.contains(e.target as Node)) {
+      if (statusMenuRef.current && !statusMenuRef.current.contains(target)) {
         setActiveStatusDropdownId(null);
       }
     };

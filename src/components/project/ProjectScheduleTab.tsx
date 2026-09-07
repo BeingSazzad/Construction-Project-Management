@@ -31,6 +31,14 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
     setProjectEvents(prev => [{ ...newEvent, projectId: project.id, projectName: project.name }, ...prev]);
   };
 
+  const handleUpdateEvent = (updatedEvent: CalendarEventItem) => {
+    setProjectEvents(prev => prev.map(e => e.id === updatedEvent.id ? { ...updatedEvent, projectId: project.id, projectName: project.name } : e));
+  };
+
+  const handleDeleteEvent = (eventId: string) => {
+    setProjectEvents(prev => prev.filter(e => e.id !== eventId));
+  };
+
   return (
     <div className="w-full flex-1 flex flex-col gap-3 px-4 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       {/* ─── Header ─── */}
@@ -51,6 +59,8 @@ export const ProjectScheduleTab: React.FC<ProjectScheduleTabProps> = ({
           projects={[project]}
           events={projectEvents}
           onAddEvent={handleAddEvent}
+          onUpdateEvent={handleUpdateEvent}
+          onDeleteEvent={handleDeleteEvent}
           isInline={true}
           initialDate={initialDate}
         />

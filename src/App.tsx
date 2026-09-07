@@ -1053,6 +1053,9 @@ export function App() {
       <CentralAddActionSheet
         isOpen={isQuickActionSheetOpen}
         onClose={() => setIsQuickActionSheetOpen(false)}
+        onAddProject={() => {
+          setIsCreateProjectOpen(true);
+        }}
         onAddTask={() => {
           const target = activeProject || projects[0];
           setActiveProject(target);
@@ -1165,6 +1168,7 @@ export function App() {
         onClose={() => setIsCreateDailyLogOpen(false)}
         projects={projects}
         preselectedProjectId={activeProject ? activeProject.id : projects[0]?.id}
+        currentUser={currentUser}
         onSaveLog={(newLog) => {
           handleAddDailyLog(newLog);
           setIsCreateDailyLogOpen(false);

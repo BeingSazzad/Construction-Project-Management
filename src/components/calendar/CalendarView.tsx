@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Project, CalendarEventItem, CalendarEventType } from '../../types';
-import { 
-  ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, 
-  List, Grid3X3, MapPin, Trash2
+import {
+  ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon,
+  List, Grid3X3, MapPin, Trash2, Edit2
 } from 'lucide-react';
 import { AddCalendarEventModal } from '../modals/AddCalendarEventModal';
 
@@ -11,6 +11,7 @@ interface CalendarViewProps {
   events?: CalendarEventItem[];
   onSelectProject?: (project: Project) => void;
   onAddEvent?: (event: CalendarEventItem) => void;
+  onUpdateEvent?: (event: CalendarEventItem) => void;
   onDeleteEvent?: (eventId: string) => void;
   isInline?: boolean;
   initialDate?: string;
@@ -21,6 +22,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   events: initialEvents,
   onSelectProject,
   onAddEvent,
+  onUpdateEvent,
   onDeleteEvent,
   isInline = false,
   initialDate
@@ -38,6 +40,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const [currentDate, setCurrentDate] = useState(initialDateObj);
   const [viewMode, setViewMode] = useState<'month' | 'agenda'>('month');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<CalendarEventItem | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEventItem | null>(null);
 
   // Local state for events
@@ -50,6 +53,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const handleAddNewEvent = (newEvent: CalendarEventItem) => {
     setEventsList(prev => [newEvent, ...prev]);
     if (onAddEvent) onAddEvent(newEvent);
+  };
+
+  const handleUpdateEvent = (updated: CalendarEventItem) => {
+    setEventsList(prev => prev.map(e => e.id === updated.id ? updated : e));
+    if (onUpdateEvent) onUpdateEvent(updated);
   };
 
   // Month navigation
@@ -158,11 +166,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const selectedDayEvents = eventsList.filter(e => e.date === selectedDateStr);
 
   return (
-    <div className={isInline 
-      ? "w-full flex-1 flex flex-col gap-3 font-sans text-[#171A1F] animate-fade-in" 
+    <div className={isInline
+      ? "w-full flex-1 flex flex-col gap-3 font-sans text-[#171A1F] animate-fade-in"
       : "w-full flex-1 flex flex-col gap-3.5 px-5 pt-2 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in"
     }>
-      
+
       {/* ─── 1. Single Header Control Row ─── */}
       <div className="flex items-center justify-between gap-2 px-0.5 py-1">
         <div className="flex items-center gap-1.5 min-w-0">
@@ -199,18 +207,16 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           <div className="flex items-center bg-white border border-[#DDE1E7] rounded-lg p-0.5 shadow-2xs">
             <button
               onClick={() => setViewMode('month')}
-              className={`p-1 rounded-md transition-colors cursor-pointer ${
-                viewMode === 'month' ? 'bg-[#1677FF] text-white' : 'text-[#68707C] hover:text-[#171A1F]'
-              }`}
+              className={`p-1 rounded-md transition-colors cursor-pointer ${viewMode === 'month' ? 'bg-[#1677FF] text-white' : 'text-[#68707C] hover:text-[#171A1F]'
+                }`}
               title="Month Grid View"
             >
               <Grid3X3 className="w-3 h-3" />
             </button>
             <button
               onClick={() => setViewMode('agenda')}
-              className={`p-1 rounded-md transition-colors cursor-pointer ${
-                viewMode === 'agenda' ? 'bg-[#1677FF] text-white' : 'text-[#68707C] hover:text-[#171A1F]'
-              }`}
+              className={`p-1 rounded-md transition-colors cursor-pointer ${viewMode === 'agenda' ? 'bg-[#1677FF] text-white' : 'text-[#68707C] hover:text-[#171A1F]'
+                }`}
               title="Agenda List View"
             >
               <List className="w-3 h-3" />
@@ -251,16 +257,14 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   <div
                     key={`${cell.dateStr}-${idx}`}
                     onClick={() => setSelectedDateStr(cell.dateStr)}
-                    className={`min-h-[54px] p-1.5 flex flex-col justify-between transition-all ${
-                      cell.isCurrentMonth ? 'bg-white' : 'bg-[#FAFAFB] opacity-40'
-                    } ${isSelected ? 'bg-[#EAF3FF] ring-2 ring-[#1677FF] z-10' : isToday ? 'bg-[#F0F7FF]' : ''} hover:bg-[#F2F2F7] cursor-pointer`}
+                    className={`min-h-[54px] p-1.5 flex flex-col justify-between transition-all ${cell.isCurrentMonth ? 'bg-white' : 'bg-[#FAFAFB] opacity-40'
+                      } ${isSelected ? 'bg-[#EAF3FF] ring-2 ring-[#1677FF] z-10' : isToday ? 'bg-[#F0F7FF]' : ''} hover:bg-[#F2F2F7] cursor-pointer`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className={`text-xs font-bold ${
-                        isToday 
-                          ? 'w-5 h-5 rounded-full bg-[#1677FF] text-white flex items-center justify-center text-[10px]' 
+                      <span className={`text-xs font-bold ${isToday
+                          ? 'w-5 h-5 rounded-full bg-[#1677FF] text-white flex items-center justify-center text-[10px]'
                           : isSelected ? 'text-[#1677FF]' : cell.isCurrentMonth ? 'text-[#171A1F]' : 'text-[#9DA5B1]'
-                      }`}>
+                        }`}>
                         {cell.day}
                       </span>
                     </div>
@@ -269,7 +273,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     {dayEvents.length > 0 && (
                       <div className="flex items-center justify-center gap-1 mt-1 pb-0.5">
                         {dayEvents.slice(0, 3).map(evt => (
-                          <span 
+                          <span
                             key={evt.id}
                             className={`w-1.5 h-1.5 rounded-full ${getEventDotColor(evt.type)}`}
                             title={`${evt.title} (${evt.type})`}
@@ -437,14 +441,19 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
       )}
 
-      {/* ─── 5. Add Calendar Event Modal ─── */}
+      {/* ─── 5. Add / Edit Calendar Event Modal ─── */}
       <AddCalendarEventModal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setEditingEvent(null);
+        }}
         projects={projects}
         defaultProjectId={projects.length === 1 ? projects[0].id : undefined}
         initialDate={selectedDateStr}
         onAddEvent={handleAddNewEvent}
+        onUpdateEvent={handleUpdateEvent}
+        editingEvent={editingEvent}
       />
 
       {/* ─── 6. Event Detail Preview Modal ─── */}
@@ -516,6 +525,19 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 title="Delete Event"
               >
                 <Trash2 className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setEditingEvent(selectedEvent);
+                  setSelectedEvent(null);
+                  setIsAddModalOpen(true);
+                }}
+                className="h-10 px-3.5 rounded-xl bg-[#EAF3FF] hover:bg-[#D0E2FF] text-[#1677FF] border border-[#1677FF]/20 flex items-center justify-center gap-1.5 cursor-pointer transition-colors active:scale-95 text-xs font-bold shrink-0"
+                title="Edit Schedule Event"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                <span>Edit</span>
               </button>
 
               {selectedEvent.projectId && onSelectProject ? (
