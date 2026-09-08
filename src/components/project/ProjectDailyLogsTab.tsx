@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Project, DailyLogItem, User, ProjectUpdate } from '../../types';
-import { 
+import {
   Search, Plus, ChevronRight, ChevronDown, FileText, ArrowLeft,
   Calendar, Sun, Cloud, CloudRain, Wind, Flame, Snowflake, Users, Truck, Wrench,
   Camera, X, AlertTriangle, Minus, ShieldCheck, Check
@@ -297,7 +297,7 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
             {/* 2. Seamless Inline Weather: Clean Clickable Temp & Custom Dropdown */}
             <div className="flex items-center gap-1.5 py-0.5 px-1 rounded-lg hover:bg-[#F8FAFC] transition-colors">
               {renderWeatherIcon(weatherCond)}
-              
+
               {/* Temperature Numeric Input */}
               <div className="flex items-center group/temp">
                 <input
@@ -354,9 +354,8 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
                               setWeatherCond(opt.label);
                               setIsWeatherDropdownOpen(false);
                             }}
-                            className={`w-full px-3 py-1.5 text-left text-xs font-medium flex items-center justify-between transition-colors cursor-pointer ${
-                              isSelected ? 'bg-[#EAF3FF] text-[#1677FF] font-bold' : 'text-[#0F172A] hover:bg-[#F8FAFC]'
-                            }`}
+                            className={`w-full px-3 py-1.5 text-left text-xs font-medium flex items-center justify-between transition-colors cursor-pointer ${isSelected ? 'bg-[#EAF3FF] text-[#1677FF] font-bold' : 'text-[#0F172A] hover:bg-[#F8FAFC]'
+                              }`}
                           >
                             <div className="flex items-center gap-2">
                               <Icon className={`w-3.5 h-3.5 ${opt.color}`} />

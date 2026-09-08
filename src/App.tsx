@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  UserRole, Project, Task, GanttItem, TradeCategory, 
-  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
+import {
+  UserRole, Project, Task, GanttItem, TradeCategory,
+  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem,
   NotificationItem, TaskStatus, PunchStatus, PlanGridPin, ProjectChatMessage,
   FinancingDraw, LienWaiver, ProjectStatus, ChangeOrder, CalendarEventItem
 } from './types';
-import { 
-  CURRENT_USERS, MOCK_PROJECTS, MOCK_TASKS, MOCK_GANTT, 
-  MOCK_BUDGET_CATEGORIES, MOCK_PUNCH_ITEMS, MOCK_SUBCONTRACTORS, 
+import {
+  CURRENT_USERS, MOCK_PROJECTS, MOCK_TASKS, MOCK_GANTT,
+  MOCK_BUDGET_CATEGORIES, MOCK_PUNCH_ITEMS, MOCK_SUBCONTRACTORS,
   MOCK_PHOTOS, MOCK_DOCUMENTS, MOCK_REPORTS, MOCK_NOTIFICATIONS,
   MOCK_PLAN_PINS, MOCK_PROJECT_CHATS,
   MOCK_FINANCING_DRAWS, MOCK_LIEN_WAIVERS, MOCK_CHANGE_ORDERS,
@@ -38,9 +38,7 @@ import { ProjectTasksTab } from './components/project/ProjectTasksTab';
 import { ProjectScheduleTab } from './components/project/ProjectScheduleTab';
 import { ProjectBudgetTab } from './components/project/ProjectBudgetTab';
 import { ProjectReportsTab } from './components/project/ProjectReportsTab';
-import { ProjectTeamTab } from './components/project/ProjectTeamTab';
 import { TeamHubView } from './components/team/TeamHubView';
-import { BuildScopeView } from './components/buildscope/BuildScopeView';
 import { CalendarView } from './components/calendar/CalendarView';
 import { ProjectPunchListTab } from './components/project/ProjectPunchListTab';
 import { ProjectPhotosTab } from './components/project/ProjectPhotosTab';
@@ -113,10 +111,12 @@ export function App() {
   const [lienWaivers, setLienWaivers] = useState<LienWaiver[]>(MOCK_LIEN_WAIVERS);
   const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>(MOCK_CHANGE_ORDERS);
   const [calendarEvents, setCalendarEvents] = useState<CalendarEventItem[]>(MOCK_CALENDAR_EVENTS);
-  const [dailyLogs, setDailyLogs] = useState<DailyLogItem[]>(() => 
+  const [dailyLogs, setDailyLogs] = useState<DailyLogItem[]>(() =>
     MOCK_PROJECTS.flatMap(p => p.dailyLogs || [])
   );
-  const [initialCalendarDate, setInitialCalendarDate] = useState<string>('2026-09-05');
+  const [initialCalendarDate, setInitialCalendarDate] = useState<string>(
+    new Date().toISOString().split('T')[0]
+  );
 
   // Modals state
   const [settingsSubView, setSettingsSubView] = useState<string>('main');
@@ -157,7 +157,7 @@ export function App() {
       }
       return p;
     }));
-    
+
     // Also update activeProject state if currently active
     if (activeProject && activeProject.id === projectId) {
       setActiveProject(prev => prev ? {
@@ -169,7 +169,7 @@ export function App() {
         }
       } : null);
     }
-    
+
     alert(`Successfully imported "${budgetName}" ($${(totalValue / 1000000).toFixed(2)}M) into Project Financial Ledger!`);
   };
 
@@ -491,13 +491,13 @@ export function App() {
   const handleUpdateTaskStatus = (taskId: string, newStatus: TaskStatus) => {
     setTasks(prevTasks => {
       const updatedTasks = prevTasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t);
-      
+
       const task = prevTasks.find(t => t.id === taskId);
       if (task) {
         const projTasks = updatedTasks.filter(t => t.projectId === task.projectId);
         const completedCount = projTasks.filter(t => t.status === 'Completed').length;
         const nextProgress = projTasks.length > 0 ? Math.round((completedCount / projTasks.length) * 100) : 0;
-        
+
         setProjects(prevProjects => prevProjects.map(p => {
           if (p.id === task.projectId) {
             const updatedProject = {
@@ -523,7 +523,7 @@ export function App() {
   const handleToggleSubtask = (taskId: string, subtaskId: string) => {
     setTasks(prev => prev.map(t => {
       if (t.id === taskId) {
-        const updatedSubtasks = (t.subtasks || []).map(st => 
+        const updatedSubtasks = (t.subtasks || []).map(st =>
           st.id === subtaskId ? { ...st, completed: !st.completed } : st
         );
         return { ...t, subtasks: updatedSubtasks };
@@ -544,12 +544,12 @@ export function App() {
     setTasks(prevTasks => {
       const taskToDelete = prevTasks.find(t => t.id === taskId);
       const updatedTasks = prevTasks.filter(t => t.id !== taskId);
-      
+
       if (taskToDelete) {
         const projTasks = updatedTasks.filter(t => t.projectId === taskToDelete.projectId);
         const completedCount = projTasks.filter(t => t.status === 'Completed').length;
         const nextProgress = projTasks.length > 0 ? Math.round((completedCount / projTasks.length) * 100) : 0;
-        
+
         setProjects(prevProjects => prevProjects.map(p => {
           if (p.id === taskToDelete.projectId) {
             const updatedProj = {
@@ -953,11 +953,21 @@ export function App() {
                 )}
 
                 {activeTab === 'budgets' && (
-                  <BudgetsHubView
-                    projects={projects}
-                    onOpenImportBudget={() => setIsImportBudgetOpen(true)}
-                    onBack={() => setActiveTab('home')}
-                  />
+                  ['admin', 'finance', 'pm'].includes(currentRole) ? (
+                    <BudgetsHubView
+                      projects={projects}
+                      onOpenImportBudget={() => setIsImportBudgetOpen(true)}
+                      onBack={() => setActiveTab('home')}
+                    />
+                  ) : (
+                    <div className="p-8 text-center text-slate-500 max-w-[430px] mx-auto">
+                      <p className="text-sm font-bold text-slate-800">Access Restricted</p>
+                      <p className="text-xs text-slate-500 mt-1">Financial Ledgers and Budgets are accessible to Administrators, Finance Officers, and Project Managers.</p>
+                      <button onClick={() => setActiveTab('home')} className="mt-4 px-4 py-2 bg-[#1677FF] text-white text-xs font-bold rounded-xl cursor-pointer">
+                        Return Home
+                      </button>
+                    </div>
+                  )
                 )}
 
 
@@ -1066,9 +1076,9 @@ export function App() {
       <CentralAddActionSheet
         isOpen={isQuickActionSheetOpen}
         onClose={() => setIsQuickActionSheetOpen(false)}
-        onAddProject={() => {
+        onAddProject={(['admin', 'pm'].includes(currentRole)) ? () => {
           setIsCreateProjectOpen(true);
-        }}
+        } : undefined}
         onAddTask={() => {
           const target = activeProject || projects[0];
           setActiveProject(target);
@@ -1083,13 +1093,13 @@ export function App() {
           setProjectSubTab('daily-logs');
           setIsCreateDailyLogOpen(true);
         }}
-        onAddExpense={() => {
+        onAddExpense={(['admin', 'finance', 'pm'].includes(currentRole)) ? () => {
           const target = activeProject || projects[0];
           setActiveProject(target);
           setActiveTab('projects');
           setProjectSubTab('budget');
           setIsCreateChangeOrderOpen(true);
-        }}
+        } : undefined}
         onAddPhoto={() => {
           const target = activeProject || projects[0];
           setActiveProject(target);

@@ -1,6 +1,6 @@
 import React from 'react';
-import { 
-  X, CheckSquare, ClipboardList, DollarSign, Camera, FileText, ChevronRight, Building2 
+import {
+  X, CheckSquare, ClipboardList, DollarSign, Camera, FileText, ChevronRight, Building2
 } from 'lucide-react';
 
 interface CentralAddActionSheetProps {
@@ -10,7 +10,7 @@ interface CentralAddActionSheetProps {
   onAddTask: () => void;
   onAddDailyLog?: () => void;
   onAddUpdate?: () => void;
-  onAddExpense: () => void;
+  onAddExpense?: () => void;
   onAddPhoto: () => void;
   onAddDocument: () => void;
 }
@@ -28,7 +28,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const handleDailyLogAction = onAddDailyLog || onAddUpdate || (() => {});
+  const handleDailyLogAction = onAddDailyLog || onAddUpdate || (() => { });
 
   const actions = [
     ...(onAddProject ? [{
@@ -55,14 +55,14 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: handleDailyLogAction,
     },
-    {
+    ...(onAddExpense ? [{
       id: 'expense',
       label: 'Expense',
       subtitle: 'Record cost items, vendor receipts, or change orders',
       icon: DollarSign,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddExpense,
-    },
+    }] : []),
     {
       id: 'photo',
       label: 'Photo',
@@ -82,11 +82,11 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
   ];
 
   return (
-    <div 
+    <div
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs animate-fade-in font-sans"
     >
-      <div 
+      <div
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-[390px] mx-auto bg-white border-t border-[#E2E8F0] rounded-t-[32px] p-5 pb-9 shadow-2xl flex flex-col gap-3 text-[#0F172A] animate-slide-up max-h-[90vh] overflow-y-auto"
       >

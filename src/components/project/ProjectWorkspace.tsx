@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
-  Project, UserRole, Task, GanttItem, TradeCategory, 
-  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem, 
+import {
+  Project, UserRole, Task, GanttItem, TradeCategory,
+  PunchItem, Subcontractor, SitePhoto, DocumentItem, ReportItem,
   PunchStatus, TaskStatus, PlanGridPin, ProjectChatMessage, User,
   ProjectStatus, DailyLogItem, ProjectUpdate
 } from '../../types';
@@ -15,12 +15,10 @@ import { ProjectDocumentsTab } from './ProjectDocumentsTab';
 import { ProjectTeamTab } from './ProjectTeamTab';
 import { ProjectReportsTab } from './ProjectReportsTab';
 import { ProjectScheduleTab } from './ProjectScheduleTab';
-import { ProjectUpdatesTab } from './ProjectUpdatesTab';
-import { ProjectFilesTab } from './ProjectFilesTab';
 import { MOCK_PROJECT_UPDATES } from '../../data/mockData';
-import { 
-  Layers, DollarSign, CheckSquare, 
-  Camera, FileText, Users2, 
+import {
+  Layers, DollarSign, CheckSquare,
+  Camera, FileText, Users2,
   Calendar, ArrowLeft, Activity,
   FolderClosed, ClipboardList
 } from 'lucide-react';
@@ -118,7 +116,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
     activeSubTab !== undefined ? activeSubTab : getDefaultSubTab(currentRole)
   );
   const activeTab = activeSubTab !== undefined ? activeSubTab : internalActiveTab;
-  
+
   const setActiveTab = (tab: string) => {
     setInternalActiveTab(tab);
     if (onSubTabChange) onSubTabChange(tab);
@@ -175,20 +173,18 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
         <div className="flex items-center gap-6 overflow-x-auto scrollbar-none px-5 pt-3 pb-0 max-w-[430px] mx-auto">
           {allTabs.map((tab) => {
             const Icon = tab.icon;
-            const isActive = activeTab === tab.id || 
-              (tab.id === 'documents' && (activeTab === 'documents' || activeTab === 'docs' || activeTab === 'files')) ||
-              (tab.id === 'daily-logs' && activeTab === 'updates') ||
-              (tab.id === 'tasks' && activeTab === 'punch');
+            const isActive = activeTab === tab.id ||
+              (tab.id === 'tasks' && activeTab === 'punch') ||
+              (tab.id === 'documents' && activeTab === 'photos');
 
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 pb-2.5 text-xs transition-all whitespace-nowrap cursor-pointer flex-shrink-0 relative ${
-                  isActive
+                className={`flex items-center gap-1.5 pb-2.5 text-xs transition-all whitespace-nowrap cursor-pointer flex-shrink-0 relative ${isActive
                     ? 'text-[#1677FF] font-bold border-b-2 border-[#1677FF]'
                     : 'text-[#64748B] font-medium hover:text-[#0F172A]'
-                }`}
+                  }`}
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
@@ -200,7 +196,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
       {/* Main Workspace Body Content */}
       <div className="flex-1 overflow-y-auto">
-        {(activeTab === 'overview' || !['updates', 'daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'docs', 'files', 'schedule'].includes(activeTab)) && (
+        {(activeTab === 'overview' || !['daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule'].includes(activeTab)) && (
           <ProjectOverviewTab
             project={project}
             tasks={tasks}
@@ -218,7 +214,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {(activeTab === 'daily-logs' || activeTab === 'updates') && (
+        {activeTab === 'daily-logs' && (
           <ProjectDailyLogsTab
             project={project}
             dailyLogs={project.dailyLogs || []}
@@ -228,7 +224,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {(activeTab === 'documents' || activeTab === 'docs' || activeTab === 'files') && (
+        {activeTab === 'documents' && (
           <ProjectDocumentsTab
             project={project}
             documents={documents}
@@ -246,7 +242,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {(activeTab === 'budget' || activeTab === 'budgets') && (
+        {(activeTab === 'budget' || activeTab === 'budgets') && currentRole !== 'field' && (
           <ProjectBudgetTab
             project={project}
             categories={categories}
@@ -261,6 +257,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
         {activeTab === 'team' && (
           <ProjectTeamTab
             project={project}
+            currentRole={currentRole}
           />
         )}
 

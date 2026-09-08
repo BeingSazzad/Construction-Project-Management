@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Project } from '../../types';
+import { Project, UserRole } from '../../types';
 import { 
   Phone, UserPlus, Crown, Search, X, UserCheck, Trash2, MoreVertical, User
 } from 'lucide-react';
@@ -7,6 +7,7 @@ import { EmployeeProfileModal, EmployeeProfileData } from '../modals/EmployeePro
 
 interface ProjectTeamTabProps {
   project?: Project;
+  currentRole?: UserRole;
 }
 
 interface ProjectStaff {
@@ -109,7 +110,8 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
   }
 ];
 
-export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
+export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project, currentRole = 'admin' }) => {
+  const isManager = ['admin', 'pm'].includes(currentRole);
   const [assignedStaff, setAssignedStaff] = useState<ProjectStaff[]>([
     COMPANY_DIRECTORY[0], // Lead PM
     COMPANY_DIRECTORY[1], // Superintendent
@@ -231,17 +233,19 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
           <p className="text-xs text-[#68707C] mt-0.5">Assigned On-Site & GC Leadership</p>
         </div>
 
-        <button
-          onClick={() => {
-            setSearchQuery('');
-            setModalTab('directory');
-            setIsAssignModalOpen(true);
-          }}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
-        >
-          <UserPlus className="w-3.5 h-3.5" />
-          <span>Add Member</span>
-        </button>
+        {isManager && (
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setModalTab('directory');
+              setIsAssignModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 flex-shrink-0"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Add Member</span>
+          </button>
+        )}
       </div>
 
       {/* ─── 2. PROJECT LEADERSHIP (Lead PM Card) ─── */}
@@ -426,7 +430,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                         <span>{staff.isOnSite ? 'Mark Off Site' : 'Mark On Site'}</span>
                       </button>
 
-                      {staff.type === 'gc' && (
+                      {isManager && staff.type === 'gc' && (
                         <button
                           type="button"
                           onClick={() => {
@@ -440,19 +444,22 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project }) => {
                         </button>
                       )}
 
-                      <div className="h-px bg-[#EAEDF1] my-1" />
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleRemoveStaff(staff.id);
-                          setActiveMenuId(null);
-                        }}
-                        className="w-full text-left px-3 py-2 rounded-lg text-rose-600 hover:bg-rose-50 font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Remove from Project</span>
-                      </button>
+                      {isManager && (
+                        <>
+                          <div className="h-px bg-[#EAEDF1] my-1" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleRemoveStaff(staff.id);
+                              setActiveMenuId(null);
+                            }}
+                            className="w-full text-left px-3 py-2 rounded-lg text-rose-600 hover:bg-rose-50 font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Remove from Project</span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </>
                 )}

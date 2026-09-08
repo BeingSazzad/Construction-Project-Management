@@ -38,14 +38,12 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   const statusMenuRef = useRef<HTMLDivElement>(null);
 
   const [items, setItems] = useState<PunchItem[]>(() => {
-    const projItems = punchItems.filter(p => p.projectId === project.id);
-    return projItems.length > 0 ? projItems : punchItems;
+    return punchItems.filter(p => !p.projectId || p.projectId === project.id);
   });
 
   // Keep items in sync with incoming punchItems prop
   useEffect(() => {
-    const projItems = punchItems.filter(p => p.projectId === project.id);
-    setItems(projItems.length > 0 ? projItems : punchItems);
+    setItems(punchItems.filter(p => !p.projectId || p.projectId === project.id));
   }, [punchItems, project.id]);
 
   // Close menus when clicking outside

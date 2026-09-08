@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Project, Task, TaskStatus, Priority } from '../../types';
-import { 
+import {
   Plus, Download, Trash2, Check, Pencil,
   ChevronDown, ChevronUp, Search,
   Layers, Hammer, Boxes, Sliders, Wrench, Building2,
@@ -281,7 +281,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
       const filteredTasks = grp.tasks.filter(t => {
         const matchesStatus = statusFilter === 'all' || t.status === statusFilter;
         const assigneeName = typeof t.assignee === 'string' ? t.assignee : (t.assignee?.name || '');
-        const matchesSearch = !searchQuery.trim() || 
+        const matchesSearch = !searchQuery.trim() ||
           t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (t.costCode && t.costCode.toLowerCase().includes(searchQuery.toLowerCase())) ||
           assigneeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -299,7 +299,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
   return (
     <div className="w-full flex-1 flex flex-col gap-3.5 px-4 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
-      
+
       {/* ─── 1. Header & Primary CTA ─── */}
       <div className="flex items-center justify-between px-0.5 pt-1">
         <div>
@@ -330,7 +330,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
       {/* ─── Overall Progress Bar ─── */}
       <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden border border-[#E2E8F0]">
-        <div 
+        <div
           className="h-full bg-[#1677FF] rounded-full transition-all duration-500 ease-out"
           style={{ width: `${overallPercent}%` }}
         />
@@ -340,33 +340,30 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
         <button
           onClick={() => setStatusFilter('all')}
-          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
-            statusFilter === 'all'
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${statusFilter === 'all'
               ? 'bg-[#1677FF] text-white font-bold shadow-xs'
               : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
-          }`}
+            }`}
         >
           All ({totalCount})
         </button>
 
         <button
           onClick={() => setStatusFilter('Not Started')}
-          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
-            statusFilter === 'Not Started'
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${statusFilter === 'Not Started'
               ? 'bg-[#1677FF] text-white font-bold shadow-xs'
               : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
-          }`}
+            }`}
         >
           To Do ({todoCount})
         </button>
 
         <button
           onClick={() => setStatusFilter('In Progress')}
-          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
-            statusFilter === 'In Progress'
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${statusFilter === 'In Progress'
               ? 'bg-[#1677FF] text-white font-bold shadow-xs'
               : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
-          }`}
+            }`}
         >
           In Progress ({inProgressCount})
         </button>
@@ -374,11 +371,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         {blockedCount > 0 && (
           <button
             onClick={() => setStatusFilter('Blocked')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
-              statusFilter === 'Blocked'
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${statusFilter === 'Blocked'
                 ? 'bg-[#1677FF] text-white font-bold shadow-xs'
                 : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
-            }`}
+              }`}
           >
             Blocked ({blockedCount})
           </button>
@@ -386,11 +382,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
         <button
           onClick={() => setStatusFilter('Completed')}
-          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
-            statusFilter === 'Completed'
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${statusFilter === 'Completed'
               ? 'bg-[#1677FF] text-white font-bold shadow-xs'
               : 'bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]'
-          }`}
+            }`}
         >
           Done ({doneCount})
         </button>
@@ -503,10 +498,9 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                     )}
                     <div className="flex items-center gap-2 mt-1">
                       <div className="flex-1 max-w-[140px] h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full transition-all duration-300 ${
-                            groupPercent > 0 ? 'bg-[#1677FF]' : 'bg-transparent'
-                          }`}
+                        <div
+                          className={`h-full rounded-full transition-all duration-300 ${groupPercent > 0 ? 'bg-[#1677FF]' : 'bg-transparent'
+                            }`}
                           style={{ width: `${groupPercent}%` }}
                         />
                       </div>
@@ -518,9 +512,8 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className={`text-[11px] font-bold ${
-                    groupPercent > 0 ? 'text-[#1677FF]' : 'text-[#64748B]'
-                  }`}>
+                  <span className={`text-[11px] font-bold ${groupPercent > 0 ? 'text-[#1677FF]' : 'text-[#64748B]'
+                    }`}>
                     {groupPercent}%
                   </span>
                   {isCollapsed ? (
@@ -552,9 +545,9 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                         const isTaskDone = task.status === 'Completed';
                         const isTaskInProgress = task.status === 'In Progress';
                         const isTaskBlocked = task.status === 'Blocked';
-                        const assigneeName = typeof task.assignee === 'string' 
-                            ? task.assignee 
-                            : (task.assignee?.name || '');
+                        const assigneeName = typeof task.assignee === 'string'
+                          ? task.assignee
+                          : (task.assignee?.name || '');
                         const isDueSoon = task.dueDate && (task.dueDate.toLowerCase().includes('today') || task.dueDate.toLowerCase().includes('thu') || task.dueDate.toLowerCase().includes('wed'));
 
                         return (
@@ -571,15 +564,14 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                                 className="w-8 h-8 -ml-1.5 -mt-1 rounded-xl flex items-center justify-center shrink-0 cursor-pointer active:scale-90 transition-transform select-none"
                                 title={isTaskDone ? 'Mark uncompleted' : 'Mark completed'}
                               >
-                                <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all ${
-                                  isTaskDone 
-                                    ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs' 
+                                <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all ${isTaskDone
+                                    ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
                                     : isTaskInProgress
-                                    ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
-                                    : isTaskBlocked
-                                    ? 'border-rose-500 bg-rose-50 text-rose-600'
-                                    : 'border-[#CBD5E1] bg-white group-hover:border-[#1677FF]'
-                                }`}>
+                                      ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
+                                      : isTaskBlocked
+                                        ? 'border-rose-500 bg-rose-50 text-rose-600'
+                                        : 'border-[#CBD5E1] bg-white group-hover:border-[#1677FF]'
+                                  }`}>
                                   {isTaskDone ? (
                                     <Check className="w-3.5 h-3.5 stroke-[3]" />
                                   ) : isTaskInProgress ? (
@@ -592,13 +584,12 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
                               {/* Title & Metadata Line */}
                               <div className="min-w-0 flex-1 pt-0.5">
-                                <span 
+                                <span
                                   onClick={() => handleToggleCheckbox(task.id, task.status)}
-                                  className={`text-xs block leading-snug break-words cursor-pointer transition-colors ${
-                                    isTaskDone 
-                                      ? 'text-[#94A3B8] line-through font-medium select-none' 
+                                  className={`text-xs block leading-snug break-words cursor-pointer transition-colors ${isTaskDone
+                                      ? 'text-[#94A3B8] line-through font-medium select-none'
                                       : 'font-semibold text-[#0F172A] hover:text-[#1677FF]'
-                                  }`}
+                                    }`}
                                 >
                                   {task.title}
                                 </span>
@@ -644,15 +635,14 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleCycleStatus(task.id, task.status)}
-                                className={`px-2 py-1 rounded-full text-[10px] font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1 whitespace-nowrap select-none ${
-                                  isTaskDone
+                                className={`px-2 py-1 rounded-full text-[10px] font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1 whitespace-nowrap select-none ${isTaskDone
                                     ? 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30 hover:bg-[#D8E9FF]'
                                     : isTaskInProgress
-                                    ? 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30 hover:bg-[#D8E9FF]'
-                                    : isTaskBlocked
-                                    ? 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
-                                    : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] hover:bg-[#E2E8F0]'
-                                }`}
+                                      ? 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30 hover:bg-[#D8E9FF]'
+                                      : isTaskBlocked
+                                        ? 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
+                                        : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] hover:bg-[#E2E8F0]'
+                                  }`}
                                 title="Click to cycle status"
                               >
                                 {isTaskDone ? (

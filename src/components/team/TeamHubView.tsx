@@ -428,13 +428,15 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
           )}
           <h1 className="text-base font-bold text-[#0F172A] tracking-tight">Team Directory</h1>
         </div>
-        <button
-          onClick={() => setIsInviteOpen(true)}
-          className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
-        >
-          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>Invite</span>
-        </button>
+        {['admin', 'pm'].includes(currentRole) && (
+          <button
+            onClick={() => setIsInviteOpen(true)}
+            className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+          >
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Invite</span>
+          </button>
+        )}
       </div>
 
       {/* Success Toast */}

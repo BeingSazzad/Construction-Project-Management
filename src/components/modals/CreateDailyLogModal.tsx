@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Project, DailyLogItem, User } from '../../types';
-import { 
+import {
   ArrowLeft, Sun, Cloud, CloudRain, Wind, Flame, Snowflake, Calendar, Plus, Minus, X, ChevronDown,
   Truck, Users, ChevronRight, Wrench, Check, AlertTriangle
 } from 'lucide-react';
@@ -22,9 +22,16 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
   currentUser,
   onSaveLog
 }) => {
-  const [selectedProjectId] = useState<string>(
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(
     preselectedProjectId || projects[0]?.id || 'proj-1'
   );
+
+  useEffect(() => {
+    if (preselectedProjectId) {
+      setSelectedProjectId(preselectedProjectId);
+    }
+  }, [preselectedProjectId]);
+
   const [logDateInput, setLogDateInput] = useState<string>('2026-09-05');
   const [weatherTemp, setWeatherTemp] = useState<string>('82°F');
   const [weatherCond, setWeatherCond] = useState<string>('Sunny');
@@ -177,11 +184,11 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
   };
 
   return (
-    <div 
+    <div
       onClick={onClose}
       className="fixed inset-0 bg-black/45 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans animate-fade-in overflow-y-auto"
     >
-      <div 
+      <div
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-[440px] mx-auto min-h-screen sm:min-h-0 sm:max-h-[92vh] bg-white sm:border sm:border-[#E2E8F0] rounded-t-[28px] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden text-[#0F172A] relative animate-slide-up"
       >
@@ -194,7 +201,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          
+
           <h2 className="text-sm font-bold text-[#0F172A] tracking-tight">
             New Daily Log
           </h2>
@@ -204,19 +211,33 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 py-3.5 space-y-3.5 pb-12 scrollbar-none">
-          
+
           {/* Unified Top Header Card with Interactive Date & Weather Chips */}
           <div className="bg-white p-3.5 rounded-2xl border border-[#E2E8F0] shadow-2xs space-y-3">
             <div className="flex items-center gap-3">
-              <img 
-                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300&auto=format&fit=crop&q=80" 
+              <img
+                src={currentProject?.thumbnail || currentProject?.coverImage || "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300&auto=format&fit=crop&q=80"}
                 alt={currentProject?.name}
-                className="w-11 h-11 rounded-xl object-cover border border-[#E2E8F0] shadow-2xs shrink-0" 
+                className="w-11 h-11 rounded-xl object-cover border border-[#E2E8F0] shadow-2xs shrink-0"
               />
               <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-bold text-[#0F172A] truncate leading-tight">
-                  {currentProject?.name || 'Snell Isle Residence'}
-                </h3>
+                {projects && projects.length > 1 ? (
+                  <select
+                    value={selectedProjectId}
+                    onChange={(e) => setSelectedProjectId(e.target.value)}
+                    className="w-full text-sm font-bold text-[#0F172A] bg-transparent border-b border-dashed border-[#CBD5E1] focus:border-[#1677FF] outline-none py-0.5 cursor-pointer"
+                  >
+                    {projects.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <h3 className="text-sm font-bold text-[#0F172A] truncate leading-tight">
+                    {currentProject?.name || 'Snell Isle Residence'}
+                  </h3>
+                )}
                 <p className="text-xs text-[#64748B] font-normal truncate mt-0.5">
                   {currentProject?.location ? `${currentProject.location} · ${currentProject.cityState || ''}` : '1840 Brightwaters Blvd NE · St. Petersburg, FL'}
                 </p>
@@ -243,7 +264,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
               {/* 2. Seamless Inline Weather: Clean Clickable Temp & Condition without box borders */}
               <div className="flex items-center gap-1.5 py-1 px-1.5 rounded-lg hover:bg-[#F8FAFC] transition-colors">
                 {renderWeatherIcon(weatherCond)}
-                
+
                 {/* Temperature Numeric Input */}
                 <div className="flex items-center group/temp">
                   <input
@@ -300,9 +321,8 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
                                 setWeatherCond(opt.label);
                                 setIsWeatherDropdownOpen(false);
                               }}
-                              className={`w-full px-3 py-1.5 text-left text-xs font-medium flex items-center justify-between transition-colors cursor-pointer ${
-                                isSelected ? 'bg-[#EAF3FF] text-[#1677FF] font-bold' : 'text-[#0F172A] hover:bg-[#F8FAFC]'
-                              }`}
+                              className={`w-full px-3 py-1.5 text-left text-xs font-medium flex items-center justify-between transition-colors cursor-pointer ${isSelected ? 'bg-[#EAF3FF] text-[#1677FF] font-bold' : 'text-[#0F172A] hover:bg-[#F8FAFC]'
+                                }`}
                             >
                               <div className="flex items-center gap-2">
                                 <Icon className={`w-3.5 h-3.5 ${opt.color}`} />
@@ -422,7 +442,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
 
           {/* Add more details (optional) */}
           <div className="space-y-2 pt-0.5">
-            <div 
+            <div
               onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
               className="p-3 bg-white border border-[#E2E8F0] rounded-2xl flex items-center justify-between gap-3 cursor-pointer hover:border-[#1677FF]/40 transition-all shadow-2xs group"
             >

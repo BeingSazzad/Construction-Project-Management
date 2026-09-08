@@ -11,6 +11,7 @@ interface ProjectBudgetTabProps {
   categories: TradeCategory[];
   changeOrders?: ChangeOrder[];
   onCreateChangeOrder?: () => void;
+  onApproveChangeOrder?: (id: string) => void;
   onAddCostItem?: () => void;
   onImportBudget?: () => void;
   onBack?: () => void;
@@ -20,6 +21,9 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   project,
   categories: initialCategories,
   changeOrders: initialChangeOrders = [],
+  onCreateChangeOrder,
+  onApproveChangeOrder,
+  onImportBudget,
   onBack
 }) => {
   // Navigation: 'overview' | 'trade-details'
@@ -31,68 +35,13 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
   // Categories & Change Orders State
   const [categories, setCategories] = useState<TradeCategory[]>(initialCategories);
-  const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>([
-    {
-      id: 'CO-001',
-      projectId: project.id,
-      title: 'Upgrade Lobby Finishes to Premium',
-      description: 'Upgrade flooring and wall finishes in main lobby to premium Carrera marble panels.',
-      amount: 45000,
-      timeImpact: 3,
-      category: 'Finishes',
-      requestedBy: 'Anderson Family Trust',
-      status: 'Approved',
-      createdDate: 'Jun 12, 2026'
-    },
-    {
-      id: 'CO-002',
-      projectId: project.id,
-      title: 'HVAC Roof Platform Structural Reinforcement',
-      description: 'Reinforce structural steel columns on Level 14 roof deck to support heavier dry cooler.',
-      amount: 13000,
-      timeImpact: 2,
-      category: 'Structural',
-      requestedBy: 'Lattice Engineering',
-      status: 'Pending',
-      createdDate: 'May 18, 2026'
-    },
-    {
-      id: 'CO-003',
-      projectId: project.id,
-      title: 'Curtain Wall Acoustic Glazing Upgrade',
-      description: 'Upgrade street-facing glazing on floors 2-6 to STC 42 acoustic laminated glass panels.',
-      amount: 28000,
-      timeImpact: 0,
-      category: 'Exterior',
-      requestedBy: 'Owner Directive',
-      status: 'Approved',
-      createdDate: 'Apr 3, 2026'
-    },
-    {
-      id: 'CO-004',
-      projectId: project.id,
-      title: 'Additional Slab Rebar at Grid C',
-      description: 'Additional #8 rebar reinforcement along high stress grade beam intersections.',
-      amount: 21000,
-      timeImpact: 1,
-      category: 'Concrete',
-      requestedBy: 'Structural Engineer',
-      status: 'Pending',
-      createdDate: 'Mar 10, 2026'
-    },
-    {
-      id: 'CO-005',
-      projectId: project.id,
-      title: 'Electrical Conduit Reroute',
-      description: 'Reroute 4-inch main power feeder due to clash with storm drainage header.',
-      amount: 8000,
-      timeImpact: 0,
-      category: 'Electrical',
-      requestedBy: 'MEP Subcontractor',
-      status: 'Rejected',
-      createdDate: 'Feb 28, 2026'
-    }
-  ]);
+  const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>(() =>
+    initialChangeOrders.filter(co => co.projectId === project.id)
+  );
+
+  React.useEffect(() => {
+    setChangeOrders(initialChangeOrders.filter(co => co.projectId === project.id));
+  }, [initialChangeOrders, project.id]);
 
   // Modals & Filters
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
@@ -115,15 +64,14 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   // Selected trade for drill-down view
   const selectedTrade = categories.find(c => c.id === selectedTradeId) || categories[0];
 
-  // Financial Metrics matching reference:
-  // Budget: $5.60M, Spent: $3.88M (69%), Committed: $320K (6%), Available: $1.72M (31%)
-  const totalBudget = 5600000;
-  const totalSpent = 3880000;
-  const totalCommitted = 320000;
-  const totalAvailable = 1720000;
-  const spentPercent = 69;
-  const committedPercent = 6;
-  const availablePercent = 31;
+  // Financial Metrics — derived from real project.budget data
+  const totalBudget = project.budget?.total || 0;
+  const totalSpent = project.budget?.actual || 0;
+  const totalCommitted = project.budget?.committed || 0;
+  const totalAvailable = project.budget?.remaining || Math.max(0, totalBudget - totalSpent);
+  const spentPercent = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+  const committedPercent = totalBudget > 0 ? Math.round((totalCommitted / totalBudget) * 100) : 0;
+  const availablePercent = Math.max(0, 100 - spentPercent - committedPercent);
 
   const getCOIconStyle = (status: string) => {
     if (status === 'Approved') {
@@ -205,6 +153,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
   const handleApproveCO = (id: string) => {
     setChangeOrders(prev => prev.map(co => co.id === id ? { ...co, status: 'Approved' } : co));
+    if (onApproveChangeOrder) onApproveChangeOrder(id);
   };
 
   // Filtered change orders
@@ -422,22 +371,20 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             <div className="flex items-center bg-[#F1F5F9] p-1 rounded-xl border border-[#E2E8F0]">
               <button
                 onClick={() => setActiveTab('categories')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer select-none active:scale-[0.98] ${
-                  activeTab === 'categories'
+                className={`px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer select-none active:scale-[0.98] ${activeTab === 'categories'
                     ? 'bg-white text-[#1677FF] font-bold shadow-xs'
                     : 'text-[#64748B] hover:text-[#0F172A] font-semibold'
-                }`}
+                  }`}
               >
                 Categories ({categories.length})
               </button>
 
               <button
                 onClick={() => setActiveTab('change-orders')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer select-none active:scale-[0.98] ${
-                  activeTab === 'change-orders'
+                className={`px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer select-none active:scale-[0.98] ${activeTab === 'change-orders'
                     ? 'bg-white text-[#1677FF] font-bold shadow-xs'
                     : 'text-[#64748B] hover:text-[#0F172A] font-semibold'
-                }`}
+                  }`}
               >
                 Change Orders ({changeOrders.length})
               </button>
@@ -508,9 +455,8 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                           setSelectedFilterStatus(st);
                           setIsFilterDropdownOpen(false);
                         }}
-                        className={`w-full px-3 py-1.5 text-left capitalize hover:bg-[#F8FAFC] flex items-center justify-between transition-colors cursor-pointer ${
-                          selectedFilterStatus === st ? 'font-bold text-[#1677FF] bg-[#EAF3FF]' : 'text-[#475569]'
-                        }`}
+                        className={`w-full px-3 py-1.5 text-left capitalize hover:bg-[#F8FAFC] flex items-center justify-between transition-colors cursor-pointer ${selectedFilterStatus === st ? 'font-bold text-[#1677FF] bg-[#EAF3FF]' : 'text-[#475569]'
+                          }`}
                       >
                         <span>{st}</span>
                         {selectedFilterStatus === st && <Check className="w-3.5 h-3.5 text-[#1677FF]" />}
@@ -782,11 +728,10 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 <span className="font-mono text-xs font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-md">
                   {selectedCO.id}
                 </span>
-                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                  selectedCO.status === 'Approved' ? 'bg-[#ECFDF5] text-[#059669]' :
-                  selectedCO.status === 'Pending' ? 'bg-[#FFFBEB] text-[#D97706]' :
-                  'bg-[#FEF2F2] text-[#DC2626]'
-                }`}>
+                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${selectedCO.status === 'Approved' ? 'bg-[#ECFDF5] text-[#059669]' :
+                    selectedCO.status === 'Pending' ? 'bg-[#FFFBEB] text-[#D97706]' :
+                      'bg-[#FEF2F2] text-[#DC2626]'
+                  }`}>
                   {selectedCO.status}
                 </span>
               </div>
