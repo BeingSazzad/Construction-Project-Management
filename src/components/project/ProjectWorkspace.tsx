@@ -60,6 +60,7 @@ interface ProjectWorkspaceProps {
   onImportBudget?: () => void;
   changeOrders?: any[];
   onCreateChangeOrder?: () => void;
+  onApproveChangeOrder?: (id: string) => void;
   onAddReport?: (newReport: Partial<ReportItem>) => void;
   onAddDailyLog?: (newLog: DailyLogItem) => void;
   initialCalendarDate?: string;
@@ -99,6 +100,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onImportBudget,
   changeOrders,
   onCreateChangeOrder,
+  onApproveChangeOrder,
   onAddReport,
   onAddDailyLog,
   initialCalendarDate
@@ -248,6 +250,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             categories={categories}
             changeOrders={changeOrders}
             onCreateChangeOrder={onCreateChangeOrder}
+            onApproveChangeOrder={onApproveChangeOrder}
             onAddCostItem={() => alert("Add Cost Code Line Item")}
             onImportBudget={onImportBudget}
             onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}

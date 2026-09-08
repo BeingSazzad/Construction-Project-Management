@@ -4,6 +4,7 @@ import {
   ArrowLeft, Sun, Cloud, CloudRain, Wind, Flame, Snowflake, Calendar, Plus, Minus, X, ChevronDown,
   Truck, Users, ChevronRight, Wrench, Check, AlertTriangle
 } from 'lucide-react';
+import { generateUniqueId } from '../../utils/id';
 
 interface CreateDailyLogModalProps {
   isOpen: boolean;
@@ -149,7 +150,7 @@ export const CreateDailyLogModal: React.FC<CreateDailyLogModalProps> = ({
     const shortDate = shortDateMatch ? `${shortDateMatch[1]} ${shortDateMatch[2]}` : 'Sep 5';
 
     const newDailyLog: DailyLogItem = {
-      id: `log-${Date.now()}`,
+      id: generateUniqueId('log'),
       projectId: selectedProjectId,
       projectName: currentProject?.name || 'Snell Isle Residence',
       address: currentProject?.location ? `${currentProject.location} · ${currentProject.cityState || ''}` : '1840 Brightwaters Blvd NE · St. Petersburg, FL',

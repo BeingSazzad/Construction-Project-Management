@@ -13,6 +13,7 @@ import {
   MOCK_FINANCING_DRAWS, MOCK_LIEN_WAIVERS, MOCK_CHANGE_ORDERS,
   MOCK_CALENDAR_EVENTS
 } from './data/mockData';
+import { generateUniqueId } from './utils/id';
 
 // Common Components
 import { DeviceFrame } from './components/common/DeviceFrame';
@@ -174,9 +175,10 @@ export function App() {
   };
 
   const handleCreateChangeOrder = (newCO: Partial<ChangeOrder>) => {
+    const targetProjectId = newCO.projectId || (activeProject ? activeProject.id : projects[0].id);
     const fullCO: ChangeOrder = {
-      id: `co-${Date.now()}`,
-      projectId: newCO.projectId || (activeProject ? activeProject.id : 'proj-1'),
+      id: generateUniqueId('co'),
+      projectId: targetProjectId,
       title: newCO.title || 'New Change Order',
       description: newCO.description || '',
       amount: newCO.amount || 0,
@@ -188,15 +190,94 @@ export function App() {
     };
 
     setChangeOrders(prev => [fullCO, ...prev]);
+
+    // Relational sync: Increment pendingCOs metric on target project
+    setProjects(prevProjects => prevProjects.map(p => {
+      if (p.id === targetProjectId) {
+        const updatedProj = {
+          ...p,
+          metrics: {
+            ...p.metrics,
+            pendingCOs: (p.metrics.pendingCOs || 0) + 1
+          }
+        };
+        if (activeProject && activeProject.id === p.id) {
+          setActiveProject(updatedProj);
+        }
+        return updatedProj;
+      }
+      return p;
+    }));
+
+    setNotifications(prev => [
+      {
+        id: generateUniqueId('notif'),
+        title: 'Change Order Drafted',
+        message: `Change Order "${fullCO.title}" ($${fullCO.amount.toLocaleString()}) created.`,
+        timeAgo: 'Just now',
+        read: false,
+        type: 'budget'
+      },
+      ...prev
+    ]);
+
     setIsCreateChangeOrderOpen(false);
+  };
+
+  const handleApproveChangeOrder = (coId: string) => {
+    const targetCO = changeOrders.find(co => co.id === coId);
+    if (!targetCO) return;
+
+    // 1. Mark CO as Approved in global state
+    setChangeOrders(prev => prev.map(co => co.id === coId ? { ...co, status: 'Approved' } : co));
+
+    // 2. Adjust project budget and metrics (AIA standard: ACO increases contract total & committed)
+    setProjects(prevProjects => prevProjects.map(p => {
+      if (p.id === targetCO.projectId) {
+        const newTotal = p.budget.total + targetCO.amount;
+        const newCommitted = p.budget.committed + targetCO.amount;
+        const updatedProj = {
+          ...p,
+          budget: {
+            ...p.budget,
+            total: newTotal,
+            committed: newCommitted,
+            remaining: Math.max(0, newTotal - p.budget.actual)
+          },
+          metrics: {
+            ...p.metrics,
+            pendingCOs: Math.max(0, (p.metrics.pendingCOs || 1) - 1)
+          }
+        };
+        if (activeProject && activeProject.id === p.id) {
+          setActiveProject(updatedProj);
+        }
+        return updatedProj;
+      }
+      return p;
+    }));
+
+    setNotifications(prev => [
+      {
+        id: generateUniqueId('notif'),
+        title: 'Change Order Approved',
+        message: `ACO "${targetCO.title}" ($${targetCO.amount.toLocaleString()}) approved. Contract sum adjusted.`,
+        timeAgo: 'Just now',
+        read: false,
+        type: 'budget'
+      },
+      ...prev
+    ]);
   };
 
   // Financial Handlers
   const handleCreateDraw = (newDraw: Partial<FinancingDraw>) => {
+    const targetProjectId = newDraw.projectId || (activeProject ? activeProject.id : projects[0].id);
+    const projDraws = draws.filter(d => d.projectId === targetProjectId);
     const fullDraw: FinancingDraw = {
-      id: `draw-${Date.now()}`,
-      projectId: newDraw.projectId || projects[0].id,
-      drawNumber: draws.length + 1,
+      id: generateUniqueId('draw'),
+      projectId: targetProjectId,
+      drawNumber: projDraws.length + 1,
       milestoneTitle: newDraw.milestoneTitle || 'Structural Progress Draw',
       requestedAmount: newDraw.requestedAmount || 350000,
       approvedAmount: newDraw.approvedAmount || 350000,
@@ -204,16 +285,31 @@ export function App() {
       status: 'In Lender Review',
       requestDate: newDraw.requestDate || new Date().toISOString().split('T')[0],
       lenderName: newDraw.lenderName || 'Texas Capital Commercial',
-      inspectorName: newDraw.inspectorName,
-      inspectionPassed: newDraw.inspectionPassed
+      inspectorName: newDraw.inspectorName || 'David Miller, PE',
+      inspectionPassed: newDraw.inspectionPassed ?? true
     };
     setDraws(prev => [fullDraw, ...prev]);
+
+    setNotifications(prev => [
+      {
+        id: generateUniqueId('notif'),
+        title: 'Bank Draw Submitted',
+        message: `Draw #${fullDraw.drawNumber} ($${fullDraw.requestedAmount.toLocaleString()}) submitted to ${fullDraw.lenderName}.`,
+        timeAgo: 'Just now',
+        read: false,
+        type: 'budget'
+      },
+      ...prev
+    ]);
+
+    setIsCreateDrawOpen(false);
   };
 
   const handleRecordLienWaiver = (newWaiver: Partial<LienWaiver>) => {
+    const targetProjectId = newWaiver.projectId || (activeProject ? activeProject.id : projects[0].id);
     const fullWaiver: LienWaiver = {
-      id: `lw-${Date.now()}`,
-      projectId: newWaiver.projectId || projects[0].id,
+      id: generateUniqueId('lw'),
+      projectId: targetProjectId,
       subcontractorName: newWaiver.subcontractorName || 'Apex Concrete Masters',
       trade: newWaiver.trade || 'Division 03 Concrete',
       amount: newWaiver.amount || 150000,
@@ -223,24 +319,93 @@ export function App() {
       dateSubmitted: newWaiver.dateSubmitted || new Date().toISOString().split('T')[0]
     };
     setLienWaivers(prev => [fullWaiver, ...prev]);
+
+    setNotifications(prev => [
+      {
+        id: generateUniqueId('notif'),
+        title: 'Lien Waiver Recorded',
+        message: `${fullWaiver.type} recorded for ${fullWaiver.subcontractorName} ($${fullWaiver.amount.toLocaleString()}).`,
+        timeAgo: 'Just now',
+        read: false,
+        type: 'budget'
+      },
+      ...prev
+    ]);
+
+    setIsRecordLienWaiverOpen(false);
   };
 
-  const handleDisbursePayApp = (subName: string, netAmount: number) => {
-    // Update first project paid amount
-    setProjects(prev => prev.map((p, idx) => {
-      if (idx === 0) {
-        return {
+  const handleDisbursePayApp = (
+    projectId: string,
+    subName: string,
+    netAmount: number,
+    _grossAmount?: number,
+    retainage?: number,
+    trade?: string
+  ) => {
+    // 1. Correctly update target project's budget by projectId (no hardcoded idx === 0)
+    setProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
+        const newPaid = p.budget.paid + netAmount;
+        const newActual = p.budget.actual + netAmount;
+        const updatedProj = {
           ...p,
           budget: {
             ...p.budget,
-            paid: p.budget.paid + netAmount,
-            actual: p.budget.actual + netAmount
+            paid: newPaid,
+            actual: newActual,
+            remaining: Math.max(0, p.budget.total - newActual)
           }
         };
+        if (activeProject && activeProject.id === p.id) {
+          setActiveProject(updatedProj);
+        }
+        return updatedProj;
       }
       return p;
     }));
-    alert(`Successfully disbursed $${netAmount.toLocaleString()} to ${subName}!`);
+
+    // 2. Regulatory Compliance: Convert conditional waiver to Unconditional or stamp active waiver
+    setLienWaivers(prev => {
+      const existingIdx = prev.findIndex(
+        lw => lw.projectId === projectId && lw.subcontractorName.toLowerCase() === subName.toLowerCase()
+      );
+      if (existingIdx !== -1) {
+        return prev.map((lw, idx) => idx === existingIdx ? {
+          ...lw,
+          type: 'Progress Unconditional' as const,
+          status: 'Signed & Active' as const,
+          amount: lw.amount || netAmount
+        } : lw);
+      } else {
+        const newWaiver: LienWaiver = {
+          id: generateUniqueId('lw'),
+          projectId,
+          subcontractorName: subName,
+          trade: trade || 'General Trade',
+          amount: netAmount,
+          type: 'Progress Unconditional',
+          status: 'Signed & Active',
+          invoiceRef: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+          dateSubmitted: new Date().toISOString().split('T')[0]
+        };
+        return [newWaiver, ...prev];
+      }
+    });
+
+    // 3. Notification
+    const retainageText = retainage ? ` (Retainage Held: $${retainage.toLocaleString()})` : '';
+    setNotifications(prev => [
+      {
+        id: generateUniqueId('notif'),
+        title: 'Pay Application Disbursed',
+        message: `$${netAmount.toLocaleString()} ACH disbursed to ${subName}${retainageText}. Unconditional Lien Waiver confirmed.`,
+        timeAgo: 'Just now',
+        read: false,
+        type: 'budget'
+      },
+      ...prev
+    ]);
   };
 
   // Handlers
@@ -298,10 +463,25 @@ export function App() {
     if (activeProject && activeProject.id === updated.id) {
       setActiveProject(updated);
     }
+    // Prevent denormalization data drift: keep child collections' projectName in sync
+    if (updated.name) {
+      setTasks(prev => prev.map(t => t.projectId === updated.id ? { ...t, projectName: updated.name } : t));
+      setPunchItems(prev => prev.map(pi => pi.projectId === updated.id ? { ...pi, projectName: updated.name } : pi));
+      setPhotos(prev => prev.map(ph => ph.projectId === updated.id ? { ...ph, projectName: updated.name } : ph));
+      setDailyLogs(prev => prev.map(dl => dl.projectId === updated.id ? { ...dl, projectName: updated.name } : dl));
+    }
   };
 
   const handleDeleteProject = (projectId: string) => {
+    // Relational cascading delete: prevent orphaned child entities
     setProjects(prev => prev.filter(p => p.id !== projectId));
+    setTasks(prev => prev.filter(t => t.projectId !== projectId));
+    setPunchItems(prev => prev.filter(pi => pi.projectId !== projectId));
+    setPhotos(prev => prev.filter(ph => ph.projectId !== projectId));
+    setDailyLogs(prev => prev.filter(dl => dl.projectId !== projectId));
+    setChangeOrders(prev => prev.filter(co => co.projectId !== projectId));
+    setDraws(prev => prev.filter(d => d.projectId !== projectId));
+    setLienWaivers(prev => prev.filter(lw => lw.projectId !== projectId));
     setActiveProject(null);
     setActiveTab('projects');
   };
@@ -332,7 +512,7 @@ export function App() {
 
   const handleCreateProject = (newProj: Partial<Project>) => {
     const fullProj: Project = {
-      id: `proj-${Date.now()}`,
+      id: generateUniqueId('proj'),
       name: newProj.name || 'New Commercial Build',
       code: `PRJ-${Math.floor(1000 + Math.random() * 9000)}`,
       location: newProj.location || 'Site Location',
@@ -361,7 +541,8 @@ export function App() {
         overdueTasks: 0,
         openPunchItems: 0,
         totalMilestones: 4,
-        completedMilestones: 0
+        completedMilestones: 0,
+        pendingCOs: 0
       },
       thumbnail: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
       description: newProj.description || 'New commercial build'
@@ -377,7 +558,7 @@ export function App() {
     const targetProject = projects.find(p => p.id === targetProjectId) || activeProject || projects[0];
 
     const fullTask: Task = {
-      id: newTask.id || `tsk-${Date.now()}`,
+      id: newTask.id || generateUniqueId('tsk'),
       projectId: targetProjectId,
       projectName: newTask.projectName || targetProject.name,
       title: newTask.title || 'New Construction Task',
@@ -396,8 +577,8 @@ export function App() {
       stageId: newTask.stageId,
       costCode: newTask.costCode || '03-3000',
       subtasks: newTask.subtasks || [
-        { id: `st-${Date.now()}-1`, title: 'Verify site clearance', completed: false },
-        { id: `st-${Date.now()}-2`, title: 'Quality signoff', completed: false }
+        { id: generateUniqueId('st'), title: 'Verify site clearance', completed: false },
+        { id: generateUniqueId('st'), title: 'Quality signoff', completed: false }
       ],
       attachmentsCount: newTask.attachmentsCount || 0,
       notesCount: newTask.notesCount || 0,
@@ -465,26 +646,50 @@ export function App() {
   };
 
   const handleCreatePunch = (newPunch: Partial<PunchItem>) => {
+    const targetProjectId = newPunch.projectId || (activeProject ? activeProject.id : projects[0].id);
+    const targetProject = projects.find(p => p.id === targetProjectId) || activeProject || projects[0];
     const fullPunch: PunchItem = {
-      id: `pch-${Date.now()}`,
-      projectId: activeProject ? activeProject.id : 'proj-1',
+      id: newPunch.id || generateUniqueId('pch'),
+      projectId: targetProjectId,
+      projectName: newPunch.projectName || targetProject.name,
       title: newPunch.title || 'Defect Notice',
       description: newPunch.description || 'Quality non-conformance item',
       location: newPunch.location || 'Level 3 - Zone B',
       status: 'Open',
       priority: newPunch.priority || 'Medium',
-      assignedTo: {
+      assignedTo: newPunch.assignedTo || {
         id: 'sub-1',
         name: 'Marco Rossi',
         avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
         trade: 'Concrete Works'
       },
-      dueDate: '2025-05-30',
-      createdDate: '2025-05-20',
+      dueDate: newPunch.dueDate || '2025-05-30',
+      createdDate: new Date().toISOString().split('T')[0],
       photos: []
     };
 
-    setPunchItems(prev => [fullPunch, ...prev]);
+    setPunchItems(prev => {
+      const updated = [fullPunch, ...prev];
+      const openCount = updated.filter(pi => pi.projectId === targetProjectId && pi.status === 'Open').length;
+      setProjects(prevProjects => prevProjects.map(p => {
+        if (p.id === targetProjectId) {
+          const updatedProj = {
+            ...p,
+            metrics: {
+              ...p.metrics,
+              openPunchItems: openCount
+            }
+          };
+          if (activeProject && activeProject.id === p.id) {
+            setActiveProject(updatedProj);
+          }
+          return updatedProj;
+        }
+        return p;
+      }));
+      return updated;
+    });
+
     setIsCreatePunchOpen(false);
   };
 
@@ -533,11 +738,59 @@ export function App() {
   };
 
   const handleUpdatePunchStatus = (punchId: string, newStatus: PunchStatus) => {
-    setPunchItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
+    setPunchItems(prev => {
+      const updated = prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p);
+      const targetItem = prev.find(p => p.id === punchId);
+      if (targetItem) {
+        const targetProjectId = targetItem.projectId;
+        const openCount = updated.filter(pi => pi.projectId === targetProjectId && pi.status === 'Open').length;
+        setProjects(prevProjects => prevProjects.map(p => {
+          if (p.id === targetProjectId) {
+            const updatedProj = {
+              ...p,
+              metrics: {
+                ...p.metrics,
+                openPunchItems: openCount
+              }
+            };
+            if (activeProject && activeProject.id === p.id) {
+              setActiveProject(updatedProj);
+            }
+            return updatedProj;
+          }
+          return p;
+        }));
+      }
+      return updated;
+    });
   };
 
   const handleDeletePunch = (punchId: string) => {
-    setPunchItems(prev => prev.filter(p => p.id !== punchId));
+    setPunchItems(prev => {
+      const targetItem = prev.find(p => p.id === punchId);
+      const updated = prev.filter(p => p.id !== punchId);
+      if (targetItem) {
+        const targetProjectId = targetItem.projectId;
+        const openCount = updated.filter(pi => pi.projectId === targetProjectId && pi.status === 'Open').length;
+        setProjects(prevProjects => prevProjects.map(p => {
+          if (p.id === targetProjectId) {
+            const updatedProj = {
+              ...p,
+              metrics: {
+                ...p.metrics,
+                openPunchItems: openCount
+              }
+            };
+            if (activeProject && activeProject.id === p.id) {
+              setActiveProject(updatedProj);
+            }
+            return updatedProj;
+          }
+          return p;
+        }));
+      }
+      return updated;
+    });
   };
 
   const handleDeleteTask = (taskId: string) => {
@@ -797,6 +1050,7 @@ export function App() {
                 onImportBudget={() => setIsImportBudgetOpen(true)}
                 changeOrders={changeOrders}
                 onCreateChangeOrder={() => setIsCreateChangeOrderOpen(true)}
+                onApproveChangeOrder={handleApproveChangeOrder}
                 onAddReport={handleAddReport}
                 onAddDailyLog={handleAddDailyLog}
                 onOpenEditProject={() => setIsEditProjectOpen(true)}
@@ -1280,18 +1534,8 @@ export function App() {
         onClose={() => setIsApprovePayAppOpen(false)}
         projects={projects}
         subcontractors={subcontractors}
-        onDisburse={(subName, amount) => {
-          setNotifications(prev => [
-            {
-              id: `notif-${Date.now()}`,
-              title: 'Pay Application Approved',
-              message: `$${amount.toLocaleString()} ACH disbursement approved for ${subName}.`,
-              timeAgo: 'Just now',
-              read: false,
-              type: 'budget'
-            },
-            ...prev
-          ]);
+        onDisburse={(projectId, subName, netAmount, grossAmount, retainage, trade) => {
+          handleDisbursePayApp(projectId, subName, netAmount, grossAmount, retainage, trade);
           setIsApprovePayAppOpen(false);
         }}
       />
@@ -1302,31 +1546,7 @@ export function App() {
         onClose={() => setIsRecordLienWaiverOpen(false)}
         subcontractors={subcontractors}
         onRecordWaiver={(waiver) => {
-          setLienWaivers(prev => [
-            {
-              id: `lw-${Date.now()}`,
-              projectId: waiver.projectId || 'proj-1',
-              subcontractorName: waiver.subcontractorName || 'Subcontractor',
-              trade: waiver.trade || 'General',
-              amount: waiver.amount || 0,
-              type: waiver.type || 'Progress Unconditional',
-              status: waiver.status || 'Signed & Active',
-              invoiceRef: waiver.invoiceRef || 'INV-2026-001',
-              dateSubmitted: waiver.dateSubmitted || new Date().toISOString().split('T')[0]
-            },
-            ...prev
-          ]);
-          setNotifications(prev => [
-            {
-              id: `notif-${Date.now()}`,
-              title: 'Lien Waiver Stamped & Recorded',
-              message: `${waiver.type} for ${waiver.subcontractorName} ($${waiver.amount?.toLocaleString()}) recorded.`,
-              timeAgo: 'Just now',
-              read: false,
-              type: 'task'
-            },
-            ...prev
-          ]);
+          handleRecordLienWaiver(waiver);
           setIsRecordLienWaiverOpen(false);
         }}
       />
@@ -1336,73 +1556,15 @@ export function App() {
         isOpen={isCreateDrawOpen}
         onClose={() => setIsCreateDrawOpen(false)}
         projects={projects}
-        onCreateDraw={(draw) => {
-          setDraws(prev => [
-            {
-              id: `draw-${Date.now()}`,
-              projectId: draw.projectId || 'proj-1',
-              drawNumber: draws.length + 1,
-              milestoneTitle: draw.milestoneTitle || 'Structural Framing Complete',
-              requestedAmount: draw.requestedAmount || 350000,
-              approvedAmount: draw.approvedAmount || 350000,
-              fundedAmount: 0,
-              status: draw.status || 'In Lender Review',
-              requestDate: draw.requestDate || new Date().toISOString().split('T')[0],
-              lenderName: draw.lenderName || 'Texas Capital Bank Commercial',
-              inspectorName: draw.inspectorName || 'David Miller, PE',
-              inspectionPassed: draw.inspectionPassed ?? true
-            },
-            ...prev
-          ]);
-          setNotifications(prev => [
-            {
-              id: `notif-${Date.now()}`,
-              title: 'Bank Draw Submitted',
-              message: `Draw #${draws.length + 1} ($${draw.requestedAmount?.toLocaleString()}) submitted to ${draw.lenderName}.`,
-              timeAgo: 'Just now',
-              read: false,
-              type: 'budget'
-            },
-            ...prev
-          ]);
-          setIsCreateDrawOpen(false);
-        }}
+        onCreateDraw={handleCreateDraw}
       />
 
       {/* CREATE CHANGE ORDER MODAL */}
       <CreateChangeOrderModal
         isOpen={isCreateChangeOrderOpen}
         onClose={() => setIsCreateChangeOrderOpen(false)}
-        projectId={activeProject ? activeProject.id : 'proj-1'}
-        onCreate={(newCO) => {
-          setChangeOrders(prev => [
-            {
-              id: `co-${Date.now()}`,
-              projectId: newCO.projectId || 'proj-1',
-              title: newCO.title || 'Change Order',
-              description: newCO.description || '',
-              amount: newCO.amount || 0,
-              timeImpact: newCO.timeImpact || 0,
-              category: newCO.category || 'General',
-              requestedBy: newCO.requestedBy || 'Client',
-              status: 'Pending',
-              createdDate: newCO.createdDate || new Date().toISOString().split('T')[0]
-            },
-            ...prev
-          ]);
-          setNotifications(prev => [
-            {
-              id: `notif-${Date.now()}`,
-              title: 'Change Order Drafted',
-              message: `Change Order "${newCO.title}" ($${newCO.amount?.toLocaleString()}) created.`,
-              timeAgo: 'Just now',
-              read: false,
-              type: 'task'
-            },
-            ...prev
-          ]);
-          setIsCreateChangeOrderOpen(false);
-        }}
+        projectId={activeProject ? activeProject.id : (projects[0]?.id || 'proj-1')}
+        onCreate={handleCreateChangeOrder}
       />
 
     </DeviceFrame>

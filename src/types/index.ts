@@ -63,6 +63,7 @@ export interface Project {
     openPunchItems: number;
     totalMilestones: number;
     completedMilestones: number;
+    pendingCOs?: number;
   };
   thumbnail: string;
   coverImage?: string;
@@ -208,6 +209,7 @@ export type PunchStatus = 'Open' | 'In Progress' | 'Resolved' | 'Verified' | 'Cl
 export interface PunchItem {
   id: string;
   projectId: string;
+  projectName?: string;
   title: string;
   location: string;
   description: string;

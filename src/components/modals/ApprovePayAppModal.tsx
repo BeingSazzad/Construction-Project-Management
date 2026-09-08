@@ -7,7 +7,14 @@ interface ApprovePayAppModalProps {
   onClose: () => void;
   projects: Project[];
   subcontractors: Subcontractor[];
-  onDisburse: (subName: string, amount: number) => void;
+  onDisburse: (
+    projectId: string,
+    subName: string,
+    netAmount: number,
+    grossAmount: number,
+    retainage: number,
+    trade: string
+  ) => void;
 }
 
 export const ApprovePayAppModal: React.FC<ApprovePayAppModalProps> = ({
@@ -41,7 +48,7 @@ export const ApprovePayAppModal: React.FC<ApprovePayAppModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onDisburse(selectedSub, netPayable);
+    onDisburse(selectedProjectId, selectedSub, netPayable, grossNum, retainageNum, trade);
     onClose();
   };
 
