@@ -100,12 +100,14 @@ interface BudgetsHubViewProps {
   onOpenImportBudget?: () => void;
   onSelectBudgetName?: (name: string | null) => void;
   onBack?: () => void;
+  canCreateBudget?: boolean;
 }
 
 export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ 
   projects = MOCK_PROJECTS,
   onSelectBudgetName, 
-  onBack 
+  onBack,
+  canCreateBudget = true,
 }) => {
   const [activeTab, setActiveTab] = useState<'project' | 'templates' | 'archived'>('project');
   const [searchQuery, setSearchQuery] = useState('');
@@ -247,13 +249,15 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="btn-action btn-primary"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New Budget</span>
-        </button>
+        {canCreateBudget && (
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="btn-action btn-primary"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>New Budget</span>
+          </button>
+        )}
       </div>
 
       {/* ─── 2. EXECUTIVE CAPITAL CARD (Dynamic Synchronized Data) ─── */}

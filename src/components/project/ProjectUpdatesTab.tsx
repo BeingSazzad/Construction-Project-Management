@@ -46,9 +46,10 @@ export const ProjectUpdatesTab: React.FC<ProjectUpdatesTabProps> = ({
             Chronological field stream
           </p>
         </div>
+        {onAddUpdate && (
         <button
           onClick={() => {
-            if (onAddUpdate) onAddUpdate();
+            onAddUpdate();
             setIsCreateModalOpen(true);
           }}
           className="px-3.5 py-1.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
@@ -56,6 +57,7 @@ export const ProjectUpdatesTab: React.FC<ProjectUpdatesTabProps> = ({
           <Plus className="w-3.5 h-3.5" />
           <span>Post</span>
         </button>
+        )}
       </div>
 
       {/* Feed List */}

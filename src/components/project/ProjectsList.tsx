@@ -6,7 +6,7 @@ import { ProjectCard } from '../common/ProjectCard';
 interface ProjectsListProps {
   projects: Project[];
   onSelectProject: (project: Project) => void;
-  onCreateProject: () => void;
+  onCreateProject?: () => void;
 }
 
 export const ProjectsList: React.FC<ProjectsListProps> = ({
@@ -43,13 +43,15 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
         <p className="text-xs text-[#64748B] font-semibold">
           {filteredProjects.length} active project{filteredProjects.length !== 1 ? 's' : ''}
         </p>
-        <button
-          onClick={onCreateProject}
-          className="btn-action btn-primary"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New Project</span>
-        </button>
+        {onCreateProject && (
+          <button
+            onClick={onCreateProject}
+            className="btn-action btn-primary"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>New Project</span>
+          </button>
+        )}
       </div>
 
       {/* ── 2. Search & Segmented Filter Pills ── */}

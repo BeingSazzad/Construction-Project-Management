@@ -77,7 +77,7 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
     { text: "Draft client project update", icon: Send },
     { text: "Summarize site activity today", icon: BarChart2 },
     { text: "Any weather risks this week?", icon: CloudRain },
-    { text: "Show budget variances", icon: PieChart },
+    ...(currentRole !== 'field' ? [{ text: "Show budget variances", icon: PieChart }] : []),
     { text: "What are upcoming inspections?", icon: Calendar }
   ];
 
@@ -107,7 +107,7 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
         replyText = `Here is a drafted project update ready for the client:\n\n"Dear Arthur & Evelyn,\n\nHere is your weekly progress briefing for 1840 Brightwaters Blvd:\n• Stage 4 (Structural Framing & Slabs) is 68% complete.\n• Pre-pour framing inspection is scheduled with the City for tomorrow at 10:00 AM.\n• Weather coordination: With rain expected Thursday afternoon, our team has staged crane lifts for Friday to ensure uninterrupted progress.\n• Total budget and critical-path timeline remain fully on schedule for Aug 30, 2025 delivery.\n\nWarm regards,\nSarah Johnson, Lead PM\nLattice Construction"`;
         badge = { label: 'Draft Ready', value: 'Client Update', variant: 'success' };
         actionBtn = { label: 'Post to Daily Logs', targetTab: 'daily-logs' };
-      } else if (lower.includes('budget') || lower.includes('cost') || lower.includes('variance') || lower.includes('money')) {
+      } else if (currentRole !== 'field' && (lower.includes('budget') || lower.includes('cost') || lower.includes('variance') || lower.includes('money'))) {
         replyText = "Portfolio committed spend is $16.8M against $34.85M total. Snell Isle Residence has a $14,200 cost overrun in Division 03 (Concrete) due to soil bearing amendments. All other trade divisions remain within contingency limits.";
         badge = { label: 'Variance Risk', value: '+$14.2K', variant: 'danger' };
         actionBtn = { label: 'Open Portfolio Budgets', targetTab: 'budgets' };

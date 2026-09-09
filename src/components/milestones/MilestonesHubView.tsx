@@ -12,6 +12,7 @@ interface MilestonesHubViewProps {
   tasks?: Task[];
   onSelectProject?: (project: Project) => void;
   onCreateTask?: () => void;
+  canAddMilestone?: boolean;
   onBack?: () => void;
 }
 
@@ -118,6 +119,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
   projects,
   tasks = [],
   onCreateTask,
+  canAddMilestone = false,
   onBack
 }) => {
   const [activeTab, setActiveTab] = useState<'milestones' | 'board'>('milestones');
@@ -276,6 +278,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           </div>
         </div>
 
+        {((activeTab === 'milestones' && canAddMilestone) || (activeTab === 'board' && onCreateTask)) && (
         <button
           onClick={() => {
             if (activeTab === 'milestones') {
@@ -289,6 +292,7 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>{activeTab === 'milestones' ? 'Add Milestone' : 'Add Task'}</span>
         </button>
+        )}
       </div>
 
       {/* ─── 1. SEGMENTED TABS: MILESTONES & TASK BOARD ─── */}
@@ -648,13 +652,13 @@ export const MilestonesHubView: React.FC<MilestonesHubViewProps> = ({
           projectName={selectedMilestone.projectName}
           projectTasks={tasks}
           onClose={() => setSelectedMilestone(null)}
-          onUpdateStatus={(id, st) => {
+          onUpdateStatus={canAddMilestone ? (id, st) => {
             setMilestonesList(prev => prev.map(m => m.id === id ? { ...m, status: st, progress: st === 'Completed' ? 100 : m.progress } : m));
-          }}
-          onDeleteMilestone={(id) => {
+          } : undefined}
+          onDeleteMilestone={canAddMilestone ? (id) => {
             setMilestonesList(prev => prev.filter(m => m.id !== id));
             setSelectedMilestone(null);
-          }}
+          } : undefined}
         />
       )}
 

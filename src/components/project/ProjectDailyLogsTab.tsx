@@ -607,12 +607,16 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
             Daily Log Details
           </h2>
 
+          {onAddDailyLog ? (
           <button
             onClick={() => handleStartEdit(selectedLog)}
             className="text-xs font-bold text-[#1677FF] hover:underline cursor-pointer px-1 py-1"
           >
             Edit
           </button>
+          ) : (
+          <div className="w-8" />
+          )}
         </div>
 
         {/* Unified Top Header Card */}
@@ -872,6 +876,7 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
             className="w-full h-10 bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl pl-9 pr-3 text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none transition-colors shadow-2xs font-medium"
           />
         </div>
+        {onAddDailyLog && (
         <button
           onClick={handleStartCreate}
           className="h-10 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#1677FF]/90 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0"
@@ -879,6 +884,7 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>New Log</span>
         </button>
+        )}
       </div>
 
       {/* 2. Month Section Header */}
@@ -898,7 +904,9 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
             <FileText className="w-8 h-8 text-[#94A3B8]" />
             <p className="text-xs font-semibold text-[#0F172A]">No daily logs found</p>
             <p className="text-xs text-[#64748B] max-w-[220px]">
-              Tap "New Log" to record today's site activity, crew headcount, and progress photos.
+              {onAddDailyLog
+                ? 'Tap "New Log" to record today\'s site activity, crew headcount, and progress photos.'
+                : 'No daily logs recorded for this filter.'}
             </p>
           </div>
         ) : (
@@ -989,7 +997,7 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
         )}
       </div>
 
-      {/* Floating Action Button for New Log */}
+      {onAddDailyLog && (
       <button
         onClick={handleStartCreate}
         className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#1677FF] hover:bg-[#1677FF]/90 text-white flex items-center justify-center shadow-xl hover:scale-105 transition-all cursor-pointer active:scale-95"
@@ -997,6 +1005,7 @@ export const ProjectDailyLogsTab: React.FC<ProjectDailyLogsTabProps> = ({
       >
         <Plus className="w-6 h-6 stroke-[2.5]" />
       </button>
+      )}
 
     </div>
   );

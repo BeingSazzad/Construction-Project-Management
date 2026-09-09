@@ -278,6 +278,7 @@ export const ProjectStageModal: React.FC<ProjectStageModalProps> = ({
         </div>
 
         {/* Action Controls */}
+        {onUpdateStage && (
         <div className="flex flex-col gap-2 pt-1">
           {currentActiveStage.id === 'stg-4' && (
             <button
@@ -309,6 +310,7 @@ export const ProjectStageModal: React.FC<ProjectStageModalProps> = ({
             </button>
           )}
         </div>
+        )}
 
       </div>
     </div>

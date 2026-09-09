@@ -9,7 +9,7 @@ import {
 interface ProjectPunchListTabProps {
   project: Project;
   punchItems: PunchItem[];
-  onCreatePunch: () => void;
+  onCreatePunch?: () => void;
   onOpenPunchDetails?: (item: PunchItem) => void;
   onUpdatePunchStatus?: (punchId: string, status: PunchStatus) => void;
   onDeletePunch?: (punchId: string) => void;
@@ -69,8 +69,9 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   }, []);
 
   const handleStatusChange = (punchId: string, newStatus: PunchStatus) => {
+    if (!onUpdatePunchStatus) return;
     setItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
-    if (onUpdatePunchStatus) onUpdatePunchStatus(punchId, newStatus);
+    onUpdatePunchStatus(punchId, newStatus);
     setActiveStatusDropdownId(null);
   };
 
@@ -168,6 +169,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           </div>
         </div>
 
+        {onCreatePunch && (
         <button
           onClick={onCreatePunch}
           className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer flex-shrink-0"
@@ -175,6 +177,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>New Item</span>
         </button>
+        )}
       </div>
 
       {/* ── 2. Filter Pills Bar (All, Open, In Progress, Resolved, Verified) ── */}
@@ -372,6 +375,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                           
                           {/* Status Pill Dropdown */}
                           <div className="relative">
+                            {onUpdatePunchStatus ? (
                             <button
                               onClick={() => {
                                 setActiveStatusDropdownId(activeStatusDropdownId === item.id ? null : item.id);
@@ -382,6 +386,11 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                               <span>{item.status}</span>
                               <ChevronDown className="w-3 h-3 stroke-[2.5]" />
                             </button>
+                            ) : (
+                            <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
+                              {item.status}
+                            </span>
+                            )}
 
                             {/* Dropdown Menu */}
                             {activeStatusDropdownId === item.id && (
@@ -409,6 +418,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                           </div>
 
                           {/* 3-Dots Action Menu */}
+                          {(photoUrl || onDeletePunch) && (
                           <div className="relative">
                             <button
                               onClick={() => {
@@ -438,6 +448,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                                     <span>View Photo</span>
                                   </button>
                                 )}
+                                {onDeletePunch && (
                                 <button
                                   onClick={() => handleDeletePunch(item.id)}
                                   className="w-full px-3 py-1.5 text-left text-xs font-medium text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
@@ -445,9 +456,11 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                                   <Trash2 className="w-3.5 h-3.5 text-rose-500" />
                                   <span>Delete Item</span>
                                 </button>
+                                )}
                               </div>
                             )}
                           </div>
+                          )}
 
                           {/* Chevron Right */}
                           <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all flex-shrink-0 cursor-pointer" />

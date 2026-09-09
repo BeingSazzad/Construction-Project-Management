@@ -7,12 +7,12 @@ interface CentralAddActionSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onAddProject?: () => void;
-  onAddTask: () => void;
+  onAddTask?: () => void;
   onAddDailyLog?: () => void;
   onAddUpdate?: () => void;
   onAddExpense?: () => void;
-  onAddPhoto: () => void;
-  onAddDocument: () => void;
+  onAddPhoto?: () => void;
+  onAddDocument?: () => void;
 }
 
 export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
@@ -39,22 +39,22 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddProject,
     }] : []),
-    {
+    ...(onAddTask ? [{
       id: 'task',
       label: 'Task',
       subtitle: 'Create a deadline, inspection, or trade assignment',
       icon: CheckSquare,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddTask,
-    },
-    {
+    }] : []),
+    ...(onAddDailyLog || onAddUpdate ? [{
       id: 'daily-log',
       label: 'Daily Log',
       subtitle: 'Record field progress, crew activity & site updates',
       icon: ClipboardList,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: handleDailyLogAction,
-    },
+    }] : []),
     ...(onAddExpense ? [{
       id: 'expense',
       label: 'Expense',
@@ -63,22 +63,22 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddExpense,
     }] : []),
-    {
+    ...(onAddPhoto ? [{
       id: 'photo',
       label: 'Photo',
       subtitle: 'Upload site progress or verification photos',
       icon: Camera,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddPhoto,
-    },
-    {
+    }] : []),
+    ...(onAddDocument ? [{
       id: 'document',
       label: 'Document',
       subtitle: 'Attach blueprints, specs, permits, or contracts',
       icon: FileText,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddDocument,
-    },
+    }] : []),
   ];
 
   return (

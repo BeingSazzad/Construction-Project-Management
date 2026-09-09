@@ -117,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            {/* 3-Dots Action Menu (Edit Info / Delete) */}
+            {(onOpenEditProject || onDeleteProject) && (
             <div className="relative flex-shrink-0 flex items-center" ref={menuRef}>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -127,7 +127,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <MoreVertical className="w-4 h-4" />
               </button>
 
-              {/* Dropdown Options */}
               {isMenuOpen && (
                 <div className="absolute right-0 top-11 w-44 rounded-2xl bg-white border border-[#DDE1E7] shadow-xl z-50 py-1.5 overflow-hidden animate-fade-in divide-y divide-[#EAEDF1]">
                   {onOpenEditProject && (
@@ -143,23 +142,24 @@ export const Header: React.FC<HeaderProps> = ({
                     </button>
                   )}
 
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      if (onDeleteProject) {
+                  {onDeleteProject && (
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
                         if (window.confirm(`Are you sure you want to permanently delete "${activeProject.name}"?`)) {
                           onDeleteProject(activeProject.id);
                         }
-                      }
-                    }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-                    <span>Delete Project</span>
-                  </button>
+                      }}
+                      className="w-full px-3.5 py-2 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Delete Project</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>
+            )}
           </div>
         ) : activeTab !== 'home' ? (
           // Sub-pages / Non-Home Top Header with Back to Home button (Clean: NO hamburger, NO avatar)

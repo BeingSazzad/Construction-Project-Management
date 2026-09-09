@@ -83,6 +83,7 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
 }) => {
   const [userData, setUserData] = useState<User>(currentUser);
   const isOwner = userData.role === 'admin';
+  const canViewCompany = isOwner || userData.role === 'pm' || userData.role === 'finance';
 
   useEffect(() => {
     setUserData(currentUser);
@@ -254,15 +255,16 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
       <ProfileHeroCard
         user={userData}
         onEdit={() => setSubView('profile')}
-        onOpenCompany={isOwner ? () => setSubView('workspace') : undefined}
+        onOpenCompany={canViewCompany ? () => setSubView('workspace') : undefined}
       />
 
       {/* 2. Account rows — all one grouped list */}
       <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#EAEDF1]">
-        {isOwner && (
+        {canViewCompany && (
           <RowItem
             icon={<div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]"><Building2 className="w-3.5 h-3.5" /></div>}
             label="Workspace"
+            badge={!isOwner ? <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]">View</span> : undefined}
             onClick={() => setSubView('workspace')}
           />
         )}

@@ -16,6 +16,7 @@ import { ProjectTeamTab } from './ProjectTeamTab';
 import { ProjectReportsTab } from './ProjectReportsTab';
 import { ProjectScheduleTab } from './ProjectScheduleTab';
 import { MOCK_PROJECT_UPDATES } from '../../data/mockData';
+import { getRoleAccess } from '../../utils/roleAccess';
 import {
   Layers, DollarSign, CheckSquare,
   Camera, FileText, Users2,
@@ -40,15 +41,15 @@ interface ProjectWorkspaceProps {
   planPins?: PlanGridPin[];
   chatMessages?: ProjectChatMessage[];
   onOpenTask: (task: Task) => void;
-  onCreateTask: () => void;
+  onCreateTask?: () => void;
   onAddTask?: (task: Partial<Task>) => void;
   onOpenPunch: (item: PunchItem) => void;
-  onCreatePunch: () => void;
-  onUpdatePunchStatus: (punchId: string, status: PunchStatus) => void;
-  onUpdateTaskStatus: (taskId: string, status: TaskStatus) => void;
-  onUploadPhoto: () => void;
+  onCreatePunch?: () => void;
+  onUpdatePunchStatus?: (punchId: string, status: PunchStatus) => void;
+  onUpdateTaskStatus?: (taskId: string, status: TaskStatus) => void;
+  onUploadPhoto?: () => void;
   onPreviewPhoto: (photo: SitePhoto) => void;
-  onUploadDocument: () => void;
+  onUploadDocument?: () => void;
   onPreviewDocument: (doc: DocumentItem) => void;
   onExportReport: (report: ReportItem) => void;
   onAddPlanPin?: (planPin: PlanGridPin) => void;
@@ -167,6 +168,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   };
 
   const allTabs = getTabsForRole(currentRole);
+  const access = getRoleAccess(currentRole);
 
   return (
     <div className="w-full flex flex-col flex-1 bg-[#F8FAFC]">
@@ -198,7 +200,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
 
       {/* Main Workspace Body Content */}
       <div className="flex-1 overflow-y-auto">
-        {(activeTab === 'overview' || !['daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule'].includes(activeTab)) && (
+        {(activeTab === 'overview' || ((activeTab === 'budget' || activeTab === 'budgets') && currentRole === 'field') || !['daily-logs', 'budget', 'budgets', 'team', 'reports', 'tasks', 'punch', 'photos', 'documents', 'schedule'].includes(activeTab)) && (
           <ProjectOverviewTab
             project={project}
             tasks={tasks}
@@ -213,6 +215,9 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onUploadPhoto={onUploadPhoto}
             onAddDailyLog={onAddDailyLog}
             onOpenEditProject={onOpenEditProject}
+            canViewBudget={access.canViewBudget}
+            canManageSchedule={access.canManageSchedule}
+            canManageStages={access.isPM}
           />
         )}
 
@@ -251,7 +256,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             changeOrders={changeOrders}
             onCreateChangeOrder={onCreateChangeOrder}
             onApproveChangeOrder={onApproveChangeOrder}
-            onAddCostItem={() => alert("Add Cost Code Line Item")}
+            onAddCostItem={access.canLogExpense ? () => undefined : undefined}
             onImportBudget={onImportBudget}
             onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}
           />
@@ -269,7 +274,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             project={project}
             reports={reports}
             onExportReport={onExportReport}
-            onAddReport={onAddReport}
+            onAddReport={access.canAddReport ? onAddReport : undefined}
           />
         )}
 
@@ -279,7 +284,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             punchItems={punchItems}
             onCreatePunch={onCreatePunch}
             onUpdatePunchStatus={onUpdatePunchStatus}
-            onDeletePunch={(punchId) => onUpdatePunchStatus(punchId, 'Closed')}
+            onDeletePunch={onUpdatePunchStatus ? (punchId) => onUpdatePunchStatus(punchId, 'Closed') : undefined}
             onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}
           />
         )}
@@ -292,6 +297,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onCreateTask={onCreateTask}
             onAddTask={onAddTask}
             onUpdateStatus={onUpdateTaskStatus}
+            canManageBoard={access.canManageTaskBoard}
           />
         )}
 
@@ -302,6 +308,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             ganttItems={ganttItems}
             onCreateTask={onCreateTask}
             onUpdateTaskStatus={onUpdateTaskStatus}
+            canManageSchedule={access.canManageSchedule}
             initialDate={initialCalendarDate}
           />
         )}

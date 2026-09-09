@@ -223,6 +223,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             </button>
           </div>
 
+          {onAddEvent && (
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="h-8 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
@@ -230,6 +231,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <Plus className="w-3.5 h-3.5" />
             <span>Add</span>
           </button>
+          )}
         </div>
       </div>
 
@@ -325,6 +327,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     No milestones, inspections, or deliveries for this date.
                   </p>
                 </div>
+                {onAddEvent && (
                 <button
                   onClick={() => setIsAddModalOpen(true)}
                   className="mt-0.5 text-xs font-semibold text-[#1677FF] hover:text-[#0958D9] hover:underline flex items-center gap-1 cursor-pointer transition-colors"
@@ -332,6 +335,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   <Plus className="w-3 h-3 stroke-[2.5]" />
                   <span>Schedule event for this date</span>
                 </button>
+                )}
               </div>
             ) : (
               <div className="divide-y divide-[#F2F2F7]">
@@ -513,11 +517,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             </div>
 
             <div className="flex items-center gap-2 pt-1">
+              {onDeleteEvent && (
               <button
                 onClick={() => {
                   if (window.confirm(`Delete event "${selectedEvent.title}"?`)) {
                     setEventsList(prev => prev.filter(e => e.id !== selectedEvent.id));
-                    if (onDeleteEvent) onDeleteEvent(selectedEvent.id);
+                    onDeleteEvent(selectedEvent.id);
                     setSelectedEvent(null);
                   }
                 }}
@@ -526,7 +531,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               >
                 <Trash2 className="w-4 h-4" />
               </button>
+              )}
 
+              {onAddEvent && (
               <button
                 onClick={() => {
                   setEditingEvent(selectedEvent);
@@ -539,6 +546,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 <Edit2 className="w-3.5 h-3.5" />
                 <span>Edit</span>
               </button>
+              )}
 
               {selectedEvent.projectId && onSelectProject ? (
                 <button

@@ -346,14 +346,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             isOpen={isWeatherModalOpen}
             onClose={() => setIsWeatherModalOpen(false)}
             project={snellProject}
-            onOpenSchedule={() => {
-              setIsWeatherModalOpen(false);
-              if (onOpenCalendar) onOpenCalendar('2026-09-06');
-            }}
-            onOpenDailyLog={() => {
-              setIsWeatherModalOpen(false);
-              if (onOpenDailyLogs) onOpenDailyLogs();
-            }}
           />
         )}
 
@@ -772,14 +764,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             isOpen={isWeatherModalOpen}
             onClose={() => setIsWeatherModalOpen(false)}
             project={snellProject}
-            onOpenSchedule={() => {
-              setIsWeatherModalOpen(false);
-              if (onOpenCalendar) onOpenCalendar('2026-09-06');
-            }}
-            onOpenDailyLog={() => {
-              setIsWeatherModalOpen(false);
-              if (onOpenDailyLogs) onOpenDailyLogs();
-            }}
           />
         )}
 
@@ -1197,10 +1181,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           isOpen={isWeatherModalOpen}
           onClose={() => setIsWeatherModalOpen(false)}
           project={snellProject}
-          onOpenSchedule={() => {
-            setIsWeatherModalOpen(false);
-            if (onOpenCalendar) onOpenCalendar('2026-09-06');
-          }}
           onOpenDailyLog={() => {
             setIsWeatherModalOpen(false);
             if (onOpenDailyLogs) onOpenDailyLogs();

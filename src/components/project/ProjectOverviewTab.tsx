@@ -24,6 +24,9 @@ interface ProjectOverviewTabProps {
   onUploadPhoto?: () => void;
   onAddDailyLog?: (log?: any) => void;
   onOpenEditProject?: () => void;
+  canViewBudget?: boolean;
+  canManageSchedule?: boolean;
+  canManageStages?: boolean;
 }
 
 export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
@@ -39,6 +42,9 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   onUploadPhoto,
   onAddDailyLog,
   onOpenEditProject,
+  canViewBudget = true,
+  canManageSchedule = false,
+  canManageStages = false,
 }) => {
   const [isCreateDailyLogOpen, setIsCreateDailyLogOpen] = useState(false);
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
@@ -143,17 +149,21 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
       {/* ── 2. Project Details (Vertical Stacked Card strictly following Lattice System) ── */}
       <div
         onClick={onOpenEditProject}
-        className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3.5 cursor-pointer hover:border-[#1677FF]/40 transition-all group"
+        className={`bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3.5 transition-all group ${
+          onOpenEditProject ? 'cursor-pointer hover:border-[#1677FF]/40' : ''
+        }`}
       >
         {/* Header with Title and Chevron */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Building2 className="w-4 h-4 text-[#1677FF]" />
-            <h3 className="text-xs sm:text-sm font-bold text-[#0F172A] tracking-tight group-hover:text-[#1677FF] transition-colors">
+            <h3 className={`text-xs sm:text-sm font-bold text-[#0F172A] tracking-tight ${onOpenEditProject ? 'group-hover:text-[#1677FF] transition-colors' : ''}`}>
               Project Details
             </h3>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors" />
+          {onOpenEditProject && (
+            <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors" />
+          )}
         </div>
 
         {/* Vertical Stacked Rows ("lamba kore") */}
@@ -245,7 +255,9 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
       {/* ── 3. Project Scope & Notes Card ── */}
       <div
         onClick={onOpenEditProject}
-        className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-2 cursor-pointer hover:border-[#1677FF]/40 transition-all group"
+        className={`bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-2 transition-all group ${
+          onOpenEditProject ? 'cursor-pointer hover:border-[#1677FF]/40' : ''
+        }`}
       >
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
@@ -263,7 +275,8 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
       {/* ── 4. 3-Column Metric Suite Card (Clean, Spacious, Non-redundant) ── */}
       <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card">
         <div className="grid grid-cols-3 divide-x divide-[#F1F5F9]">
-          {/* Metric 1: Budget */}
+          {/* Metric 1: Budget (hidden for Field) or Photos */}
+          {canViewBudget ? (
           <div
             onClick={() => handleTabChange('budget')}
             className="flex flex-col items-start pr-3 cursor-pointer group"
@@ -278,6 +291,22 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               Total Budget
             </span>
           </div>
+          ) : (
+          <div
+            onClick={() => handleTabChange('photos')}
+            className="flex flex-col items-start pr-3 cursor-pointer group"
+          >
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
+              <Camera className="w-4 h-4 stroke-[2]" />
+            </div>
+            <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
+              {photos.filter(p => !p.projectId || p.projectId === project.id).length}
+            </span>
+            <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
+              Site Photos
+            </span>
+          </div>
+          )}
 
           {/* Metric 2: Active Tasks */}
           <div
@@ -447,7 +476,9 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
       {(() => {
         const recentCompletedTask = tasks.filter(t => t.projectId === project.id && t.status === 'Completed').slice(-1)[0];
         const recentPhotos = (photos || []).filter(p => p.projectId === project.id).slice(0, 4);
-        const recentApprovedCO = (changeOrders || []).filter(co => co.projectId === project.id && co.status === 'Approved').slice(-1)[0];
+        const recentApprovedCO = canViewBudget
+          ? (changeOrders || []).filter(co => co.projectId === project.id && co.status === 'Approved').slice(-1)[0]
+          : undefined;
 
         const hasAnyActivity = recentCompletedTask || recentPhotos.length > 0 || recentApprovedCO;
 
@@ -582,8 +613,8 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         isOpen={isWeatherModalOpen}
         onClose={() => setIsWeatherModalOpen(false)}
         project={project}
-        onOpenSchedule={() => handleTabChange('schedule')}
-        onOpenDailyLog={() => setIsCreateDailyLogOpen(true)}
+        onOpenSchedule={canManageSchedule ? () => handleTabChange('schedule') : undefined}
+        onOpenDailyLog={onAddDailyLog ? () => setIsCreateDailyLogOpen(true) : undefined}
       />
 
 
@@ -607,12 +638,12 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         tasks={tasks}
         punchItems={punchItems}
         currentStageId={selectedStageModalId}
-        onUpdateStage={(stageId, updatedStages, newProg) => {
+        onUpdateStage={canManageStages ? (stageId, updatedStages, newProg) => {
           setProjectStages(updatedStages);
           if (newProg !== undefined) {
             project.progress = newProg;
           }
-        }}
+        } : undefined}
       />
 
     </div>

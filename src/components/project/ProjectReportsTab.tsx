@@ -80,6 +80,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
           <p className="text-xs text-[#68707C] mt-0.5 font-medium">{reports.length} Uploaded Files</p>
         </div>
 
+        {onAddReport && (
         <button 
           onClick={() => setIsUploadOpen(true)}
           className="btn-action btn-primary"
@@ -87,6 +88,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
           <Upload className="w-3.5 h-3.5" />
           <span>Upload</span>
         </button>
+        )}
       </div>
 
       {/* Reports List */}

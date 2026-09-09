@@ -129,14 +129,15 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     );
   }
 
-  if (subView === 'company' && isOwnerAdmin) {
+  if (subView === 'company' && (isOwnerAdmin || (isEmployee && !isFieldStaff))) {
     return (
       <CompanyProfileView
         currentUser={userData}
         onBack={() => setSubView('main')}
-        onSave={(c) => {
+        readOnly={!isOwnerAdmin}
+        onSave={isOwnerAdmin ? (c) => {
           setUserData(prev => ({ ...prev, company: c.company, phone: c.phone }));
-        }}
+        } : undefined}
       />
     );
   }
@@ -626,7 +627,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <ProfileHeroCard
         user={userData}
         onEdit={() => setSubView('profile')}
-        onOpenCompany={isOwnerAdmin ? () => setSubView('company') : undefined}
+        onOpenCompany={(isOwnerAdmin || (isEmployee && !isFieldStaff)) ? () => setSubView('company') : undefined}
       />
 
       {/* ─── ACCOUNT MENU (role-gated) ─── */}
@@ -721,9 +722,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden divide-y divide-[#F1F5F9]">
           <div className="px-4 pt-3 pb-2 bg-[#F8FAFC] border-b border-[#F1F5F9]">
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B]">
-              {userData.role === 'finance' ? 'Finance Access' : 'Project Assignment'}
+              Workspace
             </p>
           </div>
+          <button
+            onClick={() => setSubView('company')}
+            className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F1F5F9] group"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <Building className="w-4 h-4 text-[#64748B] group-hover:text-[#0F172A] transition-colors flex-shrink-0" />
+              <span className="text-sm font-semibold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">Company</span>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="text-[10px] font-bold text-[#64748B] bg-[#F1F5F9] px-2.5 py-0.5 rounded-full border border-[#E2E8F0]">View</span>
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors" />
+            </div>
+          </button>
           <div className="px-4 py-3.5">
             <p className="text-sm font-semibold text-[#0F172A]">
               {userData.role === 'finance'
@@ -731,7 +745,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 : 'Invited project manager · no billing access'}
             </p>
             <p className="text-xs text-[#64748B] mt-1">
-              Workspace owner Avery Scott manages the Lattice subscription and company profile.
+              Avery Scott owns the Lattice subscription and assigns company roles.
             </p>
           </div>
         </div>

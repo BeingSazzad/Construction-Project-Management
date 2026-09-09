@@ -7,7 +7,7 @@ import {
 interface ProjectDocumentsTabProps {
   project: Project;
   documents: DocumentItem[];
-  onUploadDocument: () => void;
+  onUploadDocument?: () => void;
   onPreviewDocument: (doc: DocumentItem) => void;
 }
 
@@ -55,6 +55,7 @@ export const ProjectDocumentsTab: React.FC<ProjectDocumentsTabProps> = ({
           <p className="text-xs text-[#64748B] mt-0.5 font-medium">{documents.length} Archived Files</p>
         </div>
 
+        {onUploadDocument && (
         <button
           onClick={onUploadDocument}
           className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#1677FF]/90 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
@@ -62,6 +63,7 @@ export const ProjectDocumentsTab: React.FC<ProjectDocumentsTabProps> = ({
           <Upload className="w-3.5 h-3.5" />
           <span>Upload</span>
         </button>
+        )}
       </div>
 
       {/* 2. Search Input */}

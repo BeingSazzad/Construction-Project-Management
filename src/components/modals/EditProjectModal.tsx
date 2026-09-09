@@ -9,6 +9,8 @@ interface EditProjectModalProps {
   onClose: () => void;
   onUpdate: (updatedProject: Project) => void;
   onDelete?: (projectId: string) => void;
+  canAssignLeadPm?: boolean;
+  canEditBudget?: boolean;
 }
 
 const AVAILABLE_PMS = [
@@ -22,7 +24,9 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
   project,
   isOpen,
   onClose,
-  onUpdate
+  onUpdate,
+  canAssignLeadPm = false,
+  canEditBudget = false,
 }) => {
   const [name, setName] = useState(project.name);
   const [code, setCode] = useState(project.code || '');
@@ -82,16 +86,16 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
       description: description.trim(),
       clientName: clientName.trim(),
       masterCode: masterCode.trim(),
-      projectManager: {
+      projectManager: canAssignLeadPm ? {
         id: project.projectManager?.id || 'usr_pm',
         name: pmObj.name,
         avatar: pmObj.avatar
-      },
-      budget: {
+      } : project.projectManager,
+      budget: canEditBudget ? {
         ...project.budget,
         total: Number(totalBudget) || project.budget.total,
         remaining: Math.max(0, (Number(totalBudget) || project.budget.total) - project.budget.actual)
-      }
+      } : project.budget
     };
 
     onUpdate(updated);
@@ -106,7 +110,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1]">
           <div>
             <h2 className="text-sm font-bold text-[#171A1F] tracking-tight">Edit Project Details</h2>
-            <p className="text-xs text-[#68707C] mt-0.5 font-medium">Update address, PM, client, schedule & budget</p>
+            <p className="text-xs text-[#68707C] mt-0.5 font-medium">Update address, client, and schedule</p>
           </div>
 
           <button
@@ -203,7 +207,8 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           {/* Budget & Client Name */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className={`grid gap-2 ${canEditBudget ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            {canEditBudget && (
             <div>
               <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Total Budget ($ USD)</label>
               <input
@@ -213,6 +218,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 className="w-full h-10 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] font-medium"
               />
             </div>
+            )}
 
             <div>
               <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Client Name</label>
@@ -227,7 +233,8 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
           </div>
 
           {/* Master Code & Project Manager */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className={`grid gap-2 ${canAssignLeadPm ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            {canAssignLeadPm && (
             <div>
               <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Lead Project Manager</label>
               <select
@@ -240,6 +247,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
                 ))}
               </select>
             </div>
+            )}
 
             <div>
               <label className="text-xs font-semibold text-[#171A1F] mb-1 block">Master Code (4 digits)</label>

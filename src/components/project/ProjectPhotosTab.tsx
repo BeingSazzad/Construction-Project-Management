@@ -6,7 +6,7 @@ import { FilterPills } from '../common/FilterPills';
 interface ProjectPhotosTabProps {
   project: Project;
   photos: SitePhoto[];
-  onUploadPhoto: () => void;
+  onUploadPhoto?: () => void;
   onPreviewPhoto: (photo: SitePhoto) => void;
 }
 
@@ -36,6 +36,7 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
           <p className="text-xs text-[#68707C] mt-0.5 font-medium">{filteredPhotos.length} {filteredPhotos.length === 1 ? 'Photo' : 'Photos'}</p>
         </div>
 
+        {onUploadPhoto && (
         <button
           onClick={onUploadPhoto}
           className="btn-action btn-primary"
@@ -43,6 +44,7 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
           <Upload className="w-3.5 h-3.5" />
           <span>Upload</span>
         </button>
+        )}
       </div>
 
       {/* ─── 2. CATEGORY FILTER PILLS ─── */}
@@ -59,13 +61,19 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
             <ImageIcon className="w-6 h-6" />
           </div>
           <h4 className="text-xs font-bold text-[#171A1F]">No photos in {activeCategory}</h4>
-          <p className="text-xs text-[#68707C] mt-1 max-w-[220px]">Upload site progress photos to document project milestones.</p>
+          <p className="text-xs text-[#68707C] mt-1 max-w-[220px]">
+            {onUploadPhoto
+              ? 'Upload site progress photos to document project milestones.'
+              : 'No photos in this category yet.'}
+          </p>
+          {onUploadPhoto && (
           <button
             onClick={onUploadPhoto}
             className="mt-4 px-4 py-2 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs active:scale-95 transition-all cursor-pointer"
           >
             Upload Photo
           </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3">

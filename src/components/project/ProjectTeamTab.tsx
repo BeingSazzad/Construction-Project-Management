@@ -112,6 +112,7 @@ const COMPANY_DIRECTORY: ProjectStaff[] = [
 
 export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project, currentRole = 'admin' }) => {
   const isManager = ['admin', 'pm'].includes(currentRole);
+  const canAssignLead = currentRole === 'admin';
   const [assignedStaff, setAssignedStaff] = useState<ProjectStaff[]>([
     COMPANY_DIRECTORY[0], // Lead PM
     COMPANY_DIRECTORY[1], // Superintendent
@@ -418,6 +419,7 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project, current
                         <span>Call Staff</span>
                       </a>
 
+                      {isManager && (
                       <button
                         type="button"
                         onClick={() => {
@@ -429,8 +431,9 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project, current
                         <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
                         <span>{staff.isOnSite ? 'Mark Off Site' : 'Mark On Site'}</span>
                       </button>
+                      )}
 
-                      {isManager && staff.type === 'gc' && (
+                      {canAssignLead && staff.type === 'gc' && (
                         <button
                           type="button"
                           onClick={() => {

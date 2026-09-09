@@ -23,6 +23,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   changeOrders: initialChangeOrders = [],
   onCreateChangeOrder,
   onApproveChangeOrder,
+  onAddCostItem,
   onImportBudget,
   onBack
 }) => {
@@ -189,6 +190,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               <ArrowLeft className="w-4 h-4 text-[#0F172A]" />
             </button>
 
+            {onAddCostItem && (
             <button
               onClick={() => {
                 setExpenseTrade(selectedTrade.name);
@@ -199,6 +201,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Log Expense</span>
             </button>
+            )}
           </div>
 
           {/* Trade Summary Card */}
@@ -392,14 +395,19 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
             {/* Right Contextual Action Button: "+ Log Expense" for Categories, "+ Add CO" for Change Orders */}
             {activeTab === 'change-orders' ? (
+              onCreateChangeOrder && (
               <button
-                onClick={() => setIsAddCOModalOpen(true)}
+                onClick={() => {
+                  onCreateChangeOrder();
+                }}
                 className="h-9 px-3.5 rounded-xl bg-[#EAF3FF] hover:bg-[#D9EAFD] text-[#1677FF] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
               >
                 <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>Add CO</span>
               </button>
+              )
             ) : (
+              onAddCostItem && (
               <button
                 onClick={() => setIsAddExpenseModalOpen(true)}
                 className="h-9 px-3.5 rounded-xl bg-[#EAF3FF] hover:bg-[#D9EAFD] text-[#1677FF] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
@@ -407,6 +415,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>Log Expense</span>
               </button>
+              )
             )}
           </div>
 
@@ -779,7 +788,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               >
                 Close
               </button>
-              {selectedCO.status === 'Pending' && (
+              {selectedCO.status === 'Pending' && onApproveChangeOrder && (
                 <button
                   type="button"
                   onClick={() => {

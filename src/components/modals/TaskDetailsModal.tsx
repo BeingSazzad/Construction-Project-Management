@@ -8,8 +8,8 @@ import {
 interface TaskDetailsModalProps {
   task: Task | null;
   onClose: () => void;
-  onUpdateStatus: (taskId: string, status: TaskStatus) => void;
-  onToggleSubtask: (taskId: string, subtaskId: string) => void;
+  onUpdateStatus?: (taskId: string, status: TaskStatus) => void;
+  onToggleSubtask?: (taskId: string, subtaskId: string) => void;
   onDelete?: (taskId: string) => void;
   onEdit?: (updatedTask: Task) => void;
 }
@@ -224,8 +224,8 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                   {task.subtasks.map((st) => (
                     <div
                       key={st.id}
-                      onClick={() => onToggleSubtask(task.id, st.id)}
-                      className="px-3 py-2 flex items-center gap-2.5 hover:bg-slate-50 cursor-pointer transition-colors"
+                      onClick={() => onToggleSubtask?.(task.id, st.id)}
+                      className={`px-3 py-2 flex items-center gap-2.5 transition-colors ${onToggleSubtask ? 'hover:bg-slate-50 cursor-pointer' : 'cursor-default'}`}
                     >
                       <div className={`w-4 h-4 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
                         st.completed ? 'bg-[#1677FF] border-[#1677FF] text-white' : 'border-slate-300 bg-white'
@@ -253,7 +253,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                 </button>
               )}
 
-              {!isDone ? (
+              {onUpdateStatus && !isDone ? (
                 <button
                   onClick={() => {
                     onUpdateStatus(task.id, 'Completed');
@@ -264,7 +264,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Mark Task Complete</span>
                 </button>
-              ) : (
+              ) : onUpdateStatus ? (
                 <button
                   onClick={() => {
                     onUpdateStatus(task.id, 'In Progress');
@@ -274,7 +274,7 @@ export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                 >
                   Reopen Task
                 </button>
-              )}
+              ) : null}
             </div>
           </>
         )}

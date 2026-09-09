@@ -9,8 +9,8 @@ interface WeatherImpactModalProps {
   isOpen: boolean;
   onClose: () => void;
   project: Project;
-  onOpenSchedule: () => void;
-  onOpenDailyLog: () => void;
+  onOpenSchedule?: () => void;
+  onOpenDailyLog?: () => void;
 }
 
 export const WeatherImpactModal: React.FC<WeatherImpactModalProps> = ({
@@ -108,7 +108,9 @@ export const WeatherImpactModal: React.FC<WeatherImpactModalProps> = ({
         </div>
 
         {/* Action Buttons */}
+        {(onOpenSchedule || onOpenDailyLog) && (
         <div className="flex flex-col gap-2 pt-2 border-t border-[#F1F5F9]">
+          {onOpenSchedule && (
           <button
             onClick={() => {
               onClose();
@@ -120,7 +122,9 @@ export const WeatherImpactModal: React.FC<WeatherImpactModalProps> = ({
             <span>Adjust Schedule & Milestones</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
+          )}
 
+          {onOpenDailyLog && (
           <button
             onClick={() => {
               onClose();
@@ -131,7 +135,9 @@ export const WeatherImpactModal: React.FC<WeatherImpactModalProps> = ({
             <FileText className="w-3.5 h-3.5 text-[#10A976]" />
             <span>Record Weather Delay in Daily Log</span>
           </button>
+          )}
         </div>
+        )}
 
       </div>
     </div>

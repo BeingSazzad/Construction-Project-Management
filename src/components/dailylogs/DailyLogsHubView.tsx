@@ -10,7 +10,7 @@ interface DailyLogsHubViewProps {
   projects: Project[];
   dailyLogs: DailyLogItem[];
   currentUser?: User;
-  onAddDailyLog: (newLog: DailyLogItem) => void;
+  onAddDailyLog?: (newLog: DailyLogItem) => void;
   onDeleteLog?: (logId: string) => void;
   onNavigateToProject?: (projectId: string, tab?: string) => void;
 }
@@ -56,6 +56,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
           <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Daily Field Logs</h2>
           <p className="text-xs text-[#64748B] font-medium">Project field progress, workforce & safety</p>
         </div>
+        {onAddDailyLog && (
         <button
           onClick={() => setIsCreateModalOpen(true)}
           className="h-9 px-3.5 rounded-xl bg-[#1677FF] hover:bg-[#1677FF]/90 active:scale-95 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5 flex-shrink-0"
@@ -63,6 +64,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>New Log</span>
         </button>
+        )}
       </div>
 
       {/* ── Search ── */}
@@ -120,7 +122,9 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
             <Calendar className="w-8 h-8 text-[#94A3B8]" />
             <p className="text-xs font-semibold text-[#0F172A]">No field logs found</p>
             <p className="text-xs text-[#64748B] max-w-[220px]">
-              No logs recorded for this filter. Tap "New Log" to create one.
+              {onAddDailyLog
+                ? 'No logs recorded for this filter. Tap "New Log" to create one.'
+                : 'No logs recorded for this filter.'}
             </p>
           </div>
         ) : (
@@ -213,7 +217,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
         )}
       </div>
 
-      {/* Create Daily Log Modal */}
+      {onAddDailyLog && (
       <CreateDailyLogModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -221,6 +225,7 @@ export const DailyLogsHubView: React.FC<DailyLogsHubViewProps> = ({
         currentUser={currentUser}
         onSaveLog={onAddDailyLog}
       />
+      )}
 
       {/* Daily Log Detail Modal */}
       <DailyLogDetailModal

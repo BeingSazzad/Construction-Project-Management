@@ -14,6 +14,7 @@ import {
   MOCK_CALENDAR_EVENTS
 } from './data/mockData';
 import { generateUniqueId } from './utils/id';
+import { getRoleAccess, projectsForUser } from './utils/roleAccess';
 
 // Common Components
 import { DeviceFrame } from './components/common/DeviceFrame';
@@ -142,7 +143,20 @@ export function App() {
   const [selectedDocument, setSelectedDocument] = useState<DocumentItem | null>(null);
 
   const currentUser = CURRENT_USERS[currentRole] || CURRENT_USERS.admin;
+  const access = getRoleAccess(currentRole);
+  const [createdProjectIds, setCreatedProjectIds] = useState<string[]>([]);
+  const visibleProjects = projectsForUser(projects, currentUser, createdProjectIds);
+  const scopedProject = visibleProjects[0] || projects[0];
+  const visibleProjectIds = new Set(visibleProjects.map(p => p.id));
+  const visibleTasks = tasks.filter(t => visibleProjectIds.has(t.projectId));
+  const visibleDailyLogs = dailyLogs.filter(d => visibleProjectIds.has(d.projectId));
+  const visiblePunchItems = punchItems.filter(p => visibleProjectIds.has(p.projectId));
+  const visibleChangeOrders = changeOrders.filter(co => visibleProjectIds.has(co.projectId));
   const unreadNotifsCount = notifications.filter(n => !n.read).length;
+
+  React.useEffect(() => {
+    setCreatedProjectIds([]);
+  }, [currentUser.id]);
 
   const handleImportBudgetSuccess = (projectId: string, budgetName: string, totalValue: number) => {
     setProjects(prev => prev.map(p => {
@@ -413,6 +427,7 @@ export function App() {
     setCurrentRole(newRole);
     setActiveTab('home');
     setActiveProject(null);
+    setSettingsSubView('main');
     setAppView('workspace');
   };
 
@@ -549,6 +564,7 @@ export function App() {
     };
 
     setProjects(prev => [fullProj, ...prev]);
+    setCreatedProjectIds(prev => [...prev, fullProj.id]);
     setIsCreateProjectOpen(false);
     setActiveProject(fullProj); // Auto-navigate into project workspace
   };
@@ -982,8 +998,8 @@ export function App() {
               }}
               onQuickAction={() => setIsQuickActionSheetOpen(true)}
               onMarkAllRead={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
-              onOpenEditProject={() => setIsEditProjectOpen(true)}
-              onDeleteProject={handleDeleteProject}
+              onOpenEditProject={access.canEditProject ? () => setIsEditProjectOpen(true) : undefined}
+              onDeleteProject={access.canDeleteProject ? handleDeleteProject : undefined}
             />
           )}
 
@@ -1005,7 +1021,7 @@ export function App() {
               <CreateProjectBudgetModal
                 isFullScreenPage={true}
                 onClose={() => setIsCreateBudgetOpen(false)}
-                projects={projects}
+                projects={visibleProjects}
                 onCreateBudget={(budgetData) => {
                   alert(`Master budget "${budgetData.budgetName}" created successfully!`);
                   setIsCreateBudgetOpen(false);
@@ -1031,29 +1047,29 @@ export function App() {
                 planPins={planPins}
                 chatMessages={chatMessages}
                 onOpenTask={(t) => setSelectedTask(t)}
-                onCreateTask={() => setIsCreateTaskModalOpen(true)}
-                onAddTask={handleCreateTask}
+                onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
+                onAddTask={access.canCreateTask ? handleCreateTask : undefined}
                 onOpenPunch={(p) => setSelectedTask(null)}
-                onCreatePunch={() => setIsCreatePunchOpen(true)}
-                onUpdatePunchStatus={handleUpdatePunchStatus}
-                onUpdateTaskStatus={handleUpdateTaskStatus}
-                onUploadPhoto={() => setIsPhotoUploadOpen(true)}
+                onCreatePunch={access.canCreateTask ? () => setIsCreatePunchOpen(true) : undefined}
+                onUpdatePunchStatus={access.canManagePunch ? handleUpdatePunchStatus : undefined}
+                onUpdateTaskStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
+                onUploadPhoto={access.canUploadMedia ? () => setIsPhotoUploadOpen(true) : undefined}
                 onPreviewPhoto={(p) => setSelectedPhoto(p)}
-                onUploadDocument={() => setIsUploadDocumentOpen(true)}
+                onUploadDocument={access.canUploadMedia ? () => setIsUploadDocumentOpen(true) : undefined}
                 onPreviewDocument={(d) => setSelectedDocument(d)}
                 onExportReport={(r) => alert(`Exporting ${r.title} to PDF...`)}
                 onAddPlanPin={handleAddPin}
                 onUpdatePinStatus={handleUpdatePinStatus}
                 onSendMessage={handleSendMessage}
-                onAddTasksFromTemplate={handleAddTasksFromTemplate}
+                onAddTasksFromTemplate={access.canCreateTask ? handleAddTasksFromTemplate : undefined}
                 onUpdateProjectStatus={handleUpdateProjectStatus}
-                onImportBudget={() => setIsImportBudgetOpen(true)}
-                changeOrders={changeOrders}
-                onCreateChangeOrder={() => setIsCreateChangeOrderOpen(true)}
-                onApproveChangeOrder={handleApproveChangeOrder}
-                onAddReport={handleAddReport}
-                onAddDailyLog={handleAddDailyLog}
-                onOpenEditProject={() => setIsEditProjectOpen(true)}
+                onImportBudget={access.canImportBudget ? () => setIsImportBudgetOpen(true) : undefined}
+                changeOrders={visibleChangeOrders}
+                onCreateChangeOrder={access.canCreateChangeOrder ? () => setIsCreateChangeOrderOpen(true) : undefined}
+                onApproveChangeOrder={access.canApproveChangeOrder ? handleApproveChangeOrder : undefined}
+                onAddReport={access.canAddReport ? handleAddReport : undefined}
+                onAddDailyLog={access.canCreateDailyLog ? handleAddDailyLog : undefined}
+                onOpenEditProject={access.canEditProject ? () => setIsEditProjectOpen(true) : undefined}
                 initialCalendarDate={initialCalendarDate}
               />
             ) : (
@@ -1062,11 +1078,11 @@ export function App() {
                 {/* 1. CORE HOME DASHBOARD (Figma Screen 1) */}
                 {activeTab === 'home' && (
                   <HomeScreen
-                    projects={projects}
-                    tasks={tasks}
-                    dailyLogs={dailyLogs}
-                    punchItems={punchItems}
-                    changeOrders={changeOrders}
+                    projects={visibleProjects}
+                    tasks={visibleTasks}
+                    dailyLogs={visibleDailyLogs}
+                    punchItems={visiblePunchItems}
+                    changeOrders={visibleChangeOrders}
                     subcontractors={subcontractors}
                     currentRole={currentRole}
                     onSelectProject={handleSelectProject}
@@ -1083,7 +1099,7 @@ export function App() {
                     }}
                     onOpenCalendar={(targetDate) => {
                       if (targetDate) setInitialCalendarDate(targetDate);
-                      handleSelectProject(projects[0]);
+                      handleSelectProject(scopedProject);
                       setProjectSubTab('schedule');
                     }}
                     onOpenBudget={(proj) => {
@@ -1091,29 +1107,29 @@ export function App() {
                       setProjectSubTab('budget');
                     }}
                     onOpenBudgetsHub={() => {
-                      handleSelectProject(projects[0]);
+                      handleSelectProject(scopedProject);
                       setProjectSubTab('budget');
                     }}
                     onOpenDailyLogs={() => setActiveTab('daily-logs')}
                     onOpenPunchList={() => {
-                      handleSelectProject(projects[0]);
+                      handleSelectProject(scopedProject);
                       setProjectSubTab('punch');
                     }}
-                    onOpenApprovePayApp={() => setIsApprovePayAppOpen(true)}
-                    onOpenLienWaiver={() => setIsRecordLienWaiverOpen(true)}
-                    onOpenCreateDraw={() => setIsCreateDrawOpen(true)}
-                    onCreateTask={() => setIsCreateTaskModalOpen(true)}
-                    onCreatePunch={() => setIsCreatePunchOpen(true)}
-                    onCreateChangeOrder={() => setIsCreateChangeOrderOpen(true)}
+                    onOpenApprovePayApp={access.canApprovePayApp ? () => setIsApprovePayAppOpen(true) : undefined}
+                    onOpenLienWaiver={access.canRecordLienWaiver ? () => setIsRecordLienWaiverOpen(true) : undefined}
+                    onOpenCreateDraw={access.canCreateDraw ? () => setIsCreateDrawOpen(true) : undefined}
+                    onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
+                    onCreatePunch={access.canCreateTask ? () => setIsCreatePunchOpen(true) : undefined}
+                    onCreateChangeOrder={access.canCreateChangeOrder ? () => setIsCreateChangeOrderOpen(true) : undefined}
                   />
                 )}
 
                 {/* 2. PROJECTS MASTER LIST (Figma Screen 2) */}
                 {activeTab === 'projects' && (
                   <ProjectsList
-                    projects={projects}
+                    projects={visibleProjects}
                     onSelectProject={handleSelectProject}
-                    onCreateProject={() => setIsCreateProjectOpen(true)}
+                    onCreateProject={access.canCreateProject ? () => setIsCreateProjectOpen(true) : undefined}
                   />
                 )}
 
@@ -1127,16 +1143,16 @@ export function App() {
                     initialQuery={lattiInitialQuery}
                     onNavigate={(tab) => {
                       if (tab === 'projects' || tab === 'overview') {
-                        handleSelectProject(projects[0]);
+                        handleSelectProject(scopedProject);
                         setProjectSubTab('overview');
                       } else if (tab === 'budget') {
-                        handleSelectProject(projects[0]);
-                        setProjectSubTab('budget');
+                        handleSelectProject(scopedProject);
+                        setProjectSubTab(access.canViewBudget ? 'budget' : 'overview');
                       } else if (tab === 'schedule') {
-                        handleSelectProject(projects[0]);
+                        handleSelectProject(scopedProject);
                         setProjectSubTab('schedule');
                       } else if (tab === 'tasks') {
-                        handleSelectProject(projects[0]);
+                        handleSelectProject(scopedProject);
                         setProjectSubTab('tasks');
                       } else {
                         setActiveTab(tab);
@@ -1188,21 +1204,22 @@ export function App() {
                 {/* 10. GLOBAL SUBTAB HUB FALLBACKS (NEVER BLANK) */}
                 {activeTab === 'tasks' && (
                   <ProjectTasksTab
-                    project={projects[0]}
-                    tasks={tasks}
+                    project={scopedProject}
+                    tasks={visibleTasks}
                     onOpenTask={(t) => setSelectedTask(t)}
-                    onCreateTask={() => setIsCreateTaskModalOpen(true)}
-                    onUpdateStatus={handleUpdateTaskStatus}
+                    onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
+                    onUpdateStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
+                    canManageBoard={access.canManageTaskBoard}
                   />
                 )}
 
                 {(activeTab === 'calendar' || activeTab === 'schedule') && (
                   <CalendarView
-                    projects={projects}
+                    projects={visibleProjects}
                     events={calendarEvents}
                     onSelectProject={handleSelectProject}
-                    onAddEvent={(evt) => setCalendarEvents(prev => [evt, ...prev])}
-                    onDeleteEvent={(id) => setCalendarEvents(prev => prev.filter(e => e.id !== id))}
+                    onAddEvent={access.canManageSchedule ? (evt) => setCalendarEvents(prev => [evt, ...prev]) : undefined}
+                    onDeleteEvent={access.canManageSchedule ? (id) => setCalendarEvents(prev => prev.filter(e => e.id !== id)) : undefined}
                     initialDate={initialCalendarDate}
                   />
                 )}
@@ -1210,8 +1227,9 @@ export function App() {
                 {activeTab === 'budgets' && (
                   ['admin', 'finance', 'pm'].includes(currentRole) ? (
                     <BudgetsHubView
-                      projects={projects}
-                      onOpenImportBudget={() => setIsImportBudgetOpen(true)}
+                      projects={visibleProjects}
+                      onOpenImportBudget={access.canImportBudget ? () => setIsImportBudgetOpen(true) : undefined}
+                      canCreateBudget={access.canCreateBudget}
                       onBack={() => setActiveTab('home')}
                     />
                   ) : (
@@ -1229,7 +1247,7 @@ export function App() {
                 {activeTab === 'messages' && (
                   <MessagesHubView
                     currentUser={currentUser}
-                    projects={projects}
+                    projects={visibleProjects}
                     chatMessages={chatMessages}
                     onSendMessage={handleSendMessage}
                     onSelectProject={handleSelectProject}
@@ -1239,10 +1257,11 @@ export function App() {
 
                 {activeTab === 'milestones' && (
                   <MilestonesHubView
-                    projects={projects}
+                    projects={visibleProjects}
                     tasks={tasks}
                     onSelectProject={handleSelectProject}
-                    onCreateTask={() => setIsCreateTaskModalOpen(true)}
+                    onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
+                    canAddMilestone={access.isPM}
                     onBack={() => setActiveTab('home')}
                   />
                 )}
@@ -1251,9 +1270,9 @@ export function App() {
                   <ProjectPunchListTab
                     project={activeProject || projects[0]}
                     punchItems={punchItems}
-                    onCreatePunch={() => setIsCreatePunchOpen(true)}
-                    onUpdatePunchStatus={handleUpdatePunchStatus}
-                    onDeletePunch={handleDeletePunch}
+                    onCreatePunch={access.canCreateTask ? () => setIsCreatePunchOpen(true) : undefined}
+                    onUpdatePunchStatus={access.canManagePunch ? handleUpdatePunchStatus : undefined}
+                    onDeletePunch={access.canManagePunch ? handleDeletePunch : undefined}
                     onBack={() => setActiveTab('home')}
                   />
                 )}
@@ -1262,17 +1281,17 @@ export function App() {
                   <ProjectPhotosTab
                     project={projects[0]}
                     photos={photos}
-                    onUploadPhoto={() => setIsPhotoUploadOpen(true)}
+                    onUploadPhoto={access.canUploadMedia ? () => setIsPhotoUploadOpen(true) : undefined}
                     onPreviewPhoto={(p) => setSelectedPhoto(p)}
                   />
                 )}
 
                 {activeTab === 'daily-logs' && (
                   <DailyLogsHubView
-                    projects={projects}
-                    dailyLogs={dailyLogs}
-                    onAddDailyLog={handleAddDailyLog}
-                    onDeleteLog={handleDeleteDailyLog}
+                    projects={visibleProjects}
+                    dailyLogs={visibleDailyLogs}
+                    onAddDailyLog={access.canCreateDailyLog ? handleAddDailyLog : undefined}
+                    onDeleteLog={access.canCreateDailyLog ? handleDeleteDailyLog : undefined}
                     onNavigateToProject={(projId, subTab) => {
                       const found = projects.find(p => p.id === projId);
                       if (found) {
@@ -1303,12 +1322,15 @@ export function App() {
             isOpen={isSideDrawerOpen}
             onClose={() => setIsSideDrawerOpen(false)}
             currentUser={currentUser}
-            projects={projects}
+            projects={visibleProjects}
             activeProject={activeProject}
             unreadNotifsCount={unreadNotifsCount}
             onNavigateTab={(tab) => {
               setActiveProject(null);
-              if (tab === 'company' || tab === 'support' || tab === 'security') {
+              if (tab === 'company') {
+                setSettingsSubView(access.canViewCompany ? 'company' : 'main');
+                setActiveTab('account');
+              } else if (tab === 'support' || tab === 'security') {
                 setSettingsSubView(tab);
                 setActiveTab('account');
               } else if (tab === 'settings' || tab === 'account') {
@@ -1318,10 +1340,10 @@ export function App() {
                 setActiveTab(tab);
               }
             }}
-            onOpenCreateProject={() => {
+            onOpenCreateProject={access.canCreateProject ? () => {
               setIsSideDrawerOpen(false);
               setIsCreateProjectOpen(true);
-            }}
+            } : undefined}
             onSignOut={() => setAppView('auth')}
           />
         </div>
@@ -1331,44 +1353,44 @@ export function App() {
       <CentralAddActionSheet
         isOpen={isQuickActionSheetOpen}
         onClose={() => setIsQuickActionSheetOpen(false)}
-        onAddProject={(['admin', 'pm'].includes(currentRole)) ? () => {
+        onAddProject={access.canCreateProject ? () => {
           setIsCreateProjectOpen(true);
         } : undefined}
-        onAddTask={() => {
-          const target = activeProject || projects[0];
+        onAddTask={access.canCreateTask ? () => {
+          const target = activeProject || scopedProject;
           setActiveProject(target);
           setActiveTab('projects');
           setProjectSubTab('tasks');
           setIsCreateTaskModalOpen(true);
-        }}
-        onAddDailyLog={() => {
-          const target = activeProject || projects[0];
+        } : undefined}
+        onAddDailyLog={access.canCreateDailyLog ? () => {
+          const target = activeProject || scopedProject;
           setActiveProject(target);
           setActiveTab('projects');
           setProjectSubTab('daily-logs');
           setIsCreateDailyLogOpen(true);
-        }}
-        onAddExpense={(['admin', 'finance', 'pm'].includes(currentRole)) ? () => {
-          const target = activeProject || projects[0];
+        } : undefined}
+        onAddExpense={access.canLogExpense ? () => {
+          const target = activeProject || scopedProject;
           setActiveProject(target);
           setActiveTab('projects');
           setProjectSubTab('budget');
           setIsCreateChangeOrderOpen(true);
         } : undefined}
-        onAddPhoto={() => {
-          const target = activeProject || projects[0];
+        onAddPhoto={access.canUploadMedia ? () => {
+          const target = activeProject || scopedProject;
           setActiveProject(target);
           setActiveTab('projects');
           setProjectSubTab('photos');
           setIsPhotoUploadOpen(true);
-        }}
-        onAddDocument={() => {
-          const target = activeProject || projects[0];
+        } : undefined}
+        onAddDocument={access.canUploadMedia ? () => {
+          const target = activeProject || scopedProject;
           setActiveProject(target);
           setActiveTab('projects');
           setProjectSubTab('documents');
           setIsUploadDocumentOpen(true);
-        }}
+        } : undefined}
       />
 
       {/* DIRECT CUSTOM TASK MODAL */}
@@ -1396,7 +1418,7 @@ export function App() {
       <ImportBudgetModal
         isOpen={isImportBudgetOpen}
         onClose={() => setIsImportBudgetOpen(false)}
-        projects={projects}
+        projects={visibleProjects}
         onImportSuccess={handleImportBudgetSuccess}
       />
 
@@ -1412,7 +1434,7 @@ export function App() {
       <CreateDrawModal
         isOpen={isCreateDrawOpen}
         onClose={() => setIsCreateDrawOpen(false)}
-        projects={projects}
+        projects={visibleProjects}
         onCreateDraw={handleCreateDraw}
       />
 
@@ -1426,7 +1448,7 @@ export function App() {
       <ApprovePayAppModal
         isOpen={isApprovePayAppOpen}
         onClose={() => setIsApprovePayAppOpen(false)}
-        projects={projects}
+        projects={visibleProjects}
         subcontractors={subcontractors}
         onDisburse={handleDisbursePayApp}
       />
@@ -1434,7 +1456,7 @@ export function App() {
       {/* CREATE PUNCH ITEM MODAL */}
       <CreatePunchModal
         isOpen={isCreatePunchOpen}
-        projects={projects}
+        projects={visibleProjects}
         project={activeProject}
         onClose={() => setIsCreatePunchOpen(false)}
         onCreate={handleCreatePunch}
@@ -1444,7 +1466,7 @@ export function App() {
       <CreateDailyLogModal
         isOpen={isCreateDailyLogOpen}
         onClose={() => setIsCreateDailyLogOpen(false)}
-        projects={projects}
+        projects={visibleProjects}
         preselectedProjectId={activeProject ? activeProject.id : projects[0]?.id}
         currentUser={currentUser}
         onSaveLog={(newLog) => {
@@ -1458,7 +1480,7 @@ export function App() {
         isOpen={isPhotoUploadOpen}
         onClose={() => setIsPhotoUploadOpen(false)}
         project={activeProject || projects[0]}
-        projects={projects}
+        projects={visibleProjects}
         onUpload={(p) => {
           const targetProj = projects.find(proj => proj.id === p.projectId) || activeProject || projects[0];
           setPhotos(prev => [
@@ -1485,7 +1507,7 @@ export function App() {
         isOpen={isUploadDocumentOpen}
         onClose={() => setIsUploadDocumentOpen(false)}
         project={activeProject || projects[0]}
-        projects={projects}
+        projects={visibleProjects}
         onUpload={(newDoc) => {
           setDocuments(prev => [newDoc, ...prev]);
           setIsUploadDocumentOpen(false);
@@ -1496,10 +1518,10 @@ export function App() {
         <TaskDetailsModal
           task={selectedTask}
           onClose={() => setSelectedTask(null)}
-          onUpdateStatus={handleUpdateTaskStatus}
-          onToggleSubtask={handleToggleSubtask}
-          onDelete={handleDeleteTask}
-          onEdit={handleEditTask}
+          onUpdateStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
+          onToggleSubtask={access.canUpdateTaskStatus ? handleToggleSubtask : undefined}
+          onDelete={access.canDeleteTask ? handleDeleteTask : undefined}
+          onEdit={access.canManageTaskBoard ? handleEditTask : undefined}
         />
       )}
 
@@ -1507,7 +1529,7 @@ export function App() {
         <PhotoPreviewModal
           photo={selectedPhoto}
           onClose={() => setSelectedPhoto(null)}
-          onDelete={handleDeletePhoto}
+          onDelete={access.canDeleteMedia ? handleDeletePhoto : undefined}
         />
       )}
 
@@ -1515,7 +1537,7 @@ export function App() {
         <DocumentPreviewModal
           document={selectedDocument}
           onClose={() => setSelectedDocument(null)}
-          onDelete={handleDeleteDocument}
+          onDelete={access.canDeleteMedia ? handleDeleteDocument : undefined}
         />
       )}
 
@@ -1525,7 +1547,9 @@ export function App() {
           isOpen={isEditProjectOpen}
           onClose={() => setIsEditProjectOpen(false)}
           onUpdate={handleUpdateProject}
-          onDelete={handleDeleteProject}
+          onDelete={access.canDeleteProject ? handleDeleteProject : undefined}
+          canAssignLeadPm={access.canAssignLeadPm}
+          canEditBudget={access.canEditBudget}
         />
       )}
 
@@ -1533,7 +1557,7 @@ export function App() {
       <ApprovePayAppModal
         isOpen={isApprovePayAppOpen}
         onClose={() => setIsApprovePayAppOpen(false)}
-        projects={projects}
+        projects={visibleProjects}
         subcontractors={subcontractors}
         onDisburse={(projectId, subName, netAmount, grossAmount, retainage, trade) => {
           handleDisbursePayApp(projectId, subName, netAmount, grossAmount, retainage, trade);
@@ -1556,7 +1580,7 @@ export function App() {
       <CreateDrawModal
         isOpen={isCreateDrawOpen}
         onClose={() => setIsCreateDrawOpen(false)}
-        projects={projects}
+        projects={visibleProjects}
         onCreateDraw={handleCreateDraw}
       />
 

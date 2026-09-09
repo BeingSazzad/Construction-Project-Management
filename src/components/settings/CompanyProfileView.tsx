@@ -8,12 +8,14 @@ import {
 interface CompanyProfileViewProps {
   currentUser: User;
   onBack: () => void;
+  readOnly?: boolean;
   onSave?: (companyData: { company: string; phone: string; address: string; license: string }) => void;
 }
 
 export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
   currentUser,
   onBack,
+  readOnly = false,
   onSave
 }) => {
   const [companyName, setCompanyName] = useState(currentUser.company || 'Lattice Construction Group');
@@ -24,6 +26,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    if (readOnly) return;
     if (onSave) {
       onSave({
         company: companyName,
@@ -51,7 +54,9 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
           <ChevronLeft className="w-4 h-4" />
           <span>Account</span>
         </button>
-        <h1 className="text-sm font-bold text-[#171A1F] tracking-tight">Company & Organization</h1>
+        <h1 className="text-sm font-bold text-[#171A1F] tracking-tight">
+          {readOnly ? 'Company' : 'Company & Organization'}
+        </h1>
         <div className="w-12" />
       </div>
 
@@ -84,7 +89,8 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               onChange={(e) => setCompanyName(e.target.value)}
               required
               placeholder="e.g. Lattice Construction Group"
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              disabled={readOnly}
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
             />
           </div>
 
@@ -96,7 +102,8 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(555) 123-4567"
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              disabled={readOnly}
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
             />
           </div>
 
@@ -108,7 +115,8 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Main St, Suite 400"
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              disabled={readOnly}
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
             />
           </div>
 
@@ -120,12 +128,13 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={licenseNumber}
               onChange={(e) => setLicenseNumber(e.target.value)}
               placeholder="GC-12345"
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
+              disabled={readOnly}
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
             />
           </div>
         </div>
 
-        {/* Standard Single Full-Width Primary Action */}
+        {!readOnly && (
         <div className="pt-2">
           <button
             type="submit"
@@ -135,6 +144,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
             <span>Save Changes</span>
           </button>
         </div>
+        )}
       </form>
 
     </div>
