@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { User } from '../../types';
-import { 
-  ChevronLeft, Building, Phone, MapPin, 
-  ShieldCheck, Crown, Check, Award
+import {
+  ChevronLeft, Building, Phone, MapPin,
+  ShieldCheck, Check
 } from 'lucide-react';
 
 interface CompanyProfileViewProps {
@@ -42,6 +42,74 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
     }, 600);
   };
 
+  if (readOnly) {
+    const rows = [
+      { icon: Phone, label: 'Business Phone', value: phone, href: `tel:${phone.replace(/[^\d+]/g, '')}` },
+      { icon: MapPin, label: 'Office Address', value: address },
+      { icon: ShieldCheck, label: 'GC License', value: licenseNumber },
+    ];
+
+    return (
+      <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#0F172A] animate-fade-in">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer py-1"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span>Account</span>
+          </button>
+          <h1 className="text-sm font-bold text-[#0F172A] tracking-tight">Company</h1>
+          <div className="w-12" />
+        </div>
+
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#EAF3FF] via-white to-white border border-[#DCE8F8] p-4 shadow-xs">
+          <div className="flex items-start gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-[#1677FF] text-white flex items-center justify-center shadow-[0_6px_16px_rgba(22,119,255,0.28)] shrink-0">
+              <Building className="w-5 h-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-base font-bold text-[#0F172A] tracking-tight leading-snug">
+                  {companyName}
+                </h2>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-[#64748B] border border-[#E2E8F0]">
+                  View
+                </span>
+              </div>
+              <p className="text-xs text-[#64748B] font-medium mt-1 leading-relaxed">
+                Workspace record · billing stays with the company owner
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white border border-[#E2E8F0] rounded-3xl shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
+          {rows.map((row) => {
+            const Icon = row.icon;
+            return (
+              <div key={row.label} className="px-4 py-3.5 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/15 flex items-center justify-center text-[#1677FF] shrink-0">
+                  <Icon className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1 pt-0.5">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">{row.label}</p>
+                  {row.href ? (
+                    <a href={row.href} className="text-sm font-semibold text-[#1677FF] hover:underline mt-0.5 block leading-snug">
+                      {row.value}
+                    </a>
+                  ) : (
+                    <p className="text-sm font-semibold text-[#0F172A] mt-0.5 leading-snug">{row.value}</p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
       
@@ -55,7 +123,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
           <span>Account</span>
         </button>
         <h1 className="text-sm font-bold text-[#171A1F] tracking-tight">
-          {readOnly ? 'Company' : 'Company & Organization'}
+          Company & Organization
         </h1>
         <div className="w-12" />
       </div>
@@ -89,8 +157,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               onChange={(e) => setCompanyName(e.target.value)}
               required
               placeholder="e.g. Lattice Construction Group"
-              disabled={readOnly}
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -102,8 +169,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="(555) 123-4567"
-              disabled={readOnly}
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -115,8 +181,7 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Main St, Suite 400"
-              disabled={readOnly}
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
 
@@ -128,13 +193,11 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
               value={licenseNumber}
               onChange={(e) => setLicenseNumber(e.target.value)}
               placeholder="GC-12345"
-              disabled={readOnly}
-              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors disabled:text-[#64748B]"
+              className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
           </div>
         </div>
 
-        {!readOnly && (
         <div className="pt-2">
           <button
             type="submit"
@@ -144,7 +207,6 @@ export const CompanyProfileView: React.FC<CompanyProfileViewProps> = ({
             <span>Save Changes</span>
           </button>
         </div>
-        )}
       </form>
 
     </div>

@@ -1107,8 +1107,8 @@ export function App() {
                       setProjectSubTab('budget');
                     }}
                     onOpenBudgetsHub={() => {
-                      handleSelectProject(scopedProject);
-                      setProjectSubTab('budget');
+                      setActiveProject(null);
+                      setActiveTab('budgets');
                     }}
                     onOpenDailyLogs={() => setActiveTab('daily-logs')}
                     onOpenPunchList={() => {
@@ -1426,31 +1426,8 @@ export function App() {
       <CreateChangeOrderModal
         isOpen={isCreateChangeOrderOpen}
         onClose={() => setIsCreateChangeOrderOpen(false)}
-        projectId={activeProject ? activeProject.id : 'proj-1'}
+        projectId={activeProject ? activeProject.id : (projects[0]?.id || 'proj-1')}
         onCreate={handleCreateChangeOrder}
-      />
-
-      {/* FINANCIAL WORKFLOW MODALS */}
-      <CreateDrawModal
-        isOpen={isCreateDrawOpen}
-        onClose={() => setIsCreateDrawOpen(false)}
-        projects={visibleProjects}
-        onCreateDraw={handleCreateDraw}
-      />
-
-      <ProcessLienWaiverModal
-        isOpen={isRecordLienWaiverOpen}
-        onClose={() => setIsRecordLienWaiverOpen(false)}
-        subcontractors={subcontractors}
-        onRecordWaiver={handleRecordLienWaiver}
-      />
-
-      <ApprovePayAppModal
-        isOpen={isApprovePayAppOpen}
-        onClose={() => setIsApprovePayAppOpen(false)}
-        projects={visibleProjects}
-        subcontractors={subcontractors}
-        onDisburse={handleDisbursePayApp}
       />
 
       {/* CREATE PUNCH ITEM MODAL */}
@@ -1582,14 +1559,6 @@ export function App() {
         onClose={() => setIsCreateDrawOpen(false)}
         projects={visibleProjects}
         onCreateDraw={handleCreateDraw}
-      />
-
-      {/* CREATE CHANGE ORDER MODAL */}
-      <CreateChangeOrderModal
-        isOpen={isCreateChangeOrderOpen}
-        onClose={() => setIsCreateChangeOrderOpen(false)}
-        projectId={activeProject ? activeProject.id : (projects[0]?.id || 'proj-1')}
-        onCreate={handleCreateChangeOrder}
       />
 
     </DeviceFrame>

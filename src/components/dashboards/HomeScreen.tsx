@@ -484,13 +484,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         )}
 
         {/* ── 1. HERO CARD: AIA G702 CYCLE FOCUS ── */}
-        <div 
-          onClick={onOpenBudgetsHub}
-          className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F4F8FF] to-white p-4 sm:p-5 shadow-xs hover:border-[#1677FF]/40 transition-all cursor-pointer group"
-        >
+        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-[#DCE8F8] bg-gradient-to-r from-[#EAF3FF] via-[#F4F8FF] to-white p-4 sm:p-5 shadow-xs hover:border-[#1677FF]/40 transition-all group">
           <div className="flex items-start justify-between gap-3">
-            {/* Left: Focus & Live Status */}
-            <div className="min-w-0 flex-1">
+            <button
+              type="button"
+              onClick={() => onOpenBudget ? onOpenBudget(snellProject) : onOpenApprovePayApp?.()}
+              className="min-w-0 flex-1 text-left cursor-pointer"
+            >
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full whitespace-nowrap shrink-0">
                   Finance Focus
@@ -509,19 +509,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   Snell Isle Residence · Lender inspector review Friday
                 </p>
               </div>
-            </div>
+            </button>
 
-            {/* Right: Date & Weather Pill */}
             <div className="flex flex-col items-end shrink-0">
               <span className="text-xs font-semibold text-[#0F172A]">
                 {todayDateFormatted}
               </span>
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsWeatherModalOpen(true);
-                }}
-                className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white border border-[#DCE8F8] text-xs font-medium transition-all cursor-pointer shadow-xs active:scale-95 group/w"
+                type="button"
+                onClick={() => setIsWeatherModalOpen(true)}
+                className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white border border-[#DCE8F8] text-xs font-medium transition-all cursor-pointer shadow-xs active:scale-95"
                 title="View site conditions"
               >
                 <Sun className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
@@ -534,9 +531,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* ── 2. EXACT 3 FINANCE KPIS ── */}
         <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-          <div 
+          <button
+            type="button"
             onClick={onOpenBudgetsHub}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group text-left"
           >
             <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <Receipt className="w-3.5 h-3.5" />
@@ -549,11 +547,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 $16.82M
               </span>
             </div>
-          </div>
+          </button>
 
-          <div 
-            onClick={onOpenBudgetsHub}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
+          <button
+            type="button"
+            onClick={() => onOpenApprovePayApp ? onOpenApprovePayApp() : onOpenBudgetsHub?.()}
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group text-left"
           >
             <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <Clock className="w-3.5 h-3.5" />
@@ -566,11 +565,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 $133.1K
               </span>
             </div>
-          </div>
+          </button>
 
-          <div 
-            onClick={() => onOpenCreateDraw ? onOpenCreateDraw() : (onOpenBudgetsHub ? onOpenBudgetsHub() : null)}
-            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
+          <button
+            type="button"
+            onClick={() => onOpenCreateDraw ? onOpenCreateDraw() : onOpenBudgetsHub?.()}
+            className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group text-left"
           >
             <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
               <Landmark className="w-3.5 h-3.5" />
@@ -583,13 +583,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Draw #04
               </span>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* ── 3. PORTFOLIO CAPITAL COMMITTED CARD ── */}
-        <div 
+        <button
+          type="button"
           onClick={onOpenBudgetsHub}
-          className="p-3 sm:p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2 group"
+          className="p-3 sm:p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2 group text-left w-full"
         >
           {/* Header row */}
           <div className="flex items-center justify-between">
@@ -644,32 +645,43 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <span className="text-[11px] font-bold text-[#0F172A]">17%</span>
             </div>
           </div>
-        </div>
+        </button>
 
         {/* ── 4. QUICK FINANCIAL ACTIONS (Lender Draws, Lien Waivers & Disbursals) ── */}
+        {(onOpenCreateDraw || onOpenLienWaiver || onOpenApprovePayApp) && (
         <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-          <button 
+          {onOpenCreateDraw && (
+          <button
+            type="button"
             onClick={onOpenCreateDraw}
             className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
           >
             <Landmark className="w-3.5 h-3.5 text-[#1677FF]" />
             <span className="truncate">Lender Draw</span>
           </button>
-          <button 
+          )}
+          {onOpenLienWaiver && (
+          <button
+            type="button"
             onClick={onOpenLienWaiver}
             className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
           >
             <ShieldCheck className="w-3.5 h-3.5 text-[#1677FF]" />
             <span className="truncate">Lien Waivers</span>
           </button>
-          <button 
+          )}
+          {onOpenApprovePayApp && (
+          <button
+            type="button"
             onClick={onOpenApprovePayApp}
             className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
           >
             <FileCheck className="w-3.5 h-3.5 text-[#1677FF]" />
             <span className="truncate">Pay Apps</span>
           </button>
+          )}
         </div>
+        )}
 
         {/* ── 5. TRADE INVOICE APPROVAL QUEUE (Compact Divider List, ZERO Card Bloat) ── */}
         <div className="flex flex-col gap-2.5">

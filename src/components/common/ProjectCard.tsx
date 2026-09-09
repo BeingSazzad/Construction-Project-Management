@@ -52,9 +52,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const fallbackThumbnail = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&auto=format&fit=crop&q=80";
 
   return (
-    <div 
+    <button
+      type="button"
       onClick={onClick}
-      className={`bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex items-center gap-3 group active:scale-[0.99] font-sans ${className}`}
+      className={`bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex items-center gap-3 group active:scale-[0.99] font-sans text-left w-full ${className}`}
     >
       {/* Thumbnail */}
       <img 
@@ -89,6 +90,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 };
