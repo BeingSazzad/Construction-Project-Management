@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '../../types';
 import {
   Building2, Bell, HelpCircle, LogOut, ChevronRight,
   Phone, Mail, MapPin, Edit3, Lock,
-  FlaskConical, Sparkles, ChevronLeft, Crown,
-  ShieldCheck, FileText, CreditCard, Check
+  ChevronLeft, Crown,
 } from 'lucide-react';
 import { TermsAndConditions } from '../legal/TermsAndConditions';
 import { PrivacyPolicy } from '../legal/PrivacyPolicy';
@@ -15,6 +14,7 @@ import { HelpSupport } from './HelpSupport';
 import { EditProfileView } from './EditProfileView';
 import { SecurityPasswordView } from './SecurityPasswordView';
 import { CompanyProfileView } from './CompanyProfileView';
+import { ProfileHeroCard } from './ProfileHeroCard';
 
 interface MoreHubViewProps {
   currentUser: User;
@@ -82,6 +82,11 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
   onNavigateTab,
 }) => {
   const [userData, setUserData] = useState<User>(currentUser);
+  const isOwner = userData.role === 'admin';
+
+  useEffect(() => {
+    setUserData(currentUser);
+  }, [currentUser]);
   const [subView, setSubView] = useState<
     'main' | 'profile' | 'security' | 'notifications' | 'workspace' | 'edit-workspace' |
     'terms' | 'privacy' | 'ai-disclaimer' | 'subscription-terms' | 'beta' | 'support'
@@ -124,7 +129,7 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
   if (subView === 'beta')               return <BetaAgreement onBack={() => setSubView('main')} />;
 
   // ── Edit Workspace (Company Profile) ──────────────────────────
-  if (subView === 'edit-workspace') {
+  if (subView === 'edit-workspace' && isOwner) {
     return (
       <CompanyProfileView
         currentUser={userData}
@@ -152,13 +157,15 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
               <p className="text-xs text-[#68707C] font-medium mt-0.5">Company information</p>
             </div>
           </div>
-          <button
-            onClick={() => setSubView('edit-workspace')}
-            className="h-8 px-3 rounded-xl bg-[#EAF3FF] hover:bg-[#1677FF] border border-[#1677FF]/30 hover:border-[#1677FF] text-[#1677FF] hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Edit3 className="w-3.5 h-3.5" />
-            <span>Edit</span>
-          </button>
+          {isOwner && (
+            <button
+              onClick={() => setSubView('edit-workspace')}
+              className="h-8 px-3 rounded-xl bg-[#EAF3FF] hover:bg-[#1677FF] border border-[#1677FF]/30 hover:border-[#1677FF] text-[#1677FF] hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Edit</span>
+            </button>
+          )}
         </div>
 
         <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#EAEDF1]">
@@ -184,14 +191,15 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
           ))}
         </div>
 
-        {/* Edit CTA at bottom */}
-        <button
-          onClick={() => setSubView('edit-workspace')}
-          className="w-full h-11 rounded-2xl bg-white hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 text-xs font-bold text-[#1677FF] flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
-        >
-          <Edit3 className="w-3.5 h-3.5" />
-          <span>Edit Company Information</span>
-        </button>
+        {isOwner && (
+          <button
+            onClick={() => setSubView('edit-workspace')}
+            className="w-full h-11 rounded-2xl bg-white hover:bg-[#EAF3FF] border border-[#DDE1E7] hover:border-[#1677FF]/40 text-xs font-bold text-[#1677FF] flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Edit Company Information</span>
+          </button>
+        )}
       </div>
     );
   }
@@ -243,76 +251,21 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
   return (
     <div className="w-full flex flex-col gap-3 px-4 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
 
-      {/* 1. Hero Profile Card (Sapphire Gradient Design) */}
-      <div
-        onClick={() => setSubView('profile')}
-        className="relative overflow-hidden rounded-[22px] bg-gradient-to-r from-[#0047C4] via-[#0D5EF4] to-[#257CFF] border border-white/20 p-4 text-white shadow-[0_4px_20px_rgba(13,94,244,0.22)] cursor-pointer group active:scale-[0.99] transition-all"
-      >
-        <div className="flex items-center justify-between gap-3.5">
-          <div className="flex items-center gap-3.5 min-w-0 flex-1">
-            {/* Avatar Frame with Frosted Glass Border */}
-            <div className="relative flex-shrink-0">
-              <div className="w-[58px] h-[58px] rounded-[18px] p-[2.5px] bg-white/20 border border-white/30 backdrop-blur-xs flex items-center justify-center shadow-xs">
-                <img
-                  src={userData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
-                  alt={userData.name}
-                  className="w-full h-full rounded-[15px] object-cover bg-[#0047C4]"
-                />
-              </div>
-              {/* Backlit Emerald Online Indicator with Centered White Dot */}
-              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#00E676] border-2 border-[#0047C4] shadow-xs flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-white" />
-              </span>
-            </div>
-
-            {/* Identity Text Info */}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <h2 className="text-[16px] font-bold text-white tracking-tight leading-tight truncate">
-                  {userData.name || 'Avery Scott'}
-                </h2>
-                {/* Verified Circle with Blue Checkmark */}
-                <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-2xs" title="Verified">
-                  <Check className="w-2.5 h-2.5 text-[#0D5EF4] stroke-[3.5]" />
-                </span>
-              </div>
-
-              <p className="text-[12px] font-normal text-white/80 truncate mt-0.5 tracking-tight">
-                {userData.roleTitle || 'Managing Principal & Founder'}
-              </p>
-
-              {/* Frosted Company Pill */}
-              <div className="flex items-center gap-1.5 mt-2">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSubView('workspace');
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-[11px] font-semibold text-white transition-all cursor-pointer backdrop-blur-xs group/pill shadow-2xs"
-                >
-                  <Building2 className="w-3.5 h-3.5 text-white/90" />
-                  <span className="truncate max-w-[155px]">{userData.company || 'Avery & Marsh Construction'}</span>
-                  <ChevronRight className="w-3 h-3 text-white/80 group-hover/pill:translate-x-0.5 transition-transform" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Frosted Pencil Edit Button */}
-          <div className="w-10 h-10 rounded-2xl bg-white/15 group-hover:bg-white/25 border border-white/25 backdrop-blur-xs flex items-center justify-center text-white transition-all flex-shrink-0 shadow-xs active:scale-95">
-            <Edit3 className="w-4 h-4 text-white" />
-          </div>
-        </div>
-      </div>
+      <ProfileHeroCard
+        user={userData}
+        onEdit={() => setSubView('profile')}
+        onOpenCompany={isOwner ? () => setSubView('workspace') : undefined}
+      />
 
       {/* 2. Account rows — all one grouped list */}
       <div className="bg-white border border-[#DDE1E7] rounded-2xl shadow-sm overflow-hidden divide-y divide-[#EAEDF1]">
-        <RowItem
-          icon={<div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]"><Building2 className="w-3.5 h-3.5" /></div>}
-          label="Workspace"
-          onClick={() => setSubView('workspace')}
-        />
+        {isOwner && (
+          <RowItem
+            icon={<div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]"><Building2 className="w-3.5 h-3.5" /></div>}
+            label="Workspace"
+            onClick={() => setSubView('workspace')}
+          />
+        )}
         <RowItem
           icon={<div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]"><Bell className="w-3.5 h-3.5" /></div>}
           label="Notifications"
@@ -324,12 +277,14 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
           label="Security & Password"
           onClick={() => setSubView('security')}
         />
-        <RowItem
-          icon={<div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]"><Crown className="w-3.5 h-3.5" /></div>}
-          label="Subscription"
-          badge={<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Trial</span>}
-          onClick={() => alert('Coming soon')}
-        />
+        {isOwner && (
+          <RowItem
+            icon={<div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]"><Crown className="w-3.5 h-3.5" /></div>}
+            label="Subscription"
+            badge={<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Trial</span>}
+            onClick={() => alert('Coming soon')}
+          />
+        )}
         <RowItem
           icon={<div className="w-7 h-7 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 flex items-center justify-center text-[#1677FF]"><HelpCircle className="w-3.5 h-3.5" /></div>}
           label="Help & Support"
@@ -343,12 +298,12 @@ export const MoreHubView: React.FC<MoreHubViewProps> = ({
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#68707C]">Legal</p>
         </div>
         {[
-          { label: 'Privacy Policy',      view: 'privacy' as const },
-          { label: 'Terms of Service',    view: 'terms' as const },
-          { label: 'AI Disclaimer',       view: 'ai-disclaimer' as const },
-          { label: 'Subscription Terms',  view: 'subscription-terms' as const },
-          { label: 'Beta Agreement',      view: 'beta' as const },
-        ].map((item) => (
+          { label: 'Privacy Policy',      view: 'privacy' as const, ownerOnly: false },
+          { label: 'Terms of Service',    view: 'terms' as const, ownerOnly: false },
+          { label: 'AI Disclaimer',       view: 'ai-disclaimer' as const, ownerOnly: false },
+          { label: 'Subscription Terms',  view: 'subscription-terms' as const, ownerOnly: true },
+          { label: 'Beta Agreement',      view: 'beta' as const, ownerOnly: false },
+        ].filter((item) => isOwner || !item.ownerOnly).map((item) => (
           <button
             key={item.view}
             onClick={() => setSubView(item.view)}

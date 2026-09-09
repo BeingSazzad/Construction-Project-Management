@@ -16,10 +16,10 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
   onBack,
   onSave
 }) => {
-  const [name, setName] = useState(currentUser.name || 'Avery Scott');
-  const [designation, setDesignation] = useState(currentUser.designation || currentUser.roleTitle || 'Managing Principal & Founder');
-  const [email, setEmail] = useState(currentUser.email || 'avery.scott@averymarsh.com');
-  const [phone, setPhone] = useState(currentUser.phone || '(555) 234-5678');
+  const [name, setName] = useState(currentUser.name);
+  const [designation, setDesignation] = useState(currentUser.designation || currentUser.roleTitle);
+  const [email, setEmail] = useState(currentUser.email);
+  const [phone, setPhone] = useState(currentUser.phone || '');
   const [savedToast, setSavedToast] = useState(false);
 
   const getRoleInfo = (role: string) => {
@@ -160,7 +160,7 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
               required
-              placeholder="e.g. Managing Principal & Founder"
+              placeholder={currentUser.role === 'admin' ? 'e.g. Managing Principal & Founder' : 'e.g. Senior Project Manager'}
               className="w-full h-12 min-h-[48px] bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl px-3.5 text-xs text-[#171A1F] font-medium focus:border-[#1677FF] focus:bg-white focus:outline-none transition-colors"
             />
             <p className="text-[11px] text-[#68707C] mt-1">
@@ -181,7 +181,9 @@ export const EditProfileView: React.FC<EditProfileViewProps> = ({
             </div>
             <p className="text-xs font-bold text-[#171A1F]">{roleInfo.title}</p>
             <p className="text-[11px] text-[#68707C]">
-              Access privileges are assigned at the organization level to govern approvals and permissions.
+              {currentUser.role === 'admin'
+                ? 'You own this workspace and the Lattice subscription. Access privileges are assigned by you.'
+                : 'You are an invited employee. The workspace owner manages billing and company settings.'}
             </p>
           </div>
         </div>

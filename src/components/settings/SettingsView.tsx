@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User } from '../../types';
 import { 
-  Lock, ChevronRight, HelpCircle, LogOut, Edit3, 
+  Lock, ChevronRight, HelpCircle, LogOut, 
   FileText, Bell, ShieldCheck, Mail, Phone,
   Check, X, Crown, Building, Palette, Users, 
   ChevronLeft, Sparkles, DollarSign, ArrowRight,
@@ -20,6 +20,7 @@ import { EditProfileView } from './EditProfileView';
 import { CompanyProfileView } from './CompanyProfileView';
 import { SecurityPasswordView } from './SecurityPasswordView';
 import { LatticeVerifiedView } from './LatticeVerifiedView';
+import { ProfileHeroCard } from './ProfileHeroCard';
 
 export interface SettingsViewProps {
   currentUser: User;
@@ -68,6 +69,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       setSubView(initialSubView as any);
     }
   }, [initialSubView]);
+
+  React.useEffect(() => {
+    setUserData(currentUser);
+  }, [currentUser]);
   const [pushMasterEnabled, setPushMasterEnabled] = useState(true);
 
   // Field Staff Specific Settings
@@ -106,6 +111,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
   const isFieldStaff = userData.role === 'field';
   const isOwnerAdmin = userData.role === 'admin';
+  const isEmployee = !isOwnerAdmin;
 
   if (subView === 'security') {
     return <SecurityPasswordView onBack={() => setSubView('main')} />;
@@ -123,7 +129,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     );
   }
 
-  if (subView === 'company') {
+  if (subView === 'company' && isOwnerAdmin) {
     return (
       <CompanyProfileView
         currentUser={userData}
@@ -475,7 +481,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   }
 
   // ─── SUBVIEW: BILLING & SUBSCRIPTION (Owner Only) ───
-  if (subView === 'billing') {
+  if (subView === 'billing' && isOwnerAdmin) {
     return (
       <div className="w-full flex flex-col gap-4 px-5 py-4 pb-28 font-sans max-w-[430px] mx-auto text-[#171A1F] animate-fade-in">
         <div className="flex items-center justify-between pb-2 border-b border-[#EAEDF1]">
@@ -617,76 +623,46 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       
 
 
-      {/* ─── 1. HERO PROFILE CARD (Sapphire Gradient Design) ─── */}
-      <div
-        onClick={() => setSubView('profile')}
-        className="relative overflow-hidden rounded-[22px] bg-gradient-to-r from-[#0047C4] via-[#0D5EF4] to-[#257CFF] border border-white/20 p-4 text-white shadow-[0_4px_20px_rgba(13,94,244,0.22)] cursor-pointer group active:scale-[0.99] transition-all"
-      >
-        {/* Avatar + Identity Info */}
-        <div className="flex items-center justify-between gap-3.5">
-          <div className="flex items-center gap-3.5 min-w-0 flex-1">
-            {/* Avatar Frame with Frosted Glass Border */}
-            <div className="relative flex-shrink-0">
-              <div className="w-[58px] h-[58px] rounded-[18px] p-[2.5px] bg-white/20 border border-white/30 backdrop-blur-xs flex items-center justify-center shadow-xs">
-                <img
-                  src={userData.avatar}
-                  alt={userData.name}
-                  className="w-full h-full rounded-[15px] object-cover bg-[#0047C4]"
-                />
-              </div>
-              {/* Backlit Emerald Online Indicator with Centered White Dot */}
-              <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#00E676] border-2 border-[#0047C4] shadow-xs flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-white" />
-              </span>
-            </div>
+      <ProfileHeroCard
+        user={userData}
+        onEdit={() => setSubView('profile')}
+        onOpenCompany={isOwnerAdmin ? () => setSubView('company') : undefined}
+      />
 
-            {/* Identity Text Info */}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <h2 className="text-[16px] font-bold text-white tracking-tight leading-tight truncate">
-                  {userData.name}
-                </h2>
-                {/* Verified Circle with Blue Checkmark */}
-                <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-2xs" title="Verified">
-                  <Check className="w-2.5 h-2.5 text-[#0D5EF4] stroke-[3.5]" />
-                </span>
-              </div>
-
-              <p className="text-[12px] font-normal text-white/80 truncate mt-0.5 tracking-tight">
-                {userData.roleTitle || (isFieldStaff ? 'Lead Superintendent' : 'Managing Principal & Founder')}
-              </p>
-
-              {/* Frosted Company Pill */}
-              <div className="flex items-center gap-1.5 mt-2">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSubView('company');
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-[11px] font-semibold text-white transition-all cursor-pointer backdrop-blur-xs group/pill shadow-2xs"
-                >
-                  <Building className="w-3.5 h-3.5 text-white/90" />
-                  <span className="truncate max-w-[155px]">{userData.company || 'Avery & Marsh Construction'}</span>
-                  <ChevronRight className="w-3 h-3 text-white/80 group-hover/pill:translate-x-0.5 transition-transform" />
-                </button>
-              </div>
-            </div>
+      {/* ─── ACCOUNT MENU (role-gated) ─── */}
+      {isOwnerAdmin && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden divide-y divide-[#F1F5F9]">
+          <div className="px-4 pt-3 pb-2 bg-[#F8FAFC] border-b border-[#F1F5F9]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B]">
+              Workspace & Billing
+            </p>
           </div>
 
-          {/* Frosted Pencil Edit Button */}
-          <div className="w-10 h-10 rounded-2xl bg-white/15 group-hover:bg-white/25 border border-white/25 backdrop-blur-xs flex items-center justify-center text-white transition-all flex-shrink-0 shadow-xs active:scale-95">
-            <Edit3 className="w-4 h-4 text-white" />
-          </div>
+          <button onClick={() => setSubView('company')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F1F5F9] group">
+            <div className="flex items-center gap-3 min-w-0">
+              <Building className="w-4 h-4 text-[#64748B] group-hover:text-[#0F172A] transition-colors flex-shrink-0" />
+              <span className="text-sm font-semibold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">Company Profile</span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+          </button>
+
+          <button onClick={() => setSubView('billing')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:bg-[#F1F5F9] group">
+            <div className="flex items-center gap-3 min-w-0">
+              <Crown className="w-4 h-4 text-[#64748B] group-hover:text-[#0F172A] transition-colors flex-shrink-0" />
+              <span className="text-sm font-semibold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">Subscription</span>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">Trial</span>
+              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
+            </div>
+          </button>
         </div>
-      </div>
+      )}
 
-      {/* ─── ACCOUNT MENU ─── */}
-      {isFieldStaff ? (
-        <div className="bg-white border border-slate-200/90 rounded-2xl shadow-[0_2px_10px_rgba(15,23,42,0.03)] overflow-hidden divide-y divide-slate-100">
-          <div className="px-4 pt-3 pb-2 bg-slate-50/50 border-b border-slate-100">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+      {isFieldStaff && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden divide-y divide-[#F1F5F9]">
+          <div className="px-4 pt-3 pb-2 bg-[#F8FAFC] border-b border-[#F1F5F9]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B]">
               Field Operations & Safety
             </p>
           </div>
@@ -739,36 +715,25 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
           </button>
         </div>
-      ) : (
-        /* ─── COMPANY OWNER / ADMIN MODULES ─── */
-        <div className="bg-white border border-slate-200/90 rounded-2xl shadow-[0_2px_10px_rgba(15,23,42,0.03)] overflow-hidden divide-y divide-slate-100">
-          <div className="px-4 pt-3 pb-2 bg-slate-50/50 border-b border-slate-100">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF]" />
-              Workspace & Company
+      )}
+
+      {isEmployee && !isFieldStaff && (
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden divide-y divide-[#F1F5F9]">
+          <div className="px-4 pt-3 pb-2 bg-[#F8FAFC] border-b border-[#F1F5F9]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#64748B]">
+              {userData.role === 'finance' ? 'Finance Access' : 'Project Assignment'}
             </p>
           </div>
-
-          {/* Company Profile */}
-          <button onClick={() => setSubView('company')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
-            <div className="flex items-center gap-3 min-w-0">
-              <Building className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
-              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Company Profile</span>
-            </div>
-            <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
-          </button>
-
-          {/* Subscription */}
-          <button onClick={() => setSubView('billing')} className="w-full py-3.5 px-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors text-left cursor-pointer active:bg-slate-100/70 group">
-            <div className="flex items-center gap-3 min-w-0">
-              <Crown className="w-4 h-4 text-[#64748B] group-hover:text-[#171A1F] transition-colors flex-shrink-0" />
-              <span className="text-xs font-semibold text-[#171A1F] truncate group-hover:text-[#1677FF] transition-colors">Subscription</span>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2.5 py-0.5 rounded-full border border-[#1677FF]/30">Trial</span>
-              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] transition-colors flex-shrink-0" />
-            </div>
-          </button>
+          <div className="px-4 py-3.5">
+            <p className="text-sm font-semibold text-[#0F172A]">
+              {userData.role === 'finance'
+                ? 'Invited finance staff · no billing access'
+                : 'Invited project manager · no billing access'}
+            </p>
+            <p className="text-xs text-[#64748B] mt-1">
+              Workspace owner Avery Scott manages the Lattice subscription and company profile.
+            </p>
+          </div>
         </div>
       )}
 
@@ -827,12 +792,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </p>
         </div>
         {[
-          { label: 'Privacy Policy',      view: 'privacy' as const,             Icon: ShieldCheck },
-          { label: 'Terms of Service',    view: 'terms' as const,               Icon: FileText },
-          { label: 'AI Disclaimer',       view: 'ai-disclaimer' as const,       Icon: Sparkles },
-          { label: 'Subscription Terms',  view: 'subscription-terms' as const,  Icon: CreditCard },
-          { label: 'Beta Agreement',      view: 'beta' as const,                Icon: FlaskConical },
-        ].map(({ label, view, Icon }) => (
+          { label: 'Privacy Policy',      view: 'privacy' as const,             Icon: ShieldCheck, ownerOnly: false },
+          { label: 'Terms of Service',    view: 'terms' as const,               Icon: FileText, ownerOnly: false },
+          { label: 'AI Disclaimer',       view: 'ai-disclaimer' as const,       Icon: Sparkles, ownerOnly: false },
+          { label: 'Subscription Terms',  view: 'subscription-terms' as const,  Icon: CreditCard, ownerOnly: true },
+          { label: 'Beta Agreement',      view: 'beta' as const,                Icon: FlaskConical, ownerOnly: false },
+        ].filter((item) => isOwnerAdmin || !item.ownerOnly).map(({ label, view, Icon }) => (
           <button
             key={view}
             onClick={() => setSubView(view)}

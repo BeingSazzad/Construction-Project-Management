@@ -1148,6 +1148,7 @@ export function App() {
                 {/* 4. ACCOUNT & PROFILE HUB */}
                 {(activeTab === 'account' || activeTab === 'more') && (
                   <SettingsView
+                    key={currentUser.id}
                     currentUser={currentUser}
                     onSignOut={() => setAppView('auth')}
                     initialSubView={settingsSubView}

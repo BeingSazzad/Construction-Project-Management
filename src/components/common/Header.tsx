@@ -211,7 +211,9 @@ export const Header: React.FC<HeaderProps> = ({
                     {currentUser?.name || 'Avery Scott'}
                   </h1>
                   <p className="text-[11px] text-[#64748B] font-medium truncate leading-none mt-0.5">
-                    {currentUser?.company || 'Avery & Marsh Construction'}
+                    {currentUser?.role === 'admin'
+                      ? (currentUser?.company || 'Avery & Marsh Construction')
+                      : (currentUser?.roleTitle || 'Team member')}
                   </p>
                 </div>
               </div>
