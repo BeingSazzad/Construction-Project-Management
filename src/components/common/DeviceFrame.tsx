@@ -53,7 +53,7 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F2F2F7] text-[#171A1F] flex flex-col items-center font-sans selection:bg-[#1677FF] selection:text-white">
+    <div className="min-h-screen h-screen bg-[#F2F2F7] text-[#171A1F] flex flex-col items-center font-sans selection:bg-[#1677FF] selection:text-white">
       {/* Dev Control Bar — sticky top */}
       <header className="w-full max-w-[430px] bg-white border-b border-[#DDE1E7] px-4 py-2 flex items-center justify-between gap-2 z-[60] shadow-sm sticky top-0">
         <div className="flex items-center gap-2">
@@ -134,12 +134,20 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
         </div>
       </header>
 
-      {/* App Content — 430px, no phone frame, pb-20 for BottomNav clearance */}
-      <main className="w-full max-w-[430px] flex-1 flex flex-col bg-[#F7F9FC] overflow-x-hidden relative">
-        <div className="w-full flex-1 flex flex-col relative pb-20">
-          {children}
-        </div>
-      </main>
+      {/* App Content — 430px column (workspace may sit beside a toggle sidebar) */}
+      {currentView === 'workspace' ? (
+        <main className="flex-1 w-full min-h-0 flex justify-center overflow-x-auto self-stretch">
+          <div className="flex items-stretch h-full min-h-0 relative w-full max-w-[430px] md:w-auto md:max-w-none">
+            {children}
+          </div>
+        </main>
+      ) : (
+        <main className="w-full max-w-[430px] flex-1 flex flex-col bg-[#F7F9FC] overflow-x-hidden relative">
+          <div className="w-full flex-1 flex flex-col relative pb-20">
+            {children}
+          </div>
+        </main>
+      )}
     </div>
   );
 };

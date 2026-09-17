@@ -15,10 +15,11 @@ import {
 } from './data/mockData';
 import { generateUniqueId } from './utils/id';
 import { getRoleAccess, projectsForUser } from './utils/roleAccess';
-import { CreatedBudgetPayload } from './utils/budgetPresets';
+import { CreatedBudgetPayload, applyExpenseToLedger, cloneLedger, mergeProjectLedger, removeItemFromLedger, updateItemEstimateInLedger, withSyncedBudget } from './utils/budgetPresets';
 
 // Common Components
 import { DeviceFrame } from './components/common/DeviceFrame';
+import { AppSidebar } from './components/common/AppSidebar';
 import { Header } from './components/common/Header';
 import { BottomNav } from './components/common/BottomNav';
 import { SideDrawer } from './components/common/SideDrawer';
@@ -49,8 +50,6 @@ import { ProjectDailyLogsTab } from './components/project/ProjectDailyLogsTab';
 import { DailyLogsHubView } from './components/dailylogs/DailyLogsHubView';
 import { DailyLogItem } from './types';
 
-// Budgets Hub
-import { BudgetsHubView } from './components/budgets/BudgetsHubView';
 import { MessagesHubView } from './components/messages/MessagesHubView';
 import { MilestonesHubView } from './components/milestones/MilestonesHubView';
 
@@ -97,15 +96,18 @@ export function App() {
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false);
   const [lattiInitialQuery, setLattiInitialQuery] = useState<string>('');
 
-  // Entities state
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
+  // Entities state — ledger is source of truth; seed headers synced from ledger
   const [projectLedgers, setProjectLedgers] = useState<Record<string, TradeCategory[]>>(() =>
-    Object.fromEntries(MOCK_PROJECTS.map((p) => [p.id, MOCK_BUDGET_CATEGORIES]))
+    Object.fromEntries(MOCK_PROJECTS.map((p) => [p.id, cloneLedger(MOCK_BUDGET_CATEGORIES)]))
+  );
+  const [projects, setProjects] = useState<Project[]>(() =>
+    MOCK_PROJECTS.map((p) => withSyncedBudget(p, MOCK_BUDGET_CATEGORIES))
   );
   const [budgetItemsProjectId, setBudgetItemsProjectId] = useState<string | null>(null);
+  const [budgetCreateMethod, setBudgetCreateMethod] = useState<'blank' | 'preset' | undefined>(undefined);
+  const [openLogExpense, setOpenLogExpense] = useState(false);
   const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
   const [ganttItems, setGanttItems] = useState<GanttItem[]>(MOCK_GANTT);
-  const [categories, setCategories] = useState<TradeCategory[]>(MOCK_BUDGET_CATEGORIES);
   const [punchItems, setPunchItems] = useState<PunchItem[]>(MOCK_PUNCH_ITEMS);
   const [subcontractors, setSubcontractors] = useState<Subcontractor[]>(MOCK_SUBCONTRACTORS);
   const [photos, setPhotos] = useState<SitePhoto[]>(MOCK_PHOTOS);
@@ -128,6 +130,7 @@ export function App() {
   // Modals state
   const [settingsSubView, setSettingsSubView] = useState<string>('main');
   const [isSideDrawerOpen, setIsSideDrawerOpen] = useState(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(false);
   const [isQuickActionSheetOpen, setIsQuickActionSheetOpen] = useState(false);
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
   const [isCreateBudgetOpen, setIsCreateBudgetOpen] = useState(false);
@@ -163,34 +166,31 @@ export function App() {
     setCreatedProjectIds([]);
   }, [currentUser.id]);
 
+  React.useEffect(() => {
+    if (activeTab !== 'budgets' || !scopedProject) return;
+    setActiveProject(scopedProject);
+    setProjectSubTab('budget');
+    setActiveTab('projects');
+  }, [activeTab, scopedProject]);
+
   const handleImportBudgetSuccess = (projectId: string, budgetName: string, totalValue: number) => {
-    setProjects(prev => prev.map(p => {
-      if (p.id === projectId) {
-        return {
-          ...p,
-          budget: {
-            ...p.budget,
-            total: totalValue,
-            remaining: totalValue - p.budget.actual
-          }
-        };
-      }
-      return p;
-    }));
-
-    // Also update activeProject state if currently active
-    if (activeProject && activeProject.id === projectId) {
-      setActiveProject(prev => prev ? {
-        ...prev,
+    // Keep existing line items; only update the contract total (MVP-simple, no wipe).
+    const patch = (p: Project): Project => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
         budget: {
-          ...prev.budget,
+          ...p.budget,
           total: totalValue,
-          remaining: totalValue - prev.budget.actual
-        }
-      } : null);
-    }
-
-    alert(`Successfully imported "${budgetName}" ($${(totalValue / 1000000).toFixed(2)}M) into Project Financial Ledger!`);
+          remaining: Math.max(0, totalValue - p.budget.actual),
+          variance: totalValue - p.budget.actual,
+          costToComplete: Math.max(0, totalValue - p.budget.actual),
+        },
+      };
+    };
+    setProjects((prev) => prev.map(patch));
+    setActiveProject((prev) => (prev && prev.id === projectId ? patch(prev) : prev));
+    alert(`Imported "${budgetName}" ($${(totalValue / 1000000).toFixed(2)}M).`);
   };
 
   const handleCreateChangeOrder = (newCO: Partial<ChangeOrder>) => {
@@ -247,33 +247,27 @@ export function App() {
     const targetCO = changeOrders.find(co => co.id === coId);
     if (!targetCO) return;
 
-    // 1. Mark CO as Approved in global state
     setChangeOrders(prev => prev.map(co => co.id === coId ? { ...co, status: 'Approved' } : co));
 
-    // 2. Adjust project budget and metrics (AIA standard: ACO increases contract total & committed)
     setProjects(prevProjects => prevProjects.map(p => {
-      if (p.id === targetCO.projectId) {
-        const newTotal = p.budget.total + targetCO.amount;
-        const newCommitted = p.budget.committed + targetCO.amount;
-        const updatedProj = {
-          ...p,
-          budget: {
-            ...p.budget,
-            total: newTotal,
-            committed: newCommitted,
-            remaining: Math.max(0, newTotal - p.budget.actual)
-          },
-          metrics: {
-            ...p.metrics,
-            pendingCOs: Math.max(0, (p.metrics.pendingCOs || 1) - 1)
-          }
-        };
-        if (activeProject && activeProject.id === p.id) {
-          setActiveProject(updatedProj);
-        }
-        return updatedProj;
-      }
-      return p;
+      if (p.id !== targetCO.projectId) return p;
+      const total = p.budget.total + targetCO.amount;
+      const committed = p.budget.committed + targetCO.amount;
+      const updated = {
+        ...p,
+        budget: {
+          ...p.budget,
+          total,
+          committed,
+          remaining: Math.max(0, total - p.budget.actual),
+        },
+        metrics: {
+          ...p.metrics,
+          pendingCOs: Math.max(0, (p.metrics.pendingCOs || 1) - 1),
+        },
+      };
+      if (activeProject?.id === p.id) setActiveProject(updated);
+      return updated;
     }));
 
     setNotifications(prev => [
@@ -362,29 +356,22 @@ export function App() {
     retainage?: number,
     trade?: string
   ) => {
-    // 1. Correctly update target project's budget by projectId (no hardcoded idx === 0)
     setProjects(prev => prev.map(p => {
-      if (p.id === projectId) {
-        const newPaid = p.budget.paid + netAmount;
-        const newActual = p.budget.actual + netAmount;
-        const updatedProj = {
-          ...p,
-          budget: {
-            ...p.budget,
-            paid: newPaid,
-            actual: newActual,
-            remaining: Math.max(0, p.budget.total - newActual)
-          }
-        };
-        if (activeProject && activeProject.id === p.id) {
-          setActiveProject(updatedProj);
-        }
-        return updatedProj;
-      }
-      return p;
+      if (p.id !== projectId) return p;
+      const actual = p.budget.actual + netAmount;
+      const updated = {
+        ...p,
+        budget: {
+          ...p.budget,
+          paid: p.budget.paid + netAmount,
+          actual,
+          remaining: Math.max(0, p.budget.total - actual),
+        },
+      };
+      if (activeProject?.id === p.id) setActiveProject(updated);
+      return updated;
     }));
 
-    // 2. Regulatory Compliance: Convert conditional waiver to Unconditional or stamp active waiver
     setLienWaivers(prev => {
       const existingIdx = prev.findIndex(
         lw => lw.projectId === projectId && lw.subcontractorName.toLowerCase() === subName.toLowerCase()
@@ -396,23 +383,20 @@ export function App() {
           status: 'Signed & Active' as const,
           amount: lw.amount || netAmount
         } : lw);
-      } else {
-        const newWaiver: LienWaiver = {
-          id: generateUniqueId('lw'),
-          projectId,
-          subcontractorName: subName,
-          trade: trade || 'General Trade',
-          amount: netAmount,
-          type: 'Progress Unconditional',
-          status: 'Signed & Active',
-          invoiceRef: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
-          dateSubmitted: new Date().toISOString().split('T')[0]
-        };
-        return [newWaiver, ...prev];
       }
+      return [{
+        id: generateUniqueId('lw'),
+        projectId,
+        subcontractorName: subName,
+        trade: trade || 'General Trade',
+        amount: netAmount,
+        type: 'Progress Unconditional' as const,
+        status: 'Signed & Active' as const,
+        invoiceRef: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+        dateSubmitted: new Date().toISOString().split('T')[0]
+      }, ...prev];
     });
 
-    // 3. Notification
     const retainageText = retainage ? ` (Retainage Held: $${retainage.toLocaleString()})` : '';
     setNotifications(prev => [
       {
@@ -460,15 +444,17 @@ export function App() {
   };
 
   const handleResetData = () => {
-    setProjects(MOCK_PROJECTS);
+    setProjectLedgers(
+      Object.fromEntries(MOCK_PROJECTS.map((p) => [p.id, cloneLedger(MOCK_BUDGET_CATEGORIES)]))
+    );
+    setProjects(MOCK_PROJECTS.map((p) => withSyncedBudget(p, MOCK_BUDGET_CATEGORIES)));
     setTasks(MOCK_TASKS);
     setPunchItems(MOCK_PUNCH_ITEMS);
     setPhotos(MOCK_PHOTOS);
     setNotifications(MOCK_NOTIFICATIONS);
+    setChangeOrders(MOCK_CHANGE_ORDERS);
     setActiveProject(null);
     setActiveTab('home');
-    // Optionally clear onboarding flag to re-show onboarding
-    // localStorage.removeItem('lattice_onboarded');
   };
 
   const handleUpdateProjectStatus = (projectId: string, newStatus: ProjectStatus) => {
@@ -495,6 +481,11 @@ export function App() {
   const handleDeleteProject = (projectId: string) => {
     // Relational cascading delete: prevent orphaned child entities
     setProjects(prev => prev.filter(p => p.id !== projectId));
+    setProjectLedgers((prev) => {
+      const next = { ...prev };
+      delete next[projectId];
+      return next;
+    });
     setTasks(prev => prev.filter(t => t.projectId !== projectId));
     setPunchItems(prev => prev.filter(pi => pi.projectId !== projectId));
     setPhotos(prev => prev.filter(ph => ph.projectId !== projectId));
@@ -534,26 +525,26 @@ export function App() {
     const fullProj: Project = {
       id: generateUniqueId('proj'),
       name: newProj.name || 'New Commercial Build',
-      code: `PRJ-${Math.floor(1000 + Math.random() * 9000)}`,
+      code: newProj.code || `PRJ-${Math.floor(1000 + Math.random() * 9000)}`,
       location: newProj.location || 'Site Location',
       cityState: newProj.cityState || 'Austin, TX',
       status: newProj.status || 'Planning',
       progress: newProj.progress || 0,
       startDate: newProj.startDate || '2025-06-01',
       targetEndDate: newProj.targetEndDate || '2026-06-01',
-      projectManager: {
+      projectManager: newProj.projectManager || {
         id: currentUser.id,
         name: currentUser.name,
         avatar: currentUser.avatar,
       },
       budget: {
-        total: newProj.budget?.total || 5000000,
+        total: 0,
         committed: 0,
         actual: 0,
         paid: 0,
-        remaining: newProj.budget?.total || 5000000,
+        remaining: 0,
         variance: 0,
-        costToComplete: newProj.budget?.total || 5000000
+        costToComplete: 0,
       },
       metrics: {
         totalTasks: 0,
@@ -564,40 +555,64 @@ export function App() {
         completedMilestones: 0,
         pendingCOs: 0
       },
-      thumbnail: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
-      description: newProj.description || 'New commercial build'
+      thumbnail: newProj.thumbnail || 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
+      coverImage: newProj.coverImage || newProj.thumbnail,
+      description: newProj.description || 'New commercial build',
+      clientName: newProj.clientName,
+      type: newProj.type,
+      masterCode: newProj.masterCode,
     };
 
     setProjects(prev => [fullProj, ...prev]);
     setProjectLedgers(prev => ({ ...prev, [fullProj.id]: [] }));
     setCreatedProjectIds(prev => [...prev, fullProj.id]);
     setIsCreateProjectOpen(false);
-    setActiveProject(fullProj); // Auto-navigate into project workspace
+    setActiveProject(fullProj);
+    setProjectSubTab('overview');
+    setActiveTab('projects');
   };
 
   const handleAddProjectItems = (data: CreatedBudgetPayload) => {
-    setProjectLedgers((prev) => ({ ...prev, [data.projectId]: data.categories }));
-    const patchBudget = (p: Project): Project => {
-      if (p.id !== data.projectId) return p;
-      const nextTotal = p.budget.total > 0 ? p.budget.total : data.totalBudget;
-      return {
-        ...p,
-        budget: {
-          ...p.budget,
-          total: nextTotal,
-          remaining: Math.max(0, nextTotal - p.budget.actual),
-          costToComplete: nextTotal,
-        },
-      };
-    };
-    setProjects((prev) => prev.map(patchBudget));
-    setActiveProject((prev) => {
-      const base = prev && prev.id === data.projectId
-        ? prev
-        : projects.find((p) => p.id === data.projectId) || prev;
-      return base ? patchBudget(base) : prev;
-    });
+    const existing = projectLedgers[data.projectId] || [];
+    const nextLedger =
+      existing.length === 0 ? data.categories : mergeProjectLedger(existing, data.categories);
+
+    setProjectLedgers((prev) => ({ ...prev, [data.projectId]: nextLedger }));
+    const patch = (p: Project) => (p.id === data.projectId ? withSyncedBudget(p, nextLedger) : p);
+    setProjects((prev) => prev.map(patch));
+    // Always land on the project that received the budget so UI shows the new ledger
+    const base =
+      (activeProject && activeProject.id === data.projectId ? activeProject : null) ||
+      projects.find((p) => p.id === data.projectId);
+    if (base) {
+      setActiveProject(withSyncedBudget(base, nextLedger));
+    }
+    setActiveTab('projects');
     setProjectSubTab('budget');
+  };
+
+  const handleLogExpense = (projectId: string, categoryKey: string, amount: number) => {
+    const nextLedger = applyExpenseToLedger(projectLedgers[projectId] || [], categoryKey, amount);
+    setProjectLedgers((prev) => ({ ...prev, [projectId]: nextLedger }));
+    const patch = (p: Project) => (p.id === projectId ? withSyncedBudget(p, nextLedger) : p);
+    setProjects((prev) => prev.map(patch));
+    setActiveProject((prev) => (prev && prev.id === projectId ? patch(prev) : prev));
+  };
+
+  const handleUpdateItemBudget = (projectId: string, itemId: string, estimatedCost: number) => {
+    const nextLedger = updateItemEstimateInLedger(projectLedgers[projectId] || [], itemId, estimatedCost);
+    setProjectLedgers((prev) => ({ ...prev, [projectId]: nextLedger }));
+    const patch = (p: Project) => (p.id === projectId ? withSyncedBudget(p, nextLedger) : p);
+    setProjects((prev) => prev.map(patch));
+    setActiveProject((prev) => (prev && prev.id === projectId ? patch(prev) : prev));
+  };
+
+  const handleRemoveItemBudget = (projectId: string, itemId: string) => {
+    const nextLedger = removeItemFromLedger(projectLedgers[projectId] || [], itemId);
+    setProjectLedgers((prev) => ({ ...prev, [projectId]: nextLedger }));
+    const patch = (p: Project) => (p.id === projectId ? withSyncedBudget(p, nextLedger) : p);
+    setProjects((prev) => prev.map(patch));
+    setActiveProject((prev) => (prev && prev.id === projectId ? patch(prev) : prev));
   };
 
   const handleCreateTask = (newTask: Partial<Task>) => {
@@ -665,10 +680,18 @@ export function App() {
   };
 
   const handleAddTasksFromTemplate = (templateTasks: Partial<Task>[]) => {
-    const newTasksList = templateTasks.map((t, idx) => ({
+    const targetProjectId =
+      templateTasks[0]?.projectId ||
+      (activeProject ? activeProject.id : projects[0].id);
+    const targetProject =
+      projects.find((p) => p.id === targetProjectId) ||
+      activeProject ||
+      projects[0];
+
+    const newTasksList: Task[] = templateTasks.map((t, idx) => ({
       id: t.id || `tsk-tpl-${Date.now()}-${idx}`,
-      projectId: activeProject ? activeProject.id : projects[0].id,
-      projectName: activeProject ? activeProject.name : projects[0].name,
+      projectId: targetProjectId,
+      projectName: t.projectName || targetProject.name,
       title: t.title || 'Template Task',
       description: t.description || '',
       assignee: t.assignee || {
@@ -682,14 +705,42 @@ export function App() {
       priority: t.priority || 'Medium',
       status: t.status || 'Not Started',
       milestone: t.milestone || 'Pre-Construction',
-      costCode: '01-1000',
+      stageId: t.stageId,
+      costCode: t.costCode || '01-1000',
       subtasks: t.subtasks || [],
-      attachmentsCount: 1,
-      notesCount: 0,
-      photos: []
+      attachmentsCount: t.attachmentsCount ?? 1,
+      notesCount: t.notesCount ?? 0,
+      photos: t.photos || []
     }));
 
-    setTasks(prev => [...newTasksList, ...prev]);
+    setTasks((prev) => {
+      const updated = [...newTasksList, ...prev];
+      const projTasks = updated.filter((t) => t.projectId === targetProjectId);
+      const completedCount = projTasks.filter((t) => t.status === 'Completed').length;
+      const nextProgress =
+        projTasks.length > 0 ? Math.round((completedCount / projTasks.length) * 100) : 0;
+
+      setProjects((prevProjects) =>
+        prevProjects.map((p) => {
+          if (p.id !== targetProjectId) return p;
+          const updatedProj = {
+            ...p,
+            progress: nextProgress,
+            metrics: {
+              ...p.metrics,
+              totalTasks: projTasks.length,
+              completedTasks: completedCount
+            }
+          };
+          if (activeProject && activeProject.id === p.id) {
+            setActiveProject(updatedProj);
+          }
+          return updatedProj;
+        })
+      );
+
+      return updated;
+    });
   };
 
   const handleCreatePunch = (newPunch: Partial<PunchItem>) => {
@@ -939,6 +990,8 @@ export function App() {
   const handleSelectProject = (p: Project) => {
     setPreviousTab(activeTab);
     setActiveProject(p);
+    setIsDesktopSidebarOpen(false);
+    setIsSideDrawerOpen(false);
     let targetSubTab = 'overview';
     if (currentRole === 'finance') targetSubTab = 'budget';
     else if (currentRole === 'pm') targetSubTab = 'tasks';
@@ -953,6 +1006,8 @@ export function App() {
       setIsCreateTaskOpen(false);
     } else if (isCreateBudgetOpen) {
       setIsCreateBudgetOpen(false);
+      setBudgetItemsProjectId(null);
+      setBudgetCreateMethod(undefined);
     } else if (activeBudgetName) {
       setActiveBudgetName(null);
     } else if (activeProject) {
@@ -995,7 +1050,20 @@ export function App() {
         />
       ) : (
         /* 3. MAIN WORKSPACE APP */
-        <div className="w-full h-full flex flex-col justify-between relative bg-[#F7F9FC] text-[#0F172A] font-sans">
+        <div className="h-full flex items-stretch">
+          {isDesktopSidebarOpen && !activeProject && activeTab === 'home' && (
+            <AppSidebar
+              activeTab={activeTab}
+              currentUser={currentUser}
+              onTabChange={(tab) => {
+                setActiveProject(null);
+                setActiveTab(tab);
+                setIsDesktopSidebarOpen(false);
+              }}
+              onQuickAction={() => setIsQuickActionSheetOpen(true)}
+            />
+          )}
+        <div className="w-full max-w-[430px] min-w-0 md:w-[430px] md:shrink-0 h-full min-h-0 flex flex-col justify-between relative bg-[#F7F9FC] text-[#0F172A] font-sans overflow-hidden">
           {/* Top Sticky Header */}
           {activeTab !== 'notifications' && activeTab !== 'budgets' && activeTab !== 'more' && activeTab !== 'account' && activeTab !== 'team' && activeTab !== 'milestones' && activeTab !== 'punch' && activeTab !== 'messages' && (
             <Header
@@ -1015,7 +1083,18 @@ export function App() {
                 setActiveTab('latti');
               }}
               onOpenSettings={() => { setActiveBudgetName(null); setActiveProject(null); setActiveTab('account'); }}
-              onOpenDrawer={() => setIsSideDrawerOpen(true)}
+              onOpenDrawer={
+                !activeProject && activeTab === 'home'
+                  ? () => {
+                      if (window.matchMedia('(min-width: 768px)').matches) {
+                        setIsDesktopSidebarOpen((open) => !open);
+                      } else {
+                        setIsSideDrawerOpen(true);
+                      }
+                    }
+                  : undefined
+              }
+              isNavOpen={isDesktopSidebarOpen}
               onNavigateTab={(tab) => {
                 setActiveBudgetName(null);
                 if (tab === 'home' || tab === 'projects' || tab === 'calendar' || tab === 'daily-logs' || tab === 'budgets' || tab === 'team' || tab === 'latti' || tab === 'more' || tab === 'account') {
@@ -1052,15 +1131,18 @@ export function App() {
               <CreateProjectBudgetModal
                 isFullScreenPage={true}
                 lockedProjectId={budgetItemsProjectId || undefined}
+                initialMethod={budgetCreateMethod}
                 onClose={() => {
                   setIsCreateBudgetOpen(false);
                   setBudgetItemsProjectId(null);
+                  setBudgetCreateMethod(undefined);
                 }}
                 projects={visibleProjects}
                 onCreateBudget={(budgetData) => {
                   handleAddProjectItems(budgetData);
                   setIsCreateBudgetOpen(false);
                   setBudgetItemsProjectId(null);
+                  setBudgetCreateMethod(undefined);
                 }}
               />
             ) : activeProject ? (
@@ -1085,7 +1167,7 @@ export function App() {
                 onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
                 onAddTask={access.canCreateTask ? handleCreateTask : undefined}
                 onOpenPunch={(p) => setSelectedTask(null)}
-                onCreatePunch={access.canCreateTask ? () => setIsCreatePunchOpen(true) : undefined}
+                onCreatePunch={access.canCreatePunch ? () => setIsCreatePunchOpen(true) : undefined}
                 onUpdatePunchStatus={access.canManagePunch ? handleUpdatePunchStatus : undefined}
                 onUpdateTaskStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
                 onUploadPhoto={access.canUploadMedia ? () => setIsPhotoUploadOpen(true) : undefined}
@@ -1106,10 +1188,22 @@ export function App() {
                 onAddDailyLog={access.canCreateDailyLog ? handleAddDailyLog : undefined}
                 onOpenEditProject={access.canEditProject ? () => setIsEditProjectOpen(true) : undefined}
                 initialCalendarDate={initialCalendarDate}
-                onAddBudgetItems={access.canCreateBudget ? () => {
+                onAddBudgetItems={access.canCreateBudget ? (method) => {
                   setBudgetItemsProjectId(activeProject.id);
+                  setBudgetCreateMethod(method);
                   setIsCreateBudgetOpen(true);
                 } : undefined}
+                onLogExpense={access.canLogExpense ? (categoryKey, amount) => {
+                  handleLogExpense(activeProject.id, categoryKey, amount);
+                } : undefined}
+                onUpdateItemBudget={access.canEditBudget ? (itemId, estimatedCost) => {
+                  handleUpdateItemBudget(activeProject.id, itemId, estimatedCost);
+                } : undefined}
+                onRemoveItemBudget={access.canEditBudget ? (itemId) => {
+                  handleRemoveItemBudget(activeProject.id, itemId);
+                } : undefined}
+                openLogExpense={openLogExpense}
+                onLogExpenseOpened={() => setOpenLogExpense(false)}
               />
             ) : (
               /* Global Hub Views */
@@ -1146,8 +1240,8 @@ export function App() {
                       setProjectSubTab('budget');
                     }}
                     onOpenBudgetsHub={() => {
-                      setActiveProject(null);
-                      setActiveTab('budgets');
+                      handleSelectProject(scopedProject);
+                      setProjectSubTab('budget');
                     }}
                     onOpenDailyLogs={() => setActiveTab('daily-logs')}
                     onOpenPunchList={() => {
@@ -1158,7 +1252,7 @@ export function App() {
                     onOpenLienWaiver={access.canRecordLienWaiver ? () => setIsRecordLienWaiverOpen(true) : undefined}
                     onOpenCreateDraw={access.canCreateDraw ? () => setIsCreateDrawOpen(true) : undefined}
                     onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
-                    onCreatePunch={access.canCreateTask ? () => setIsCreatePunchOpen(true) : undefined}
+                    onCreatePunch={access.canCreatePunch ? () => setIsCreatePunchOpen(true) : undefined}
                     onCreateChangeOrder={access.canCreateChangeOrder ? () => setIsCreateChangeOrderOpen(true) : undefined}
                   />
                 )}
@@ -1185,7 +1279,7 @@ export function App() {
                       if (tab === 'projects' || tab === 'overview') {
                         handleSelectProject(scopedProject);
                         setProjectSubTab('overview');
-                      } else if (tab === 'budget') {
+                      } else if (tab === 'budget' || tab === 'budgets') {
                         handleSelectProject(scopedProject);
                         setProjectSubTab(access.canViewBudget ? 'budget' : 'overview');
                       } else if (tab === 'schedule') {
@@ -1248,6 +1342,8 @@ export function App() {
                     tasks={visibleTasks}
                     onOpenTask={(t) => setSelectedTask(t)}
                     onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
+                    onAddTask={access.canCreateTask ? handleCreateTask : undefined}
+                    onAddTasksFromTemplate={access.canCreateTask ? handleAddTasksFromTemplate : undefined}
                     onUpdateStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
                     canManageBoard={access.canManageTaskBoard}
                   />
@@ -1263,28 +1359,6 @@ export function App() {
                     initialDate={initialCalendarDate}
                   />
                 )}
-
-                {activeTab === 'budgets' && (
-                  ['admin', 'finance', 'pm'].includes(currentRole) ? (
-                    <BudgetsHubView
-                      projects={visibleProjects}
-                      projectLedgers={projectLedgers}
-                      onAddProjectItems={handleAddProjectItems}
-                      onOpenImportBudget={access.canImportBudget ? () => setIsImportBudgetOpen(true) : undefined}
-                      canCreateBudget={access.canCreateBudget}
-                      onBack={() => setActiveTab('home')}
-                    />
-                  ) : (
-                    <div className="p-8 text-center text-slate-500 max-w-[430px] mx-auto">
-                      <p className="text-sm font-bold text-slate-800">Access Restricted</p>
-                      <p className="text-xs text-slate-500 mt-1">Financial Ledgers and Budgets are accessible to Administrators, Finance Officers, and Project Managers.</p>
-                      <button onClick={() => setActiveTab('home')} className="mt-4 px-4 py-2 bg-[#1677FF] text-white text-xs font-bold rounded-xl cursor-pointer">
-                        Return Home
-                      </button>
-                    </div>
-                  )
-                )}
-
 
                 {activeTab === 'messages' && (
                   <MessagesHubView
@@ -1303,7 +1377,7 @@ export function App() {
                     tasks={tasks}
                     onSelectProject={handleSelectProject}
                     onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
-                    canAddMilestone={access.isPM}
+                    canAddMilestone={access.canManageSchedule}
                     onBack={() => setActiveTab('home')}
                   />
                 )}
@@ -1312,7 +1386,7 @@ export function App() {
                   <ProjectPunchListTab
                     project={activeProject || projects[0]}
                     punchItems={punchItems}
-                    onCreatePunch={access.canCreateTask ? () => setIsCreatePunchOpen(true) : undefined}
+                    onCreatePunch={access.canCreatePunch ? () => setIsCreatePunchOpen(true) : undefined}
                     onUpdatePunchStatus={access.canManagePunch ? handleUpdatePunchStatus : undefined}
                     onDeletePunch={access.canManagePunch ? handleDeletePunch : undefined}
                     onBack={() => setActiveTab('home')}
@@ -1389,6 +1463,7 @@ export function App() {
             onSignOut={() => setAppView('auth')}
           />
         </div>
+        </div>
       )}
 
       {/* CENTRAL ADD (+) ACTION SHEET */}
@@ -1417,7 +1492,7 @@ export function App() {
           setActiveProject(target);
           setActiveTab('projects');
           setProjectSubTab('budget');
-          setIsCreateChangeOrderOpen(true);
+          window.setTimeout(() => setOpenLogExpense(true), 50);
         } : undefined}
         onAddPhoto={access.canUploadMedia ? () => {
           const target = activeProject || scopedProject;

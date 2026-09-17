@@ -18,13 +18,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     project.stages?.find(s => s.status === 'In Progress')?.name || 
     (project.id === 'proj-1' ? 'Construction' : project.id === 'proj-2' ? 'Foundation' : project.type || 'Construction');
 
-  // Format budget total
   const formatBudget = (amount?: number) => {
-    if (!amount) return '$4.65M';
-    if (amount >= 1000000) {
-      return `$${(amount / 1000000).toFixed(2)}M`;
-    }
-    return `$${(amount / 1000).toFixed(0)}k`;
+    const n = amount ?? 0;
+    if (n >= 1000000) return `$${(n / 1000000).toFixed(2)}M`;
+    if (n >= 1000) return `$${Math.round(n / 1000)}K`;
+    return `$${Math.round(n)}`;
   };
 
   // Status badge logic

@@ -4,10 +4,12 @@ import {
   Plus, Download, Trash2, Check, Pencil,
   ChevronDown, ChevronUp, Search,
   Layers, Hammer, Boxes, Sliders, Wrench, Building2,
-  MoreVertical, X, Clock, User as UserIcon, Sparkles, CheckCircle2
+  MoreVertical, X
 } from 'lucide-react';
 import { CreateTaskModal } from '../modals/CreateTaskModal';
 import { EditTaskModal, EditableTaskData } from '../modals/EditTaskModal';
+import { AddTasksTemplateModal } from '../modals/AddTasksTemplateModal';
+import { AddMethodChooser } from '../common/AddMethodChooser';
 
 interface ProjectTasksTabProps {
   project: Project;
@@ -15,6 +17,7 @@ interface ProjectTasksTabProps {
   onOpenTask?: (task: Task) => void;
   onCreateTask?: () => void;
   onAddTask?: (task: Partial<Task>) => void;
+  onAddTasksFromTemplate?: (tasks: Partial<Task>[]) => void;
   onUpdateStatus?: (taskId: string, status: TaskStatus) => void;
   canManageBoard?: boolean;
 }
@@ -49,6 +52,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   onOpenTask,
   onCreateTask: onOpenCreateTaskModal,
   onAddTask,
+  onAddTasksFromTemplate,
   onUpdateStatus,
   canManageBoard = false,
 }) => {
@@ -76,6 +80,9 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [editingGroupName, setEditingGroupName] = useState<string>('');
+  // Empty-state: Add task → Custom | Import
+  const [showTaskChooser, setShowTaskChooser] = useState(false);
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   // Synchronize stages if project changes
   useEffect(() => {
@@ -165,26 +172,30 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     return grouped;
   }, [stageDefs, projectTasks]);
 
-  // Accordion toggle
-  const toggleGroup = (groupId: string) => {
-    setCollapsedGroups(prev => ({
-      ...prev,
-      [groupId]: !prev[groupId]
-    }));
+  // Empty stages start collapsed; explicit map overrides that default.
+  const isGroupCollapsed = (groupId: string, taskCount: number) => {
+    if (collapsedGroups[groupId] !== undefined) return !!collapsedGroups[groupId];
+    return taskCount === 0;
   };
 
-  const allCollapsed = stageDefs.length > 0 && stageDefs.every(g => !!collapsedGroups[g.id]);
+  const toggleGroup = (groupId: string, taskCount: number) => {
+    setCollapsedGroups((prev) => {
+      const currently =
+        prev[groupId] !== undefined ? !!prev[groupId] : taskCount === 0;
+      return { ...prev, [groupId]: !currently };
+    });
+  };
+
+  const allCollapsed =
+    stageGroupsWithTasks.length > 0 &&
+    stageGroupsWithTasks.every((g) => isGroupCollapsed(g.id, g.tasks.length));
 
   const handleToggleAll = () => {
-    if (allCollapsed) {
-      setCollapsedGroups({});
-    } else {
-      const all: Record<string, boolean> = {};
-      stageDefs.forEach(g => {
-        all[g.id] = true;
-      });
-      setCollapsedGroups(all);
-    }
+    const all: Record<string, boolean> = {};
+    stageDefs.forEach((g) => {
+      all[g.id] = !allCollapsed;
+    });
+    setCollapsedGroups(all);
   };
 
   const handleStartRenameGroup = (e: React.MouseEvent, grp: StageTaskGroup) => {
@@ -277,6 +288,25 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const todoCount = projectTasks.filter(t => t.status === 'Not Started').length;
   const blockedCount = projectTasks.filter(t => t.status === 'Blocked').length;
   const overallPercent = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+  const isEmpty = totalCount === 0;
+  const canAdd = !!(onAddTask || onAddTasksFromTemplate || onOpenCreateTaskModal);
+
+  const openCustomCreate = () => {
+    setShowTaskChooser(false);
+    setTargetStageIdForCreate(null);
+    if (onAddTask) {
+      setIsCreateModalOpen(true);
+    } else if (onOpenCreateTaskModal) {
+      onOpenCreateTaskModal();
+    }
+  };
+
+  const openImportTemplate = () => {
+    setShowTaskChooser(false);
+    if (onAddTasksFromTemplate) {
+      setIsTemplateModalOpen(true);
+    }
+  };
 
   // Filtered stage groups based on search & status filter
   const filteredGroups = useMemo(() => {
@@ -297,13 +327,19 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         tasks: filteredTasks,
         originalTasks: grp.tasks
       };
-    }).filter(grp => grp.tasks.length > 0 || !searchQuery.trim());
+    }).filter((grp) => {
+      if (grp.tasks.length > 0) return true;
+      // Hide empty stages while filtering/searching — less noise
+      if (searchQuery.trim() || statusFilter !== 'all') return false;
+      return true;
+    });
   }, [stageGroupsWithTasks, statusFilter, searchQuery]);
 
   return (
     <div className="w-full flex-1 flex flex-col gap-3.5 px-4 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
 
-      {/* ─── 1. Header & Primary CTA ─── */}
+      {/* ─── Header ─── */}
+      {!isEmpty && (
       <div className="flex items-center justify-between px-0.5 pt-1">
         <div>
           <div className="flex items-center gap-2">
@@ -315,11 +351,11 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
             </span>
           </div>
           <p className="text-xs text-[#64748B] font-medium mt-0.5">
-            {doneCount} of {totalCount} tasks completed across {stageDefs.length} stages
+            {doneCount} of {totalCount} completed
           </p>
         </div>
 
-        {(onAddTask || onOpenCreateTaskModal) && (
+        {canAdd && (
         <button
           onClick={() => {
             setTargetStageIdForCreate(null);
@@ -332,7 +368,48 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         </button>
         )}
       </div>
+      )}
 
+      {/* Empty: title + Add task → Custom | Import */}
+      {isEmpty && canAdd && (
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] px-4 py-4 mt-1 shadow-card">
+          {!showTaskChooser ? (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm font-semibold text-[#0F172A] text-center">No tasks yet</p>
+              <button
+                type="button"
+                onClick={() => setShowTaskChooser(true)}
+                className="w-full h-11 rounded-xl bg-[#EAF3FF] hover:bg-[#D6E9FF] text-[#1677FF] text-sm font-semibold flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.99] border border-[#1677FF]/20"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                Add task
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between pb-1">
+                <p className="text-sm font-semibold text-[#0F172A]">Add task</p>
+                <button
+                  type="button"
+                  onClick={() => setShowTaskChooser(false)}
+                  className="text-xs font-semibold text-[#1677FF] cursor-pointer"
+                >
+                  Back
+                </button>
+              </div>
+              <AddMethodChooser
+                onCustom={onAddTask || onOpenCreateTaskModal ? openCustomCreate : undefined}
+                onImport={onAddTasksFromTemplate ? openImportTemplate : undefined}
+                customHint="Single task"
+                importHint="From template"
+              />
+            </>
+          )}
+        </div>
+      )}
+
+      {!isEmpty && (
+      <>
       {/* ─── Overall Progress Bar ─── */}
       <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden border border-[#E2E8F0]">
         <div
@@ -422,28 +499,31 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
           onClick={handleToggleAll}
           className="text-[#1677FF] font-semibold hover:underline cursor-pointer select-none"
         >
-          {allCollapsed ? 'Expand All Stages' : 'Collapse All Stages'}
+          {allCollapsed ? 'Expand all' : 'Collapse all'}
         </button>
 
-        {canManageBoard && (
-        <button
-          onClick={() => alert(`CSI MasterFormat task schedule is synchronized for ${project.name}.`)}
-          className="flex items-center gap-1 text-[#64748B] hover:text-[#1677FF] transition-colors cursor-pointer select-none"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span>Sync Standards</span>
-        </button>
+        {onAddTasksFromTemplate && (
+          <button
+            type="button"
+            onClick={() => setIsTemplateModalOpen(true)}
+            className="h-8 px-2.5 rounded-xl border border-[#E2E8F0] bg-white text-[#0F172A] hover:border-[#1677FF]/40 hover:text-[#1677FF] flex items-center gap-1.5 transition-colors cursor-pointer select-none"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span className="font-semibold">Import</span>
+          </button>
         )}
       </div>
+      </>
+      )}
 
-      {/* ─── 5. Stage Groups List ─── */}
+      {/* ─── 5. Stage Groups List (hidden when empty) ─── */}
+      {!isEmpty && (
       <div className="flex flex-col gap-3">
         {filteredGroups.map((group) => {
-          const isCollapsed = !!collapsedGroups[group.id];
+          const isCollapsed = isGroupCollapsed(group.id, group.originalTasks.length);
           const groupTotal = group.originalTasks.length;
           const groupDone = group.originalTasks.filter(t => t.status === 'Completed').length;
           const groupPercent = groupTotal > 0 ? Math.round((groupDone / groupTotal) * 100) : 0;
-          const is100Done = groupPercent === 100;
 
           return (
             <div
@@ -452,7 +532,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
             >
               {/* Accordion Header */}
               <div
-                onClick={() => toggleGroup(group.id)}
+                onClick={() => toggleGroup(group.id, group.originalTasks.length)}
                 className="w-full p-3.5 flex items-center justify-between gap-2.5 bg-white hover:bg-[#F8FAFC] transition-colors cursor-pointer text-left select-none"
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -537,18 +617,10 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
               {!isCollapsed && (
                 <div className="border-t border-[#E2E8F0]">
                   {group.tasks.length === 0 ? (
-                    <div className="py-4 text-center">
-                      <p className="text-xs text-[#94A3B8] mb-2">No tasks in this stage matching current filter.</p>
-                      {(onAddTask || onOpenCreateTaskModal) && (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenCreateInStage(group.id)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#1677FF] bg-[#EAF3FF] hover:bg-[#D8E9FF] transition-colors cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                        <span>Add First Task</span>
-                      </button>
-                      )}
+                    <div className="px-3.5 py-3 text-center">
+                      <p className="text-xs text-[#94A3B8]">
+                        {group.originalTasks.length === 0 ? 'No tasks' : 'No matches'}
+                      </p>
                     </div>
                   ) : (
                     <div className="divide-y divide-[#F1F5F9]">
@@ -804,6 +876,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
           );
         })}
       </div>
+      )}
 
       {/* ─── Create Task Modal ─── */}
       <CreateTaskModal
@@ -816,6 +889,26 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         initialStageId={targetStageIdForCreate || undefined}
         stageOptions={stageDefs.map(s => ({ id: s.id, name: s.name }))}
         onCreate={handleCreateNewTask}
+      />
+
+      {/* ─── Import from template ─── */}
+      <AddTasksTemplateModal
+        isOpen={isTemplateModalOpen}
+        onClose={() => setIsTemplateModalOpen(false)}
+        projectName={project.name}
+        projectId={project.id}
+        onAddTasks={(templateTasks) => {
+          if (onAddTasksFromTemplate) {
+            onAddTasksFromTemplate(
+              templateTasks.map((t) => ({
+                ...t,
+                projectId: project.id,
+                projectName: project.name,
+              }))
+            );
+          }
+          setIsTemplateModalOpen(false);
+        }}
       />
 
       {/* ─── Edit Task Modal ─── */}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project } from '../../types';
-import { ArrowLeft, Upload, Check, Image as ImageIcon, Building, Calendar, DollarSign, UserCheck } from 'lucide-react';
+import { ArrowLeft, Upload, Check } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface CreateProjectViewProps {
@@ -40,7 +40,6 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
   const [cityState, setCityState] = useState('');
   const [type, setType] = useState<string>(PROJECT_TYPES[0]);
   const [pmName, setPmName] = useState(AVAILABLE_PMS[0].name);
-  const [totalBudget, setTotalBudget] = useState('');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [targetEndDate, setTargetEndDate] = useState('');
   const [description, setDescription] = useState('');
@@ -67,7 +66,6 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
     if (!isValid) return;
 
     const pmObj = AVAILABLE_PMS.find(p => p.name === pmName) || AVAILABLE_PMS[0];
-    const budgetNum = Number(totalBudget) || 0;
 
     onCreate({
       name: name.trim(),
@@ -79,13 +77,13 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
       startDate: startDate || new Date().toISOString().split('T')[0],
       targetEndDate: targetEndDate || '2026-06-30',
       budget: {
-        total: budgetNum,
+        total: 0,
         committed: 0,
         actual: 0,
         paid: 0,
-        remaining: budgetNum,
+        remaining: 0,
         variance: 0,
-        costToComplete: budgetNum
+        costToComplete: 0,
       },
       projectManager: {
         id: `pm-${Date.now()}`,
@@ -285,35 +283,19 @@ export const CreateProjectView: React.FC<CreateProjectViewProps> = ({
             </div>
           </div>
 
-          {/* Lead PM & Total Estimated Budget */}
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
-                Lead Project Manager
-              </label>
-              <select
-                value={pmName}
-                onChange={(e) => setPmName(e.target.value)}
-                className="w-full h-10 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
-              >
-                {AVAILABLE_PMS.map(p => (
-                  <option key={p.name} value={p.name}>{p.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
-                Total Budget ($ USD)
-              </label>
-              <input
-                type="number"
-                value={totalBudget}
-                onChange={(e) => setTotalBudget(e.target.value)}
-                placeholder="e.g. 2500000"
-                className={inputClass}
-              />
-            </div>
+          <div>
+            <label className="text-[12px] font-semibold text-[#171A1F] mb-1 block">
+              Lead Project Manager
+            </label>
+            <select
+              value={pmName}
+              onChange={(e) => setPmName(e.target.value)}
+              className="w-full h-12 min-h-[48px] bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs outline-none focus:border-[#1677FF] cursor-pointer"
+            >
+              {AVAILABLE_PMS.map(p => (
+                <option key={p.name} value={p.name}>{p.name}</option>
+              ))}
+            </select>
           </div>
 
           {/* Timeline: Start Date & Target Completion Date */}

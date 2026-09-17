@@ -19,6 +19,7 @@ interface HeaderProps {
   onOpenLatti?: () => void;
   onOpenSettings: () => void;
   onOpenDrawer?: () => void;
+  isNavOpen?: boolean;
   onNavigateTab?: (tab: string) => void;
   onQuickAction?: () => void;
   onMarkAllRead?: () => void;
@@ -40,6 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenLatti,
   onOpenSettings,
   onOpenDrawer,
+  isNavOpen = false,
   onNavigateTab,
   onOpenEditProject,
   onDeleteProject
@@ -187,10 +189,15 @@ export const Header: React.FC<HeaderProps> = ({
               {onOpenDrawer && (
                 <button
                   onClick={onOpenDrawer}
-                  className="w-10 h-10 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-xs"
-                  title="Open Navigation Menu"
+                  className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all cursor-pointer flex-shrink-0 active:scale-95 shadow-xs ${
+                    isNavOpen
+                      ? 'bg-[#EAF3FF] border-[#1677FF]/30 text-[#1677FF]'
+                      : 'bg-white hover:bg-[#F8FAFC] border-[#E2E8F0] text-[#0F172A]'
+                  }`}
+                  title={isNavOpen ? 'Hide Navigation Menu' : 'Open Navigation Menu'}
+                  aria-expanded={isNavOpen}
                 >
-                  <Menu className="w-5 h-5 text-[#0F172A]" />
+                  <Menu className="w-5 h-5" />
                 </button>
               )}
 

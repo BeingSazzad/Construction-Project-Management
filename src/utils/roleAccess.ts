@@ -1,16 +1,18 @@
 import { Project, User, UserRole } from '../types';
 
+/**
+ * Owner (admin) = full power — every can* flag is true.
+ * PM = job delivery (schedule/tasks/logs), no billing/company admin.
+ * Finance = money only.
+ * Field = site ops only, no money.
+ */
 export function getRoleAccess(role: UserRole) {
   const isOwner = role === 'admin';
   const isPM = role === 'pm';
   const isFinance = role === 'finance';
   const isField = role === 'field';
 
-  return {
-    isOwner,
-    isPM,
-    isFinance,
-    isField,
+  const flags = {
     canSeeAllProjects: isOwner || isFinance,
     canManageBilling: isOwner,
     canViewCompany: isOwner || isPM || isFinance,
@@ -23,14 +25,15 @@ export function getRoleAccess(role: UserRole) {
     canCreateProject: isOwner,
     canEditProject: isOwner || isPM,
     canDeleteProject: isOwner,
-    canCreateTask: isPM || isField,
-    canUpdateTaskStatus: isPM || isField,
-    canDeleteTask: isPM,
-    canManageTaskBoard: isPM,
-    canManageSchedule: isPM,
-    canCreateDailyLog: isPM || isField,
-    canEditDailyLog: isPM || isField,
-    canManagePunch: isPM || isField,
+    canCreateTask: isOwner || isPM || isField,
+    canUpdateTaskStatus: isOwner || isPM || isField,
+    canDeleteTask: isOwner || isPM,
+    canManageTaskBoard: isOwner || isPM,
+    canManageSchedule: isOwner || isPM,
+    canCreateDailyLog: isOwner || isPM || isField,
+    canEditDailyLog: isOwner || isPM || isField,
+    canManagePunch: isOwner || isPM || isField,
+    canCreatePunch: isOwner || isPM || isField,
     canUploadMedia: isOwner || isPM || isField,
     canDeleteMedia: isOwner || isPM,
     canAddReport: isOwner || isFinance,
@@ -44,6 +47,22 @@ export function getRoleAccess(role: UserRole) {
     canImportBudget: isOwner || isFinance,
     canCreateBudget: isOwner || isFinance,
     canViewBudget: !isField,
+    canViewProfitLoss: isOwner || isFinance,
+  };
+
+  // Hard rule: Owner never loses a permission — force every can* on.
+  if (isOwner) {
+    (Object.keys(flags) as (keyof typeof flags)[]).forEach((key) => {
+      if (key.startsWith('can')) flags[key] = true;
+    });
+  }
+
+  return {
+    isOwner,
+    isPM,
+    isFinance,
+    isField,
+    ...flags,
   };
 }
 

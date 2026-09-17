@@ -58,7 +58,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     ...(onAddExpense ? [{
       id: 'expense',
       label: 'Expense',
-      subtitle: 'Record cost items, vendor receipts, or change orders',
+      subtitle: 'Log a bill against the project budget',
       icon: DollarSign,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddExpense,

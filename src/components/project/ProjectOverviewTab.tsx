@@ -285,7 +285,11 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
               <Landmark className="w-4 h-4 stroke-[2]" />
             </div>
             <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
-              ${(project.budget?.total ? project.budget.total / 1000000 : 4.65).toFixed(2)}M
+              {(project.budget?.total || 0) >= 1000000
+                ? `$${((project.budget?.total || 0) / 1000000).toFixed(2)}M`
+                : (project.budget?.total || 0) >= 1000
+                  ? `$${Math.round((project.budget?.total || 0) / 1000)}K`
+                  : `$${Math.round(project.budget?.total || 0)}`}
             </span>
             <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
               Total Budget

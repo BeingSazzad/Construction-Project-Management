@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Project, TradeCategory, ChangeOrder } from '../../types';
+import { Project, TradeCategory, ChangeOrder, CostItem } from '../../types';
 import {
-  ArrowLeft, ChevronRight, Plus,
+  ArrowLeft, ChevronRight, Plus, Pencil,
   FileText, Search, Filter,
-  X, Check, Building2, Layers, Wrench, Zap, Boxes
+  X, Check
 } from 'lucide-react';
+import { AddMethodChooser } from '../common/AddMethodChooser';
 
 interface ProjectBudgetTabProps {
   project: Project;
@@ -14,7 +15,12 @@ interface ProjectBudgetTabProps {
   onApproveChangeOrder?: (id: string) => void;
   onAddCostItem?: () => void;
   onImportBudget?: () => void;
-  onAddItems?: () => void;
+  onAddItems?: (method?: 'preset' | 'blank') => void;
+  onLogExpense?: (categoryKey: string, amount: number) => void;
+  onUpdateItemBudget?: (itemId: string, estimatedCost: number) => void;
+  onRemoveItemBudget?: (itemId: string) => void;
+  openExpense?: boolean;
+  onExpenseOpened?: () => void;
 }
 
 export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
@@ -24,17 +30,24 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   onCreateChangeOrder,
   onApproveChangeOrder,
   onAddCostItem,
+  onImportBudget,
   onAddItems,
+  onLogExpense,
+  onUpdateItemBudget,
+  onRemoveItemBudget,
+  openExpense = false,
+  onExpenseOpened,
 }) => {
   // Navigation: 'overview' | 'trade-details'
   const [currentView, setCurrentView] = useState<'overview' | 'trade-details'>('overview');
   const [selectedTradeId, setSelectedTradeId] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'categories' | 'change-orders'>(
-    initialCategories.length === 0 ? 'categories' : 'change-orders'
-  );
+  const [activeTab, setActiveTab] = useState<'categories' | 'change-orders'>('categories');
 
-  // Categories & Change Orders State
+  // Empty-state: Add budget → Custom | Import
+  const [showBudgetChooser, setShowBudgetChooser] = useState(false);
+
+  // Categories come from parent ledger — keep local copy synced for expense fallback only
   const [categories, setCategories] = useState<TradeCategory[]>(initialCategories);
   const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>(() =>
     initialChangeOrders.filter(co => co.projectId === project.id)
@@ -46,7 +59,23 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
   React.useEffect(() => {
     setCategories(initialCategories);
-  }, [initialCategories]);
+    if (initialCategories.length > 0) setShowBudgetChooser(false);
+    // After remove clears a category, drop back to overview if that drill-down is gone
+    if (
+      selectedTradeId &&
+      !initialCategories.some((c) => c.id === selectedTradeId)
+    ) {
+      setCurrentView('overview');
+      setSelectedTradeId(null);
+    }
+  }, [initialCategories, selectedTradeId]);
+
+  React.useEffect(() => {
+    if (!openExpense) return;
+    setActiveTab('categories');
+    setIsAddExpenseModalOpen(true);
+    onExpenseOpened?.();
+  }, [openExpense]);
 
   // Modals & Filters
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
@@ -61,6 +90,10 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   const [expenseAmount, setExpenseAmount] = useState('');
   const [expenseVendor, setExpenseVendor] = useState('');
 
+  // Edit line-item budget
+  const [editingItem, setEditingItem] = useState<CostItem | null>(null);
+  const [editBudgetAmount, setEditBudgetAmount] = useState('');
+
   // Form States: Change Order
   const [coTitle, setCoTitle] = useState('');
   const [coAmount, setCoAmount] = useState('');
@@ -68,15 +101,54 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
   // Selected trade for drill-down view
   const selectedTrade = categories.find(c => c.id === selectedTradeId) || categories[0];
+  const selectedLineItems = selectedTrade
+    ? selectedTrade.costCodes.flatMap((group) => group.items)
+    : [];
 
-  // Financial Metrics — derived from real project.budget data
-  const totalBudget = project.budget?.total || 0;
-  const totalSpent = project.budget?.actual || 0;
-  const totalCommitted = project.budget?.committed || 0;
-  const totalAvailable = project.budget?.remaining || Math.max(0, totalBudget - totalSpent);
+  const canManageItem = Boolean(onUpdateItemBudget || onRemoveItemBudget);
+
+  const openEditItem = (item: CostItem) => {
+    if (!canManageItem) return;
+    setEditingItem(item);
+    setEditBudgetAmount(String(item.estimatedCost || ''));
+  };
+
+  const handleSaveItemBudget = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem || !onUpdateItemBudget) return;
+    const amt = Number(editBudgetAmount);
+    if (isNaN(amt) || amt < 0) return;
+    onUpdateItemBudget(editingItem.id, amt);
+    setEditingItem(null);
+    setEditBudgetAmount('');
+  };
+
+  const handleRemoveItemBudget = () => {
+    if (!editingItem || !onRemoveItemBudget) return;
+    const itemId = editingItem.id;
+    const itemName = editingItem.name;
+    if (!confirm(`Remove "${itemName}" from this budget?`)) return;
+    onRemoveItemBudget(itemId);
+    setEditingItem(null);
+    setEditBudgetAmount('');
+    const remainingInTrade = selectedLineItems.filter((it) => it.id !== itemId);
+    if (remainingInTrade.length === 0) {
+      setCurrentView('overview');
+      setSelectedTradeId(null);
+    }
+  };
+
+  // Financial Metrics — always from ledger (empty budget = all zeros)
+  const ledgerEstimated = categories.reduce((sum, cat) => sum + cat.estimatedCost, 0);
+  const ledgerActual = categories.reduce((sum, cat) => sum + cat.actualCost, 0);
+  const ledgerCommitted = categories.reduce((sum, cat) => sum + cat.committedCost, 0);
+  const totalBudget = ledgerEstimated;
+  const totalSpent = ledgerActual;
+  const totalCommitted = ledgerCommitted;
+  const totalAvailable = Math.max(0, totalBudget - totalSpent);
   const spentPercent = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
   const committedPercent = totalBudget > 0 ? Math.round((totalCommitted / totalBudget) * 100) : 0;
-  const availablePercent = Math.max(0, 100 - spentPercent - committedPercent);
+  const availablePercent = totalBudget > 0 ? Math.round((totalAvailable / totalBudget) * 100) : 0;
 
   const formatCompact = (n: number) => {
     if (n >= 1000000) return `$${(n / 1000000).toFixed(2)}M`;
@@ -112,26 +184,22 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
     };
   };
 
-  const getCategoryIcon = (name: string) => {
-    const lower = name.toLowerCase();
-    if (lower.includes('concrete') || lower.includes('foundation')) return <Building2 className="w-5 h-5 text-[#1677FF]" />;
-    if (lower.includes('steel') || lower.includes('structure') || lower.includes('frame')) return <Wrench className="w-5 h-5 text-[#1677FF]" />;
-    if (lower.includes('mep') || lower.includes('electric') || lower.includes('plumb') || lower.includes('hvac')) return <Zap className="w-5 h-5 text-[#1677FF]" />;
-    if (lower.includes('finish') || lower.includes('millwork')) return <Boxes className="w-5 h-5 text-[#1677FF]" />;
-    return <Layers className="w-5 h-5 text-[#1677FF]" />;
-  };
-
   const handleAddExpense = (e: React.FormEvent) => {
     e.preventDefault();
     const amt = Number(expenseAmount);
     if (!expenseTrade || isNaN(amt) || amt <= 0) return;
 
-    setCategories(prev => prev.map(cat => {
-      if (cat.name === expenseTrade || cat.id === expenseTrade) {
-        return { ...cat, actualCost: cat.actualCost + amt };
-      }
-      return cat;
-    }));
+    const category = categories.find((cat) => cat.name === expenseTrade || cat.id === expenseTrade);
+    if (onLogExpense && category) {
+      onLogExpense(category.id, amt);
+    } else {
+      setCategories((prev) => prev.map((cat) => {
+        if (cat.name === expenseTrade || cat.id === expenseTrade) {
+          return { ...cat, actualCost: cat.actualCost + amt };
+        }
+        return cat;
+      }));
+    }
 
     setIsAddExpenseModalOpen(false);
     setExpenseAmount('');
@@ -216,58 +284,62 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
 
           {/* Trade Summary Card */}
           <div className="bg-white rounded-3xl border border-[#E2E8F0] p-4 shadow-xs flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] flex items-center justify-center text-[#1677FF] shrink-0">
-                {getCategoryIcon(selectedTrade.name)}
-              </div>
-              <div className="min-w-0">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">Category</span>
-                <h2 className="text-base font-bold text-[#0F172A] truncate">{selectedTrade.name}</h2>
-              </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">Category</span>
+              <h2 className="text-base font-bold text-[#0F172A] truncate">{selectedTrade.name}</h2>
             </div>
 
             <div className="grid grid-cols-3 pt-3 border-t border-[#F1F5F9]">
               <div>
                 <span className="text-[11px] text-[#64748B] block">Budget</span>
-                <span className="text-sm font-bold text-[#0F172A] mt-0.5 block">${Math.round(selectedTrade.estimatedCost / 1000)}K</span>
+                <span className="text-sm font-bold text-[#0F172A] mt-0.5 block">{formatCompact(selectedTrade.estimatedCost)}</span>
               </div>
               <div>
                 <span className="text-[11px] text-[#64748B] block">Spent</span>
-                <span className="text-sm font-bold text-[#1677FF] mt-0.5 block">${Math.round(selectedTrade.actualCost / 1000)}K</span>
+                <span className="text-sm font-bold text-[#1677FF] mt-0.5 block">{formatCompact(selectedTrade.actualCost)}</span>
               </div>
               <div>
                 <span className="text-[11px] text-[#64748B] block">Available</span>
                 <span className="text-sm font-bold text-[#10A976] mt-0.5 block">
-                  ${Math.round(Math.max(0, selectedTrade.estimatedCost - selectedTrade.actualCost) / 1000)}K
+                  {formatCompact(Math.max(0, selectedTrade.estimatedCost - selectedTrade.actualCost))}
                 </span>
               </div>
-            </div>
-
-            <div className="w-full h-2 rounded-full bg-[#EAF3FF] overflow-hidden">
-              <div
-                className="h-full bg-[#1677FF] rounded-full transition-all"
-                style={{
-                  width: `${selectedTrade.estimatedCost > 0 ? Math.min(100, Math.round((selectedTrade.actualCost / selectedTrade.estimatedCost) * 100)) : 0}%`
-                }}
-              />
             </div>
           </div>
 
           {/* Line items list */}
           <div className="bg-white rounded-3xl border border-[#E2E8F0] p-4 shadow-xs flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Line Items</h3>
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Line Items</h3>
+              {canManageItem && (
+                <span className="text-[11px] font-medium text-[#94A3B8]">Edit or remove</span>
+              )}
+            </div>
             <div className="flex flex-col divide-y divide-[#F1F5F9]">
-              {selectedTrade.costCodes.map((cc) => (
-                <div key={cc.code} className="py-2.5 flex items-center justify-between text-xs first:pt-0 last:pb-0">
-                  <div className="min-w-0 pr-2">
-                    <span className="font-bold text-[#0F172A] block truncate">{cc.name}</span>
-                    <span className="text-[11px] text-[#64748B]">{cc.code}</span>
+              {selectedLineItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => openEditItem(item)}
+                  disabled={!canManageItem}
+                  className={`py-3 flex items-center justify-between gap-3 text-xs first:pt-0 last:pb-0 w-full text-left ${
+                    canManageItem ? 'cursor-pointer hover:bg-[#F8FAFC] -mx-1 px-1 rounded-xl' : 'cursor-default'
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <span className="font-bold text-[#0F172A] block truncate">{item.name}</span>
+                    <span className="text-[11px] text-[#64748B]">{item.code}</span>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="font-bold text-[#0F172A] block">${Math.round(cc.actualCost / 1000)}K</span>
-                    <span className="text-[11px] text-[#64748B]">of ${Math.round(cc.estimatedCost / 1000)}K</span>
+                    <span className="font-bold text-[#0F172A] block">{formatCompact(item.actualCost)}</span>
+                    <span className="text-[11px] text-[#64748B]">of {formatCompact(item.estimatedCost)}</span>
                   </div>
-                </div>
+                  {canManageItem && (
+                    <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+                      <Pencil className="w-4 h-4" />
+                    </div>
+                  )}
+                </button>
               ))}
             </div>
           </div>
@@ -277,13 +349,12 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             MAIN BUDGET OVERVIEW (MATCHING EXACT FIGMA REFERENCE SCREEN)
         ══════════════════════════════════════════════════════════════════════════ */
         <>
-          {/* Project total — workspace already has back + title */}
+          {/* Summary — ledger zeros when empty; no phantom project.budget */}
           <div className="rounded-2xl border border-[#E2E8F0] bg-gradient-to-b from-[#F0F7FF] via-[#F8FAFC]/70 to-white p-4 shadow-xs flex flex-col gap-3">
-            {/* Top Row: Title, Amount & 69% Spent Pill */}
             <div className="flex items-start justify-between">
               <div>
                 <span className="text-[11px] font-medium text-[#64748B] block">
-                  Project total
+                  Original
                 </span>
                 <div className="text-[24px] sm:text-[26px] font-bold text-[#0F172A] tracking-tight leading-tight mt-0.5">
                   {formatCompact(totalBudget)}
@@ -300,7 +371,6 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               </div>
             </div>
 
-            {/* Main Progress Bar */}
             <div className="w-full h-2 rounded-full bg-[#E2E8F0] overflow-hidden flex">
               <div
                 className="h-full bg-[#1677FF] rounded-full transition-all duration-500"
@@ -309,9 +379,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               />
             </div>
 
-            {/* 3-Column Financial Stats with Hairline Dividers (1-line label + percentage) */}
             <div className="grid grid-cols-3 divide-x divide-[#E2E8F0] pt-0.5">
-              {/* Stat 1: Spent */}
               <div className="pr-2 sm:pr-3">
                 <div className="text-sm sm:text-base font-bold text-[#0F172A] leading-tight">
                   {formatCompact(totalSpent)}
@@ -323,7 +391,6 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 </div>
               </div>
 
-              {/* Stat 2: Committed */}
               <div className="px-2 sm:px-3">
                 <div className="text-sm sm:text-base font-bold text-[#0F172A] leading-tight">
                   {formatCompact(totalCommitted)}
@@ -335,14 +402,13 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 </div>
               </div>
 
-              {/* Stat 3: Available */}
               <div className="pl-2 sm:pl-3">
                 <div className="text-sm sm:text-base font-bold text-[#0F172A] leading-tight">
                   {formatCompact(totalAvailable)}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#10A976] shrink-0" />
-                  <span className="text-xs text-[#64748B] font-medium">Available</span>
+                  <span className="text-xs text-[#64748B] font-medium">Remaining</span>
                   <span className="text-xs text-[#94A3B8] font-normal">{availablePercent}%</span>
                 </div>
               </div>
@@ -374,33 +440,50 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               </button>
             </div>
 
-            {/* Right Contextual Action Button: "+ Log Expense" for Categories, "+ Add CO" for Change Orders */}
             {activeTab === 'change-orders' ? (
               onCreateChangeOrder && (
               <button
-                onClick={() => {
-                  onCreateChangeOrder();
-                }}
-                className="h-9 px-3.5 rounded-xl bg-[#EAF3FF] hover:bg-[#D9EAFD] text-[#1677FF] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                onClick={() => onCreateChangeOrder()}
+                className="btn-action btn-primary"
               >
                 <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>Add CO</span>
               </button>
               )
-            ) : (
-              onAddCostItem && (
-              <button
-                onClick={() => setIsAddExpenseModalOpen(true)}
-                className="h-9 px-3.5 rounded-xl bg-[#EAF3FF] hover:bg-[#D9EAFD] text-[#1677FF] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
-              >
-                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>Log Expense</span>
-              </button>
-              )
-            )}
+            ) : categories.length > 0 ? (
+              <div className="flex items-center gap-2">
+                {onAddItems && onLogExpense && (
+                  <button
+                    onClick={() => onAddItems()}
+                    className="btn-action btn-secondary"
+                  >
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Add</span>
+                  </button>
+                )}
+                {onLogExpense ? (
+                  <button
+                    onClick={() => setIsAddExpenseModalOpen(true)}
+                    className="btn-action btn-primary"
+                  >
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Log Expense</span>
+                  </button>
+                ) : onAddItems ? (
+                  <button
+                    onClick={() => onAddItems()}
+                    className="btn-action btn-primary"
+                  >
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Add</span>
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
-          {/* 4. Search and Filter Bar Row */}
+          {/* 4. Search and Filter — only when there is something to search */}
+          {categories.length > 0 && (
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-[#94A3B8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -457,6 +540,7 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               )}
             </div>
           </div>
+          )}
 
           {/* ══════════════════════════════════════════════════════════════════════
               TAB 2: CHANGE ORDERS LIST (MATCHING EXACT FIGMA CARDS)
@@ -515,19 +599,37 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           ══════════════════════════════════════════════════════════════════════ */}
           {activeTab === 'categories' && (
             <div className="flex flex-col gap-3">
-              {categories.length === 0 && (
-                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 text-center">
-                  <p className="text-sm font-semibold text-[#0F172A]">No line items</p>
-                  <p className="text-xs text-[#64748B] mt-1">Add preset or custom items to this project.</p>
-                  {onAddItems && (
-                    <button
-                      type="button"
-                      onClick={onAddItems}
-                      className="mt-3 h-11 px-4 rounded-xl bg-[#1677FF] text-white text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      Add items
-                    </button>
+              {categories.length === 0 && onAddItems && (
+                <div className="bg-white rounded-2xl border border-[#E2E8F0] px-4 py-4 shadow-card">
+                  {!showBudgetChooser ? (
+                    <div className="flex flex-col gap-3">
+                      <p className="text-sm font-semibold text-[#0F172A] text-center">No budget yet</p>
+                      <button
+                        type="button"
+                        onClick={() => setShowBudgetChooser(true)}
+                        className="w-full h-11 rounded-xl bg-[#EAF3FF] hover:bg-[#D6E9FF] text-[#1677FF] text-sm font-semibold flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.99] border border-[#1677FF]/20"
+                      >
+                        <Plus className="w-4 h-4 stroke-[2.5]" />
+                        Add budget
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between pb-1">
+                        <p className="text-sm font-semibold text-[#0F172A]">Add budget</p>
+                        <button
+                          type="button"
+                          onClick={() => setShowBudgetChooser(false)}
+                          className="text-xs font-semibold text-[#1677FF] cursor-pointer"
+                        >
+                          Back
+                        </button>
+                      </div>
+                      <AddMethodChooser
+                        onCustom={() => onAddItems('blank')}
+                        onImport={() => onAddItems('preset')}
+                      />
+                    </>
                   )}
                 </div>
               )}
@@ -535,49 +637,98 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 const percent = cat.estimatedCost > 0 ? Math.min(100, Math.round((cat.actualCost / cat.estimatedCost) * 100)) : 0;
 
                 return (
-                  <div
+                  <button
                     key={cat.id}
+                    type="button"
                     onClick={() => {
                       setSelectedTradeId(cat.id);
                       setCurrentView('trade-details');
                     }}
-                    className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-xs hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2.5 group"
+                    className="w-full text-left bg-white rounded-2xl border border-[#E2E8F0] px-4 py-3.5 hover:border-[#CBD5E1] transition-colors cursor-pointer flex items-center justify-between gap-3 group"
                   >
-                    <div className="flex items-center justify-between gap-2.5">
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] flex items-center justify-center shrink-0">
-                          {getCategoryIcon(cat.name)}
-                        </div>
-                        <div className="min-w-0">
-                          <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] truncate">
-                            {cat.name}
-                          </h4>
-                          <span className="text-xs text-[#64748B] block mt-0.5 font-medium">
-                            ${Math.round(cat.actualCost / 1000)}K of ${Math.round(cat.estimatedCost / 1000)}K
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-[#F1F5F9] text-[#475569]">
-                          {percent}%
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors" />
-                      </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm font-semibold text-[#0F172A] truncate">
+                        {cat.name}
+                      </h4>
+                      <span className="text-xs text-[#64748B] block mt-0.5">
+                        {formatCompact(cat.actualCost)} of {formatCompact(cat.estimatedCost)} · {percent}%
+                      </span>
                     </div>
-
-                    <div className="w-full h-1.5 rounded-full bg-[#EAF3FF] overflow-hidden">
-                      <div
-                        className="h-full bg-[#1677FF] rounded-full transition-all"
-                        style={{ width: `${percent}%` }}
-                      />
-                    </div>
-                  </div>
+                    <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#0F172A] shrink-0" />
+                  </button>
                 );
               })}
             </div>
           )}
         </>
+      )}
+
+      {/* ─── EDIT LINE ITEM BUDGET ─── */}
+      {editingItem && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 font-sans animate-fade-in">
+          <div className="w-full max-w-[360px] bg-white border border-[#E2E8F0] rounded-3xl p-5 shadow-xl flex flex-col gap-3 text-[#0F172A]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F1F5F9]">
+              <h3 className="text-sm font-bold text-[#0F172A]">Edit budget</h3>
+              <button
+                type="button"
+                onClick={() => setEditingItem(null)}
+                className="w-7 h-7 rounded-full bg-[#F1F5F9] text-[#64748B] flex items-center justify-center cursor-pointer text-xs"
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleSaveItemBudget} className="flex flex-col gap-2.5 text-xs">
+              <div>
+                <p className="text-sm font-semibold text-[#0F172A]">{editingItem.name}</p>
+                <p className="text-[11px] text-[#64748B] mt-0.5">{editingItem.code}</p>
+              </div>
+              {onUpdateItemBudget && (
+                <div>
+                  <label className="text-[11px] font-semibold text-[#64748B] block mb-1">Budget ($)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    required
+                    autoFocus
+                    value={editBudgetAmount}
+                    onChange={(e) => setEditBudgetAmount(e.target.value)}
+                    className="w-full h-11 bg-white border border-[#E2E8F0] rounded-xl px-3.5 text-sm outline-none focus:border-[#1677FF]"
+                  />
+                </div>
+              )}
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#F1F5F9]">
+                {onRemoveItemBudget ? (
+                  <button
+                    type="button"
+                    onClick={handleRemoveItemBudget}
+                    className="h-11 px-3.5 rounded-xl text-[#E5484D] text-xs font-bold cursor-pointer hover:bg-[#FFF0F0]"
+                  >
+                    Delete
+                  </button>
+                ) : (
+                  <span />
+                )}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingItem(null)}
+                    className="btn-modal-cancel"
+                  >
+                    Cancel
+                  </button>
+                  {onUpdateItemBudget && (
+                    <button
+                      type="submit"
+                      className="btn-modal-submit"
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
       {/* ─── ADD EXPENSE MODAL ─── */}

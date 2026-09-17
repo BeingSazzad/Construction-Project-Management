@@ -113,7 +113,7 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
       } else if (currentRole !== 'field' && (lower.includes('budget') || lower.includes('cost') || lower.includes('variance') || lower.includes('money'))) {
         replyText = "Portfolio committed spend is $16.8M against $34.85M total. Snell Isle Residence has a $14,200 cost overrun in Division 03 (Concrete) due to soil bearing amendments. All other trade divisions remain within contingency limits.";
         badge = { label: 'Variance Risk', value: '+$14.2K', variant: 'danger' };
-        actionBtn = { label: 'Open Portfolio Budgets', targetTab: 'budgets' };
+        actionBtn = { label: 'Open project budget', targetTab: 'budgets' };
       } else if (lower.includes('rain') || lower.includes('weather') || lower.includes('storm') || lower.includes('forecast') || lower.includes('risk')) {
         replyText = "Weather forecast looks favorable overall, but a tropical rain band is projected for Tampa between 1:00 PM and 6:00 PM this Thursday (0.85 in/hr). Recommend scheduling exterior concrete cures for Friday morning.";
         badge = { label: 'Precipitation', value: '85% Rain', variant: 'warning' };

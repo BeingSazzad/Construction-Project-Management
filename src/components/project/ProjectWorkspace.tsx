@@ -65,7 +65,12 @@ interface ProjectWorkspaceProps {
   onAddReport?: (newReport: Partial<ReportItem>) => void;
   onAddDailyLog?: (newLog: DailyLogItem) => void;
   initialCalendarDate?: string;
-  onAddBudgetItems?: () => void;
+  onAddBudgetItems?: (method?: 'preset' | 'blank') => void;
+  onLogExpense?: (categoryKey: string, amount: number) => void;
+  onUpdateItemBudget?: (itemId: string, estimatedCost: number) => void;
+  onRemoveItemBudget?: (itemId: string) => void;
+  openLogExpense?: boolean;
+  onLogExpenseOpened?: () => void;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
@@ -107,6 +112,11 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onAddDailyLog,
   initialCalendarDate,
   onAddBudgetItems,
+  onLogExpense,
+  onUpdateItemBudget,
+  onRemoveItemBudget,
+  openLogExpense,
+  onLogExpenseOpened,
 }) => {
   const getDefaultSubTab = (role: UserRole) => {
     switch (role) {
@@ -219,7 +229,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onOpenEditProject={onOpenEditProject}
             canViewBudget={access.canViewBudget}
             canManageSchedule={access.canManageSchedule}
-            canManageStages={access.isPM}
+            canManageStages={access.canManageTaskBoard}
           />
         )}
 
@@ -258,8 +268,14 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             changeOrders={changeOrders}
             onCreateChangeOrder={onCreateChangeOrder}
             onApproveChangeOrder={onApproveChangeOrder}
-            onAddCostItem={access.canLogExpense ? () => undefined : undefined}
+            onAddCostItem={onLogExpense ? () => undefined : undefined}
             onAddItems={access.canCreateBudget ? onAddBudgetItems : undefined}
+            onImportBudget={access.canImportBudget ? onImportBudget : undefined}
+            onLogExpense={onLogExpense}
+            onUpdateItemBudget={access.canEditBudget ? onUpdateItemBudget : undefined}
+            onRemoveItemBudget={access.canEditBudget ? onRemoveItemBudget : undefined}
+            openExpense={openLogExpense}
+            onExpenseOpened={onLogExpenseOpened}
           />
         )}
 
@@ -297,6 +313,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onOpenTask={onOpenTask}
             onCreateTask={onCreateTask}
             onAddTask={onAddTask}
+            onAddTasksFromTemplate={onAddTasksFromTemplate}
             onUpdateStatus={onUpdateTaskStatus}
             canManageBoard={access.canManageTaskBoard}
           />

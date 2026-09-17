@@ -29,7 +29,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onQuickAction,
 }) => {
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-40 bg-white/95 backdrop-blur-md border-t border-x border-[#E2E8F0] font-sans shadow-[0_-4px_24px_rgba(15,23,42,0.06)]">
+    <nav className="w-full shrink-0 z-40 bg-white/95 backdrop-blur-md border-t border-x border-[#E2E8F0] font-sans shadow-[0_-4px_24px_rgba(15,23,42,0.06)]">
       <div className="w-full px-2 h-16 flex items-center justify-around relative">
 
         {/* 1. HOME */}
