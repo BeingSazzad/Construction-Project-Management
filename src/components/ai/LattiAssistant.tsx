@@ -3,7 +3,8 @@ import { UserRole, Task, PunchItem } from '../../types';
 import { 
   Send, Calendar, CloudRain, 
   ArrowRight, Bot, RefreshCw,
-  BarChart2, PieChart, Paperclip, ChevronRight
+  BarChart2, PieChart, Paperclip, ChevronRight,
+  Sun, Bell
 } from 'lucide-react';
 
 interface LattiAssistantProps {
@@ -14,6 +15,7 @@ interface LattiAssistantProps {
   onNavigate?: (tab: string) => void;
   onClose?: () => void;
   initialQuery?: string;
+  unreadNotifsCount?: number;
 }
 
 interface ChatMessage {
@@ -56,6 +58,7 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
   activeProject,
   onNavigate,
   initialQuery,
+  unreadNotifsCount = 0,
 }) => {
   const [inputQuery, setInputQuery] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -148,7 +151,7 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col h-[calc(100vh-140px)] min-h-[560px] max-w-[430px] md:max-w-2xl mx-auto font-sans px-4 pt-1 pb-1 text-[#0F172A] relative">
+    <div className="w-full flex-1 flex flex-col h-[calc(100vh-140px)] min-h-[560px] max-w-[430px] md:max-w-2xl mx-auto font-sans px-5 pt-1 pb-1 text-[#0F172A] relative">
       
       {/* ── Optional Reset Header when in Chat Mode ── */}
       {chatHistory.length > 0 && (
@@ -168,20 +171,71 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
 
       {/* ── MIDDLE SECTION (Upor ta Middle a Rakha) ── */}
       {chatHistory.length === 0 ? (
-        <div className="flex-1 flex flex-col justify-center my-auto py-4 gap-3.5 animate-fade-in">
-          {/* Greeting Card matching Reference Mockup */}
-          <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-3xl p-4 sm:p-5 shadow-xs flex items-center gap-3.5">
-            <RobotAvatar className="w-13 h-13 sm:w-14 sm:h-14" />
-            <div className="flex-1 min-w-0">
-              <h2 className="text-sm sm:text-base font-bold text-[#0F172A] tracking-tight">Good morning!</h2>
-              <p className="text-[11px] sm:text-xs text-[#475569] leading-relaxed mt-0.5">
-                You're on track with 3 active projects. Weather looks favorable this week. How can I assist you today?
+        <div className="flex-1 flex flex-col justify-center my-auto py-3 gap-4 animate-fade-in">
+          <div className="flex items-center gap-3.5">
+            <div className="relative shrink-0">
+              <RobotAvatar className="w-12 h-12 sm:w-14 sm:h-14" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#10A976] border-2 border-[#F7F9FC] animate-pulse" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#10A976]">Live</span>
+                <span className="text-[10px] font-medium text-[#94A3B8]">Fri, Sep 5 · Tampa</span>
+              </div>
+              <h2 className="text-base font-bold text-[#0F172A] tracking-tight mt-0.5">Good morning</h2>
+              <p className="text-xs text-[#64748B] leading-snug mt-0.5 truncate">
+                Watching {activeProject?.name || '3 active jobs'} · ask anything
               </p>
             </div>
           </div>
 
-          {/* Quick Action Suggestion Prompts */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onClick={() => handleSend('Any weather risks this week?')}
+              className="text-left bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-2xl p-3 shadow-xs cursor-pointer transition-all active:scale-[0.99] min-h-[92px] flex flex-col"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-xl bg-[#FFF7E6] text-[#F59E0B] flex items-center justify-center">
+                  <Sun className="w-4 h-4 fill-amber-400/30" />
+                </div>
+                <span className="text-[10px] font-bold text-[#F59E0B] bg-[#FFF7E6] px-2 py-0.5 rounded-full">Thu rain</span>
+              </div>
+              <span className="text-lg font-bold text-[#0F172A] tracking-tight mt-2 leading-none">82°F</span>
+              <span className="text-[11px] font-medium text-[#64748B] mt-1 truncate">Sunny now · pour risk Thu</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate?.('notifications')}
+              className="text-left bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-2xl p-3 shadow-xs cursor-pointer transition-all active:scale-[0.99] min-h-[92px] flex flex-col"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center relative">
+                  <Bell className="w-4 h-4" />
+                  {unreadNotifsCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#1677FF] ring-2 ring-white" />
+                  )}
+                </div>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  unreadNotifsCount > 0
+                    ? 'text-[#1677FF] bg-[#EAF3FF]'
+                    : 'text-[#10A976] bg-[#E9F9F3]'
+                }`}>
+                  {unreadNotifsCount > 0 ? 'Inbox' : 'Clear'}
+                </span>
+              </div>
+              <span className="text-lg font-bold text-[#0F172A] tracking-tight mt-2 leading-none">
+                {unreadNotifsCount}
+              </span>
+              <span className="text-[11px] font-medium text-[#64748B] mt-1 truncate">
+                {unreadNotifsCount > 0 ? 'unread notifications' : 'All caught up'}
+              </span>
+            </button>
+          </div>
+
           <div className="flex flex-col gap-2 w-full">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] px-0.5">Ask Latti</p>
             {QUICK_PROMPTS.map((item, idx) => {
               const Icon = item.icon;
               return (

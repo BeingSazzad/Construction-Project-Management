@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Project, TradeCategory, ChangeOrder } from '../../types';
 import {
   ArrowLeft, ChevronRight, Plus,
-  FileText, Search, Filter, MoreHorizontal,
+  FileText, Search, Filter,
   X, Check, Building2, Layers, Wrench, Zap, Boxes
 } from 'lucide-react';
 
@@ -14,7 +14,7 @@ interface ProjectBudgetTabProps {
   onApproveChangeOrder?: (id: string) => void;
   onAddCostItem?: () => void;
   onImportBudget?: () => void;
-  onBack?: () => void;
+  onAddItems?: () => void;
 }
 
 export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
@@ -24,15 +24,15 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   onCreateChangeOrder,
   onApproveChangeOrder,
   onAddCostItem,
-  onImportBudget,
-  onBack
+  onAddItems,
 }) => {
   // Navigation: 'overview' | 'trade-details'
   const [currentView, setCurrentView] = useState<'overview' | 'trade-details'>('overview');
   const [selectedTradeId, setSelectedTradeId] = useState<string | null>(null);
 
-  // Active Tab: 'categories' | 'change-orders' (Default to change-orders to match reference)
-  const [activeTab, setActiveTab] = useState<'categories' | 'change-orders'>('change-orders');
+  const [activeTab, setActiveTab] = useState<'categories' | 'change-orders'>(
+    initialCategories.length === 0 ? 'categories' : 'change-orders'
+  );
 
   // Categories & Change Orders State
   const [categories, setCategories] = useState<TradeCategory[]>(initialCategories);
@@ -43,6 +43,10 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   React.useEffect(() => {
     setChangeOrders(initialChangeOrders.filter(co => co.projectId === project.id));
   }, [initialChangeOrders, project.id]);
+
+  React.useEffect(() => {
+    setCategories(initialCategories);
+  }, [initialCategories]);
 
   // Modals & Filters
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
@@ -73,6 +77,12 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
   const spentPercent = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
   const committedPercent = totalBudget > 0 ? Math.round((totalCommitted / totalBudget) * 100) : 0;
   const availablePercent = Math.max(0, 100 - spentPercent - committedPercent);
+
+  const formatCompact = (n: number) => {
+    if (n >= 1000000) return `$${(n / 1000000).toFixed(2)}M`;
+    if (n >= 1000) return `$${Math.round(n / 1000)}K`;
+    return `$${Math.round(n)}`;
+  };
 
   const getCOIconStyle = (status: string) => {
     if (status === 'Approved') {
@@ -267,44 +277,16 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
             MAIN BUDGET OVERVIEW (MATCHING EXACT FIGMA REFERENCE SCREEN)
         ══════════════════════════════════════════════════════════════════════════ */
         <>
-          {/* 1. Top Header Row with Circle Back Arrow & 3-Dot More Button */}
-          <div className="flex items-center justify-between pt-1">
-            <button
-              onClick={onBack}
-              className="w-10 h-10 rounded-full bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-center text-[#0F172A] hover:bg-[#F8FAFC] transition-all cursor-pointer"
-              title="Back"
-            >
-              <ArrowLeft className="w-4 h-4 text-[#0F172A]" />
-            </button>
-
-            <div className="text-center">
-              <h1 className="text-base font-bold text-[#0F172A] tracking-tight leading-tight">
-                Budget Ledger
-              </h1>
-              <p className="text-xs text-[#64748B] font-normal leading-tight mt-0.5">
-                {project?.name || 'Snell Isle Residence'}
-              </p>
-            </div>
-
-            <button
-              onClick={() => setIsAddExpenseModalOpen(true)}
-              className="w-10 h-10 rounded-full bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-center text-[#0F172A] hover:bg-[#F8FAFC] transition-all cursor-pointer"
-              title="More options"
-            >
-              <MoreHorizontal className="w-4 h-4 text-[#64748B]" />
-            </button>
-          </div>
-
-          {/* 2. Total Planned Budget Executive Hero Card with Subtle Gradient */}
-          <div className="rounded-2xl border border-[#E2E8F0] bg-gradient-to-b from-[#F0F7FF] via-[#F8FAFC]/70 to-white p-4 sm:p-4.5 shadow-xs flex flex-col gap-3">
+          {/* Project total — workspace already has back + title */}
+          <div className="rounded-2xl border border-[#E2E8F0] bg-gradient-to-b from-[#F0F7FF] via-[#F8FAFC]/70 to-white p-4 shadow-xs flex flex-col gap-3">
             {/* Top Row: Title, Amount & 69% Spent Pill */}
             <div className="flex items-start justify-between">
               <div>
                 <span className="text-[11px] font-medium text-[#64748B] block">
-                  Total Planned Budget
+                  Project total
                 </span>
                 <div className="text-[24px] sm:text-[26px] font-bold text-[#0F172A] tracking-tight leading-tight mt-0.5">
-                  $5.60M
+                  {formatCompact(totalBudget)}
                 </div>
               </div>
 
@@ -312,9 +294,8 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                 onClick={() => setActiveTab('categories')}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E2E8F0] shadow-2xs hover:bg-[#F8FAFC] transition-colors cursor-pointer"
               >
-                {/* Custom circular gauge icon */}
                 <div className="w-3.5 h-3.5 rounded-full border-2 border-[#CBD5E1] border-t-[#1677FF] border-r-[#1677FF] rotate-45 shrink-0" />
-                <span className="text-xs font-bold text-[#0F172A]">69% Spent</span>
+                <span className="text-xs font-bold text-[#0F172A]">{spentPercent}% Spent</span>
                 <ChevronRight className="w-3.5 h-3.5 text-[#64748B]" />
               </div>
             </div>
@@ -333,36 +314,36 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
               {/* Stat 1: Spent */}
               <div className="pr-2 sm:pr-3">
                 <div className="text-sm sm:text-base font-bold text-[#0F172A] leading-tight">
-                  $3.88M
+                  {formatCompact(totalSpent)}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] shrink-0" />
                   <span className="text-xs text-[#64748B] font-medium">Spent</span>
-                  <span className="text-xs text-[#94A3B8] font-normal">69%</span>
+                  <span className="text-xs text-[#94A3B8] font-normal">{spentPercent}%</span>
                 </div>
               </div>
 
               {/* Stat 2: Committed */}
               <div className="px-2 sm:px-3">
                 <div className="text-sm sm:text-base font-bold text-[#0F172A] leading-tight">
-                  $320K
+                  {formatCompact(totalCommitted)}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#94A3B8] shrink-0" />
                   <span className="text-xs text-[#64748B] font-medium">Committed</span>
-                  <span className="text-xs text-[#94A3B8] font-normal">6%</span>
+                  <span className="text-xs text-[#94A3B8] font-normal">{committedPercent}%</span>
                 </div>
               </div>
 
               {/* Stat 3: Available */}
               <div className="pl-2 sm:pl-3">
                 <div className="text-sm sm:text-base font-bold text-[#0F172A] leading-tight">
-                  $1.72M
+                  {formatCompact(totalAvailable)}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#10A976] shrink-0" />
                   <span className="text-xs text-[#64748B] font-medium">Available</span>
-                  <span className="text-xs text-[#94A3B8] font-normal">31%</span>
+                  <span className="text-xs text-[#94A3B8] font-normal">{availablePercent}%</span>
                 </div>
               </div>
             </div>
@@ -534,6 +515,22 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
           ══════════════════════════════════════════════════════════════════════ */}
           {activeTab === 'categories' && (
             <div className="flex flex-col gap-3">
+              {categories.length === 0 && (
+                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 text-center">
+                  <p className="text-sm font-semibold text-[#0F172A]">No line items</p>
+                  <p className="text-xs text-[#64748B] mt-1">Add preset or custom items to this project.</p>
+                  {onAddItems && (
+                    <button
+                      type="button"
+                      onClick={onAddItems}
+                      className="mt-3 h-11 px-4 rounded-xl bg-[#1677FF] text-white text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add items
+                    </button>
+                  )}
+                </div>
+              )}
               {categories.map((cat) => {
                 const percent = cat.estimatedCost > 0 ? Math.min(100, Math.round((cat.actualCost / cat.estimatedCost) * 100)) : 0;
 

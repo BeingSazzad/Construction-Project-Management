@@ -15,6 +15,7 @@ import {
 } from './data/mockData';
 import { generateUniqueId } from './utils/id';
 import { getRoleAccess, projectsForUser } from './utils/roleAccess';
+import { CreatedBudgetPayload } from './utils/budgetPresets';
 
 // Common Components
 import { DeviceFrame } from './components/common/DeviceFrame';
@@ -98,6 +99,10 @@ export function App() {
 
   // Entities state
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
+  const [projectLedgers, setProjectLedgers] = useState<Record<string, TradeCategory[]>>(() =>
+    Object.fromEntries(MOCK_PROJECTS.map((p) => [p.id, MOCK_BUDGET_CATEGORIES]))
+  );
+  const [budgetItemsProjectId, setBudgetItemsProjectId] = useState<string | null>(null);
   const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
   const [ganttItems, setGanttItems] = useState<GanttItem[]>(MOCK_GANTT);
   const [categories, setCategories] = useState<TradeCategory[]>(MOCK_BUDGET_CATEGORIES);
@@ -564,9 +569,35 @@ export function App() {
     };
 
     setProjects(prev => [fullProj, ...prev]);
+    setProjectLedgers(prev => ({ ...prev, [fullProj.id]: [] }));
     setCreatedProjectIds(prev => [...prev, fullProj.id]);
     setIsCreateProjectOpen(false);
     setActiveProject(fullProj); // Auto-navigate into project workspace
+  };
+
+  const handleAddProjectItems = (data: CreatedBudgetPayload) => {
+    setProjectLedgers((prev) => ({ ...prev, [data.projectId]: data.categories }));
+    const patchBudget = (p: Project): Project => {
+      if (p.id !== data.projectId) return p;
+      const nextTotal = p.budget.total > 0 ? p.budget.total : data.totalBudget;
+      return {
+        ...p,
+        budget: {
+          ...p.budget,
+          total: nextTotal,
+          remaining: Math.max(0, nextTotal - p.budget.actual),
+          costToComplete: nextTotal,
+        },
+      };
+    };
+    setProjects((prev) => prev.map(patchBudget));
+    setActiveProject((prev) => {
+      const base = prev && prev.id === data.projectId
+        ? prev
+        : projects.find((p) => p.id === data.projectId) || prev;
+      return base ? patchBudget(base) : prev;
+    });
+    setProjectSubTab('budget');
   };
 
   const handleCreateTask = (newTask: Partial<Task>) => {
@@ -1020,12 +1051,16 @@ export function App() {
             ) : isCreateBudgetOpen ? (
               <CreateProjectBudgetModal
                 isFullScreenPage={true}
-                onClose={() => setIsCreateBudgetOpen(false)}
+                lockedProjectId={budgetItemsProjectId || undefined}
+                onClose={() => {
+                  setIsCreateBudgetOpen(false);
+                  setBudgetItemsProjectId(null);
+                }}
                 projects={visibleProjects}
                 onCreateBudget={(budgetData) => {
-                  alert(`Master budget "${budgetData.budgetName}" created successfully!`);
+                  handleAddProjectItems(budgetData);
                   setIsCreateBudgetOpen(false);
-                  setActiveTab('budgets');
+                  setBudgetItemsProjectId(null);
                 }}
               />
             ) : activeProject ? (
@@ -1038,7 +1073,7 @@ export function App() {
                 onSubTabChange={setProjectSubTab}
                 tasks={tasks}
                 ganttItems={ganttItems}
-                categories={categories}
+                categories={projectLedgers[activeProject.id] ?? []}
                 punchItems={punchItems}
                 subcontractors={subcontractors}
                 photos={photos}
@@ -1071,6 +1106,10 @@ export function App() {
                 onAddDailyLog={access.canCreateDailyLog ? handleAddDailyLog : undefined}
                 onOpenEditProject={access.canEditProject ? () => setIsEditProjectOpen(true) : undefined}
                 initialCalendarDate={initialCalendarDate}
+                onAddBudgetItems={access.canCreateBudget ? () => {
+                  setBudgetItemsProjectId(activeProject.id);
+                  setIsCreateBudgetOpen(true);
+                } : undefined}
               />
             ) : (
               /* Global Hub Views */
@@ -1140,6 +1179,7 @@ export function App() {
                     activeProject={activeProject}
                     tasks={tasks}
                     punchItems={punchItems}
+                    unreadNotifsCount={unreadNotifsCount}
                     initialQuery={lattiInitialQuery}
                     onNavigate={(tab) => {
                       if (tab === 'projects' || tab === 'overview') {
@@ -1228,6 +1268,8 @@ export function App() {
                   ['admin', 'finance', 'pm'].includes(currentRole) ? (
                     <BudgetsHubView
                       projects={visibleProjects}
+                      projectLedgers={projectLedgers}
+                      onAddProjectItems={handleAddProjectItems}
                       onOpenImportBudget={access.canImportBudget ? () => setIsImportBudgetOpen(true) : undefined}
                       canCreateBudget={access.canCreateBudget}
                       onBack={() => setActiveTab('home')}

@@ -6,7 +6,8 @@ import {
 import { BudgetDetailView } from './BudgetDetailView';
 import { CreateProjectBudgetModal } from '../modals/CreateProjectBudgetModal';
 import { MOCK_PROJECTS } from '../../data/mockData';
-import { Project } from '../../types';
+import { Project, TradeCategory } from '../../types';
+import { CreatedBudgetPayload, countBudgetItems, projectToLedgerRecord } from '../../utils/budgetPresets';
 
 export interface BudgetCardItem {
   id: string;
@@ -97,6 +98,8 @@ const BudgetDonutChart = ({ paidPct, committedPct, remainingPct }: { paidPct: nu
 
 interface BudgetsHubViewProps {
   projects?: Project[];
+  projectLedgers?: Record<string, TradeCategory[]>;
+  onAddProjectItems?: (data: CreatedBudgetPayload) => void;
   onOpenImportBudget?: () => void;
   onSelectBudgetName?: (name: string | null) => void;
   onBack?: () => void;
@@ -105,6 +108,8 @@ interface BudgetsHubViewProps {
 
 export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ 
   projects = MOCK_PROJECTS,
+  projectLedgers = {},
+  onAddProjectItems,
   onSelectBudgetName, 
   onBack,
   canCreateBudget = true,
@@ -116,37 +121,29 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({
 
   // 1. DYNAMIC SYNCHRONIZATION WITH REAL PROJECT DATA (Zero mismatch!)
   const projectBudgetCards: BudgetCardItem[] = useMemo(() => {
-    return projects.map((p, idx) => {
-      const total = p.budget?.total || 4650000;
-      const actual = p.budget?.actual || p.budget?.paid || 3250000;
-      const committed = p.budget?.committed || Math.round(total * 0.85);
+    return projects.map((p) => {
+      const total = p.budget?.total || 0;
+      const actual = p.budget?.actual || p.budget?.paid || 0;
+      const committed = p.budget?.committed || 0;
       const remaining = Math.max(0, total - actual);
       const progress = Math.min(100, Math.round((actual / (total || 1)) * 100));
-
-      const itemsCountMap: Record<string, number> = {
-        'proj-1': 128,
-        'proj-2': 215,
-        'proj-3': 160,
-        'proj-4': 94,
-        'proj-5': 71,
-      };
 
       return {
         id: `b-${p.id}`,
         projectId: p.id,
         name: p.name,
         subtitle: `${p.location || 'Job Site'} · ${p.clientName || 'Commercial'}`,
-        type: 'Project linked',
+        type: 'Project linked' as const,
         totalBudget: total,
         committed,
         actual,
         remaining,
         progress,
-        itemsCount: itemsCountMap[p.id] || 96,
-        status: p.status === 'Completed' ? 'APPROVED' : 'ACTIVE'
+        itemsCount: countBudgetItems(projectLedgers[p.id] || []),
+        status: (p.status === 'Completed' ? 'APPROVED' : 'ACTIVE') as BudgetCardItem['status'],
       };
     });
-  }, [projects]);
+  }, [projects, projectLedgers]);
 
   // Dynamic Portfolio Totals (Exactly identical to HomeScreen!)
   const portfolioTotal = useMemo(() => {
@@ -199,9 +196,15 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({
 
   // Drilldown to specific budget spreadsheet
   if (selectedBudgetId) {
+    const card = projectBudgetCards.find((b) => b.id === selectedBudgetId);
+    const project = projects.find((p) => p.id === card?.projectId);
+    const ledger = project ? (projectLedgers[project.id] || []) : [];
+    const createdBudget = project ? projectToLedgerRecord(project, ledger) : null;
     return (
       <BudgetDetailView 
-        budgetId={selectedBudgetId} 
+        key={selectedBudgetId}
+        budgetId={selectedBudgetId}
+        createdBudget={createdBudget}
         onBack={() => {
           setSelectedBudgetId(null);
           if (onSelectBudgetName) onSelectBudgetName(null);
@@ -218,7 +221,11 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({
         onClose={() => setIsCreateModalOpen(false)}
         projects={projects}
         onCreateBudget={(budgetData) => {
+          onAddProjectItems?.(budgetData);
           setIsCreateModalOpen(false);
+          setActiveTab('project');
+          setSelectedBudgetId(`b-${budgetData.projectId}`);
+          if (onSelectBudgetName) onSelectBudgetName(budgetData.budgetName);
         }}
       />
     );
@@ -244,7 +251,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({
               Portfolio Budgets
             </h1>
             <p className="text-[11px] text-[#64748B] font-medium truncate mt-0.5">
-              Capital allocations & CSI job cost ledger
+              Project totals & line items
             </p>
           </div>
         </div>
@@ -255,7 +262,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({
             className="btn-action btn-primary"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>New Budget</span>
+            <span>Add items</span>
           </button>
         )}
       </div>

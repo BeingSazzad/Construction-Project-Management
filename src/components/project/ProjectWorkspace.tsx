@@ -65,6 +65,7 @@ interface ProjectWorkspaceProps {
   onAddReport?: (newReport: Partial<ReportItem>) => void;
   onAddDailyLog?: (newLog: DailyLogItem) => void;
   initialCalendarDate?: string;
+  onAddBudgetItems?: () => void;
 }
 
 export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
@@ -104,7 +105,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onApproveChangeOrder,
   onAddReport,
   onAddDailyLog,
-  initialCalendarDate
+  initialCalendarDate,
+  onAddBudgetItems,
 }) => {
   const getDefaultSubTab = (role: UserRole) => {
     switch (role) {
@@ -257,8 +259,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onCreateChangeOrder={onCreateChangeOrder}
             onApproveChangeOrder={onApproveChangeOrder}
             onAddCostItem={access.canLogExpense ? () => undefined : undefined}
-            onImportBudget={onImportBudget}
-            onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}
+            onAddItems={access.canCreateBudget ? onAddBudgetItems : undefined}
           />
         )}
 

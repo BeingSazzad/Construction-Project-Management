@@ -4,15 +4,58 @@ import {
   DollarSign, Wallet, FileSpreadsheet, Layers, TrendingUp, Sparkles, Users, Clock, FileText, ChevronUp, PieChart, UserPlus, X, Edit3, Check, Phone, Mail, Send, MessageSquare
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
+import { CreatedBudgetRecord, BudgetBreakdownSection, categoriesToBreakdownSections } from '../../utils/budgetPresets';
 
 interface BudgetDetailViewProps {
   budgetId?: string;
   onBack: () => void;
+  createdBudget?: CreatedBudgetRecord | null;
 }
+
+const DEFAULT_SECTIONS: BudgetBreakdownSection[] = [
+  {
+    id: 'engineering',
+    name: '1. Engineering',
+    category: 'Engineering',
+    items: [
+      { id: 'eng-1', name: 'Geotechnical soil report & foundation design', qty: 1, unit: 'EA', unitCost: 3500, total: 3500 },
+      { id: 'eng-2', name: 'Structural engineering drawings & framing calculations', qty: 1, unit: 'EA', unitCost: 4800, total: 4800 },
+      { id: 'eng-3', name: 'Truss engineering & shop drawings', qty: 1, unit: 'EA', unitCost: 1800, total: 1800 },
+      { id: 'eng-4', name: 'Wind / seismic load calculations', qty: 1, unit: 'EA', unitCost: 1200, total: 1200 },
+      { id: 'eng-5', name: 'Civil site engineering (grading & drainage plan)', qty: 1, unit: 'EA', unitCost: 2600, total: 2600 }
+    ]
+  },
+  {
+    id: 'precon',
+    name: '2. Pre-Construction & Permits',
+    category: 'Pre-Construction',
+    items: [
+      { id: 'pre-1', name: 'Land survey & soil bearing test', qty: 1, unit: 'EA', unitCost: 1850, total: 1850 },
+      { id: 'pre-2', name: 'Submit HOA / architectural review package', qty: 1, unit: 'EA', unitCost: 650, total: 650 },
+      { id: 'pre-3', name: 'Pull building permit', qty: 1, unit: 'EA', unitCost: 4200, total: 4200 },
+      { id: 'pre-4', name: 'Pull environmental permit (DEP / stormwater SWPPP)', qty: 1, unit: 'EA', unitCost: 1100, total: 1100 },
+      { id: 'pre-5', name: 'Set up temporary power & water', qty: 1, unit: 'EA', unitCost: 2400, total: 2400 },
+      { id: 'pre-6', name: 'Install silt fencing & erosion control', qty: 1, unit: 'EA', unitCost: 1650, total: 1650 }
+    ]
+  },
+  {
+    id: 'foundation',
+    name: '3. Site Work & Foundation',
+    category: 'Foundation',
+    items: [
+      { id: 'fdn-1', name: 'Clear & grade lot', qty: 1, unit: 'EA', unitCost: 6500, total: 6500 },
+      { id: 'fdn-2', name: 'Excavation & trenching for footings', qty: 1, unit: 'EA', unitCost: 4800, total: 4800 },
+      { id: 'fdn-3', name: 'Formwork & rebar reinforcement placement', qty: 1, unit: 'EA', unitCost: 9200, total: 9200 },
+      { id: 'fdn-4', name: 'Pour 3500 PSI structural concrete slab', qty: 1, unit: 'EA', unitCost: 28400, total: 28400 },
+      { id: 'fdn-5', name: 'Foundation waterproofing & French drain', qty: 1, unit: 'EA', unitCost: 3800, total: 3800 }
+    ]
+  }
+];
 
 export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
   budgetId = 'b-1',
-  onBack
+  onBack,
+  createdBudget = null,
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'breakdown' | 'forecast' | 'team' | 'activity' | 'reports'>('breakdown');
   const [status, setStatus] = useState<'in review' | 'draft' | 'approved'>('in review');
@@ -149,53 +192,24 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
   };
 
   // Accordion state for Cost Breakdown
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    'engineering': true,
-    'precon': true,
-    'foundation': true,
-    'framing': false,
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
+    if (createdBudget && createdBudget.categories.length > 0) {
+      return Object.fromEntries(createdBudget.categories.map((cat) => [cat.id, true]));
+    }
+    return {
+      'engineering': true,
+      'precon': true,
+      'foundation': true,
+      'framing': false,
+    };
   });
 
   // Line items state for interactive edits
-  const [sections, setSections] = useState([
-    {
-      id: 'engineering',
-      name: '1. Engineering',
-      category: 'Engineering',
-      items: [
-        { id: 'eng-1', name: 'Geotechnical soil report & foundation design', qty: 1, unit: 'EA', unitCost: 3500, total: 3500 },
-        { id: 'eng-2', name: 'Structural engineering drawings & framing calculations', qty: 1, unit: 'EA', unitCost: 4800, total: 4800 },
-        { id: 'eng-3', name: 'Truss engineering & shop drawings', qty: 1, unit: 'EA', unitCost: 1800, total: 1800 },
-        { id: 'eng-4', name: 'Wind / seismic load calculations', qty: 1, unit: 'EA', unitCost: 1200, total: 1200 },
-        { id: 'eng-5', name: 'Civil site engineering (grading & drainage plan)', qty: 1, unit: 'EA', unitCost: 2600, total: 2600 }
-      ]
-    },
-    {
-      id: 'precon',
-      name: '2. Pre-Construction & Permits',
-      category: 'Pre-Construction',
-      items: [
-        { id: 'pre-1', name: 'Land survey & soil bearing test', qty: 1, unit: 'EA', unitCost: 1850, total: 1850 },
-        { id: 'pre-2', name: 'Submit HOA / architectural review package', qty: 1, unit: 'EA', unitCost: 650, total: 650 },
-        { id: 'pre-3', name: 'Pull building permit', qty: 1, unit: 'EA', unitCost: 4200, total: 4200 },
-        { id: 'pre-4', name: 'Pull environmental permit (DEP / stormwater SWPPP)', qty: 1, unit: 'EA', unitCost: 1100, total: 1100 },
-        { id: 'pre-5', name: 'Set up temporary power & water', qty: 1, unit: 'EA', unitCost: 2400, total: 2400 },
-        { id: 'pre-6', name: 'Install silt fencing & erosion control', qty: 1, unit: 'EA', unitCost: 1650, total: 1650 }
-      ]
-    },
-    {
-      id: 'foundation',
-      name: '3. Site Work & Foundation',
-      category: 'Foundation',
-      items: [
-        { id: 'fdn-1', name: 'Clear & grade lot', qty: 1, unit: 'EA', unitCost: 6500, total: 6500 },
-        { id: 'fdn-2', name: 'Excavation & trenching for footings', qty: 1, unit: 'EA', unitCost: 4800, total: 4800 },
-        { id: 'fdn-3', name: 'Formwork & rebar reinforcement placement', qty: 1, unit: 'EA', unitCost: 9200, total: 9200 },
-        { id: 'fdn-4', name: 'Pour 3500 PSI structural concrete slab', qty: 1, unit: 'EA', unitCost: 28400, total: 28400 },
-        { id: 'fdn-5', name: 'Foundation waterproofing & French drain', qty: 1, unit: 'EA', unitCost: 3800, total: 3800 }
-      ]
-    }
-  ]);
+  const [sections, setSections] = useState<BudgetBreakdownSection[]>(() =>
+    createdBudget
+      ? categoriesToBreakdownSections(createdBudget.categories)
+      : DEFAULT_SECTIONS
+  );
 
   const toggleSection = (secId: string) => {
     setExpandedSections(prev => ({
@@ -259,7 +273,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
           </button>
 
           <span className="text-[10px] font-extrabold text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md border border-blue-500/20 flex-shrink-0">
-            BDG-3200
+            {createdBudget?.budgetNumber || 'BDG-3200'}
           </span>
 
           <span className="text-xs font-bold text-[#68707C] truncate">
@@ -441,6 +455,12 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
       {/* ─── 6. COST BREAKDOWN TAB (Ergonomic High-Density Line Items) ─── */}
       {activeTab === 'breakdown' && (
         <div className="flex flex-col gap-2.5">
+          {sections.length === 0 && (
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 text-center">
+              <p className="text-sm font-semibold text-[#0F172A]">No line items</p>
+              <p className="text-xs text-[#64748B] mt-1">Add a custom item or create again with presets.</p>
+            </div>
+          )}
           {sections.map((sec) => {
             const isExpanded = expandedSections[sec.id];
             const sectionTotal = sec.items.reduce((sum, it) => sum + it.total, 0);
@@ -480,12 +500,17 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                       >
                         {/* Title & Category */}
                         <div className="flex items-start justify-between gap-2">
-                          <input
-                            type="text"
-                            value={item.name}
-                            onChange={(e) => handleItemFieldChange(sec.id, item.id, 'name', e.target.value)}
-                            className="bg-transparent border-b border-transparent hover:border-[#DDE1E7] focus:border-blue-500 text-xs font-bold text-white leading-snug outline-none w-full transition-colors"
-                          />
+                          <div className="min-w-0 flex-1">
+                            <input
+                              type="text"
+                              value={item.name}
+                              onChange={(e) => handleItemFieldChange(sec.id, item.id, 'name', e.target.value)}
+                              className="bg-transparent border-b border-transparent hover:border-[#DDE1E7] focus:border-blue-500 text-xs font-bold text-[#0F172A] leading-snug outline-none w-full transition-colors"
+                            />
+                            {item.code && (
+                              <span className="text-[10px] text-[#64748B] font-medium">{item.code}</span>
+                            )}
+                          </div>
                           <span className="text-[10px] font-bold text-[#68707C] bg-[#EAF3FF] px-2 py-0.5 rounded border border-[#DDE1E7] uppercase flex-shrink-0">
                             {sec.category}
                           </span>
@@ -574,18 +599,18 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
                   <span className="text-[10px] font-bold text-[#68707C] uppercase">Budget Name</span>
                   <span className="font-extrabold text-[#171A1F] mt-1 block truncate">
-                    {budgetId === 'b-1' ? 'Riverside Office Complex' : budgetId === 'b-2' ? 'Downtown Commercial Highrise' : 'Riverside Office Complex'}
+                    {createdBudget?.name || (budgetId === 'b-1' ? 'Riverside Office Complex' : budgetId === 'b-2' ? 'Downtown Commercial Highrise' : 'Riverside Office Complex')}
                   </span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
                   <span className="text-[10px] font-bold text-[#68707C] uppercase">Budget Code</span>
-                  <span className="font-extrabold text-blue-400 mt-1 block">BDG-3200</span>
+                  <span className="font-extrabold text-blue-400 mt-1 block">{createdBudget?.budgetNumber || 'BDG-3200'}</span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
                   <span className="text-[10px] font-bold text-[#68707C] uppercase">Project Type</span>
-                  <span className="font-extrabold text-cyan-400 mt-1 block">Commercial Office</span>
+                  <span className="font-extrabold text-cyan-400 mt-1 block">{createdBudget?.projectType || 'Commercial Office'}</span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
@@ -595,7 +620,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
                   <span className="text-[10px] font-bold text-[#68707C] uppercase">Prepared By</span>
-                  <span className="font-extrabold text-[#68707C] mt-1 block">Alex Chen (PM)</span>
+                  <span className="font-extrabold text-[#68707C] mt-1 block">{createdBudget?.preparedBy || 'Alex Chen (PM)'}</span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col justify-between">
