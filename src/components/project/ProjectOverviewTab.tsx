@@ -153,16 +153,26 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           onOpenEditProject ? 'cursor-pointer hover:border-[#1677FF]/40' : ''
         }`}
       >
-        {/* Header with Title and Chevron */}
+        {/* Header with Title, Type Badge and Chevron */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Building2 className="w-4 h-4 text-[#1677FF]" />
             <h3 className={`text-xs sm:text-sm font-bold text-[#0F172A] tracking-tight ${onOpenEditProject ? 'group-hover:text-[#1677FF] transition-colors' : ''}`}>
               Project Details
             </h3>
+            {project.type && (
+              <span className="text-[10px] font-bold text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full border border-[#1677FF]/20">
+                {project.type}
+              </span>
+            )}
+            {project.code && (
+              <span className="text-[10px] font-bold text-[#64748B] bg-[#F1F5F9] px-2 py-0.5 rounded-full font-mono">
+                {project.code}
+              </span>
+            )}
           </div>
           {onOpenEditProject && (
-            <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors" />
+            <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-colors shrink-0" />
           )}
         </div>
 
