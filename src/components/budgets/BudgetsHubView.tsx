@@ -99,6 +99,7 @@ const BudgetDonutChart = ({ paidPct, committedPct, remainingPct }: { paidPct: nu
 interface BudgetsHubViewProps {
   projects?: Project[];
   projectLedgers?: Record<string, TradeCategory[]>;
+  currentUser?: { name?: string; roleTitle?: string };
   onAddProjectItems?: (data: CreatedBudgetPayload) => void;
   onOpenImportBudget?: () => void;
   onSelectBudgetName?: (name: string | null) => void;
@@ -109,6 +110,7 @@ interface BudgetsHubViewProps {
 export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({ 
   projects = MOCK_PROJECTS,
   projectLedgers = {},
+  currentUser,
   onAddProjectItems,
   onSelectBudgetName, 
   onBack,
@@ -220,6 +222,7 @@ export const BudgetsHubView: React.FC<BudgetsHubViewProps> = ({
         isFullScreenPage={true}
         onClose={() => setIsCreateModalOpen(false)}
         projects={projects}
+        currentUser={currentUser}
         onCreateBudget={(budgetData) => {
           onAddProjectItems?.(budgetData);
           setIsCreateModalOpen(false);

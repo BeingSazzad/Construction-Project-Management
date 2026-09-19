@@ -3,7 +3,7 @@ import { Project, TradeCategory, ChangeOrder, CostItem } from '../../types';
 import {
   ArrowLeft, ChevronRight, Plus, Pencil,
   FileText, Search, Filter,
-  X, Check
+  X, Check, DollarSign
 } from 'lucide-react';
 import { AddMethodChooser } from '../common/AddMethodChooser';
 
@@ -631,6 +631,17 @@ export const ProjectBudgetTab: React.FC<ProjectBudgetTabProps> = ({
                       />
                     </>
                   )}
+                </div>
+              )}
+              {categories.length === 0 && !onAddItems && (
+                <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 text-center shadow-card flex flex-col items-center justify-center gap-2">
+                  <div className="w-10 h-10 rounded-2xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                  <p className="text-sm font-bold text-[#0F172A]">No Budget Assigned Yet</p>
+                  <p className="text-xs text-[#64748B] max-w-xs leading-relaxed">
+                    This project does not have an active budget ledger yet. Budgets can be created and linked by an Owner or Finance Manager.
+                  </p>
                 </div>
               )}
               {categories.map((cat) => {

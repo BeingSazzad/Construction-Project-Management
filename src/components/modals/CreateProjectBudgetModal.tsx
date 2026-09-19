@@ -25,6 +25,7 @@ interface CreateProjectBudgetModalProps {
   initialMethod?: 'blank' | 'preset';
   onClose: () => void;
   projects: Project[];
+  currentUser?: { name?: string; roleTitle?: string };
   onCreateBudget: (budgetData: CreatedBudgetPayload) => void;
 }
 
@@ -48,6 +49,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
   initialMethod,
   onClose,
   projects,
+  currentUser,
   onCreateBudget
 }) => {
   const lockedProject = projects.find((p) => p.id === lockedProjectId);
@@ -59,7 +61,7 @@ export const CreateProjectBudgetModal: React.FC<CreateProjectBudgetModalProps> =
   const [budgetName, setBudgetName] = useState(lockedProject?.name || '');
   const [budgetNumber, setBudgetNumber] = useState(`BUD-${Math.floor(1000 + Math.random() * 9000)}`);
   const [projectType, setProjectType] = useState('Commercial Construction');
-  const [preparedBy, setPreparedBy] = useState('Avery Scott');
+  const [preparedBy, setPreparedBy] = useState(currentUser?.name || 'Avery Scott');
   const [description, setDescription] = useState('');
   const [selectedProjectId, setSelectedProjectId] = useState<string>(lockedProjectId || projects[0]?.id || 'proj-1');
   const [selectedIds, setSelectedIds] = useState<string[]>(

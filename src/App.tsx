@@ -1138,6 +1138,7 @@ export function App() {
                   setBudgetCreateMethod(undefined);
                 }}
                 projects={visibleProjects}
+                currentUser={currentUser}
                 onCreateBudget={(budgetData) => {
                   handleAddProjectItems(budgetData);
                   setIsCreateBudgetOpen(false);
