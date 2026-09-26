@@ -1758,7 +1758,7 @@ export const MOCK_DOCUMENTS: DocumentItem[] = [
   {
     id: 'doc-4',
     projectId: 'proj-1',
-    title: 'Concrete Mix Submittal',
+    title: 'Concrete Mix Specification',
     category: 'PDFs',
     fileSize: '4.8 MB',
     fileType: 'PDF',
@@ -2467,7 +2467,7 @@ export const MOCK_CALENDAR_EVENTS: CalendarEventItem[] = [
   },
   {
     id: 'evt-6',
-    title: 'Architect Progress Walkthrough & Submittal Review',
+    title: 'Project Manager Site Walkthrough & Quality Review',
     date: '2026-09-16',
     type: 'Meeting',
     projectId: 'proj-1',

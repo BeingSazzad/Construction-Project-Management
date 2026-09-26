@@ -36,7 +36,7 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
       priority: 'High' as const,
       costCode: '06-1000',
       trade: 'Framing',
-      subtasks: ['Inspect Simpson tie connectors', 'Verify shear wall edge nailing (6" o.c.)', 'Structural engineer sign-off']
+      subtasks: ['Inspect Simpson tie connectors', 'Verify shear wall edge nailing (6" o.c.)', 'Field Superintendent punch sign-off']
     },
     {
       title: 'MEP Rough-In Pressure Audit',
@@ -45,7 +45,7 @@ export const TaskCreationTypeModal: React.FC<TaskCreationTypeModalProps> = ({
       priority: 'High' as const,
       costCode: '22-0000',
       trade: 'MEP',
-      subtasks: ['Hold 100 PSI pressure test for 30 mins', 'Check fire-stopping penetrations', 'Inspector sign-off']
+      subtasks: ['Hold 100 PSI pressure test for 30 mins', 'Check fire-stopping penetrations', 'PM quality verification']
     },
     {
       title: 'OSHA Daily Site Safety Briefing',

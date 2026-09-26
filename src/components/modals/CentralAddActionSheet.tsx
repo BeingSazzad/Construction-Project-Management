@@ -42,7 +42,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     ...(onAddTask ? [{
       id: 'task',
       label: 'Task',
-      subtitle: 'Create a deadline, inspection, or trade assignment',
+      subtitle: 'Create a deadline, punch item, or trade task',
       icon: CheckSquare,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddTask,

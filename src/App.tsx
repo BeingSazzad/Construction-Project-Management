@@ -82,10 +82,7 @@ import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp, Layers,
 
 export function App() {
   // Navigation & View State
-  const [appView, setAppView] = useState<'auth' | 'onboarding' | 'workspace'>(() => {
-    // Show onboarding once — persisted via localStorage
-    return localStorage.getItem('lattice_onboarded') ? 'workspace' : 'onboarding';
-  });
+  const [appView, setAppView] = useState<'auth' | 'onboarding' | 'workspace'>('workspace');
   const [authMode, setAuthMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [currentRole, setCurrentRole] = useState<UserRole>('admin'); // Default to Company Owner (Phase 1 Focus)
   const [activeTab, setActiveTab] = useState<string>('home');

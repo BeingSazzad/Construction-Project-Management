@@ -45,8 +45,8 @@ const ALL_COMPANY_MEMBERS: TeamMember[] = [
   { id: 'm-5', name: 'Sarah Johnson', role: 'Lead Project Manager', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' },
   { id: 'm-6', name: 'Marcus Chen', role: 'Finance Controller', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80' },
   { id: 'm-7', name: 'Apex Concrete LLC', role: 'Concrete Trade Partner', avatar: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-8', name: 'Priya Nair', role: 'Project Engineer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-9', name: 'Josh Spencer', role: 'Project Engineer', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-8', name: 'Avery Scott', role: 'Managing Principal & Founder', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-9', name: 'Michael Chang', role: 'Director of Finance', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
   { id: 'm-10', name: 'Titan Steel Works', role: 'Structural Subcontractor', avatar: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=150&auto=format&fit=crop&q=80' },
 ];
 
@@ -56,7 +56,7 @@ const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
     projectId: 'proj-1',
     projectName: 'Snell Isle Residence',
     channelName: 'Snell Isle Project Team',
-    lastMessage: 'City framing inspection scheduled for 2:00 PM.',
+    lastMessage: 'Framing quality punch walk scheduled with John Smith.',
     lastSender: 'Sarah Johnson',
     timestamp: '10:15 AM',
     unreadCount: 0,
@@ -67,7 +67,7 @@ const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
     projectId: 'proj-2',
     projectName: 'Downtown Commercial',
     channelName: 'Downtown Commercial Site',
-    lastMessage: 'City inspector arrived for Level 12 deck inspection.',
+    lastMessage: 'Superintendent John Smith arrived for Level 12 deck punch check.',
     lastSender: 'Carlos Ortiz',
     timestamp: '10:45 AM',
     unreadCount: 2,
@@ -743,7 +743,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 <span className="text-[10px] text-[#9DA5B1]">10:18 AM</span>
               </div>
               <div className="p-3 rounded-2xl rounded-tl-sm bg-white border border-[#DDE1E7] text-xs text-[#171A1F] leading-relaxed shadow-xs">
-                Understood Sazzad. Hydrostatic pressure test passed at 120 PSI. Field crew is on site with the city inspector right now.
+                Understood Sarah. Hydrostatic pressure test passed at 120 PSI. Field crew verified all manifold connections.
               </div>
             </div>
           </div>
@@ -800,7 +800,7 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                 <span className="text-[10px] text-[#9DA5B1]">10:32 AM</span>
               </div>
               <div className="p-3 rounded-2xl rounded-tl-sm bg-white border border-[#DDE1E7] text-xs text-[#171A1F] leading-relaxed shadow-xs">
-                City inspector just signed off on the Level 8 plumbing rough-in permit! Green card signed. We can proceed with wall framing insulation tomorrow morning.
+                Superintendent John Smith just signed off on the Level 8 plumbing rough-in punch walk! We can proceed with wall framing insulation tomorrow morning.
               </div>
             </div>
           </div>

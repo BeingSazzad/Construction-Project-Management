@@ -146,7 +146,7 @@ export const CreateTaskView: React.FC<CreateTaskViewProps> = ({
             <CustomSelect
               value={assigneeName}
               onChange={setAssigneeName}
-              options={['John Smith (Superintendent)', 'Sarah Johnson (Lead PM)', 'Dave Miller (Field Engineer)']}
+              options={['John Smith (Field Superintendent)', 'Sarah Johnson (Lead PM)', 'Michael Chang (Finance)', 'Avery Scott (Owner)']}
               size="md"
             />
           </div>

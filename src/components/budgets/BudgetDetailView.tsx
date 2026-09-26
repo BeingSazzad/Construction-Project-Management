@@ -81,9 +81,10 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
 
   // Team Assignments State
   const [teamMembers, setTeamMembers] = useState([
-    { id: 'tm-1', name: 'John Smith', email: 'john@company.com', role: 'Estimator', access: 'View Only' },
-    { id: 'tm-2', name: 'Alex Chen', email: 'alex@averymarsh.com', role: 'Project Manager', access: 'Full Access' },
-    { id: 'tm-3', name: 'Sarah Miller', email: 'sarah@archstudio.com', role: 'Architect', access: 'Can Edit' },
+    { id: 'tm-1', name: 'Avery Scott', email: 'avery.scott@averymarsh.com', role: 'Owner / Principal', access: 'Full Access' },
+    { id: 'tm-2', name: 'Sarah Johnson', email: 'sarah.j@averymarsh.com', role: 'Project Manager', access: 'Full Access' },
+    { id: 'tm-3', name: 'Michael Chang', email: 'm.chang@averymarsh.com', role: 'Finance Director', access: 'Can Edit' },
+    { id: 'tm-4', name: 'John Smith', email: 'john.smith@averymarsh.com', role: 'Field Superintendent', access: 'View Only' },
   ]);
   const [editingMemberId, setEditingMemberId] = useState<string | null>(null);
 
@@ -91,7 +92,7 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
     const newId = `tm-${Date.now()}`;
     setTeamMembers(prev => [
       ...prev,
-      { id: newId, name: '', email: '', role: 'Estimator', access: 'View Only' }
+      { id: newId, name: '', email: '', role: 'Field Superintendent', access: 'View Only' }
     ]);
     setEditingMemberId(newId);
   };
@@ -117,12 +118,12 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
     },
     {
       id: 'msg-2',
-      sender: 'Alex Chen',
-      initials: 'AC',
+      sender: 'Michael Chang',
+      initials: 'MC',
       color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-      role: 'Project Estimator',
+      role: 'Director of Finance',
       time: '15m ago',
-      text: 'Updated Soil Test & Engineering line item quantity from 1 to 2 based on revised site engineer report.'
+      text: 'Reconciled draw request #4 against committed purchase orders. Variance is well within budget threshold.'
     },
     {
       id: 'msg-3',
@@ -131,16 +132,16 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
       color: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
       role: 'Earthwork Sub Lead',
       time: '1h ago',
-      text: 'Grading and excavation on Lot #4 complete. Silt fencing inspection passed by city officer.'
+      text: 'Grading and excavation on Lot #4 complete. Silt fencing inspection passed by site superintendent.'
     },
     {
       id: 'msg-4',
-      sender: 'Sarah Miller',
-      initials: 'SM',
+      sender: 'Avery Scott',
+      initials: 'AS',
       color: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-      role: 'Lead Architect',
+      role: 'Managing Principal & Owner',
       time: '2h ago',
-      text: 'Uploaded architectural document dallas_custom_v3.pdf with revised structural column specs.'
+      text: 'Reviewed Thursday schedule with Sarah. Approved the supplemental framing lumber package release.'
     },
     {
       id: 'msg-5',
@@ -806,14 +807,14 @@ export const BudgetDetailView: React.FC<BudgetDetailViewProps> = ({
                 },
                 {
                   id: 'emp-4',
-                  name: 'Sarah Miller',
-                  role: 'Lead Architect',
-                  company: 'ArchStudio Design LLC',
-                  phone: '+1 (555) 789-0123',
-                  email: 'sarah.m@archstudio.com',
-                  avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
-                  type: 'trade',
-                  access: 'View Only',
+                  name: 'Michael Chang',
+                  role: 'Director of Finance',
+                  company: 'Avery & Marsh Construction',
+                  phone: '+1 (555) 456-7890',
+                  email: 'm.chang@averymarsh.com',
+                  avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                  type: 'gc',
+                  access: 'Can Edit',
                   isOnSite: false
                 },
                 {

@@ -253,9 +253,10 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 value={assigneeName}
                 onChange={setAssigneeName}
                 options={[
-                  { value: 'John Smith', label: 'John Smith (Superintendent)' },
-                  { value: 'Sarah Johnson', label: 'Sarah Johnson (PM)' },
-                  { value: 'Mike Davis', label: 'Mike Davis (Site Engineer)' }
+                  { value: 'John Smith', label: 'John Smith (Field Superintendent)' },
+                  { value: 'Sarah Johnson', label: 'Sarah Johnson (Lead PM)' },
+                  { value: 'Michael Chang', label: 'Michael Chang (Director of Finance)' },
+                  { value: 'Avery Scott', label: 'Avery Scott (Owner / Principal)' }
                 ]}
                 size="md"
               />

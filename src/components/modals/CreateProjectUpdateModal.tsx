@@ -36,10 +36,10 @@ export const CreateProjectUpdateModal: React.FC<CreateProjectUpdateModalProps> =
       'HVAC-Ductwork-Level2.jpg'
     ];
     const sampleDocNames = [
-      'City-Framing-Signoff.pdf',
-      'Structural-Engineers-Report.pdf',
-      'Material-Submittal-Package.pdf',
-      'Testing-Lab-Slump-Report.pdf'
+      'Framing-Quality-Signoff.pdf',
+      'Site-Inspection-Report.pdf',
+      'Material-Delivery-Receipt.pdf',
+      'Concrete-Testing-Report.pdf'
     ];
 
     const randomName = type === 'photo' 

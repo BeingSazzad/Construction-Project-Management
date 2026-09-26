@@ -123,11 +123,11 @@ export const LattiAssistant: React.FC<LattiAssistantProps> = ({
         badge = { label: 'Inspections', value: '2 Scheduled', variant: 'info' };
         actionBtn = { label: 'Review Project Tasks', targetTab: 'tasks' };
       } else if (lower.includes('task') || lower.includes('due') || lower.includes('overdue') || lower.includes('todo')) {
-        replyText = "You have 7 active tasks due this week. Priority item: 'Verify hurricane strap nailing schedule' before the City inspector arrives tomorrow at 10:00 AM.";
+        replyText = "You have 7 active tasks due this week. Priority item: 'Verify hurricane strap nailing schedule' with Field Superintendent John Smith on site.";
         badge = { label: 'Tasks Due', value: '7 Pending', variant: 'info' };
         actionBtn = { label: 'Review Project Tasks', targetTab: 'tasks' };
       } else if (lower.includes('summary') || lower.includes('today') || lower.includes('briefing') || lower.includes('activity')) {
-        replyText = "Good morning! You're on track with 3 active projects. Snell Isle has municipal framing inspection tomorrow, and Downtown Tower had steel delivery #4 confirmed today. Zero safety incidents reported.";
+        replyText = "Good morning! You're on track with 3 active projects. Snell Isle has second floor framing verification today, and Downtown Tower had steel delivery #4 confirmed. Zero safety incidents reported.";
         badge = { label: 'Site Health', value: '100% Active', variant: 'success' };
         actionBtn = { label: 'View All Projects', targetTab: 'projects' };
       } else {

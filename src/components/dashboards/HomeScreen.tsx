@@ -65,6 +65,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 }) => {
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
   const [isRiskAuditModalOpen, setIsRiskAuditModalOpen] = useState(false);
+  const [isInvoiceListModalOpen, setIsInvoiceListModalOpen] = useState(false);
+  const [isInspectionListModalOpen, setIsInspectionListModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<{ id: string; vendor: string; amount: string; desc: string; date: string; csiCode: string; retainage: string; lienWaiverStatus: string } | null>(null);
   const [selectedCrew, setSelectedCrew] = useState<{ id: string; trade: string; count: string; task: string; status: string; foreman: string; phone: string; zone: string; safetyTailgate: boolean } | null>(null);
   const [approvedInvoices, setApprovedInvoices] = useState<string[]>([]);
@@ -133,10 +135,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
               <div className="mt-1.5">
                 <h2 className="text-base sm:text-lg font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors tracking-tight truncate leading-snug">
-                  City Framing Walkthrough
+                  Second Floor Framing & Joists
                 </h2>
                 <p className="text-xs text-[#64748B] font-medium mt-0.5 truncate leading-snug">
-                  Snell Isle Residence · Inspector arriving 10:00 AM
+                  Snell Isle Residence · 24 Trade Crew on Site
                 </p>
               </div>
             </div>
@@ -396,7 +398,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     Root Cause Analysis
                   </span>
                   <p className="text-xs text-[#334155] leading-relaxed">
-                    Cast-in-Place concrete pier depths were revised from 18ft to 24ft due to waterfront sandy subsoil testing by Madrid CPWG geotechnical engineers. 6 additional helical micropiles were installed to reach load-bearing limestone.
+                    Cast-in-Place concrete pier depths were revised from 18ft to 24ft due to waterfront sandy subsoil conditions. 6 additional helical micropiles were installed to reach load-bearing limestone.
                   </p>
                 </div>
 
@@ -506,7 +508,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   AIA G702 Pay App Cycle
                 </h2>
                 <p className="text-xs text-[#64748B] font-medium mt-0.5 truncate leading-snug">
-                  Snell Isle Residence · Lender inspector review Friday
+                  Snell Isle Residence · Ready for Owner Avery Scott sign-off
                 </p>
               </div>
             </button>
@@ -551,7 +553,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           <button
             type="button"
-            onClick={() => onOpenApprovePayApp ? onOpenApprovePayApp() : onOpenBudgetsHub?.()}
+            onClick={() => setIsInvoiceListModalOpen(true)}
             className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group text-left"
           >
             <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
@@ -586,7 +588,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         </div>
 
-        {/* ── 3. PORTFOLIO CAPITAL COMMITTED CARD ── */}
+        {/* ── 3. PORTFOLIO CAPITAL COMMITTED CARD (Matching Owner Capital Card) ── */}
         <button
           type="button"
           onClick={onOpenBudgetsHub}
@@ -627,7 +629,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div className="h-full bg-[#BAE6FD] rounded-r-full" style={{ width: '17%' }} />
           </div>
 
-          {/* Bar Legend - Clean justify-between inline alignment */}
+          {/* Bar Legend */}
           <div className="flex items-center justify-between pt-1">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#1677FF] shrink-0" />
@@ -647,102 +649,45 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
         </button>
 
-        {/* ── 4. QUICK FINANCIAL ACTIONS (Lender Draws, Lien Waivers & Disbursals) ── */}
-        {(onOpenCreateDraw || onOpenLienWaiver || onOpenApprovePayApp) && (
-        <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-          {onOpenCreateDraw && (
-          <button
-            type="button"
-            onClick={onOpenCreateDraw}
-            className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
-          >
-            <Landmark className="w-3.5 h-3.5 text-[#1677FF]" />
-            <span className="truncate">Lender Draw</span>
-          </button>
-          )}
-          {onOpenLienWaiver && (
-          <button
-            type="button"
-            onClick={onOpenLienWaiver}
-            className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-[#1677FF]" />
-            <span className="truncate">Lien Waivers</span>
-          </button>
-          )}
-          {onOpenApprovePayApp && (
-          <button
-            type="button"
-            onClick={onOpenApprovePayApp}
-            className="h-9 px-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1677FF]/40 text-xs font-semibold text-[#0F172A] flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
-          >
-            <FileCheck className="w-3.5 h-3.5 text-[#1677FF]" />
-            <span className="truncate">Pay Apps</span>
-          </button>
-          )}
-        </div>
-        )}
-
-        {/* ── 5. TRADE INVOICE APPROVAL QUEUE (Compact Divider List, ZERO Card Bloat) ── */}
-        <div className="flex flex-col gap-2.5">
-          <div className="flex items-center justify-between px-0.5">
+        {/* ── 4. LATTI FINANCE BRIEFING (Clean, Matching Owner Standard) ── */}
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Trade Invoices Needing Approval</h2>
-              <span className="text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] px-2 py-0.5 rounded-full">
-                {pendingInvoicesCount} Pending
-              </span>
+              <Sparkles className="w-4 h-4 text-[#1677FF]" />
+              <span className="text-sm font-bold text-[#1677FF]">Latti Finance Briefing</span>
             </div>
-            <button onClick={onOpenBudgetsHub} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer">
-              <span>Ledger</span>
+            <button 
+              onClick={() => onOpenLatti('Audit financial draw requirements')} 
+              className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <span>Ask Copilot</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
-            {[
-              { id: 'inv-1', vendor: 'Apex Concrete Masters', amount: '$84,200', desc: 'Pay App #04 · STEM Walls & Footings', date: 'Due Sep 8', csiCode: '03 30 00 Cast-in-Place Concrete', retainage: '$8,420 (10%)', lienWaiverStatus: 'Progress Conditional on File' },
-              { id: 'inv-2', vendor: '84 Lumber Building Materials', amount: '$36,500', desc: 'Package delivery #2 · Framing lumber', date: 'Due Sep 10', csiCode: '06 11 00 Wood Framing & Trusses', retainage: '$3,650 (10%)', lienWaiverStatus: 'Materialman Release Stamped' },
-              { id: 'inv-3', vendor: 'Sunbelt Equipment Rentals', amount: '$12,400', desc: '50-Ton Mobile Crane rental', date: 'Due Sep 12', csiCode: '01 54 00 Construction Equipment', retainage: '$0 (Net 30)', lienWaiverStatus: 'Rental Release Attached' },
-            ].map((inv) => {
-              const isApproved = approvedInvoices.includes(inv.id);
-              return (
-                <div 
-                  key={inv.id} 
-                  onClick={() => setSelectedInvoice(inv)}
-                  className="p-3 sm:p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">{inv.vendor}</h4>
-                      <span className="text-xs font-bold text-[#0F172A] shrink-0">{inv.amount}</span>
-                    </div>
-                    <p className="text-[11px] text-[#64748B] truncate mt-0.5">
-                      {inv.desc} · <span className="text-[#D97706] font-medium">{inv.date}</span>
-                    </p>
-                  </div>
+          <div className="bg-[#F8FAFC] border border-[#E2E8F0]/70 rounded-2xl p-3.5">
+            <p className="text-xs text-[#334155] leading-relaxed font-normal">
+              AIA G702 Draw #04 ($1.2M) ready for Owner Avery Scott sign-off. {pendingInvoicesCount} trade pay applications ($133.1K) pending approval from Apex Concrete & 84 Lumber.
+            </p>
+          </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!isApproved) {
-                          setApprovedInvoices(prev => [...prev, inv.id]);
-                          setFinanceToast(`✓ Invoice from ${inv.vendor} approved for payment!`);
-                          setTimeout(() => setFinanceToast(null), 3000);
-                        }
-                      }}
-                      className={`h-7 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer active:scale-95 ${
-                        isApproved 
-                          ? 'bg-[#E9F9F3] text-[#10A976] cursor-default' 
-                          : 'bg-[#1677FF] hover:bg-[#0F5FD7] text-white shadow-xs'
-                      }`}
-                    >
-                      {isApproved ? 'Approved ✓' : 'Approve'}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="flex items-center gap-2 pt-0.5">
+            <button 
+              onClick={() => setIsInvoiceListModalOpen(true)}
+              className="h-8 px-3.5 rounded-full bg-[#EAF3FF] hover:bg-[#DCE8F8] border border-[#CBD5E1] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
+            >
+              <FileCheck className="w-3.5 h-3.5" />
+              <span>Review Invoices ({pendingInvoicesCount})</span>
+            </button>
+            {onOpenCreateDraw && (
+              <button 
+                onClick={onOpenCreateDraw}
+                className="h-8 px-3.5 rounded-full bg-[#F1F6FE] hover:bg-[#E5EFFF] border border-[#DCE8F8] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
+              >
+                <Landmark className="w-3.5 h-3.5" />
+                <span>Request Draw</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -777,6 +722,94 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             onClose={() => setIsWeatherModalOpen(false)}
             project={snellProject}
           />
+        )}
+
+        {/* ── MODAL: FULL TRADE INVOICE APPROVAL QUEUE ── */}
+        {isInvoiceListModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+            <div className="bg-white rounded-3xl max-w-[440px] w-full p-5 shadow-2xl border border-[#E2E8F0] flex flex-col gap-4 max-h-[90vh] overflow-hidden animate-slide-in">
+              {/* Header */}
+              <div className="flex items-center justify-between pb-1 border-b border-[#F1F5F9]">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+                    <Receipt className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-[#0F172A] leading-tight">Trade Invoices</h3>
+                    <p className="text-xs text-[#64748B] mt-0.5">{pendingInvoicesCount} Pending ACH Authorization</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsInvoiceListModalOpen(false)}
+                  className="w-8 h-8 rounded-full bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#64748B] flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Invoice List */}
+              <div className="flex-1 overflow-y-auto divide-y divide-[#F1F5F9] rounded-2xl border border-[#E2E8F0]">
+                {[
+                  { id: 'inv-1', vendor: 'Apex Concrete Masters', amount: '$84,200', desc: 'Pay App #04 · STEM Walls & Footings', date: 'Due Sep 8', csiCode: '03 30 00 Cast-in-Place Concrete', retainage: '$8,420 (10%)', lienWaiverStatus: 'Progress Conditional on File' },
+                  { id: 'inv-2', vendor: '84 Lumber Building Materials', amount: '$36,500', desc: 'Package delivery #2 · Framing lumber', date: 'Due Sep 10', csiCode: '06 11 00 Wood Framing & Trusses', retainage: '$3,650 (10%)', lienWaiverStatus: 'Materialman Release Stamped' },
+                  { id: 'inv-3', vendor: 'Sunbelt Equipment Rentals', amount: '$12,400', desc: '50-Ton Mobile Crane rental', date: 'Due Sep 12', csiCode: '01 54 00 Construction Equipment', retainage: '$0 (Net 30)', lienWaiverStatus: 'Rental Release Attached' },
+                ].map((inv) => {
+                  const isApproved = approvedInvoices.includes(inv.id);
+                  return (
+                    <div 
+                      key={inv.id} 
+                      onClick={() => {
+                        setSelectedInvoice(inv);
+                        setIsInvoiceListModalOpen(false);
+                      }}
+                      className="p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">{inv.vendor}</h4>
+                          <span className="text-xs font-bold text-[#0F172A] shrink-0">{inv.amount}</span>
+                        </div>
+                        <p className="text-[11px] text-[#64748B] truncate mt-0.5">
+                          {inv.desc} · <span className="text-[#D97706] font-medium">{inv.date}</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isApproved) {
+                              setApprovedInvoices(prev => [...prev, inv.id]);
+                              setFinanceToast(`✓ Invoice from ${inv.vendor} approved for payment!`);
+                              setTimeout(() => setFinanceToast(null), 3000);
+                            }
+                          }}
+                          className={`h-7 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer active:scale-95 ${
+                            isApproved 
+                              ? 'bg-[#E9F9F3] text-[#10A976] cursor-default' 
+                              : 'bg-[#1677FF] hover:bg-[#0F5FD7] text-white shadow-xs'
+                          }`}
+                        >
+                          {isApproved ? 'Approved ✓' : 'Approve'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Footer */}
+              <div className="pt-1 flex items-center justify-between">
+                <span className="text-xs text-[#64748B]">Click row for CSI & lien audit</span>
+                <button
+                  onClick={() => setIsInvoiceListModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0] cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Invoice Detail & ACH Approval Modal */}
@@ -884,6 +917,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-5 py-3 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] animate-fade-in">
       
+      {/* Toast Notification */}
+      {fieldToast && (
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-[#0F172A] text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 border border-slate-700 animate-slide-in">
+          <CheckCircle2 className="w-4 h-4 text-[#10A976]" />
+          <span>{fieldToast}</span>
+        </div>
+      )}
+      
       {/* ── 1. HERO CARD: TODAY'S OPERATIONAL FOCUS ── */}
       <div 
         onClick={() => onSelectProject(snellProject)}
@@ -904,10 +945,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
             <div className="mt-1.5">
               <h2 className="text-base sm:text-lg font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors tracking-tight truncate leading-snug">
-                Framing Walkthrough Prep
+                Framing & Wall Sheathing
               </h2>
               <p className="text-xs text-[#64748B] font-medium mt-0.5 truncate leading-snug">
-                Snell Isle Residence · Inspector Frank Rodriguez at 10 AM
+                Snell Isle Residence · Level 2 Joists & Shear Panels
               </p>
             </div>
           </div>
@@ -933,8 +974,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </div>
 
-      {/* ── 2. EXACT 3 FIELD KPIS ── */}
+      {/* ── 2. EXACT 3 FIELD KPIS (Clean & Aligned with Owner Standard) ── */}
       <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+        {/* KPI 1: Assigned Projects */}
+        <div 
+          onClick={onOpenProjects}
+          className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
+        >
+          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+            <Building2 className="w-3.5 h-3.5" />
+          </div>
+          <div className="mt-2">
+            <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
+              Active Projects
+            </span>
+            <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
+              {projects.length}
+            </span>
+          </div>
+        </div>
+
+        {/* KPI 2: On Site Headcount */}
         <div 
           onClick={onOpenDailyLogs}
           className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
@@ -944,7 +1004,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div className="mt-2">
             <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
-              Headcount
+              On Site Headcount
             </span>
             <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
               24 Crew
@@ -952,216 +1012,123 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
         </div>
 
+        {/* KPI 3: Site Punch List */}
         <div 
-          onClick={onOpenDailyLogs}
+          onClick={() => setIsInspectionListModalOpen(true)}
           className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
         >
-          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-            <FileText className="w-3.5 h-3.5" />
-          </div>
-          <div className="mt-2">
-            <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
-              Daily Field Log
-            </span>
-            <span className="text-base sm:text-lg font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
-              Drafting
-            </span>
-          </div>
-        </div>
-
-        <div 
-          onClick={() => onOpenTasks()}
-          className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col justify-between hover:border-[#1677FF]/40 transition-all cursor-pointer min-h-[84px] group"
-        >
-          <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
             <ShieldCheck className="w-3.5 h-3.5" />
           </div>
           <div className="mt-2">
             <span className="text-[11px] text-[#64748B] font-medium block leading-tight truncate">
-              Safety Record
+              Site Punch List
             </span>
-            <span className="text-sm sm:text-base font-bold text-[#0F172A] block leading-tight mt-0.5 truncate">
-              0 Incidents
+            <span className="text-base sm:text-lg font-bold text-[#10A976] block leading-tight mt-0.5 truncate">
+              {checkedFieldPunch.length} / 4 Ready
             </span>
           </div>
         </div>
       </div>
 
-      {/* ── 3. CITY INSPECTION READINESS (Field Superintendent's Core Morning Focus) ── */}
-      <div className="flex flex-col gap-2.5">
-        <div className="flex items-center justify-between px-0.5">
-          <div className="flex items-center gap-1.5">
-            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">City Inspection Checklist</h2>
-            <span className="text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] px-2 py-0.5 rounded-full">
-              {checkedFieldPunch.length}/4 Verified
+      {/* ── 3. SITE QUALITY & PUNCH LIST PROGRESS CARD (Matching Owner Standard) ── */}
+      <div 
+        onClick={() => setIsInspectionListModalOpen(true)}
+        className="p-3 sm:p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex flex-col gap-2 group"
+      >
+        {/* Header row */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">
+              JOBSITE PUNCH LIST & QUALITY
             </span>
+            <Info className="w-3 h-3 text-[#94A3B8]" />
           </div>
-          <button onClick={onOpenDailyLogs} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer">
-            <span>Daily Log</span>
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976]">
+            {Math.round((checkedFieldPunch.length / 4) * 100)}% Verified
+          </span>
+        </div>
+
+        {/* Value + Circular Arrow Button */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight leading-tight">
+              Framing & Safety Punch Walk
+            </h3>
+            <p className="text-[10px] sm:text-[11px] text-[#64748B] font-medium tracking-tight mt-0.5 leading-snug truncate">
+              4 Jobsite Punch Items · Snell Isle Residence
+            </p>
+          </div>
+          <div className="w-7 h-7 rounded-full bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center group-hover:bg-[#1677FF] group-hover:text-white transition-all shrink-0">
+            <ArrowRight className="w-3.5 h-3.5" />
+          </div>
+        </div>
+
+        {/* Segmented Continuous Progress Bar */}
+        <div className="w-full h-2 rounded-full bg-[#F1F5F9] overflow-hidden flex gap-0.5 mt-0.5">
+          <div 
+            className="h-full bg-[#10A976] rounded-l-full transition-all duration-300" 
+            style={{ width: `${Math.round((checkedFieldPunch.length / 4) * 100)}%` }} 
+          />
+          <div 
+            className="h-full bg-[#CBD5E1] rounded-r-full" 
+            style={{ width: `${100 - Math.round((checkedFieldPunch.length / 4) * 100)}%` }} 
+          />
+        </div>
+
+        {/* Bar Legend */}
+        <div className="flex items-center justify-between pt-1">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#10A976] shrink-0" />
+            <span className="text-[11px] text-[#64748B] font-medium">Verified Items</span>
+            <span className="text-[11px] font-bold text-[#0F172A]">{checkedFieldPunch.length} of 4</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#CBD5E1] shrink-0" />
+            <span className="text-[11px] text-[#64748B] font-medium">Pending Verification</span>
+            <span className="text-[11px] font-bold text-[#0F172A]">{4 - checkedFieldPunch.length} Items</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 4. LATTI FIELD BRIEFING (Clean, Matching Owner Standard) ── */}
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-card flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-[#1677FF]" />
+            <span className="text-sm font-bold text-[#1677FF]">Latti Field Briefing</span>
+          </div>
+          <button 
+            onClick={() => onOpenLatti('Audit site safety and jobsite requirements')} 
+            className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            <span>Ask Copilot</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* Progress Tracker Bar */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3 shadow-card flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#0F172A]">
-              Framing & Hurricane Tie-Down Walkthrough
-            </span>
-            <span className="text-[10px] font-bold text-[#10A976] bg-[#E9F9F3] px-2 py-0.5 rounded-full">
-              {Math.round((checkedFieldPunch.length / 4) * 100)}% Ready
-            </span>
-          </div>
-          <div className="w-full h-2 rounded-full bg-[#F1F5F9] overflow-hidden">
-            <div 
-              className="h-full bg-[#10A976] rounded-full transition-all duration-300" 
-              style={{ width: `${Math.max(10, Math.round((checkedFieldPunch.length / 4) * 100))}%` }} 
-            />
-          </div>
-          <p className="text-[10px] text-[#64748B]">
-            City of Tampa Inspector Frank Rodriguez arrives tomorrow 10:00 AM
+        <div className="bg-[#F8FAFC] border border-[#E2E8F0]/70 rounded-2xl p-3.5">
+          <p className="text-xs text-[#334155] leading-relaxed font-normal">
+            24 crew members logged on site across 2 active trades. {checkedFieldPunch.length} of 4 punch list items completed today. Daily field log ready for PM Sarah Johnson's review.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
-          {[
-            { id: 'c-1', title: 'Simpson Strong-Tie Straps & Hold-Downs', area: 'Wall Grid 4B & Rafters', code: 'FBC-2024', priority: 'Critical' },
-            { id: 'c-2', title: 'Shear Wall Edge (6" o.c.) & Field Nailing (12" o.c.)', area: 'Level 2 Structural Shear', code: 'Eng S-202', priority: 'High' },
-            { id: 'c-3', title: 'Signed Stamped Permit Drawings in Job Box', area: 'Jobsite Lockbox #1', code: 'Admin', priority: 'High' },
-            { id: 'c-4', title: 'Florida Building Code Permit Inspection Card Posted', area: 'Front Entrance Board', code: 'Compliance', priority: 'Critical' },
-          ].map((item) => {
-            const isChecked = checkedFieldPunch.includes(item.id);
-            return (
-              <div 
-                key={item.id} 
-                onClick={() => {
-                  if (isChecked) {
-                    setCheckedFieldPunch(prev => prev.filter(id => id !== item.id));
-                  } else {
-                    setCheckedFieldPunch(prev => [...prev, item.id]);
-                    setFieldToast(`✓ ${item.title} verified for City Inspection!`);
-                    setTimeout(() => setFieldToast(null), 3000);
-                  }
-                }}
-                className="p-3 sm:p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
-              >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all shrink-0 ${
-                    isChecked 
-                      ? 'bg-[#10A976] border-[#10A976] text-white' 
-                      : 'border-[#CBD5E1] bg-white group-hover:border-[#1677FF]'
-                  }`}>
-                    {isChecked && <Check className="w-3.5 h-3.5" />}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h4 className={`text-xs sm:text-sm font-bold truncate leading-tight transition-colors ${
-                      isChecked ? 'text-[#64748B] line-through' : 'text-[#0F172A]'
-                    }`}>
-                      {item.title}
-                    </h4>
-                    <p className="text-[11px] text-[#64748B] truncate mt-0.5 leading-tight">
-                      {item.area} · <span className="font-medium text-[#475569]">{item.code}</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                    isChecked 
-                      ? 'bg-[#E9F9F3] text-[#10A976]' 
-                      : item.priority === 'Critical'
-                      ? 'bg-[#FFF0F0] text-[#E5484D]'
-                      : 'bg-[#FFF7E6] text-[#D97706]'
-                  }`}>
-                    {isChecked ? 'Verified ✓' : item.priority}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── 6. ACTIVE TRADE CREWS ON SITE (Compact Divider List, ZERO Card Bloat) ── */}
-      <div className="flex flex-col gap-2.5">
-        <div className="flex items-center justify-between px-0.5">
-          <div className="flex items-center gap-1.5">
-            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">Active Trade Crews on Site</h2>
-            <span className="text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] px-2 py-0.5 rounded-full">
-              24 Men
-            </span>
-          </div>
-          <button onClick={onOpenDailyLogs} className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer">
-            <span>Daily Log</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-2 pt-0.5">
+          <button 
+            onClick={() => setIsInspectionListModalOpen(true)}
+            className="h-8 px-3.5 rounded-full bg-[#E9F9F3] hover:bg-[#D1FADF] border border-[#A6F4C5] text-xs font-semibold text-[#10A976] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Punch Checklist ({checkedFieldPunch.length}/4)</span>
+          </button>
+          <button 
+            onClick={onOpenDailyLogs}
+            className="h-8 px-3.5 rounded-full bg-[#F1F6FE] hover:bg-[#E5EFFF] border border-[#DCE8F8] text-xs font-semibold text-[#1677FF] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Complete Daily Log</span>
           </button>
         </div>
-
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-card overflow-hidden divide-y divide-[#F1F5F9]">
-          {[
-            { id: 'crw-1', trade: 'Titan Framing Systems', count: '14 Carpenters', task: 'Level 2 Structural Joists & Shear Panels', status: 'On Schedule', foreman: 'Mike Callahan (Lead)', phone: '+1 (555) 456-7890', zone: 'Level 2 Grid A-D', safetyTailgate: true },
-            { id: 'crw-2', trade: 'Gulfstream Plumbing Co.', count: '6 Plumbers', task: 'Under-slab rough-in & pressure testing', status: 'On Schedule', foreman: 'Dave Vance (Master Plumber)', phone: '+1 (555) 234-5678', zone: 'Ground Slab Trench 3', safetyTailgate: true },
-            { id: 'crw-3', trade: 'General Site Labor', count: '4 Workers', task: 'Clean-up, trash haul & material staging', status: 'Active', foreman: 'Carlos Mendoza (Lead)', phone: '+1 (555) 876-5432', zone: 'Jobsite Perimeter & Staging', safetyTailgate: true },
-          ].map((crew) => (
-            <div 
-              key={crew.id} 
-              onClick={() => setSelectedCrew(crew)}
-              className="p-3 sm:p-3.5 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">{crew.trade}</h4>
-                  <span className="text-xs font-medium text-[#64748B] shrink-0">· {crew.count}</span>
-                </div>
-                <p className="text-[11px] text-[#64748B] truncate mt-0.5">
-                  {crew.task}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976]">
-                  {crew.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── 5. DAILY FIELD LOG STATION (Field Superintendent Trailer Log) ── */}
-      <div 
-        onClick={onOpenDailyLogs}
-        className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 sm:p-4 shadow-card hover:border-[#1677FF]/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
-      >
-        <div className="flex items-center gap-3 min-w-0 flex-1">
-          <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
-            <FileText className="w-4 h-4" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] truncate">
-                Daily Field Log #42
-              </h4>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E9F9F3] text-[#10A976] shrink-0">
-                24 Men Logged
-              </span>
-            </div>
-            <p className="text-[11px] text-[#64748B] truncate mt-0.5">
-              Snell Isle Residence · Ready for Lead PM Sarah Johnson sign-off
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onOpenDailyLogs) onOpenDailyLogs();
-          }}
-          className="h-7 px-3 rounded-lg text-xs font-bold bg-[#1677FF] hover:bg-[#0F5FD7] text-white shadow-xs transition-all cursor-pointer active:scale-95 shrink-0"
-        >
-          Open Log
-        </button>
       </div>
 
       {/* ── 6. ACTIVE PROJECTS MULTI-PROJECT ROLLUP ── */}
@@ -1293,6 +1260,164 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>Open Daily Log</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inspection Checklist Modal */}
+      {isInspectionListModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-[440px] w-full p-5 shadow-2xl border border-[#E2E8F0] flex flex-col gap-4 max-h-[90vh] overflow-hidden animate-slide-in">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-1 border-b border-[#F1F5F9]">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#E9F9F3] text-[#10A976] flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#0F172A] leading-tight">Jobsite Punch & Safety Checklist</h3>
+                  <p className="text-xs text-[#64748B] mt-0.5">
+                    {checkedFieldPunch.length} of 4 Items Verified · John Smith (Field Supt)
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsInspectionListModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#64748B] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Progress Segment */}
+            <div className="bg-[#F8FAFC] p-3 rounded-2xl border border-[#E2E8F0] flex flex-col gap-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-[#0F172A]">Quality & Field Readiness</span>
+                <span className="font-bold text-[#10A976]">
+                  {Math.round((checkedFieldPunch.length / 4) * 100)}% Verified
+                </span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-[#E2E8F0] overflow-hidden flex gap-0.5">
+                <div
+                  className="h-full bg-[#10A976] rounded-l-full transition-all duration-300"
+                  style={{ width: `${Math.round((checkedFieldPunch.length / 4) * 100)}%` }}
+                />
+                <div
+                  className="h-full bg-[#CBD5E1] rounded-r-full"
+                  style={{ width: `${100 - Math.round((checkedFieldPunch.length / 4) * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Checklist Items */}
+            <div className="flex-1 overflow-y-auto divide-y divide-[#F1F5F9] rounded-2xl border border-[#E2E8F0]">
+              {[
+                {
+                  id: 'c-1',
+                  title: 'Simpson Strong-Tie Straps (Grid Line C-4 to C-9)',
+                  desc: 'Inspect hurricane tie-downs and embed plates before drywall',
+                  trade: 'Rough Carpentry',
+                  location: 'Second Floor Framing'
+                },
+                {
+                  id: 'c-2',
+                  title: 'Shear Wall Edge Nailing (6" o.c. perimeter)',
+                  desc: 'Verify 8d common nail spacing on external OSB shear panels',
+                  trade: 'Framing Crew',
+                  location: 'West Elevation Sheathing'
+                },
+                {
+                  id: 'c-3',
+                  title: 'Site Safety Perimeter & Guardrails',
+                  desc: 'Check stairwell opening covers and 42" OSHA perimeter guardrails',
+                  trade: 'Site Safety',
+                  location: 'Floor 2 Stair Opening'
+                },
+                {
+                  id: 'c-4',
+                  title: 'Lumber Staging & Weather Covers',
+                  desc: 'Ensure Floor 2 roof trusses and framing lumber are elevated and tarped',
+                  trade: 'Material Logistics',
+                  location: 'Ground Laydown Yard'
+                }
+              ].map((item) => {
+                const isChecked = checkedFieldPunch.includes(item.id);
+                return (
+                  <div
+                    key={item.id}
+                    onClick={() => {
+                      if (isChecked) {
+                        setCheckedFieldPunch(prev => prev.filter(x => x !== item.id));
+                        setFieldToast(`Marked ${item.title.split('(')[0].trim()} as pending`);
+                      } else {
+                        setCheckedFieldPunch(prev => [...prev, item.id]);
+                        setFieldToast(`✓ Verified: ${item.title.split('(')[0].trim()}`);
+                      }
+                      setTimeout(() => setFieldToast(null), 3000);
+                    }}
+                    className="p-3.5 flex items-start gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
+                  >
+                    <div
+                      className={`w-5 h-5 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                        isChecked
+                          ? 'bg-[#10A976] text-white'
+                          : 'border-2 border-[#CBD5E1] group-hover:border-[#1677FF]'
+                      }`}
+                    >
+                      {isChecked && <Check className="w-3.5 h-3.5" />}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4
+                          className={`text-xs font-bold leading-snug transition-colors ${
+                            isChecked ? 'line-through text-[#64748B]' : 'text-[#0F172A]'
+                          }`}
+                        >
+                          {item.title}
+                        </h4>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                            isChecked
+                              ? 'bg-[#E9F9F3] text-[#10A976]'
+                              : 'bg-[#FFFBEB] text-[#D97706]'
+                          }`}
+                        >
+                          {isChecked ? 'Verified' : 'Pending'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#64748B] mt-0.5 leading-snug">
+                        {item.desc}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1 text-[10px] text-[#94A3B8]">
+                        <span className="font-semibold text-[#64748B]">{item.trade}</span>
+                        <span>·</span>
+                        <span>{item.location}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Footer */}
+            <div className="pt-1 flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setIsInspectionListModalOpen(false);
+                  if (onOpenPunchList) onOpenPunchList();
+                }}
+                className="text-xs font-semibold text-[#1677FF] hover:underline cursor-pointer"
+              >
+                Go to Full Punch List →
+              </button>
+              <button
+                onClick={() => setIsInspectionListModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0] cursor-pointer"
+              >
+                Close
               </button>
             </div>
           </div>
