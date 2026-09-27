@@ -239,7 +239,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           All
         </button>
 
-        {(['Open', 'In Progress', 'Resolved', 'Verified'] as const).map((st) => {
+        {(['Open', 'In Progress', 'Resolved', 'Closed'] as const).map((st) => {
           const isActive = activeFilter === st;
           const config = STATUS_CONFIG[st];
           return (
@@ -396,30 +396,17 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                               setSelectedPunchItem(item);
                               if (onOpenPunchDetails) onOpenPunchDetails(item);
                             }}
-                            className="py-3 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99] shadow-2xs"
+                            className="py-2.5 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99] shadow-2xs"
                           >
-                            {/* Left: Dot, Title, Subcontractor, Location & Photo Indicator */}
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
-                                <h2 className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors">
-                                  {item.title}
-                                </h2>
-                              </div>
-
-                              <div className="flex items-center gap-2 text-[11px] text-[#64748B] truncate pl-4">
-                                <span className="truncate">{item.assignedTo?.trade || 'General Trade'}</span>
-                                {item.location && <span>· {item.location}</span>}
-                                {hasPhotos && item.photos.length > 1 && (
-                                  <span className="inline-flex items-center gap-1 text-[#1677FF] font-semibold shrink-0 bg-[#EAF3FF] px-1.5 py-0.2 rounded">
-                                    <Camera className="w-2.5 h-2.5" />
-                                    <span>{item.photos.length}</span>
-                                  </span>
-                                )}
-                              </div>
+                            {/* Left: Dot + Title ONLY */}
+                            <div className="min-w-0 flex-1 flex items-center gap-2">
+                              <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
+                              <h2 className="text-xs sm:text-sm font-semibold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">
+                                {item.title}
+                              </h2>
                             </div>
 
-                            {/* Right: Only the Actual Status Pill + Chevron */}
+                            {/* Right: Only the Status Pill + Chevron */}
                             <div className="flex items-center gap-2 shrink-0">
                               <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
                                 {item.status}

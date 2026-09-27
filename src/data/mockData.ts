@@ -1457,7 +1457,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     },
     priority: 'High',
     dueDate: '2025-05-19',
-    status: 'Verified',
+    status: 'Resolved',
     photos: [
       'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=600&auto=format&fit=crop&q=80'
     ],
@@ -1581,7 +1581,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     },
     priority: 'Medium',
     dueDate: '2025-05-25',
-    status: 'Verified',
+    status: 'Resolved',
     photos: [
       'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format&fit=crop&q=80'
     ],
