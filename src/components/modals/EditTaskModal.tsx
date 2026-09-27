@@ -12,6 +12,7 @@ export interface EditableTaskData {
   assignee?: string;
   dueDate?: string;
   groupId: string;
+  location?: string;
 }
 
 interface EditTaskModalProps {
@@ -28,6 +29,7 @@ interface EditTaskModalProps {
     assignee?: string;
     dueDate?: string;
     targetGroupId: string;
+    location?: string;
   }) => void;
   onDelete?: (groupId: string, taskId: string) => void;
 }
@@ -47,6 +49,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
   const [assignee, setAssignee] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [costCode, setCostCode] = useState('');
+  const [location, setLocation] = useState('');
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   useEffect(() => {
@@ -58,6 +61,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
       setAssignee(task.assignee || '');
       setDueDate(task.dueDate || '');
       setCostCode(task.costCode || '');
+      setLocation(task.location || '');
       setIsConfirmingDelete(false);
     }
   }, [task, stageGroups]);
@@ -76,7 +80,8 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
       costCode: costCode.trim() || undefined,
       assignee: assignee.trim() || undefined,
       dueDate: dueDate.trim() || undefined,
-      targetGroupId: groupId
+      targetGroupId: groupId,
+      location: location.trim() || undefined
     });
     onClose();
   };

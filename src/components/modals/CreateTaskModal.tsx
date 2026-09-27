@@ -200,24 +200,6 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             />
           </div>
 
-          {/* Construction Phase / Stage Selection */}
-          {stageOptions && stageOptions.length > 0 && (
-            <div>
-              <label className="text-xs font-semibold text-[#475569] mb-1 block">
-                Construction Stage / Phase
-              </label>
-              <CustomSelect
-                value={selectedStageId}
-                onChange={(val) => setSelectedStageId(val)}
-                options={stageOptions.map(s => ({
-                  value: s.id,
-                  label: s.name
-                }))}
-                size="md"
-              />
-            </div>
-          )}
-
           {/* Description & Scope */}
           <div>
             <label className="text-xs font-semibold text-[#475569] mb-1 block">
@@ -266,14 +248,6 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               size="md"
               fullWidth={true}
             />
-            {/* Auto-linked cost code indicator (read-only) */}
-            <div className="flex items-center gap-1.5 text-[10px] text-[#64748B] px-0.5">
-              <span className="text-[#94A3B8]">Cost Code:</span>
-              <span className="font-mono font-bold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.5 rounded">
-                {costCode.split(' ')[0]}
-              </span>
-              <span className="text-[#475569] truncate">{costCode.split(' ').slice(1).join(' ')}</span>
-            </div>
           </div>
 
           {/* Location & Assignee */}
