@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Project, PunchItem, Priority } from '../../types';
-import { X, Camera, CheckCircle2, Plus, LocateFixed, UploadCloud } from 'lucide-react';
-import { CustomSelect } from '../common/CustomSelect';
+import { X, Camera, CheckCircle2, Plus, LocateFixed, UploadCloud, ChevronDown } from 'lucide-react';
 
 interface CreatePunchModalProps {
   isOpen: boolean;
@@ -46,7 +45,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
         (pos) => {
           const lat = pos.coords.latitude.toFixed(4);
           const lng = pos.coords.longitude.toFixed(4);
-          setLocation(`GPS: ${lat}° N, ${lng}° W (Sector B)`);
+          setLocation(`GPS: ${lat}° N, ${lng}° W`);
           setIsTracking(false);
         },
         () => {
@@ -107,7 +106,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
       dueDate: dueDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
       createdDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       projectId: selectedProjectId,
-      projectName: matchedProject?.name || 'Project',
+      projectName: matchedProject?.name || 'Snell Isle Residence',
       assignedTo: {
         id: `sub-${Date.now()}`,
         name: trade,
@@ -126,8 +125,8 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-3 font-sans animate-fade-in">
-      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] p-4.5 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col text-[#171A1F] scrollbar-none">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 font-sans animate-fade-in">
+      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         
         {/* Hidden File Input for Multiple Photo Upload */}
         <input
@@ -139,209 +138,226 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
           onChange={handleFileUpload}
         />
 
-        {/* Modal Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#EAEDF1] mb-3.5">
+        {/* Fixed Header */}
+        <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center justify-between shrink-0 bg-white">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-sm sm:text-base font-bold text-[#171A1F] tracking-tight leading-tight truncate">
+              <h3 className="text-sm font-bold text-[#0F172A] leading-tight truncate">
                 New Punch Item
               </h3>
-              <p className="text-[11px] text-[#68707C] font-medium truncate">
+              <p className="text-[11px] text-[#64748B] font-medium truncate">
                 {projects.find(p => p.id === selectedProjectId)?.name || project?.name || 'Log quality defect'}
               </p>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#68707C] hover:text-[#171A1F] flex items-center justify-center transition-colors cursor-pointer shrink-0"
+            className="w-7 h-7 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#64748B] hover:text-[#0F172A] flex items-center justify-center transition-colors cursor-pointer shrink-0"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
-          
-          {/* 1. Title * */}
-          <div className="flex flex-col gap-1">
-            <label className="font-bold text-[#171A1F] text-[11px]">Title *</label>
-            <input
-              type="text"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Crack in concrete column"
-              className="w-full h-9.5 bg-white border border-[#DDE1E7] rounded-xl px-3 text-[#171A1F] text-xs font-medium focus:outline-hidden focus:border-[#1677FF] transition-colors placeholder:text-[#94A3B8]"
-            />
-          </div>
-
-          {/* 2. Project Assignment * */}
-          <div className="flex flex-col gap-1">
-            <label className="font-bold text-[#171A1F] text-[11px]">Project *</label>
-            <CustomSelect
-              value={selectedProjectId}
-              onChange={(v) => setSelectedProjectId(v)}
-              options={
-                projects.length > 0
-                  ? projects.map((p) => ({ value: p.id, label: p.name }))
-                  : [{ value: 'proj-1', label: project?.name || 'Snell Isle Residence' }]
-              }
-              size="md"
-            />
-          </div>
-
-          {/* 3. Subcontractor / Trade * & Priority */}
-          <div className="grid grid-cols-2 gap-2.5">
+        {/* Scrollable Form Body */}
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
+          <div className="p-4 overflow-y-auto flex-1 flex flex-col gap-2.5 text-xs">
+            
+            {/* 1. Title * */}
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-[#171A1F] text-[11px]">Subcontractor / Trade *</label>
-              <CustomSelect
-                value={trade}
-                onChange={setTrade}
-                options={[
-                  'Concrete Solutions Inc.',
-                  'Craft Drywall LLC',
-                  'Prime Finishes Co.',
-                  'FlowTech Plumbing',
-                  'Climate HVAC Mechanical',
-                  'Apex Glazing & Waterproofing',
-                  'ProShield Firestopping',
-                  'Steel Masters LLC'
-                ]}
-                size="md"
+              <label className="font-semibold text-[#334155] text-[11px]">Title *</label>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Crack in concrete column"
+                className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#94A3B8]"
               />
             </div>
 
+            {/* 2. Project * */}
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-[#171A1F] text-[11px]">Priority</label>
-              <CustomSelect
-                value={priority}
-                onChange={(v) => setPriority(v as Priority)}
-                options={['Low', 'Medium', 'High', 'Critical']}
-                size="md"
-              />
+              <label className="font-semibold text-[#334155] text-[11px]">Project *</label>
+              <div className="relative">
+                <select
+                  value={selectedProjectId}
+                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                  className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 pr-8 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors appearance-none cursor-pointer"
+                >
+                  {projects.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+              </div>
             </div>
-          </div>
 
-          {/* 4. Location & Due Date */}
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[#171A1F] text-[11px]">Location</label>
-              <div className="relative flex items-center">
+            {/* 3. Subcontractor / Trade * & Priority (2 columns) */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col gap-1">
+                <label className="font-semibold text-[#334155] text-[11px]">Subcontractor / Trade *</label>
+                <div className="relative">
+                  <select
+                    value={trade}
+                    onChange={(e) => setTrade(e.target.value)}
+                    className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 pr-7 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors appearance-none cursor-pointer truncate"
+                  >
+                    {[
+                      'Concrete Solutions Inc.',
+                      'Craft Drywall LLC',
+                      'Prime Finishes Co.',
+                      'FlowTech Plumbing',
+                      'Climate HVAC Mechanical',
+                      'Apex Glazing & Waterproofing',
+                      'ProShield Firestopping',
+                      'Steel Masters LLC'
+                    ].map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2.5 pointer-events-none" />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="font-semibold text-[#334155] text-[11px]">Priority</label>
+                <div className="relative">
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as Priority)}
+                    className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 pr-7 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors appearance-none cursor-pointer"
+                  >
+                    {(['Low', 'Medium', 'High', 'Critical'] as Priority[]).map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2.5 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Location & Due Date (2 columns) */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col gap-1">
+                <label className="font-semibold text-[#334155] text-[11px]">Location</label>
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. Level 3 – Grid A-4"
+                    className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg pl-2 pr-6 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#94A3B8]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleTrackLocation}
+                    className={`absolute right-1.5 text-[#1677FF] hover:text-[#0958D9] cursor-pointer ${
+                      isTracking ? 'animate-spin' : ''
+                    }`}
+                    title="Detect location"
+                  >
+                    <LocateFixed className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="font-semibold text-[#334155] text-[11px]">Due Date</label>
                 <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Level 3 – Grid A-4"
-                  className="w-full h-9.5 bg-white border border-[#DDE1E7] rounded-xl pl-2.5 pr-7 text-[#171A1F] text-xs font-medium focus:outline-hidden focus:border-[#1677FF] transition-colors placeholder:text-[#94A3B8]"
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors"
                 />
+              </div>
+            </div>
+
+            {/* 5. Description */}
+            <div className="flex flex-col gap-1">
+              <label className="font-semibold text-[#334155] text-[11px]">Description</label>
+              <textarea
+                rows={2}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe issue, location details, repair requirements..."
+                className="w-full p-2 bg-white border border-[#DDE1E7] rounded-lg text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors resize-none placeholder:text-[#94A3B8]"
+              />
+            </div>
+
+            {/* 6. Photos (Multiple) */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <label className="font-semibold text-[#334155] text-[11px]">
+                  Evidence Photos {uploadedPhotos.length > 0 ? `(${uploadedPhotos.length})` : '(Multiple)'}
+                </label>
+                <span className="text-[10px] text-[#64748B]">Attach one or more photos</span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={handleTrackLocation}
-                  className={`absolute right-2 text-[#1677FF] hover:text-[#0958D9] transition-colors cursor-pointer ${
-                    isTracking ? 'animate-spin' : ''
-                  }`}
-                  title="Detect location"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="h-8.5 rounded-lg bg-[#F8FAFC] border border-dashed border-[#CBD5E1] hover:border-[#1677FF] flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs font-semibold text-[#475569] hover:text-[#1677FF]"
                 >
-                  <LocateFixed className="w-3.5 h-3.5" />
+                  <UploadCloud className="w-3.5 h-3.5 text-[#1677FF]" />
+                  <span>Choose Files</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleAddSamplePhoto}
+                  className="h-8.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-slate-100 flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs font-medium text-[#64748B]"
+                >
+                  <Camera className="w-3 h-3 text-[#64748B]" />
+                  <span>+ Sample Pic</span>
                 </button>
               </div>
+
+              {/* Uploaded Thumbnails */}
+              {uploadedPhotos.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  {uploadedPhotos.map((url, idx) => (
+                    <div key={idx} className="relative group w-12 h-12 rounded-lg overflow-hidden border border-[#E2E8F0] bg-slate-900">
+                      <img
+                        src={url}
+                        alt={`evidence-${idx}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePhoto(idx)}
+                        className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-xs hover:bg-rose-700 transition-colors cursor-pointer"
+                        title="Remove photo"
+                      >
+                        <X className="w-2.5 h-2.5 stroke-[3]" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="font-bold text-[#171A1F] text-[11px]">Due Date</label>
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="w-full h-9.5 bg-white border border-[#DDE1E7] rounded-xl px-2.5 text-[#171A1F] text-xs font-medium focus:outline-hidden focus:border-[#1677FF] transition-colors"
-              />
-            </div>
           </div>
 
-          {/* 5. Description */}
-          <div className="flex flex-col gap-1">
-            <label className="font-bold text-[#171A1F] text-[11px]">Description</label>
-            <textarea
-              rows={2}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe issue, location details, repair requirements..."
-              className="w-full p-2.5 bg-white border border-[#DDE1E7] rounded-xl text-[#171A1F] text-xs font-medium focus:outline-hidden focus:border-[#1677FF] transition-colors resize-none placeholder:text-[#94A3B8]"
-            />
-          </div>
-
-          {/* 6. Multiple Photos Upload & Gallery */}
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <label className="font-bold text-[#171A1F] text-[11px]">
-                Photos {uploadedPhotos.length > 0 ? `(${uploadedPhotos.length})` : '(Multiple)'}
-              </label>
-              <span className="text-[10px] text-[#64748B]">Attach one or more photos</span>
-            </div>
-            
-            {/* Upload Buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="h-10 rounded-xl bg-[#F8FAFC] border border-dashed border-[#CBD5E1] hover:border-[#1677FF] flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs font-semibold text-[#475569] hover:text-[#1677FF]"
-              >
-                <UploadCloud className="w-4 h-4 text-[#1677FF]" />
-                <span>Choose Files</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleAddSamplePhoto}
-                className="h-10 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-slate-100 flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs font-medium text-[#64748B]"
-              >
-                <Camera className="w-3.5 h-3.5 text-[#64748B]" />
-                <span>+ Sample Pic</span>
-              </button>
-            </div>
-
-            {/* Photo Thumbnails */}
-            {uploadedPhotos.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap pt-1">
-                {uploadedPhotos.map((url, idx) => (
-                  <div key={idx} className="relative group w-14 h-14 rounded-xl overflow-hidden border border-[#E2E8F0]">
-                    <img
-                      src={url}
-                      alt={`evidence-${idx}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemovePhoto(idx)}
-                      className="absolute top-1 right-1 w-4.5 h-4.5 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-xs hover:bg-rose-700 transition-colors cursor-pointer"
-                      title="Remove photo"
-                    >
-                      <X className="w-2.5 h-2.5 stroke-[3]" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-2.5 mt-1.5 pt-2 border-t border-[#EAEDF1]">
+          {/* Fixed Footer: Always pinned and 100% visible, never cut off */}
+          <div className="px-4 py-3 border-t border-[#EAEDF1] bg-[#F8FAFC] shrink-0 grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="w-full h-9.5 rounded-xl bg-[#F2F2F7] border border-[#DDE1E7] hover:bg-[#EAEDF1] text-[#171A1F] font-bold transition-all cursor-pointer"
+              className="w-full h-8.5 rounded-lg bg-white border border-[#DDE1E7] hover:bg-slate-50 text-[#475569] text-xs font-semibold transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-full h-9.5 rounded-xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full h-8.5 rounded-lg bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Create Item</span>
             </button>
           </div>

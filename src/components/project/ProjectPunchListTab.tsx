@@ -486,13 +486,13 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 </p>
               </div>
 
-              {/* Details List (Normal text, clean key-value) */}
-              <div className="py-2 border-y border-[#F1F5F9] flex flex-col gap-2.5">
+              {/* Details List (Perfect uniform row heights and padding) */}
+              <div className="py-1 border-y border-[#F1F5F9] flex flex-col divide-y divide-[#F8FAFC]">
                 
-                {/* Project association - Explicitly tells which project this belongs to */}
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Project</span>
-                  <span className="font-semibold text-[#0F172A] truncate max-w-[200px]">
+                {/* 1. Project */}
+                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                  <span className="text-[#64748B] font-medium">Project</span>
+                  <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
                     {selectedPunchItem.projectName || 
                       projectList.find(p => p.id === selectedPunchItem.projectId)?.name || 
                       project?.name || 
@@ -500,40 +500,55 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                   </span>
                 </div>
 
-                {/* Single Status Selector displaying only the chosen status */}
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Status</span>
-                  <select
-                    value={selectedPunchItem.status}
-                    onChange={(e) => handleStatusChange(selectedPunchItem.id, e.target.value as PunchStatus)}
-                    className={`font-semibold text-xs rounded-lg px-2.5 py-1 border cursor-pointer outline-none transition-colors ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}
-                  >
-                    {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map((st) => (
-                      <option key={st} value={st} className="text-[#0F172A] bg-white">
-                        {st}
-                      </option>
-                    ))}
-                  </select>
+                {/* 2. Status (Sleek, compact h-6 pill aligned with text) */}
+                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                  <span className="text-[#64748B] font-medium">Status</span>
+                  <div className="relative inline-flex items-center">
+                    <select
+                      value={selectedPunchItem.status}
+                      onChange={(e) => handleStatusChange(selectedPunchItem.id, e.target.value as PunchStatus)}
+                      className={`h-6 text-[11px] font-semibold pl-2 pr-5 rounded-md border cursor-pointer outline-none transition-colors appearance-none ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}
+                    >
+                      {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map((st) => (
+                        <option key={st} value={st} className="text-[#0F172A] bg-white font-normal">
+                          {st}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className={`w-3 h-3 absolute right-1.5 pointer-events-none ${STATUS_CONFIG[selectedPunchItem.status]?.pillText}`} />
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Subcontractor</span>
-                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.assignedTo?.trade || 'General Trade'}</span>
+                {/* 3. Subcontractor */}
+                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                  <span className="text-[#64748B] font-medium">Subcontractor</span>
+                  <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
+                    {selectedPunchItem.assignedTo?.trade || 'General Trade'}
+                  </span>
                 </div>
 
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Location</span>
-                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.location || 'Site'}</span>
+                {/* 4. Location */}
+                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                  <span className="text-[#64748B] font-medium">Location</span>
+                  <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
+                    {selectedPunchItem.location || 'Site'}
+                  </span>
                 </div>
 
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Priority</span>
-                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.priority || 'Normal'}</span>
+                {/* 5. Priority */}
+                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                  <span className="text-[#64748B] font-medium">Priority</span>
+                  <span className="font-semibold text-[#0F172A] text-right">
+                    {selectedPunchItem.priority || 'Normal'}
+                  </span>
                 </div>
 
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Due Date</span>
-                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.dueDate || 'Pending'}</span>
+                {/* 6. Due Date */}
+                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                  <span className="text-[#64748B] font-medium">Due Date</span>
+                  <span className="font-semibold text-[#0F172A] text-right">
+                    {selectedPunchItem.dueDate || 'Pending'}
+                  </span>
                 </div>
               </div>
 
