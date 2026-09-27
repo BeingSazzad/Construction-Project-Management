@@ -1464,7 +1464,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
   },
   {
     id: 'pnch-5',
-    projectId: 'proj-1',
+    projectId: 'proj-2',
     title: 'HVAC flex duct kinked in ceiling plenum',
     location: 'Level 2 - Corridor North',
     description: 'Flexible duct connection to VAV box VAV-204 is severely kinked reducing airflow to Zone 4. Needs proper hanger support.',
@@ -1484,7 +1484,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
   },
   {
     id: 'pnch-6',
-    projectId: 'proj-1',
+    projectId: 'proj-2',
     title: 'Water penetration at west elevation window sill',
     location: 'Level 3 - Executive Office 304',
     description: 'Water seepage detected around lower aluminum mullion joint during rain test. Exterior perimeter sealant bead needs re-application.',
@@ -1504,7 +1504,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
   },
   {
     id: 'pnch-7',
-    projectId: 'proj-1',
+    projectId: 'proj-3',
     title: 'Unsealed firestop penetration at mechanical shaft',
     location: 'Level 5 - Shaft B',
     description: '2-inch copper pipe penetration through 2-hour fire-rated floor slab lacks STI SpecSeal intumescent sealant collar.',
@@ -1524,7 +1524,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
   },
   {
     id: 'pnch-8',
-    projectId: 'proj-1',
+    projectId: 'proj-3',
     title: 'Missing handrail wall bracket at stairwell 2',
     location: 'Stairwell 2 - Landing L3',
     description: 'Wall-mounted stainless steel handrail is missing center support bracket. Handrail flexes under load.',

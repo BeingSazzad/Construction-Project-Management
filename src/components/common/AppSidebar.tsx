@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Folder, Sparkles, User, Plus, ClipboardList, Users, Home
+  Folder, Sparkles, User, Plus, ClipboardList, Users, Home, CheckSquare
 } from 'lucide-react';
 import { User as AppUser } from '../../types';
 
@@ -58,6 +58,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         <button type="button" onClick={() => go('daily-logs')} className={itemClass(isActive('daily-logs'))}>
           <ClipboardList className="w-4 h-4" />
           Daily Logs
+        </button>
+        <button type="button" onClick={() => go('punch')} className={itemClass(isActive('punch'))}>
+          <CheckSquare className="w-4 h-4" />
+          Punch List
         </button>
         <button type="button" onClick={() => go('team')} className={itemClass(isActive('team'))}>
           <Users className="w-4 h-4" />

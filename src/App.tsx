@@ -1349,6 +1349,7 @@ export function App() {
                 {activeTab === 'punch' && (
                   <ProjectPunchListTab
                     project={activeProject || projects[0]}
+                    projects={visibleProjects || projects}
                     punchItems={punchItems}
                     onCreatePunch={access.canCreatePunch ? () => setIsCreatePunchOpen(true) : undefined}
                     onUpdatePunchStatus={access.canManagePunch ? handleUpdatePunchStatus : undefined}

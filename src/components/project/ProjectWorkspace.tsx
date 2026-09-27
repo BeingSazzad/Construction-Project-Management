@@ -296,23 +296,10 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           />
         )}
 
-        {activeTab === 'punch' && (
-          <ProjectPunchListTab
-            project={project}
-            punchItems={punchItems}
-            onCreatePunch={onCreatePunch}
-            onUpdatePunchStatus={onUpdatePunchStatus}
-            onDeletePunch={onDeletePunch || (onUpdatePunchStatus ? (punchId) => onUpdatePunchStatus(punchId, 'Closed') : undefined)}
-            onBack={() => setActiveTab('tasks')}
-          />
-        )}
-
         {activeTab === 'tasks' && (
           <ProjectTasksTab
             project={project}
             tasks={tasks}
-            punchCount={punchItems.filter(p => !p.projectId || p.projectId === project.id).length}
-            onOpenPunchList={() => setActiveTab('punch')}
             onOpenTask={onOpenTask}
             onCreateTask={onCreateTask}
             onAddTask={onAddTask}

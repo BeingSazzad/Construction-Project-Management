@@ -345,21 +345,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
       {/* ─── Header ─── */}
       {!isEmpty && (
       <div className="flex flex-col gap-2.5 pt-1">
-        {/* Sub-nav switcher: Tasks | Punch List */}
-        {onOpenPunchList && (
-          <div className="flex items-center gap-1.5 p-1 bg-[#F1F5F9] rounded-xl w-fit border border-[#E2E8F0]">
-            <button className="px-3 py-1 rounded-lg text-xs font-bold bg-white text-[#1677FF] shadow-2xs">
-              Tasks ({projectTasks.length})
-            </button>
-            <button
-              onClick={onOpenPunchList}
-              className="px-3 py-1 rounded-lg text-xs font-semibold text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer"
-            >
-              Punch List ({punchCount ?? 4})
-            </button>
-          </div>
-        )}
-
         <div className="flex items-center justify-between px-0.5">
           <div>
             <div className="flex items-center gap-2">

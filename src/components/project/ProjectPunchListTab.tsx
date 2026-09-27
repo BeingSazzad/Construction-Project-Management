@@ -3,11 +3,12 @@ import { Project, PunchItem, PunchStatus } from '../../types';
 import { 
   Plus, MapPin, Trash2, Folder, ChevronLeft, 
   Search, SlidersHorizontal, ChevronDown, ChevronRight, 
-  Building2, Calendar, Eye, X, Check, AlertCircle, Clock, Camera
+  X, Check
 } from 'lucide-react';
 
 interface ProjectPunchListTabProps {
-  project: Project;
+  project?: Project;
+  projects?: Project[];
   punchItems: PunchItem[];
   onCreatePunch?: () => void;
   onOpenPunchDetails?: (item: PunchItem) => void;
@@ -18,6 +19,7 @@ interface ProjectPunchListTabProps {
 
 export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   project,
+  projects,
   punchItems,
   onCreatePunch,
   onOpenPunchDetails,
@@ -27,7 +29,6 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 }) => {
   const [activeFilter, setActiveFilter] = useState<PunchStatus | 'All'>('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isProjectExpanded, setIsProjectExpanded] = useState(true);
   const [selectedPunchItem, setSelectedPunchItem] = useState<PunchItem | null>(null);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -35,40 +36,44 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   const [selectedTrade, setSelectedTrade] = useState<string>('All');
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string; location: string } | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Determine active project list
+  const projectList: Project[] = (projects && projects.length > 0)
+    ? projects
+    : (project ? [project] : []);
+
+  // Accordion expansion state for each project
+  const [expandedProjectIds, setExpandedProjectIds] = useState<Record<string, boolean>>(() => {
+    const init: Record<string, boolean> = {};
+    projectList.forEach((p, idx) => {
+      // Expand all projects by default so items are visible immediately
+      init[p.id] = true;
+    });
+    return init;
+  });
+
+  const toggleProject = (projId: string) => {
+    setExpandedProjectIds(prev => ({
+      ...prev,
+      [projId]: !prev[projId]
+    }));
+  };
 
   const [items, setItems] = useState<PunchItem[]>(() => {
-    return punchItems.filter(p => !p.projectId || p.projectId === project.id);
+    if (projects && projects.length > 0) return punchItems;
+    if (project) return punchItems.filter(p => !p.projectId || p.projectId === project.id);
+    return punchItems;
   });
 
   // Keep items in sync with incoming punchItems prop
   useEffect(() => {
-    setItems(punchItems.filter(p => !p.projectId || p.projectId === project.id));
-  }, [punchItems, project.id]);
-
-  const handleAttachPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !selectedPunchItem) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      const updatedPhotos = [...(selectedPunchItem.photos || []), dataUrl];
-      const updated = { ...selectedPunchItem, photos: updatedPhotos };
-      setSelectedPunchItem(updated);
-      setItems(prev => prev.map(p => p.id === updated.id ? updated : p));
-    };
-    reader.readAsDataURL(file);
-    // Reset file input
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  const handleRemovePhoto = (photoIdx: number) => {
-    if (!selectedPunchItem) return;
-    const updatedPhotos = (selectedPunchItem.photos || []).filter((_, i) => i !== photoIdx);
-    const updated = { ...selectedPunchItem, photos: updatedPhotos };
-    setSelectedPunchItem(updated);
-    setItems(prev => prev.map(p => p.id === updated.id ? updated : p));
-  };
+    if (projects && projects.length > 0) {
+      setItems(punchItems);
+    } else if (project) {
+      setItems(punchItems.filter(p => !p.projectId || p.projectId === project.id));
+    } else {
+      setItems(punchItems);
+    }
+  }, [punchItems, project?.id, projects]);
 
   const handleStatusChange = (punchId: string, newStatus: PunchStatus) => {
     setItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
@@ -120,7 +125,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
   const openCount = items.filter(p => p.status === 'Open' || p.status === 'In Progress').length;
 
-  // Status configuration matching mockup exactly
+  // Status configuration
   const STATUS_CONFIG: Record<PunchStatus, { dot: string; pillBg: string; pillText: string; pillBorder: string }> = {
     'Open': {
       dot: 'bg-[#F59E0B]',
@@ -154,25 +159,8 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
     }
   };
 
-  const STATUS_OPTIONS: PunchStatus[] = ['Open', 'In Progress', 'Resolved', 'Verified'];
-
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-4 sm:px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] bg-[#F8FAFC] min-h-screen animate-fade-in">
-      
-      {/* Sub-nav switcher: Tasks | Punch List */}
-      {onBack && (
-        <div className="flex items-center gap-1.5 p-1 bg-[#F1F5F9] rounded-xl w-fit border border-[#E2E8F0]">
-          <button
-            onClick={onBack}
-            className="px-3 py-1 rounded-lg text-xs font-semibold text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer"
-          >
-            Tasks
-          </button>
-          <button className="px-3 py-1 rounded-lg text-xs font-bold bg-white text-[#1677FF] shadow-2xs">
-            Punch List ({items.length})
-          </button>
-        </div>
-      )}
 
       {/* ── 1. Top Header: Back, Title, Open Count & New Item CTA ── */}
       <div className="flex items-center justify-between gap-3">
@@ -189,25 +177,24 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           <div>
             <h1 className="text-xl font-bold text-[#0F172A] tracking-tight leading-tight">Punch List</h1>
             <p className="text-xs text-[#64748B] mt-0.5 font-medium">
-              {openCount} open items
+              {openCount} open items across projects
             </p>
           </div>
         </div>
 
         {onCreatePunch && (
-        <button
-          onClick={onCreatePunch}
-          className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer flex-shrink-0"
-        >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
-          <span>New Item</span>
-        </button>
+          <button
+            onClick={onCreatePunch}
+            className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer flex-shrink-0"
+          >
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <span>New Item</span>
+          </button>
         )}
       </div>
 
       {/* ── 2. Filter Pills Bar (All, Open, In Progress, Resolved, Verified) ── */}
       <div className="flex items-center gap-2 overflow-x-auto py-0.5 scrollbar-none">
-        {/* 'All' pill */}
         <button
           onClick={() => setActiveFilter('All')}
           className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border ${
@@ -219,7 +206,6 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           All
         </button>
 
-        {/* Status Pills with back-lit colored indicator dots */}
         {(['Open', 'In Progress', 'Resolved', 'Verified'] as const).map((st) => {
           const isActive = activeFilter === st;
           const config = STATUS_CONFIG[st];
@@ -263,10 +249,10 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
         <button
           onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className={`px-3.5 py-2.5 rounded-xl border flex items-center gap-2 text-xs font-semibold cursor-pointer transition-all shadow-2xs flex-shrink-0 ${
+          className={`h-10 px-3.5 rounded-xl border flex items-center gap-2 text-xs font-semibold cursor-pointer transition-colors shadow-2xs ${
             isFilterOpen || selectedPriority !== 'All' || selectedTrade !== 'All'
               ? 'bg-[#EAF3FF] border-[#1677FF] text-[#1677FF]'
-              : 'bg-white border-[#E2E8F0] text-[#0F172A] hover:bg-slate-50'
+              : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-slate-50'
           }`}
         >
           <SlidersHorizontal className="w-4 h-4 text-current" />
@@ -323,75 +309,96 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
         </div>
       )}
 
-      {/* ── 4. Project Group Header Accordion ── */}
-      <div 
-        onClick={() => setIsProjectExpanded(!isProjectExpanded)}
-        className="flex items-center justify-between py-1 cursor-pointer select-none group"
-      >
-        <div className="flex items-center gap-2 min-w-0">
-          <Folder className="w-4 h-4 text-[#1677FF] flex-shrink-0" />
-          <span className="text-sm sm:text-base font-bold text-[#0F172A] truncate">
-            {project.name || 'Snell Isle Residence'}
-          </span>
-        </div>
-        <div className="flex items-center gap-1 text-xs text-[#64748B] group-hover:text-[#0F172A] font-medium flex-shrink-0 transition-colors">
-          <span>{filteredItems.length} items</span>
-          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isProjectExpanded ? '' : '-rotate-90'}`} />
-        </div>
-      </div>
+      {/* ── 4. Project Groups (Accordions per Project) ── */}
+      <div className="flex flex-col gap-3">
+        {projectList.length === 0 ? (
+          <div className="p-8 rounded-2xl bg-white border border-[#E2E8F0] text-center flex flex-col items-center justify-center gap-2 shadow-2xs">
+            <Folder className="w-8 h-8 text-[#94A3B8]" />
+            <p className="text-sm font-bold text-[#0F172A]">No projects available</p>
+          </div>
+        ) : (
+          projectList.map((proj) => {
+            const projectItems = filteredItems.filter(
+              p => (!p.projectId && proj.id === 'proj-1') || p.projectId === proj.id
+            );
+            const isExpanded = expandedProjectIds[proj.id] ?? true;
 
-      {/* ── 5. Punch Cards Feed ── */}
-      {isProjectExpanded && (
-        <div className="flex flex-col gap-3">
-          {filteredItems.length === 0 ? (
-            <div className="p-8 rounded-2xl bg-white border border-[#E2E8F0] text-center flex flex-col items-center justify-center gap-2 shadow-2xs">
-              <Folder className="w-8 h-8 text-[#94A3B8]" />
-              <p className="text-sm font-bold text-[#0F172A]">No punch list items found</p>
-              <p className="text-xs text-[#64748B] font-medium">Try clearing your filters or tap "+ New Item" to create one.</p>
-            </div>
-          ) : (
-            filteredItems.map((item) => {
-              const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
-
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => {
-                    setSelectedPunchItem(item);
-                    if (onOpenPunchDetails) onOpenPunchDetails(item);
-                  }}
-                  className="py-3 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99] shadow-2xs"
+            return (
+              <div key={proj.id} className="flex flex-col gap-2">
+                {/* Project Accordion Header Bar */}
+                <div 
+                  onClick={() => toggleProject(proj.id)}
+                  className="flex items-center justify-between py-2.5 px-3.5 bg-white rounded-xl border border-[#E2E8F0] cursor-pointer hover:border-[#1677FF]/40 transition-colors shadow-2xs select-none group"
                 >
-                  {/* Left: Dot, Title, and Clean Subtitle */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
-                      <h2 className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors">
-                        {item.title}
-                      </h2>
-                    </div>
-
-                    <p className="text-[11px] text-[#64748B] truncate pl-4">
-                      {item.assignedTo?.trade || 'General Trade'}
-                      {item.location ? ` · ${item.location}` : ''}
-                    </p>
-                  </div>
-
-                  {/* Right: Clean Status Pill + Chevron Arrow */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
-                      {item.status}
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Folder className="w-4 h-4 text-[#1677FF] shrink-0" />
+                    <span className="text-sm font-bold text-[#0F172A] truncate">
+                      {proj.name}
                     </span>
-                    <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-[#64748B] font-medium shrink-0">
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[11px] font-semibold text-slate-600">
+                      {projectItems.length} items
+                    </span>
+                    <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-transform duration-200 ${isExpanded ? '' : '-rotate-90'}`} />
                   </div>
                 </div>
-              );
-            })
-          )}
-        </div>
-      )}
 
-      {/* ── 6. Punch Item Details Modal (Completely Minimal) ── */}
+                {/* Project Punch Items List */}
+                {isExpanded && (
+                  <div className="flex flex-col gap-2 pl-1 sm:pl-2">
+                    {projectItems.length === 0 ? (
+                      <div className="py-4 px-4 rounded-xl bg-white/70 border border-dashed border-[#E2E8F0] text-center text-xs text-[#94A3B8]">
+                        No punch list items for {proj.name}
+                      </div>
+                    ) : (
+                      projectItems.map((item) => {
+                        const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
+
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => {
+                              setSelectedPunchItem(item);
+                              if (onOpenPunchDetails) onOpenPunchDetails(item);
+                            }}
+                            className="py-3 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99] shadow-2xs"
+                          >
+                            {/* Left: Dot, Title, Subcontractor & Location */}
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
+                                <h2 className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors">
+                                  {item.title}
+                                </h2>
+                              </div>
+
+                              <p className="text-[11px] text-[#64748B] truncate pl-4">
+                                {item.assignedTo?.trade || 'General Trade'}
+                                {item.location ? ` · ${item.location}` : ''}
+                              </p>
+                            </div>
+
+                            {/* Right: Only the Actual Status Pill + Chevron */}
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
+                                {item.status}
+                              </span>
+                              <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* ── 5. Punch Item Details Modal (Minimal, 390px, Only Actual Status) ── */}
       {selectedPunchItem && (
         <div 
           onClick={() => {
@@ -404,7 +411,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
             onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-2xl w-full max-w-[390px] max-h-[85vh] flex flex-col shadow-xl overflow-hidden animate-scale-up border border-[#E2E8F0]"
           >
-            {/* Header: Title + Close */}
+            {/* Header: Status Indicator + Title + Close */}
             <div className="px-4 py-3 border-b border-[#F1F5F9] flex items-center justify-between gap-3 bg-white">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5 mb-0.5">
@@ -428,35 +435,8 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
               </button>
             </div>
 
-            {/* Scrollable Body: Pure minimal info */}
+            {/* Scrollable Body: Pure minimal info, only actual status */}
             <div className="px-4 py-3 overflow-y-auto flex flex-col gap-3 text-xs">
-
-              {/* Status / Workflow Selector */}
-              <div className="flex flex-col gap-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">Status</span>
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map((st) => {
-                    const isSelected = selectedPunchItem.status === st;
-                    const stConfig = STATUS_CONFIG[st];
-
-                    return (
-                      <button
-                        key={st}
-                        onClick={() => handleStatusChange(selectedPunchItem.id, st)}
-                        className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer flex items-center gap-1.5 ${
-                          isSelected
-                            ? `${stConfig.pillBg} ${stConfig.pillText} ${stConfig.pillBorder} font-bold ring-1 ring-[#1677FF]/30`
-                            : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-slate-50 font-normal'
-                        }`}
-                      >
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${stConfig.dot}`} />
-                        <span>{st}</span>
-                        {isSelected && <Check className="w-3 h-3 stroke-[2.5]" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
 
               {/* Description */}
               <div className="flex flex-col gap-1">
@@ -466,20 +446,39 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 </p>
               </div>
 
-              {/* Details List (Normal text, no extra boxes) */}
-              <div className="py-2 border-y border-[#F1F5F9] flex flex-col gap-2">
+              {/* Details List (Normal text, clean key-value) */}
+              <div className="py-2 border-y border-[#F1F5F9] flex flex-col gap-2.5">
+                {/* Single Status Selector displaying only the chosen status */}
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Status</span>
+                  <select
+                    value={selectedPunchItem.status}
+                    onChange={(e) => handleStatusChange(selectedPunchItem.id, e.target.value as PunchStatus)}
+                    className={`font-semibold text-xs rounded-lg px-2.5 py-1 border cursor-pointer outline-none transition-colors ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}
+                  >
+                    {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map((st) => (
+                      <option key={st} value={st} className="text-[#0F172A] bg-white">
+                        {st}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Subcontractor</span>
+                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.assignedTo?.trade || 'General Trade'}</span>
+                </div>
+
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-[#64748B]">Location</span>
                   <span className="font-semibold text-[#0F172A]">{selectedPunchItem.location || 'Site'}</span>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#64748B]">Subcontractor</span>
-                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.assignedTo?.trade || 'General'}</span>
-                </div>
+
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-[#64748B]">Priority</span>
                   <span className="font-semibold text-[#0F172A]">{selectedPunchItem.priority || 'Normal'}</span>
                 </div>
+
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-[#64748B]">Due Date</span>
                   <span className="font-semibold text-[#0F172A]">{selectedPunchItem.dueDate || 'Pending'}</span>
@@ -548,7 +547,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
         </div>
       )}
 
-      {/* ── 7. Evidence Photo Preview Fullscreen Modal ── */}
+      {/* ── 6. Evidence Photo Preview Fullscreen Modal ── */}
       {previewPhoto && (
         <div 
           onClick={() => setPreviewPhoto(null)}
