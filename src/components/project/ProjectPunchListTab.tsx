@@ -1,10 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Project, PunchItem, PunchStatus } from '../../types';
+import { Project, PunchItem, PunchStatus, Priority } from '../../types';
 import { 
   Plus, MapPin, Trash2, Folder, ChevronLeft, 
   Search, ChevronRight, ChevronDown, 
-  X, Camera
+  X, Camera, Pencil, Check
 } from 'lucide-react';
+
+interface InternalTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+}
+
+const INTERNAL_TEAM_MEMBERS: InternalTeamMember[] = [
+  {
+    id: 'usr_field',
+    name: 'John Smith',
+    role: 'Field Superintendent',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'usr_pm',
+    name: 'Sarah Johnson',
+    role: 'Lead Project Manager',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'usr_admin',
+    name: 'Avery Scott',
+    role: 'Owner / Principal',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'usr_finance',
+    name: 'Michael Chang',
+    role: 'Director of Finance',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+  }
+];
 
 interface ProjectPunchListTabProps {
   project?: Project;
@@ -33,6 +67,83 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string; location: string } | null>(null);
   const modalFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Edit Mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editLocation, setEditLocation] = useState('');
+  const [editPriority, setEditPriority] = useState<Priority>('Medium');
+  const [editStatus, setEditStatus] = useState<PunchStatus>('Open');
+  const [editDueDate, setEditDueDate] = useState('');
+  const [editAssigneeId, setEditAssigneeId] = useState('usr_field');
+  const [editCustomAssignee, setEditCustomAssignee] = useState('');
+  const [isEditCustomAssignee, setIsEditCustomAssignee] = useState(false);
+
+  const handleStartEditing = (item: PunchItem) => {
+    setIsEditing(true);
+    setEditTitle(item.title);
+    setEditDescription(item.description || '');
+    setEditLocation(item.location || '');
+    setEditPriority(item.priority || 'Medium');
+    setEditStatus(item.status || 'Open');
+    setEditDueDate(item.dueDate || '');
+
+    const matched = INTERNAL_TEAM_MEMBERS.find(m => m.id === item.assignedTo?.id || m.name === item.assignedTo?.name);
+    if (matched) {
+      setEditAssigneeId(matched.id);
+      setIsEditCustomAssignee(false);
+      setEditCustomAssignee('');
+    } else if (item.assignedTo?.name) {
+      setEditAssigneeId('__custom__');
+      setIsEditCustomAssignee(true);
+      setEditCustomAssignee(item.assignedTo.name);
+    } else {
+      setEditAssigneeId('usr_field');
+      setIsEditCustomAssignee(false);
+      setEditCustomAssignee('');
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (!selectedPunchItem) return;
+
+    let assignedPerson = INTERNAL_TEAM_MEMBERS.find(m => m.id === editAssigneeId);
+    if (isEditCustomAssignee && editCustomAssignee.trim()) {
+      assignedPerson = {
+        id: `usr-${Date.now()}`,
+        name: editCustomAssignee.trim(),
+        role: 'Site Staff',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+      };
+    } else if (!assignedPerson) {
+      assignedPerson = INTERNAL_TEAM_MEMBERS[0];
+    }
+
+    const updated: PunchItem = {
+      ...selectedPunchItem,
+      title: editTitle.trim() || selectedPunchItem.title,
+      description: editDescription.trim(),
+      location: editLocation.trim() || 'Jobsite Area',
+      priority: editPriority,
+      status: editStatus,
+      dueDate: editDueDate || selectedPunchItem.dueDate,
+      assignedTo: {
+        id: assignedPerson.id,
+        name: assignedPerson.name,
+        avatar: assignedPerson.avatar,
+        role: assignedPerson.role,
+        trade: `${assignedPerson.name} (${assignedPerson.role})`
+      }
+    };
+
+    setSelectedPunchItem(updated);
+    setItems(list => list.map(p => p.id === updated.id ? updated : p));
+    if (onUpdatePunchStatus && updated.status !== selectedPunchItem.status) {
+      onUpdatePunchStatus(updated.id, updated.status);
+    }
+    setIsEditing(false);
+  };
 
   // Determine active project list
   const projectList: Project[] = (projects && projects.length > 0)
@@ -437,111 +548,261 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
             onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-2xl w-full max-w-[390px] max-h-[85vh] flex flex-col shadow-xl overflow-hidden animate-scale-up border border-[#E2E8F0]"
           >
-            {/* Header: Status Indicator + Title + Close */}
+            {/* Header: View vs Edit Mode */}
             <div className="px-4 py-3 border-b border-[#F1F5F9] flex items-center justify-between gap-3 bg-white">
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className={`w-2 h-2 rounded-full ${STATUS_CONFIG[selectedPunchItem.status]?.dot}`} />
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
-                    {selectedPunchItem.status}
-                  </span>
-                </div>
-                <h2 className="text-sm sm:text-base font-bold text-[#0F172A] truncate">
-                  {selectedPunchItem.title}
-                </h2>
+                {isEditing ? (
+                  <>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="w-2 h-2 rounded-full bg-[#1677FF]" />
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#1677FF]">
+                        Editing Item
+                      </span>
+                    </div>
+                    <h2 className="text-sm sm:text-base font-bold text-[#0F172A] truncate">
+                      Edit Punch Details
+                    </h2>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className={`w-2 h-2 rounded-full ${STATUS_CONFIG[selectedPunchItem.status]?.dot}`} />
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                        {selectedPunchItem.status}
+                      </span>
+                    </div>
+                    <h2 className="text-sm sm:text-base font-bold text-[#0F172A] truncate">
+                      {selectedPunchItem.title}
+                    </h2>
+                  </>
+                )}
               </div>
               <button
                 onClick={() => {
-                  setSelectedPunchItem(null);
-                  setIsConfirmingDelete(false);
+                  if (isEditing) {
+                    setIsEditing(false);
+                  } else {
+                    setSelectedPunchItem(null);
+                    setIsConfirmingDelete(false);
+                  }
                 }}
                 className="w-7 h-7 rounded-full hover:bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                title="Close"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Scrollable Body: Pure minimal info, only actual status */}
+            {/* Scrollable Body: View vs Edit Mode */}
             <div className="px-4 py-3 overflow-y-auto flex flex-col gap-3 text-xs">
-
-              {/* Description */}
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">Description</span>
-                <p className="text-xs text-[#334155] leading-relaxed">
-                  {selectedPunchItem.description || 'No description provided.'}
-                </p>
-              </div>
-
-              {/* Details List (Perfect uniform row heights and padding) */}
-              <div className="py-1 border-y border-[#F1F5F9] flex flex-col divide-y divide-[#F8FAFC]">
-                
-                {/* 1. Project */}
-                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
-                  <span className="text-[#64748B] font-medium">Project</span>
-                  <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
-                    {selectedPunchItem.projectName || 
-                      projectList.find(p => p.id === selectedPunchItem.projectId)?.name || 
-                      project?.name || 
-                      'Snell Isle Residence'}
-                  </span>
-                </div>
-
-                {/* 2. Status (Sleek, compact h-6 pill aligned with text) */}
-                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
-                  <span className="text-[#64748B] font-medium">Status</span>
-                  <div className="relative inline-flex items-center">
-                    <select
-                      value={selectedPunchItem.status}
-                      onChange={(e) => handleStatusChange(selectedPunchItem.id, e.target.value as PunchStatus)}
-                      className={`h-6 text-[11px] font-semibold pl-2 pr-5 rounded-md border cursor-pointer outline-none transition-colors appearance-none ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}
-                    >
-                      {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map((st) => (
-                        <option key={st} value={st} className="text-[#0F172A] bg-white font-normal">
-                          {st}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className={`w-3 h-3 absolute right-1.5 pointer-events-none ${STATUS_CONFIG[selectedPunchItem.status]?.pillText}`} />
+              {isEditing ? (
+                /* ── Edit Mode Form ── */
+                <>
+                  {/* Title */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11px] font-semibold text-[#475569]">
+                      Title <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      placeholder="e.g. Crack in concrete column"
+                      className="w-full h-9 bg-white border border-[#E2E8F0] rounded-xl px-3 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-1 focus:ring-[#1677FF]/20"
+                    />
                   </div>
-                </div>
 
-                {/* 3. Assignee */}
-                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
-                  <span className="text-[#64748B] font-medium">Assignee</span>
-                  <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
-                    {selectedPunchItem.assignedTo?.name 
-                      ? `${selectedPunchItem.assignedTo.name}${selectedPunchItem.assignedTo.role ? ` (${selectedPunchItem.assignedTo.role})` : ''}`
-                      : (selectedPunchItem.assignedTo?.trade || 'John Smith (Field Superintendent)')}
-                  </span>
-                </div>
+                  {/* Description */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11px] font-semibold text-[#475569]">Description</label>
+                    <textarea
+                      rows={2}
+                      value={editDescription}
+                      onChange={(e) => setEditDescription(e.target.value)}
+                      placeholder="Describe issue..."
+                      className="w-full bg-white border border-[#E2E8F0] rounded-xl p-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-1 focus:ring-[#1677FF]/20 resize-none"
+                    />
+                  </div>
 
-                {/* 4. Location */}
-                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
-                  <span className="text-[#64748B] font-medium">Location</span>
-                  <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
-                    {selectedPunchItem.location || 'Site'}
-                  </span>
-                </div>
+                  {/* Status & Priority */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-semibold text-[#475569]">Status</label>
+                      <div className="relative">
+                        <select
+                          value={editStatus}
+                          onChange={(e) => setEditStatus(e.target.value as PunchStatus)}
+                          className="w-full h-9 bg-white border border-[#E2E8F0] rounded-xl px-2.5 pr-7 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF] appearance-none cursor-pointer"
+                        >
+                          {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map(st => (
+                            <option key={st} value={st}>{st}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+                      </div>
+                    </div>
 
-                {/* 5. Priority */}
-                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
-                  <span className="text-[#64748B] font-medium">Priority</span>
-                  <span className="font-semibold text-[#0F172A] text-right">
-                    {selectedPunchItem.priority || 'Normal'}
-                  </span>
-                </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-semibold text-[#475569]">Priority</label>
+                      <div className="relative">
+                        <select
+                          value={editPriority}
+                          onChange={(e) => setEditPriority(e.target.value as Priority)}
+                          className="w-full h-9 bg-white border border-[#E2E8F0] rounded-xl px-2.5 pr-7 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF] appearance-none cursor-pointer"
+                        >
+                          {(['Low', 'Medium', 'High', 'Critical'] as Priority[]).map(p => (
+                            <option key={p} value={p}>{p}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
 
-                {/* 6. Due Date */}
-                <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
-                  <span className="text-[#64748B] font-medium">Due Date</span>
-                  <span className="font-semibold text-[#0F172A] text-right">
-                    {selectedPunchItem.dueDate || 'Pending'}
-                  </span>
-                </div>
-              </div>
+                  {/* Assignee */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[11px] font-semibold text-[#475569]">Assignee</label>
+                    <div className="relative">
+                      <select
+                        value={isEditCustomAssignee ? '__custom__' : editAssigneeId}
+                        onChange={(e) => {
+                          if (e.target.value === '__custom__') {
+                            setIsEditCustomAssignee(true);
+                          } else {
+                            setIsEditCustomAssignee(false);
+                            setEditAssigneeId(e.target.value);
+                          }
+                        }}
+                        className="w-full h-9 bg-white border border-[#E2E8F0] rounded-xl px-2.5 pr-7 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF] appearance-none cursor-pointer truncate"
+                      >
+                        {INTERNAL_TEAM_MEMBERS.map(m => (
+                          <option key={m.id} value={m.id}>{m.name} ({m.role})</option>
+                        ))}
+                        <option value="__custom__">+ Other (Type custom)...</option>
+                      </select>
+                      <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {isEditCustomAssignee && (
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-semibold text-[#1677FF]">Custom Assignee Name</label>
+                      <input
+                        type="text"
+                        value={editCustomAssignee}
+                        onChange={(e) => setEditCustomAssignee(e.target.value)}
+                        placeholder="e.g. David Miller (Assistant PM)"
+                        className="w-full h-9 bg-white border border-[#1677FF] rounded-xl px-2.5 text-xs text-[#0F172A] focus:outline-none"
+                      />
+                    </div>
+                  )}
+
+                  {/* Location & Due Date */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-semibold text-[#475569]">Location</label>
+                      <input
+                        type="text"
+                        value={editLocation}
+                        onChange={(e) => setEditLocation(e.target.value)}
+                        placeholder="e.g. Level 3 – Grid A-4"
+                        className="w-full h-9 bg-white border border-[#E2E8F0] rounded-xl px-2.5 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF]"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-semibold text-[#475569]">Due Date</label>
+                      <input
+                        type="date"
+                        value={editDueDate}
+                        onChange={(e) => setEditDueDate(e.target.value)}
+                        className="w-full h-9 bg-white border border-[#E2E8F0] rounded-xl px-2 text-xs text-[#0F172A] focus:outline-none focus:border-[#1677FF]"
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* ── View Mode ── */
+                <>
+                  {/* Description */}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">Description</span>
+                    <p className="text-xs text-[#334155] leading-relaxed">
+                      {selectedPunchItem.description || 'No description provided.'}
+                    </p>
+                  </div>
+
+                  {/* Details List */}
+                  <div className="py-1 border-y border-[#F1F5F9] flex flex-col divide-y divide-[#F8FAFC]">
+                    {/* 1. Project */}
+                    <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                      <span className="text-[#64748B] font-medium">Project</span>
+                      <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
+                        {selectedPunchItem.projectName || 
+                          projectList.find(p => p.id === selectedPunchItem.projectId)?.name || 
+                          project?.name || 
+                          'Snell Isle Residence'}
+                      </span>
+                    </div>
+
+                    {/* 2. Status */}
+                    <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                      <span className="text-[#64748B] font-medium">Status</span>
+                      <div className="relative inline-flex items-center">
+                        <select
+                          value={selectedPunchItem.status}
+                          onChange={(e) => handleStatusChange(selectedPunchItem.id, e.target.value as PunchStatus)}
+                          className={`h-6 text-[11px] font-semibold pl-2 pr-5 rounded-md border cursor-pointer outline-none transition-colors appearance-none ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}
+                        >
+                          {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map((st) => (
+                            <option key={st} value={st} className="text-[#0F172A] bg-white font-normal">
+                              {st}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className={`w-3 h-3 absolute right-1.5 pointer-events-none ${STATUS_CONFIG[selectedPunchItem.status]?.pillText}`} />
+                      </div>
+                    </div>
+
+                    {/* 3. Assignee */}
+                    <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                      <span className="text-[#64748B] font-medium">Assignee</span>
+                      <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
+                        {selectedPunchItem.assignedTo?.name 
+                          ? `${selectedPunchItem.assignedTo.name}${selectedPunchItem.assignedTo.role ? ` (${selectedPunchItem.assignedTo.role})` : ''}`
+                          : (selectedPunchItem.assignedTo?.trade || 'John Smith (Field Superintendent)')}
+                      </span>
+                    </div>
+
+                    {/* 4. Location */}
+                    <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                      <span className="text-[#64748B] font-medium">Location</span>
+                      <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
+                        {selectedPunchItem.location || 'Site'}
+                      </span>
+                    </div>
+
+                    {/* 5. Priority */}
+                    <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                      <span className="text-[#64748B] font-medium">Priority</span>
+                      <span className="font-semibold text-[#0F172A] text-right">
+                        {selectedPunchItem.priority || 'Normal'}
+                      </span>
+                    </div>
+
+                    {/* 6. Due Date */}
+                    <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
+                      <span className="text-[#64748B] font-medium">Due Date</span>
+                      <span className="font-semibold text-[#0F172A] text-right">
+                        {selectedPunchItem.dueDate || 'Pending'}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Photo Evidence Section (Multiple Photos Support) */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 pt-1 border-t border-[#F1F5F9]">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
                     Photo Evidence {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 ? `(${selectedPunchItem.photos.length})` : ''}
@@ -617,21 +878,40 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
               </div>
             </div>
 
-            {/* Footer: Delete & Done */}
+            {/* Footer: View Mode (Delete & Edit) vs Edit Mode (Cancel & Save) */}
             <div className="px-4 py-3 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-between gap-2">
-              {isConfirmingDelete ? (
+              {isEditing ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="h-8 px-3.5 rounded-xl text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-slate-200/60 transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveEdit}
+                    className="h-8 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Save Changes</span>
+                  </button>
+                </>
+              ) : isConfirmingDelete ? (
                 <div className="flex items-center justify-between w-full">
                   <span className="text-xs text-rose-600 font-medium">Delete item?</span>
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setIsConfirmingDelete(false)}
-                      className="px-2.5 py-1 text-xs text-[#64748B] hover:bg-slate-200 rounded-md"
+                      className="px-2.5 py-1 text-xs text-[#64748B] hover:bg-slate-200 rounded-md cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={() => handleDeletePunch(selectedPunchItem.id)}
-                      className="px-2.5 py-1 text-xs text-white bg-rose-600 hover:bg-rose-700 rounded-md font-medium"
+                      className="px-2.5 py-1 text-xs text-white bg-rose-600 hover:bg-rose-700 rounded-md font-medium cursor-pointer"
                     >
                       Confirm
                     </button>
@@ -648,13 +928,11 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                   </button>
 
                   <button
-                    onClick={() => {
-                      setSelectedPunchItem(null);
-                      setIsConfirmingDelete(false);
-                    }}
-                    className="px-4 py-1.5 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold cursor-pointer"
+                    onClick={() => handleStartEditing(selectedPunchItem)}
+                    className="h-8 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer active:scale-95"
                   >
-                    Done
+                    <Pencil className="w-3 h-3" />
+                    <span>Edit</span>
                   </button>
                 </>
               )}

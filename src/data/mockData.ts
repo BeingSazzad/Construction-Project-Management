@@ -1395,7 +1395,7 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     status: 'Open',
     photos: [
       'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=600&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80'
     ],
     createdDate: 'Apr 28, 2025'
