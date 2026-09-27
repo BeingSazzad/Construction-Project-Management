@@ -48,6 +48,7 @@ interface ProjectWorkspaceProps {
   onUpdatePunchStatus?: (punchId: string, status: PunchStatus) => void;
   onDeletePunch?: (punchId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: TaskStatus) => void;
+  onDeleteTask?: (taskId: string) => void;
   onUploadPhoto?: () => void;
   onPreviewPhoto: (photo: SitePhoto) => void;
   onUploadDocument?: () => void;
@@ -95,6 +96,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onUpdatePunchStatus,
   onDeletePunch,
   onUpdateTaskStatus,
+  onDeleteTask,
   onUploadPhoto,
   onPreviewPhoto,
   onUploadDocument,
@@ -305,6 +307,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onAddTask={onAddTask}
             onAddTasksFromTemplate={onAddTasksFromTemplate}
             onUpdateStatus={onUpdateTaskStatus}
+            onDeleteTask={onDeleteTask}
             canManageBoard={access.canManageTaskBoard}
           />
         )}

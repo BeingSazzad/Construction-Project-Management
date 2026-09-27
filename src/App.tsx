@@ -1136,6 +1136,7 @@ export function App() {
                 onUpdatePunchStatus={access.canManagePunch ? handleUpdatePunchStatus : undefined}
                 onDeletePunch={access.canManagePunch ? handleDeletePunch : undefined}
                 onUpdateTaskStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
+                onDeleteTask={access.canDeleteTask ? handleDeleteTask : undefined}
                 onUploadPhoto={access.canUploadMedia ? () => setIsPhotoUploadOpen(true) : undefined}
                 onPreviewPhoto={(p) => setSelectedPhoto(p)}
                 onUploadDocument={access.canUploadMedia ? () => setIsUploadDocumentOpen(true) : undefined}
@@ -1310,6 +1311,7 @@ export function App() {
                     onAddTask={access.canCreateTask ? handleCreateTask : undefined}
                     onAddTasksFromTemplate={access.canCreateTask ? handleAddTasksFromTemplate : undefined}
                     onUpdateStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
+                    onDeleteTask={access.canDeleteTask ? handleDeleteTask : undefined}
                     canManageBoard={access.canManageTaskBoard}
                   />
                 )}

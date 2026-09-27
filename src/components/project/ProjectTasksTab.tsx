@@ -3,7 +3,7 @@ import { Project, Task, TaskStatus, Priority } from '../../types';
 import {
   Plus, Download, Trash2, Check, Pencil,
   ChevronDown, Search, MoreVertical, X,
-  LayoutList, Layers
+  LayoutList, Layers, Calendar
 } from 'lucide-react';
 import { CreateTaskModal } from '../modals/CreateTaskModal';
 import { EditTaskModal, EditableTaskData } from '../modals/EditTaskModal';
@@ -21,6 +21,8 @@ interface ProjectTasksTabProps {
   onAddTask?: (task: Partial<Task>) => void;
   onAddTasksFromTemplate?: (tasks: Partial<Task>[]) => void;
   onUpdateStatus?: (taskId: string, status: TaskStatus) => void;
+  onDeleteTask?: (taskId: string) => void;
+  onEditTask?: (task: Task) => void;
   canManageBoard?: boolean;
 }
 
@@ -54,12 +56,6 @@ const STATUS_OPTIONS: {
     dotColor: 'bg-[#1677FF] animate-pulse',
   },
   {
-    status: 'Blocked',
-    label: 'Blocked',
-    pillClasses: 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100',
-    dotColor: 'bg-rose-500',
-  },
-  {
     status: 'Completed',
     label: 'Completed',
     pillClasses: 'bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/30 hover:bg-[#D8E9FF]',
@@ -77,6 +73,8 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   onAddTask,
   onAddTasksFromTemplate,
   onUpdateStatus,
+  onDeleteTask,
+  onEditTask,
   canManageBoard = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,10 +83,11 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<EditableTaskData | null>(null);
   const [detailTask, setDetailTask] = useState<Task | null>(null);
-  const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
   const [openStatusDropdownTaskId, setOpenStatusDropdownTaskId] = useState<string | null>(null);
   const [showTaskChooser, setShowTaskChooser] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [deletedTaskIds, setDeletedTaskIds] = useState<Set<string>>(new Set());
+  const [localTaskOverrides, setLocalTaskOverrides] = useState<Record<string, Task>>({});
 
   // Close menus on global window click
   useEffect(() => {
@@ -101,17 +100,18 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
       ) {
         return;
       }
-      setOpenMenuTaskId(null);
       setOpenStatusDropdownTaskId(null);
     };
     window.addEventListener('click', handleGlobalClick);
     return () => window.removeEventListener('click', handleGlobalClick);
   }, []);
 
-  // Filter tasks specifically belonging to this project
+  // Filter tasks specifically belonging to this project (incorporating deletions & edits)
   const projectTasks = useMemo(() => {
-    return tasks.filter(t => t.projectId === project.id);
-  }, [tasks, project.id]);
+    return tasks
+      .filter(t => t.projectId === project.id && !deletedTaskIds.has(t.id))
+      .map(t => localTaskOverrides[t.id] || t);
+  }, [tasks, project.id, deletedTaskIds, localTaskOverrides]);
 
   // Clean, short milestone label helper (removes codes and shortens for clutter-free 1-line metadata)
   const cleanMilestoneName = (raw?: string): string => {
@@ -252,46 +252,32 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const renderTaskRow = (task: Task) => {
     const isTaskDone = task.status === 'Completed';
     const isTaskInProgress = task.status === 'In Progress';
-    const isTaskBlocked = task.status === 'Blocked';
-    const assigneeName = typeof task.assignee === 'string'
-      ? task.assignee
-      : (task.assignee?.name || '');
     const isDueSoon = task.dueDate && (
       task.dueDate.toLowerCase().includes('today') ||
       task.dueDate.toLowerCase().includes('thu') ||
       task.dueDate.toLowerCase().includes('wed')
     );
 
-    const taskLocation = task.location || (
-      task.milestone?.toLowerCase().includes('framing') ? 'Level 12 Deck' :
-      task.milestone?.toLowerCase().includes('foundation') ? 'Grid B-4' :
-      task.milestone?.toLowerCase().includes('mep') ? 'Utility Core' :
-      task.milestone?.toLowerCase().includes('envelope') ? 'Exterior' :
-      'Site Office'
-    );
-
     const currentStatusConfig = STATUS_OPTIONS.find(o => o.status === task.status) || STATUS_OPTIONS[0];
     const isStatusMenuOpen = openStatusDropdownTaskId === task.id;
-    const isActionMenuOpen = openMenuTaskId === task.id;
-    const milestoneLabel = cleanMilestoneName(task.milestone);
 
     return (
       <div
         key={task.id}
         onClick={() => handleTaskClick(task)}
-        className={`px-3.5 py-2.5 hover:bg-[#F8FAFC] flex items-center justify-between gap-3 transition-colors group relative cursor-pointer first:rounded-t-2xl last:rounded-b-2xl ${
+        className={`px-3.5 py-3 hover:bg-[#F8FAFC] flex items-start justify-between gap-3.5 transition-colors group relative cursor-pointer first:rounded-t-2xl last:rounded-b-2xl ${
           isTaskDone ? 'bg-[#FAFCFF]/60' : 'bg-white'
-        } ${isStatusMenuOpen || isActionMenuOpen ? 'z-30' : 'z-0'}`}
+        } ${isStatusMenuOpen ? 'z-30' : 'z-0'}`}
       >
-        {/* Left: Checkbox + Readable 2-Line Task Info */}
-        <div className="flex items-center gap-3 min-w-0 flex-1">
-          {/* Checkbox (20px hit area) */}
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+        {/* Left: Checkbox + Title + Due Date */}
+        <div className="flex items-start gap-3 min-w-0 flex-1">
+          {/* Checkbox (20px hit area, aligned with title line 1) */}
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0 pt-0.5">
             {onUpdateStatus ? (
               <button
                 type="button"
                 onClick={() => handleToggleCheckbox(task.id, task.status)}
-                className="w-7 h-7 -ml-1 rounded-lg flex items-center justify-center shrink-0 cursor-pointer active:scale-90 transition-transform"
+                className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 cursor-pointer active:scale-90 transition-transform"
                 title={isTaskDone ? 'Mark as to do' : 'Mark as completed'}
               >
                 <div
@@ -300,8 +286,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                       ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
                       : isTaskInProgress
                       ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
-                      : isTaskBlocked
-                      ? 'border-rose-500 bg-rose-50 text-rose-600'
                       : 'border-[#CBD5E1] bg-white group-hover:border-[#1677FF]'
                   }`}
                 >
@@ -309,21 +293,17 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
                   ) : isTaskInProgress ? (
                     <span className="w-2 h-2 rounded-full bg-[#1677FF] animate-pulse" />
-                  ) : isTaskBlocked ? (
-                    <span className="w-2 h-2 rounded-full bg-rose-500" />
                   ) : null}
                 </div>
               </button>
             ) : (
-              <div className="w-7 h-7 -ml-1 rounded-lg flex items-center justify-center shrink-0 select-none">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 select-none">
                 <div
                   className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${
                     isTaskDone
                       ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
                       : isTaskInProgress
                       ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
-                      : isTaskBlocked
-                      ? 'border-rose-500 bg-rose-50 text-rose-600'
                       : 'border-[#CBD5E1] bg-white'
                   }`}
                 >
@@ -333,73 +313,49 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
             )}
           </div>
 
-          {/* Text Block: Title + Single Clean Metadata Line */}
+          {/* Text Block: Title + Clean Due Date */}
           <div className="min-w-0 flex-1">
-            {/* Line 1: Title + Subtle Priority Indicator */}
-            <div className="flex items-center gap-1.5 min-w-0">
+            {/* Title */}
+            <div className="flex items-start gap-1.5 min-w-0">
               <span
-                className={`text-xs sm:text-sm font-semibold truncate leading-tight transition-colors ${
+                className={`text-[13px] sm:text-sm line-clamp-2 leading-snug tracking-tight transition-colors ${
                   isTaskDone
-                    ? 'text-[#94A3B8] line-through font-normal select-none'
-                    : 'text-[#0F172A] group-hover:text-[#1677FF]'
+                    ? 'text-[#94A3B8] font-normal line-through decoration-[#CBD5E1] select-none'
+                    : 'text-[#0F172A] font-semibold group-hover:text-[#1677FF]'
                 }`}
                 title={task.title}
               >
                 {task.title}
               </span>
 
-              {/* Minimal Priority Dot (quiet, only if Critical/High) */}
+              {/* Minimal Priority Dot (quiet, only if Critical) */}
               {!isTaskDone && task.priority === 'Critical' && (
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" title="Critical Priority" />
-              )}
-              {!isTaskDone && task.priority === 'High' && (
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" title="High Priority" />
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0 mt-1.5" title="Critical Priority" />
               )}
             </div>
 
-            {/* Line 2: Single Concise Metadata Strip (Never wraps into 5 lines!) */}
-            <div className="flex items-center gap-1.5 text-[11px] text-[#64748B] mt-0.5 truncate leading-none">
-              {milestoneLabel && (
-                <span className="font-medium text-[#475569] shrink-0">
-                  {milestoneLabel}
+            {/* Clean Due Date with subtle icon */}
+            {task.dueDate && (
+              <div className="flex items-center gap-1.5 mt-1">
+                <Calendar className="w-3 h-3 text-[#94A3B8] shrink-0" />
+                <span className={`text-[11px] font-medium leading-none ${
+                  isDueSoon && !isTaskDone ? 'text-amber-600 font-semibold' : 'text-[#64748B]'
+                }`}>
+                  {formatCleanDate(task.dueDate)}
                 </span>
-              )}
-
-              {taskLocation && (
-                <>
-                  <span className="text-[#CBD5E1]">·</span>
-                  <span className="truncate">{taskLocation}</span>
-                </>
-              )}
-
-              {assigneeName && (
-                <>
-                  <span className="text-[#CBD5E1]">·</span>
-                  <span className="truncate">{assigneeName}</span>
-                </>
-              )}
-
-              {task.dueDate && (
-                <>
-                  <span className="text-[#CBD5E1]">·</span>
-                  <span className={`shrink-0 ${isDueSoon ? 'text-amber-700 font-semibold' : 'text-[#94A3B8]'}`}>
-                    {formatCleanDate(task.dueDate)}
-                  </span>
-                </>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right: Interactive Status Dropdown & 3-Dot Action Menu */}
-        <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+        {/* Right: Interactive Status Dropdown (Edit/Delete inside details modal) */}
+        <div className="flex items-center shrink-0 self-start pt-0.5" onClick={(e) => e.stopPropagation()}>
           {/* Status Dropdown Pill */}
           <div className="relative">
             {onUpdateStatus ? (
               <button
                 type="button"
                 onClick={() => {
-                  setOpenMenuTaskId(null);
                   setOpenStatusDropdownTaskId(prev => prev === task.id ? null : task.id);
                 }}
                 className={`px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 whitespace-nowrap select-none cursor-pointer transition-all active:scale-95 shadow-2xs ${currentStatusConfig.pillClasses}`}
@@ -409,8 +365,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                   <Check className="w-3 h-3 text-[#1677FF] stroke-[2.5]" />
                 ) : task.status === 'In Progress' ? (
                   <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
-                ) : task.status === 'Blocked' ? (
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                 ) : (
                   <span className="w-1.5 h-1.5 rounded-full bg-[#94A3B8]" />
                 )}
@@ -423,8 +377,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                   <Check className="w-3 h-3 text-[#1677FF] stroke-[2.5]" />
                 ) : task.status === 'In Progress' ? (
                   <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
-                ) : task.status === 'Blocked' ? (
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                 ) : (
                   <span className="w-1.5 h-1.5 rounded-full bg-[#94A3B8]" />
                 )}
@@ -434,7 +386,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
             {/* Dropdown Menu Popover */}
             {isStatusMenuOpen && onUpdateStatus && (
-              <div className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-2xl border border-[#E2E8F0] shadow-xl py-1.5 z-50 flex flex-col animate-scale-in">
+              <div className="absolute right-0 top-full mt-1.5 w-40 bg-white rounded-2xl border border-[#E2E8F0] shadow-xl py-1.5 z-50 flex flex-col animate-scale-in">
                 <div className="px-3 py-1 text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider border-b border-[#F1F5F9] mb-1">
                   Change Status
                 </div>
@@ -457,8 +409,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                           <Check className="w-2.5 h-2.5 text-[#1677FF] stroke-[2.5]" />
                         ) : opt.status === 'In Progress' ? (
                           <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
-                        ) : opt.status === 'Blocked' ? (
-                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                         ) : (
                           <span className="w-1.5 h-1.5 rounded-full bg-[#94A3B8]" />
                         )}
@@ -474,64 +424,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
               </div>
             )}
           </div>
-
-          {/* 3-Dot Action Menu */}
-          {canManageBoard && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenStatusDropdownTaskId(null);
-                  setOpenMenuTaskId(prev => prev === task.id ? null : task.id);
-                }}
-                className="w-7 h-7 rounded-lg text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F1F5F9] flex items-center justify-center cursor-pointer transition-colors active:scale-95"
-                title="Task options"
-              >
-                <MoreVertical className="w-4 h-4" />
-              </button>
-
-              {openMenuTaskId === task.id && (
-                <div className="absolute right-0 top-8 w-32 bg-white rounded-xl border border-[#E2E8F0] shadow-xl py-1 z-50 flex flex-col animate-scale-in">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpenMenuTaskId(null);
-                      setEditingTask({
-                        id: task.id,
-                        title: task.title,
-                        status: task.status,
-                        priority: task.priority,
-                        costCode: task.costCode,
-                        assignee: assigneeName,
-                        dueDate: task.dueDate,
-                        location: task.location || taskLocation,
-                        groupId: task.stageId || DEFAULT_STAGE_OPTIONS[0].id
-                      });
-                    }}
-                    className="w-full px-3 py-1.5 text-left text-xs font-semibold text-[#0F172A] hover:bg-[#F8FAFC] flex items-center gap-2 cursor-pointer transition-colors"
-                  >
-                    <Pencil className="w-3.5 h-3.5 text-[#1677FF]" />
-                    <span>Edit</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpenMenuTaskId(null);
-                      if (confirm(`Remove task "${task.title}"?`)) {
-                        if (onUpdateStatus) onUpdateStatus(task.id, 'Completed');
-                      }
-                    }}
-                    className="w-full px-3 py-1.5 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-                    <span>Delete</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
     );
@@ -676,19 +568,6 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
                 In Progress ({inProgressCount})
               </button>
 
-              {blockedCount > 0 && (
-                <button
-                  onClick={() => setStatusFilter('Blocked')}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
-                    statusFilter === 'Blocked'
-                      ? 'bg-rose-600 text-white font-bold shadow-xs'
-                      : 'bg-white border border-[#E2E8F0] text-rose-600 hover:text-rose-700'
-                  }`}
-                >
-                  Blocked ({blockedCount})
-                </button>
-              )}
-
               <button
                 onClick={() => setStatusFilter('Completed')}
                 className={`px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all whitespace-nowrap shrink-0 ${
@@ -820,11 +699,14 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
           }
         }}
         onDelete={(taskId) => {
-          if (onUpdateStatus) onUpdateStatus(taskId, 'Completed');
+          setDeletedTaskIds(prev => new Set(prev).add(taskId));
+          if (onDeleteTask) onDeleteTask(taskId);
           setDetailTask(null);
         }}
         onEdit={(updatedTask) => {
+          setLocalTaskOverrides(prev => ({ ...prev, [updatedTask.id]: updatedTask }));
           if (onUpdateStatus) onUpdateStatus(updatedTask.id, updatedTask.status);
+          if (onEditTask) onEditTask(updatedTask);
           setDetailTask(updatedTask);
         }}
       />
