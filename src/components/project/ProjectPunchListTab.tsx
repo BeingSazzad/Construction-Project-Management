@@ -251,68 +251,35 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 No projects match "{searchQuery}"
               </div>
             ) : (
-              matchingProjects.map((proj) => {
-                const pItems = items.filter(
-                  p => (!p.projectId && proj.id === 'proj-1') || p.projectId === proj.id
-                );
-                const pOpenCount = pItems.filter(p => p.status === 'Open' || p.status === 'In Progress').length;
-                const pResolvedCount = pItems.filter(p => p.status === 'Resolved' || p.status === 'Closed').length;
-
-                return (
-                  <div
-                    key={proj.id}
-                    onClick={() => {
-                      setSelectedProjectId(proj.id);
-                      setSearchQuery('');
-                      setActiveFilter('All');
-                    }}
-                    className="p-3.5 sm:p-4 bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#1677FF]/60 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99]"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                        <Folder className="w-5 h-5" />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">
-                          {proj.name}
-                        </h3>
-                        <p className="text-xs text-[#64748B] mt-0.5 truncate flex items-center gap-1.5">
-                          {proj.code && <span className="font-semibold text-[#475569]">{proj.code}</span>}
-                          {proj.code && proj.location && <span>•</span>}
-                          {proj.location && <span className="truncate">{proj.location}</span>}
-                        </p>
-                      </div>
+              matchingProjects.map((proj) => (
+                <div
+                  key={proj.id}
+                  onClick={() => {
+                    setSelectedProjectId(proj.id);
+                    setSearchQuery('');
+                    setActiveFilter('All');
+                  }}
+                  className="p-3.5 sm:p-4 bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#1677FF]/60 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99]"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Folder className="w-5 h-5" />
                     </div>
-
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="flex items-center gap-1.5 text-xs">
-                        {pItems.length === 0 ? (
-                          <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[#64748B] text-[11px] font-semibold">
-                            0 items
-                          </span>
-                        ) : (
-                          <>
-                            <span className="px-2.5 py-1 rounded-full bg-[#EAF3FF] text-[#1677FF] text-[11px] font-bold">
-                              {pItems.length} items
-                            </span>
-                            {pOpenCount > 0 && (
-                              <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-200">
-                                {pOpenCount} Open
-                              </span>
-                            )}
-                            {pResolvedCount > 0 && (
-                              <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
-                                {pResolvedCount} Resolved
-                              </span>
-                            )}
-                          </>
-                        )}
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">
+                        {proj.name}
+                      </h3>
+                      <p className="text-xs text-[#64748B] mt-0.5 truncate flex items-center gap-1.5">
+                        {proj.code && <span className="font-semibold text-[#475569]">{proj.code}</span>}
+                        {proj.code && proj.location && <span>•</span>}
+                        {proj.location && <span className="truncate">{proj.location}</span>}
+                      </p>
                     </div>
                   </div>
-                );
-              })
+
+                  <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all shrink-0" />
+                </div>
+              ))
             )}
           </div>
         </>
