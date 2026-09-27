@@ -149,6 +149,21 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-4 sm:px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] bg-[#F8FAFC] min-h-screen animate-fade-in">
       
+      {/* Sub-nav switcher: Tasks | Punch List */}
+      {onBack && (
+        <div className="flex items-center gap-1.5 p-1 bg-[#F1F5F9] rounded-xl w-fit border border-[#E2E8F0]">
+          <button
+            onClick={onBack}
+            className="px-3 py-1 rounded-lg text-xs font-semibold text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer"
+          >
+            Tasks
+          </button>
+          <button className="px-3 py-1 rounded-lg text-xs font-bold bg-white text-[#1677FF] shadow-2xs">
+            Punch List ({items.length})
+          </button>
+        </div>
+      )}
+
       {/* ── 1. Top Header: Back, Title, Open Count & New Item CTA ── */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">

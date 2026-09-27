@@ -529,7 +529,19 @@ export const ProjectManagerDashboard: React.FC<ProjectManagerDashboardProps> = (
 
             {/* Footer */}
             <div className="pt-1 flex items-center justify-between">
-              <span className="text-xs text-[#64748B]">Click any item to review & coordinate</span>
+              {onOpenPunchList ? (
+                <button
+                  onClick={() => {
+                    setIsPriorityListModalOpen(false);
+                    onOpenPunchList();
+                  }}
+                  className="text-xs font-semibold text-[#1677FF] hover:underline cursor-pointer"
+                >
+                  Go to Full Punch List →
+                </button>
+              ) : (
+                <span className="text-xs text-[#64748B]">Click any item to review & coordinate</span>
+              )}
               <button
                 onClick={() => setIsPriorityListModalOpen(false)}
                 className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0] cursor-pointer"

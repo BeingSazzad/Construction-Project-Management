@@ -14,6 +14,8 @@ import { AddMethodChooser } from '../common/AddMethodChooser';
 interface ProjectTasksTabProps {
   project: Project;
   tasks?: Task[];
+  onOpenPunchList?: () => void;
+  punchCount?: number;
   onOpenTask?: (task: Task) => void;
   onCreateTask?: () => void;
   onAddTask?: (task: Partial<Task>) => void;
@@ -49,6 +51,8 @@ const COMMERCIAL_TOWER_STAGES: StageTaskGroup[] = [
 export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   project,
   tasks = [],
+  punchCount,
+  onOpenPunchList,
   onOpenTask,
   onCreateTask: onOpenCreateTaskModal,
   onAddTask,
@@ -340,33 +344,50 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
       {/* ─── Header ─── */}
       {!isEmpty && (
-      <div className="flex items-center justify-between px-0.5 pt-1">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg font-bold text-[#0F172A] tracking-tight">
-              Project Tasks
-            </h1>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20">
-              {overallPercent}% Complete
-            </span>
+      <div className="flex flex-col gap-2.5 pt-1">
+        {/* Sub-nav switcher: Tasks | Punch List */}
+        {onOpenPunchList && (
+          <div className="flex items-center gap-1.5 p-1 bg-[#F1F5F9] rounded-xl w-fit border border-[#E2E8F0]">
+            <button className="px-3 py-1 rounded-lg text-xs font-bold bg-white text-[#1677FF] shadow-2xs">
+              Tasks ({projectTasks.length})
+            </button>
+            <button
+              onClick={onOpenPunchList}
+              className="px-3 py-1 rounded-lg text-xs font-semibold text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer"
+            >
+              Punch List ({punchCount ?? 4})
+            </button>
           </div>
-          <p className="text-xs text-[#64748B] font-medium mt-0.5">
-            {doneCount} of {totalCount} completed
-          </p>
-        </div>
-
-        {canAdd && (
-        <button
-          onClick={() => {
-            setTargetStageIdForCreate(null);
-            setIsCreateModalOpen(true);
-          }}
-          className="btn-action btn-primary"
-        >
-          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>Add Task</span>
-        </button>
         )}
+
+        <div className="flex items-center justify-between px-0.5">
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-bold text-[#0F172A] tracking-tight">
+                Project Tasks
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20">
+                {overallPercent}% Complete
+              </span>
+            </div>
+            <p className="text-xs text-[#64748B] font-medium mt-0.5">
+              {doneCount} of {totalCount} completed
+            </p>
+          </div>
+
+          {canAdd && (
+          <button
+            onClick={() => {
+              setTargetStageIdForCreate(null);
+              setIsCreateModalOpen(true);
+            }}
+            className="btn-action btn-primary"
+          >
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Add Task</span>
+          </button>
+          )}
+        </div>
       </div>
       )}
 

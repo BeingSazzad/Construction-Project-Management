@@ -395,8 +395,10 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           <div className="flex items-center gap-2.5 min-w-0">
             <span className="w-2 h-2 rounded-full bg-[#1677FF] animate-pulse shrink-0" />
             <p className="text-xs text-[#0F172A] truncate">
-              <span className="font-bold text-[#1677FF]">Pending AP:</span>{' '}
-              <span className="text-[#64748B]">3 Trade Invoices pending review · $133.1K total</span>
+              <span className="font-bold text-[#1677FF]">Budget Status:</span>{' '}
+              <span className="text-[#64748B]">
+                ${(project.budget?.actual ? project.budget.actual / 1000000 : 3.12).toFixed(2)}M spent of ${(project.budget?.total ? project.budget.total / 1000000 : 4.80).toFixed(2)}M ({project.progress}% progress)
+              </span>
             </p>
           </div>
           <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
@@ -405,20 +407,41 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           </div>
         </div>
       ) : (
-        <div
-          onClick={() => setIsWeatherModalOpen(true)}
-          className="bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all group shadow-card"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse shrink-0" />
-            <p className="text-xs text-[#0F172A] truncate">
-              <span className="font-bold">Weather Risk:</span>{' '}
-              <span className="text-[#64748B]">Rain expected Thursday (concrete pour)</span>
-            </p>
+        <div className="flex flex-col gap-2">
+          <div
+            onClick={() => setIsWeatherModalOpen(true)}
+            className="bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all group shadow-card"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse shrink-0" />
+              <p className="text-xs text-[#0F172A] truncate">
+                <span className="font-bold">Weather Risk:</span>{' '}
+                <span className="text-[#64748B]">Rain expected Thursday (concrete pour)</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
+              <span>Details</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
           </div>
-          <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
-            <span>Details</span>
-            <ChevronRight className="w-3.5 h-3.5" />
+
+          <div
+            onClick={() => handleTabChange('punch')}
+            className="bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all group shadow-card"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-[#10A976] shrink-0" />
+              <p className="text-xs text-[#0F172A] truncate">
+                <span className="font-bold text-[#10A976]">Quality & Punch:</span>{' '}
+                <span className="text-[#64748B]">
+                  {punchItems.filter(p => !p.projectId || p.projectId === project.id).length} Site Punch Items logged
+                </span>
+              </p>
+            </div>
+            <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
+              <span>Punch List</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
           </div>
         </div>
       )}

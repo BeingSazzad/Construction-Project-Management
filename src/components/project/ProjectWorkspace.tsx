@@ -301,7 +301,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             onCreatePunch={onCreatePunch}
             onUpdatePunchStatus={onUpdatePunchStatus}
             onDeletePunch={onUpdatePunchStatus ? (punchId) => onUpdatePunchStatus(punchId, 'Closed') : undefined}
-            onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}
+            onBack={() => setActiveTab('tasks')}
           />
         )}
 
@@ -309,6 +309,8 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           <ProjectTasksTab
             project={project}
             tasks={tasks}
+            punchCount={punchItems.filter(p => !p.projectId || p.projectId === project.id).length}
+            onOpenPunchList={() => setActiveTab('punch')}
             onOpenTask={onOpenTask}
             onCreateTask={onCreateTask}
             onAddTask={onAddTask}
