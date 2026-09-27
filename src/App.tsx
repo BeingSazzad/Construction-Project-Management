@@ -719,10 +719,11 @@ export function App() {
       status: 'Open',
       priority: newPunch.priority || 'Medium',
       assignedTo: newPunch.assignedTo || {
-        id: `sub-${Date.now()}`,
-        name: 'General Subcontractor',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        trade: 'General'
+        id: 'usr_field',
+        name: 'John Smith',
+        role: 'Field Superintendent',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        trade: 'John Smith (Field Superintendent)'
       },
       dueDate: newPunch.dueDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
       createdDate: newPunch.createdDate || new Date().toISOString().split('T')[0],

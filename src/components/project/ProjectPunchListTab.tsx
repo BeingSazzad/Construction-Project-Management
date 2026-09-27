@@ -506,11 +506,13 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                   </div>
                 </div>
 
-                {/* 3. Subcontractor */}
+                {/* 3. Assignee */}
                 <div className="flex items-center justify-between py-1.5 text-xs min-h-[30px]">
-                  <span className="text-[#64748B] font-medium">Subcontractor</span>
+                  <span className="text-[#64748B] font-medium">Assignee</span>
                   <span className="font-semibold text-[#0F172A] truncate max-w-[210px] text-right">
-                    {selectedPunchItem.assignedTo?.trade || 'General Trade'}
+                    {selectedPunchItem.assignedTo?.name 
+                      ? `${selectedPunchItem.assignedTo.name}${selectedPunchItem.assignedTo.role ? ` (${selectedPunchItem.assignedTo.role})` : ''}`
+                      : (selectedPunchItem.assignedTo?.trade || 'John Smith (Field Superintendent)')}
                   </span>
                 </div>
 

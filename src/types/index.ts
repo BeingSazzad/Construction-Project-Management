@@ -218,6 +218,7 @@ export interface PunchItem {
     name: string;
     avatar: string;
     trade: string;
+    role?: string;
   };
   priority: Priority;
   dueDate: string;

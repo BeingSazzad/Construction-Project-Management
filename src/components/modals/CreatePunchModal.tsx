@@ -11,6 +11,40 @@ interface CreatePunchModalProps {
   onCreate: (item: Partial<PunchItem>) => void;
 }
 
+interface InternalTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+}
+
+const INTERNAL_TEAM_MEMBERS: InternalTeamMember[] = [
+  {
+    id: 'usr_field',
+    name: 'John Smith',
+    role: 'Field Superintendent',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'usr_pm',
+    name: 'Sarah Johnson',
+    role: 'Lead Project Manager',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'usr_admin',
+    name: 'Avery Scott',
+    role: 'Owner / Principal',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'usr_finance',
+    name: 'Michael Chang',
+    role: 'Director of Finance',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+  }
+];
+
 export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   isOpen,
   projects = [],
@@ -22,9 +56,9 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   const [title, setTitle] = useState('');
   const [selectedProjectId, setSelectedProjectId] = useState(project?.id || projects[0]?.id || 'proj-1');
   const [description, setDescription] = useState('');
-  const [trade, setTrade] = useState('Concrete Solutions Inc.');
-  const [customTrade, setCustomTrade] = useState('');
-  const [isCustomTrade, setIsCustomTrade] = useState(false);
+  const [assignedMemberId, setAssignedMemberId] = useState('usr_field');
+  const [customAssignee, setCustomAssignee] = useState('');
+  const [isCustomAssignee, setIsCustomAssignee] = useState(false);
   const [priority, setPriority] = useState<Priority>('Medium');
   const [location, setLocation] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -41,30 +75,6 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
       setSelectedProjectId(projects[0].id);
     }
   }, [project, projects, isOpen]);
-
-  // Dynamically compute trade options from selected project and subcontractors directory
-  const projectSubcontractors = subcontractors
-    .filter(s => s.activeProjects?.includes(selectedProjectId))
-    .map(s => s.companyName);
-
-  const allSubcontractorNames = subcontractors.map(s => s.companyName);
-
-  const defaultTrades = [
-    'Concrete Solutions Inc.',
-    'Craft Drywall LLC',
-    'Prime Finishes Co.',
-    'FlowTech Plumbing',
-    'Climate HVAC Mechanical',
-    'Apex Glazing & Waterproofing',
-    'ProShield Firestopping',
-    'Steel Masters LLC'
-  ];
-
-  const tradeOptions = Array.from(new Set([
-    ...projectSubcontractors,
-    ...allSubcontractorNames,
-    ...defaultTrades
-  ]));
 
   if (!isOpen) return null;
 
@@ -138,7 +148,18 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     if (!title.trim()) return;
 
     const matchedProject = projects.find((p) => p.id === selectedProjectId) || project;
-    const finalTrade = isCustomTrade && customTrade.trim() ? customTrade.trim() : trade;
+    
+    let assignedPerson = INTERNAL_TEAM_MEMBERS.find(m => m.id === assignedMemberId);
+    if (isCustomAssignee && customAssignee.trim()) {
+      assignedPerson = {
+        id: `usr-${Date.now()}`,
+        name: customAssignee.trim(),
+        role: 'Site Staff',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+      };
+    } else if (!assignedPerson) {
+      assignedPerson = INTERNAL_TEAM_MEMBERS[0];
+    }
 
     onCreate({
       title: title.trim(),
@@ -151,10 +172,11 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
       projectId: selectedProjectId,
       projectName: matchedProject?.name || 'Snell Isle Residence',
       assignedTo: {
-        id: `sub-${Date.now()}`,
-        name: finalTrade,
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        trade: finalTrade
+        id: assignedPerson.id,
+        name: assignedPerson.name,
+        avatar: assignedPerson.avatar,
+        role: assignedPerson.role,
+        trade: `${assignedPerson.name} (${assignedPerson.role})`
       },
       photos: uploadedPhotos
     });
@@ -163,8 +185,8 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     setDescription('');
     setLocation('');
     setDueDate('');
-    setCustomTrade('');
-    setIsCustomTrade(false);
+    setCustomAssignee('');
+    setIsCustomAssignee(false);
     setUploadedPhotos([]);
     onClose();
   };
@@ -254,27 +276,29 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
               </div>
             </div>
 
-            {/* 3. Subcontractor / Trade * & Priority (2 columns) */}
+            {/* 3. Assignee (Internal Team) & Priority (2 columns) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5 min-w-0">
                 <label className="text-xs font-semibold text-[#334155] truncate">
-                  Subcontractor / Trade <span className="text-rose-500 font-bold">*</span>
+                  Assignee (Team Member) <span className="text-rose-500 font-bold">*</span>
                 </label>
                 <div className="relative">
                   <select
-                    value={isCustomTrade ? '__custom__' : trade}
+                    value={isCustomAssignee ? '__custom__' : assignedMemberId}
                     onChange={(e) => {
                       if (e.target.value === '__custom__') {
-                        setIsCustomTrade(true);
+                        setIsCustomAssignee(true);
                       } else {
-                        setIsCustomTrade(false);
-                        setTrade(e.target.value);
+                        setIsCustomAssignee(false);
+                        setAssignedMemberId(e.target.value);
                       }
                     }}
                     className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 pr-8 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all appearance-none cursor-pointer truncate"
                   >
-                    {tradeOptions.map((t) => (
-                      <option key={t} value={t}>{t}</option>
+                    {INTERNAL_TEAM_MEMBERS.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} ({m.role})
+                      </option>
                     ))}
                     <option value="__custom__">+ Other (Type custom)...</option>
                   </select>
@@ -299,18 +323,18 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
               </div>
             </div>
 
-            {/* Custom Subcontractor / Trade Input (if selected) */}
-            {isCustomTrade && (
+            {/* Custom Assignee Input (if selected) */}
+            {isCustomAssignee && (
               <div className="flex flex-col gap-1.5 animate-fade-in">
                 <label className="text-xs font-semibold text-[#1677FF]">
-                  Custom Subcontractor / Trade Name <span className="text-rose-500 font-bold">*</span>
+                  Custom Assignee Name <span className="text-rose-500 font-bold">*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  value={customTrade}
-                  onChange={(e) => setCustomTrade(e.target.value)}
-                  placeholder="e.g. Acme Tile & Masonry"
+                  value={customAssignee}
+                  onChange={(e) => setCustomAssignee(e.target.value)}
+                  placeholder="e.g. David Miller (Assistant PM)"
                   className="w-full h-10 bg-white border border-[#1677FF] rounded-xl px-3 text-xs font-medium text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#1677FF]/20 transition-all"
                 />
               </div>
