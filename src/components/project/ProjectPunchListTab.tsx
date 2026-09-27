@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Project, PunchItem, PunchStatus } from '../../types';
 import { 
   Plus, MapPin, Trash2, Folder, ChevronLeft, 
-  Search, SlidersHorizontal, ChevronDown, ChevronRight, 
+  Search, ChevronRight, ChevronDown, 
   X, Camera, List, Table as TableIcon
 } from 'lucide-react';
 
@@ -32,9 +32,6 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   const [viewMode, setViewMode] = useState<'grouped' | 'table'>('grouped');
   const [selectedPunchItem, setSelectedPunchItem] = useState<PunchItem | null>(null);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState<string>('All');
-  const [selectedTrade, setSelectedTrade] = useState<string>('All');
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string; location: string } | null>(null);
   const modalFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -43,22 +40,14 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
     ? projects
     : (project ? [project] : []);
 
-  // Accordion expansion state for each project
-  const [expandedProjectIds, setExpandedProjectIds] = useState<Record<string, boolean>>(() => {
-    const init: Record<string, boolean> = {};
-    projectList.forEach((p) => {
-      // Expand all projects by default so items are visible immediately
-      init[p.id] = true;
-    });
-    return init;
+  // Active selected project for drill-down view (null = All Projects directory)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(() => {
+    // If only one project is provided, default to that project
+    if (project && (!projects || projects.length <= 1)) {
+      return project.id;
+    }
+    return null;
   });
-
-  const toggleProject = (projId: string) => {
-    setExpandedProjectIds(prev => ({
-      ...prev,
-      [projId]: !prev[projId]
-    }));
-  };
 
   const [items, setItems] = useState<PunchItem[]>(() => {
     if (projects && projects.length > 0) return punchItems;
@@ -130,19 +119,14 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
     setItems((list) => list.map((p) => (p.id === updated.id ? updated : p)));
   };
 
-  // Distinct trade list for filter
-  const uniqueTrades = Array.from(new Set(items.map(i => i.assignedTo?.trade).filter(Boolean))) as string[];
+  const currentProject = selectedProjectId ? projectList.find(p => p.id === selectedProjectId) : null;
+  const currentProjectItems = selectedProjectId
+    ? items.filter(p => (!p.projectId && selectedProjectId === 'proj-1') || p.projectId === selectedProjectId)
+    : [];
 
-  // Filter logic
-  const filteredItems = items.filter(item => {
+  const filteredProjectItems = currentProjectItems.filter((item) => {
     // Status filter
     if (activeFilter !== 'All' && item.status !== activeFilter) return false;
-    
-    // Priority filter
-    if (selectedPriority !== 'All' && item.priority !== selectedPriority) return false;
-
-    // Trade filter
-    if (selectedTrade !== 'All' && item.assignedTo?.trade !== selectedTrade) return false;
 
     // Search query
     if (searchQuery.trim()) {
@@ -150,11 +134,21 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
       const matchTitle = item.title.toLowerCase().includes(q);
       const matchDesc = item.description?.toLowerCase().includes(q) || false;
       const matchLoc = item.location?.toLowerCase().includes(q) || false;
-      const matchTrade = item.assignedTo?.trade?.toLowerCase().includes(q) || false;
-      return matchTitle || matchDesc || matchLoc || matchTrade;
+      const matchAssignee = item.assignedTo?.name?.toLowerCase().includes(q) || false;
+      return matchTitle || matchDesc || matchLoc || matchAssignee;
     }
 
     return true;
+  });
+
+  const matchingProjects = projectList.filter((proj) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      proj.name.toLowerCase().includes(q) ||
+      proj.code?.toLowerCase().includes(q) ||
+      proj.location?.toLowerCase().includes(q)
+    );
   });
 
   const openCount = items.filter(p => p.status === 'Open' || p.status === 'In Progress').length;
@@ -196,342 +190,380 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   return (
     <div className="w-full flex-1 flex flex-col gap-4 px-4 sm:px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#0F172A] bg-[#F8FAFC] min-h-screen animate-fade-in">
 
-      {/* ── 1. Top Header: Back, Title, Open Count & New Item CTA ── */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          {onBack && (
-            <button
-              onClick={onBack}
-              className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors shadow-2xs active:scale-95 flex-shrink-0"
-              title="Back"
-            >
-              <ChevronLeft className="w-5 h-5 text-slate-700" />
-            </button>
-          )}
-          <div>
-            <h1 className="text-xl font-bold text-[#0F172A] tracking-tight leading-tight">Punch List</h1>
-            <p className="text-xs text-[#64748B] mt-0.5 font-medium">
-              {openCount} open items across projects
-            </p>
+      {!selectedProjectId ? (
+        /* ── Level 1: All Projects Directory (Click project to drill down) ── */
+        <>
+          {/* Header */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              {onBack && (
+                <button
+                  onClick={onBack}
+                  className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors shadow-2xs active:scale-95 flex-shrink-0"
+                  title="Back"
+                >
+                  <ChevronLeft className="w-5 h-5 text-slate-700" />
+                </button>
+              )}
+              <div>
+                <h1 className="text-xl font-bold text-[#0F172A] tracking-tight leading-tight">Punch List</h1>
+                <p className="text-xs text-[#64748B] mt-0.5 font-medium">
+                  {openCount} open items across {projectList.length} projects · Select project
+                </p>
+              </div>
+            </div>
+
+            {onCreatePunch && (
+              <button
+                onClick={onCreatePunch}
+                className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer flex-shrink-0"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>New Item</span>
+              </button>
+            )}
           </div>
-        </div>
 
-        {onCreatePunch && (
-          <button
-            onClick={onCreatePunch}
-            className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer flex-shrink-0"
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>New Item</span>
-          </button>
-        )}
-      </div>
+          {/* Search Projects */}
+          <div className="bg-white border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-2xs focus-within:border-[#1677FF] transition-colors">
+            <Search className="w-4 h-4 text-[#94A3B8] flex-shrink-0" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search projects by name, code, or location..."
+              className="w-full bg-transparent border-none text-xs sm:text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-hidden font-sans"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-[#94A3B8] hover:text-[#0F172A] p-0.5 cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
 
-      {/* ── 2. Filter Pills Bar (All, Open, In Progress, Resolved, Verified) ── */}
-      <div className="flex items-center gap-2 overflow-x-auto py-0.5 scrollbar-none">
-        <button
-          onClick={() => setActiveFilter('All')}
-          className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border ${
-            activeFilter === 'All'
-              ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-2xs'
-              : 'bg-white text-[#475569] border-[#E2E8F0] hover:bg-slate-50'
-          }`}
-        >
-          All
-        </button>
+          {/* Project List (Clicking navigates to that project's punch list details) */}
+          <div className="flex flex-col gap-2.5">
+            {matchingProjects.length === 0 ? (
+              <div className="p-8 rounded-2xl bg-white border border-[#E2E8F0] text-center text-xs text-[#94A3B8]">
+                No projects match "{searchQuery}"
+              </div>
+            ) : (
+              matchingProjects.map((proj) => {
+                const pItems = items.filter(
+                  p => (!p.projectId && proj.id === 'proj-1') || p.projectId === proj.id
+                );
+                const pOpenCount = pItems.filter(p => p.status === 'Open' || p.status === 'In Progress').length;
+                const pResolvedCount = pItems.filter(p => p.status === 'Resolved' || p.status === 'Closed').length;
 
-        {(['Open', 'In Progress', 'Resolved', 'Closed'] as const).map((st) => {
-          const isActive = activeFilter === st;
-          const config = STATUS_CONFIG[st];
-          return (
+                return (
+                  <div
+                    key={proj.id}
+                    onClick={() => {
+                      setSelectedProjectId(proj.id);
+                      setSearchQuery('');
+                      setActiveFilter('All');
+                    }}
+                    className="p-3.5 sm:p-4 bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#1677FF]/60 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.99]"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <Folder className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">
+                          {proj.name}
+                        </h3>
+                        <p className="text-xs text-[#64748B] mt-0.5 truncate flex items-center gap-1.5">
+                          {proj.code && <span className="font-semibold text-[#475569]">{proj.code}</span>}
+                          {proj.code && proj.location && <span>•</span>}
+                          {proj.location && <span className="truncate">{proj.location}</span>}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="flex items-center gap-1.5 text-xs">
+                        {pItems.length === 0 ? (
+                          <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[#64748B] text-[11px] font-semibold">
+                            0 items
+                          </span>
+                        ) : (
+                          <>
+                            <span className="px-2.5 py-1 rounded-full bg-[#EAF3FF] text-[#1677FF] text-[11px] font-bold">
+                              {pItems.length} items
+                            </span>
+                            {pOpenCount > 0 && (
+                              <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-200">
+                                {pOpenCount} Open
+                              </span>
+                            )}
+                            {pResolvedCount > 0 && (
+                              <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+                                {pResolvedCount} Resolved
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </>
+      ) : (
+        /* ── Level 2: Project Punch List Details View ── */
+        <>
+          {/* Header with Back to All Projects */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <button
+                onClick={() => {
+                  setSelectedProjectId(null);
+                  setSearchQuery('');
+                  setActiveFilter('All');
+                }}
+                className="h-9 px-3 rounded-xl bg-white border border-[#E2E8F0] text-xs font-semibold text-[#475569] hover:text-[#0F172A] hover:bg-slate-50 flex items-center gap-1 transition-all cursor-pointer shrink-0 shadow-2xs"
+                title="Back to All Projects"
+              >
+                <ChevronLeft className="w-4 h-4 text-slate-600" />
+                <span>Projects</span>
+              </button>
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight leading-tight truncate">
+                  {currentProject?.name}
+                </h1>
+                <p className="text-xs text-[#64748B] mt-0.5 font-medium truncate">
+                  Punch List · {currentProjectItems.length} items ({currentProjectItems.filter(p => p.status === 'Open' || p.status === 'In Progress').length} open)
+                </p>
+              </div>
+            </div>
+
+            {onCreatePunch && (
+              <button
+                onClick={onCreatePunch}
+                className="h-10 px-4 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer flex-shrink-0"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>New Item</span>
+              </button>
+            )}
+          </div>
+
+          {/* Filter Pills Bar (All, Open, In Progress, Resolved, Closed) */}
+          <div className="flex items-center gap-2 overflow-x-auto py-0.5 scrollbar-none">
             <button
-              key={st}
-              onClick={() => setActiveFilter(st)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 border ${
-                isActive
-                  ? 'bg-[#1677FF] border-[#1677FF] text-white font-semibold shadow-2xs'
+              onClick={() => setActiveFilter('All')}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap border ${
+                activeFilter === 'All'
+                  ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-2xs'
                   : 'bg-white text-[#475569] border-[#E2E8F0] hover:bg-slate-50'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isActive ? 'bg-white' : config.dot}`} />
-              <span>{st}</span>
+              All ({currentProjectItems.length})
             </button>
-          );
-        })}
-      </div>
 
-      {/* ── 3. Search & Filter Bar ── */}
-      <div className="flex items-center gap-2.5">
-        <div className="flex-1 bg-white border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-2xs focus-within:border-[#1677FF] transition-colors">
-          <Search className="w-4 h-4 text-[#94A3B8] flex-shrink-0" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search punch list items..."
-            className="w-full bg-transparent border-none text-xs sm:text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-hidden font-sans"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="text-[#94A3B8] hover:text-[#0F172A] p-0.5 cursor-pointer"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1.5 shrink-0">
-          {/* View Mode Toggle (Grouped List vs Table) */}
-          <div className="flex items-center bg-[#F1F5F9] p-0.5 rounded-xl border border-[#E2E8F0]/80">
-            <button
-              onClick={() => setViewMode('grouped')}
-              className={`h-9 px-2.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                viewMode === 'grouped'
-                  ? 'bg-white text-[#1677FF] shadow-2xs'
-                  : 'text-[#64748B] hover:text-[#0F172A]'
-              }`}
-              title="Grouped List View"
-            >
-              <List className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">List</span>
-            </button>
-            <button
-              onClick={() => setViewMode('table')}
-              className={`h-9 px-2.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                viewMode === 'table'
-                  ? 'bg-white text-[#1677FF] shadow-2xs'
-                  : 'text-[#64748B] hover:text-[#0F172A]'
-              }`}
-              title="Table View"
-            >
-              <TableIcon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Table</span>
-            </button>
-          </div>
-
-          <button
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className={`h-10 px-3.5 rounded-xl border flex items-center gap-2 text-xs font-semibold cursor-pointer transition-colors shadow-2xs ${
-              isFilterOpen || selectedPriority !== 'All' || selectedTrade !== 'All'
-                ? 'bg-[#EAF3FF] border-[#1677FF] text-[#1677FF]'
-                : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-slate-50'
-            }`}
-          >
-            <SlidersHorizontal className="w-4 h-4 text-current" />
-            <span>Filter</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Filter Expansion Tray */}
-      {isFilterOpen && (
-        <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] shadow-xs flex flex-col gap-3 animate-fade-in text-xs">
-          <div className="flex items-center justify-between">
-            <span className="font-bold text-[#0F172A]">Refine Filters</span>
-            <button
-              onClick={() => {
-                setSelectedPriority('All');
-                setSelectedTrade('All');
-                setActiveFilter('All');
-              }}
-              className="text-xs text-[#1677FF] hover:underline font-semibold cursor-pointer"
-            >
-              Reset All
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-[11px] font-semibold text-[#64748B] block mb-1">Priority</label>
-              <select
-                value={selectedPriority}
-                onChange={(e) => setSelectedPriority(e.target.value)}
-                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-2.5 py-1.5 text-xs text-[#0F172A] font-medium focus:outline-hidden"
-              >
-                <option value="All">All Priorities</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[11px] font-semibold text-[#64748B] block mb-1">Subcontractor</label>
-              <select
-                value={selectedTrade}
-                onChange={(e) => setSelectedTrade(e.target.value)}
-                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-2.5 py-1.5 text-xs text-[#0F172A] font-medium focus:outline-hidden"
-              >
-                <option value="All">All Subcontractors</option>
-                {uniqueTrades.map(trade => (
-                  <option key={trade} value={trade}>{trade}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── 4. Main Punch List View (Grouped Seamless Cards or Table) ── */}
-      {viewMode === 'grouped' ? (
-        <div className="flex flex-col gap-3">
-          {projectList.length === 0 ? (
-            <div className="p-8 rounded-2xl bg-white border border-[#E2E8F0] text-center flex flex-col items-center justify-center gap-2 shadow-2xs">
-              <Folder className="w-8 h-8 text-[#94A3B8]" />
-              <p className="text-sm font-bold text-[#0F172A]">No projects available</p>
-            </div>
-          ) : (
-            projectList.map((proj) => {
-              const projectItems = filteredItems.filter(
-                p => (!p.projectId && proj.id === 'proj-1') || p.projectId === proj.id
-              );
-              const isExpanded = expandedProjectIds[proj.id] ?? true;
-
+            {(['Open', 'In Progress', 'Resolved', 'Closed'] as const).map((st) => {
+              const count = currentProjectItems.filter(p => p.status === st).length;
+              const isActive = activeFilter === st;
+              const config = STATUS_CONFIG[st];
               return (
-                <div key={proj.id} className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xs overflow-hidden transition-all">
-                  {/* Project Accordion Header Bar */}
-                  <div 
-                    onClick={() => toggleProject(proj.id)}
-                    className="flex items-center justify-between py-3 px-4 bg-[#F8FAFC] hover:bg-[#F1F5F9] cursor-pointer transition-colors border-b border-[#F1F5F9] select-none group"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <Folder className="w-4 h-4 text-[#1677FF] shrink-0" />
-                      <span className="text-sm font-bold text-[#0F172A] truncate">
-                        {proj.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-[#64748B] font-medium shrink-0">
-                      <span className="px-2.5 py-0.5 rounded-full bg-white border border-[#E2E8F0] text-[11px] font-bold text-[#64748B]">
-                        {projectItems.length} items
-                      </span>
-                      <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-transform duration-200 ${isExpanded ? '' : '-rotate-90'}`} />
-                    </div>
-                  </div>
-
-                  {/* Project Punch Items: Seamless List with Hairline Dividers (NO BOXES!) */}
-                  {isExpanded && (
-                    <div>
-                      {projectItems.length === 0 ? (
-                        <div className="py-4 px-4 text-center text-xs text-[#94A3B8] font-medium">
-                          No punch list items for {proj.name}
-                        </div>
-                      ) : (
-                        <div className="divide-y divide-[#F1F5F9]">
-                          {projectItems.map((item) => {
-                            const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
-
-                            return (
-                              <div
-                                key={item.id}
-                                onClick={() => {
-                                  setSelectedPunchItem(item);
-                                  if (onOpenPunchDetails) onOpenPunchDetails(item);
-                                }}
-                                className="py-3 px-4 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
-                              >
-                                {/* Left: Dot + Title ONLY */}
-                                <div className="min-w-0 flex-1 flex items-center gap-2.5">
-                                  <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
-                                  <h2 className="text-xs sm:text-sm font-medium text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">
-                                    {item.title}
-                                  </h2>
-                                </div>
-
-                                {/* Right: Only the Status Pill + Chevron */}
-                                <div className="flex items-center gap-2 shrink-0">
-                                  <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
-                                    {item.status}
-                                  </span>
-                                  <ChevronRight className="w-3.5 h-3.5 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <button
+                  key={st}
+                  onClick={() => setActiveFilter(st)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 border ${
+                    isActive
+                      ? 'bg-[#1677FF] border-[#1677FF] text-white font-semibold shadow-2xs'
+                      : 'bg-white text-[#475569] border-[#E2E8F0] hover:bg-slate-50'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isActive ? 'bg-white' : config.dot}`} />
+                  <span>{st}</span>
+                  <span className={`text-[10px] ${isActive ? 'text-white/80' : 'text-slate-400'}`}>
+                    ({count})
+                  </span>
+                </button>
               );
-            })
-          )}
-        </div>
-      ) : (
-        /* ── Table View: Clean Executive Data Table (Zero boxes!) ── */
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
-                  <th className="py-3 px-4">Item / Issue</th>
-                  <th className="py-3 px-3">Project</th>
-                  <th className="py-3 px-3">Assignee</th>
-                  <th className="py-3 px-3">Priority</th>
-                  <th className="py-3 px-3">Status</th>
-                  <th className="py-3 px-4 text-right">Due Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F1F5F9]">
-                {filteredItems.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-8 text-center text-xs text-[#94A3B8]">
-                      No punch items found matching filters
-                    </td>
-                  </tr>
-                ) : (
-                  filteredItems.map((item) => {
+            })}
+          </div>
+
+          {/* Search & View Switcher Bar */}
+          <div className="flex items-center gap-2.5">
+            <div className="flex-1 bg-white border border-[#E2E8F0] rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-2xs focus-within:border-[#1677FF] transition-colors">
+              <Search className="w-4 h-4 text-[#94A3B8] flex-shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search items in this project..."
+                className="w-full bg-transparent border-none text-xs sm:text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-hidden font-sans"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="text-[#94A3B8] hover:text-[#0F172A] p-0.5 cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {/* View Mode Toggle */}
+              <div className="flex items-center bg-[#F1F5F9] p-0.5 rounded-xl border border-[#E2E8F0]/80">
+                <button
+                  onClick={() => setViewMode('grouped')}
+                  className={`h-9 px-2.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    viewMode === 'grouped'
+                      ? 'bg-white text-[#1677FF] shadow-2xs'
+                      : 'text-[#64748B] hover:text-[#0F172A]'
+                  }`}
+                  title="List View"
+                >
+                  <List className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">List</span>
+                </button>
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={`h-9 px-2.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    viewMode === 'table'
+                      ? 'bg-white text-[#1677FF] shadow-2xs'
+                      : 'text-[#64748B] hover:text-[#0F172A]'
+                  }`}
+                  title="Table View"
+                >
+                  <TableIcon className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Table</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Project Items Container (Single clean card with hairline dividers) */}
+          {viewMode === 'grouped' ? (
+            <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xs overflow-hidden">
+              {filteredProjectItems.length === 0 ? (
+                <div className="p-8 text-center text-xs text-[#94A3B8] font-medium flex flex-col items-center justify-center gap-2">
+                  <Folder className="w-8 h-8 text-[#CBD5E1]" />
+                  <p className="text-sm font-bold text-[#0F172A]">No punch list items found</p>
+                  <p className="text-xs text-[#64748B]">Try changing the filter or search keyword.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-[#F1F5F9]">
+                  {filteredProjectItems.map((item) => {
                     const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
-                    const projectName = projectList.find(p => p.id === item.projectId)?.name || item.projectName || 'Project';
 
                     return (
-                      <tr
+                      <div
                         key={item.id}
                         onClick={() => {
                           setSelectedPunchItem(item);
                           if (onOpenPunchDetails) onOpenPunchDetails(item);
                         }}
-                        className="hover:bg-[#F8FAFC] cursor-pointer transition-colors group"
+                        className="py-3 px-4 flex items-center justify-between gap-3 hover:bg-[#F8FAFC] transition-colors cursor-pointer group"
                       >
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2.5 min-w-[200px]">
-                            <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
-                            <span className="font-semibold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">
-                              {item.title}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-3 text-[#64748B] truncate max-w-[140px]">
-                          {projectName}
-                        </td>
-                        <td className="py-3 px-3 text-[#475569] truncate max-w-[140px] font-medium">
-                          {item.assignedTo?.name || item.assignedTo?.trade || 'Unassigned'}
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
-                            item.priority === 'Critical' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
-                            item.priority === 'High' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                            'bg-slate-100 text-slate-600'
-                          }`}>
-                            {item.priority}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className={`inline-flex px-2 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
+                        {/* Left: Dot + Title */}
+                        <div className="min-w-0 flex-1 flex items-center gap-2.5">
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
+                          <h2 className="text-xs sm:text-sm font-medium text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">
+                            {item.title}
+                          </h2>
+                        </div>
+
+                        {/* Right: Status Pill + Chevron */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
                             {item.status}
                           </span>
-                        </td>
-                        <td className="py-3 px-4 text-right text-[#64748B] font-medium whitespace-nowrap">
-                          {item.dueDate || 'Pending'}
+                          <ChevronRight className="w-3.5 h-3.5 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Table View for this Project */
+            <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-2xs overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
+                      <th className="py-3 px-4">Item / Issue</th>
+                      <th className="py-3 px-3">Assignee</th>
+                      <th className="py-3 px-3">Location</th>
+                      <th className="py-3 px-3">Priority</th>
+                      <th className="py-3 px-3">Status</th>
+                      <th className="py-3 px-4 text-right">Due Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#F1F5F9]">
+                    {filteredProjectItems.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-8 text-center text-xs text-[#94A3B8]">
+                          No punch items found matching filters
                         </td>
                       </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                    ) : (
+                      filteredProjectItems.map((item) => {
+                        const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
+
+                        return (
+                          <tr
+                            key={item.id}
+                            onClick={() => {
+                              setSelectedPunchItem(item);
+                              if (onOpenPunchDetails) onOpenPunchDetails(item);
+                            }}
+                            className="hover:bg-[#F8FAFC] cursor-pointer transition-colors group"
+                          >
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-2.5 min-w-[200px]">
+                                <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
+                                <span className="font-semibold text-[#0F172A] group-hover:text-[#1677FF] transition-colors truncate">
+                                  {item.title}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="py-3 px-3 text-[#475569] truncate max-w-[140px] font-medium">
+                              {item.assignedTo?.name || item.assignedTo?.trade || 'Unassigned'}
+                            </td>
+                            <td className="py-3 px-3 text-[#64748B] truncate max-w-[130px]">
+                              {item.location || 'Site Area'}
+                            </td>
+                            <td className="py-3 px-3">
+                              <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
+                                item.priority === 'Critical' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                                item.priority === 'High' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                'bg-slate-100 text-slate-600'
+                              }`}>
+                                {item.priority}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3">
+                              <span className={`inline-flex px-2 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
+                                {item.status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-right text-[#64748B] font-medium whitespace-nowrap">
+                              {item.dueDate || 'Pending'}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* ── 5. Punch Item Details Modal (Minimal, 390px, Exact Project & Multiple Photos) ── */}
