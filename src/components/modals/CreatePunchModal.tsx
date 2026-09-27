@@ -200,7 +200,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[480px] mx-auto bg-white border border-[#E2E8F0] rounded-2xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up"
+        className="w-full max-w-[390px] mx-auto bg-white border border-[#E2E8F0] rounded-2xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up"
       >
         
         {/* Hidden File Input for Multiple Photo Upload */}
@@ -214,8 +214,8 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
         />
 
         {/* Fixed Header */}
-        <div className="px-5 py-3.5 border-b border-[#EAEDF1] flex items-center justify-between shrink-0 bg-white">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center justify-between shrink-0 bg-white">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-4 h-4" />
             </div>
@@ -223,7 +223,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
               <h3 className="text-sm font-bold text-[#0F172A] leading-tight truncate">
                 New Punch Item
               </h3>
-              <p className="text-xs text-[#64748B] font-medium truncate mt-0.5">
+              <p className="text-[11px] text-[#64748B] font-medium truncate mt-0.5">
                 {activeProjectName} · Quality Defect Notice
               </p>
             </div>
@@ -233,6 +233,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
             type="button"
             onClick={onClose}
             className="w-7 h-7 rounded-full bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] flex items-center justify-center transition-colors cursor-pointer shrink-0"
+            title="Close"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -240,7 +241,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
-          <div className="p-5 overflow-y-auto flex-1 flex flex-col gap-3.5 text-xs">
+          <div className="p-4 overflow-y-auto flex-1 flex flex-col gap-3 text-xs">
             
             {/* 1. Title * */}
             <div className="flex flex-col gap-1.5">
@@ -277,10 +278,10 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
             </div>
 
             {/* 3. Assignee (Internal Team) & Priority (2 columns) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div className="flex flex-col gap-1.5 min-w-0">
                 <label className="text-xs font-semibold text-[#334155] truncate">
-                  Assignee (Team Member) <span className="text-rose-500 font-bold">*</span>
+                  Assignee <span className="text-rose-500 font-bold">*</span>
                 </label>
                 <div className="relative">
                   <select
@@ -341,7 +342,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
             )}
 
             {/* 4. Location & Due Date (2 columns) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-[#334155]">Location</label>
                 <div className="relative flex items-center">
@@ -470,7 +471,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
           </div>
 
           {/* Fixed Footer: Pinned at bottom with clear visual hierarchy */}
-          <div className="px-5 py-3.5 border-t border-[#EAEDF1] bg-[#F8FAFC] shrink-0 flex items-center justify-end gap-2.5">
+          <div className="px-4 py-3 border-t border-[#EAEDF1] bg-[#F8FAFC] shrink-0 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={onClose}
