@@ -3,10 +3,11 @@ import { Project, Task, TaskStatus, Priority } from '../../types';
 import {
   Plus, Download, Trash2, Check, Pencil,
   ChevronDown, Search, MoreVertical, X,
-  LayoutList, Layers, MapPin, Calendar
+  LayoutList, Layers
 } from 'lucide-react';
 import { CreateTaskModal } from '../modals/CreateTaskModal';
 import { EditTaskModal, EditableTaskData } from '../modals/EditTaskModal';
+import { TaskDetailsModal } from '../modals/TaskDetailsModal';
 import { AddTasksTemplateModal } from '../modals/AddTasksTemplateModal';
 import { AddMethodChooser } from '../common/AddMethodChooser';
 
@@ -83,6 +84,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const [viewMode, setViewMode] = useState<'flat' | 'grouped'>('flat');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<EditableTaskData | null>(null);
+  const [detailTask, setDetailTask] = useState<Task | null>(null);
   const [openMenuTaskId, setOpenMenuTaskId] = useState<string | null>(null);
   const [openStatusDropdownTaskId, setOpenStatusDropdownTaskId] = useState<string | null>(null);
   const [showTaskChooser, setShowTaskChooser] = useState(false);
@@ -111,10 +113,31 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     return tasks.filter(t => t.projectId === project.id);
   }, [tasks, project.id]);
 
-  // Clean milestone label helper (strips "1. ", "MS-01 ", etc.)
+  // Clean, short milestone label helper (removes codes and shortens for clutter-free 1-line metadata)
   const cleanMilestoneName = (raw?: string): string => {
-    if (!raw) return 'General';
-    return raw.replace(/^(MS-\d+\s*|\d+\.\s*)/i, '').trim();
+    if (!raw) return '';
+    const cleaned = raw.replace(/^(MS-\d+\s*|\d+\.\s*)/i, '').trim();
+    if (cleaned.toLowerCase().includes('engineering')) return 'Engineering';
+    if (cleaned.toLowerCase().includes('framing')) return 'Framing';
+    if (cleaned.toLowerCase().includes('foundation')) return 'Foundation';
+    if (cleaned.toLowerCase().includes('permit') || cleaned.toLowerCase().includes('pre-con')) return 'Pre-Con';
+    if (cleaned.toLowerCase().includes('mep')) return 'MEP';
+    if (cleaned.toLowerCase().includes('envelope')) return 'Envelope';
+    return cleaned;
+  };
+
+  // Human-readable concise date (e.g. "Oct 15")
+  const formatCleanDate = (dateStr?: string) => {
+    if (!dateStr) return '';
+    if (dateStr.includes('-') && dateStr.length === 10) {
+      const parts = dateStr.split('-');
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const mIdx = parseInt(parts[1], 10) - 1;
+      if (mIdx >= 0 && mIdx < 12) {
+        return `${months[mIdx]} ${parseInt(parts[2], 10)}`;
+      }
+    }
+    return dateStr;
   };
 
   // Toggle single task completion (checkbox)
@@ -123,6 +146,12 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     if (onUpdateStatus) {
       onUpdateStatus(taskId, nextStatus);
     }
+  };
+
+  // Handle task click -> Open Detail Modal
+  const handleTaskClick = (task: Task) => {
+    setDetailTask(task);
+    if (onOpenTask) onOpenTask(task);
   };
 
   // Create new task
@@ -208,7 +237,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
   const tasksByMilestone = useMemo(() => {
     const groups: { [key: string]: Task[] } = {};
     filteredTasks.forEach(t => {
-      const mName = cleanMilestoneName(t.milestone);
+      const mName = cleanMilestoneName(t.milestone) || 'General';
       if (!groups[mName]) groups[mName] = [];
       groups[mName].push(t);
     });
@@ -219,7 +248,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     }));
   }, [filteredTasks]);
 
-  // Render a single task card that maps 1:1 with New Task input fields
+  // Render a readable, ultra-clean, minimal task row (max 2 compact lines)
   const renderTaskRow = (task: Task) => {
     const isTaskDone = task.status === 'Completed';
     const isTaskInProgress = task.status === 'In Progress';
@@ -227,169 +256,145 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
     const assigneeName = typeof task.assignee === 'string'
       ? task.assignee
       : (task.assignee?.name || '');
-    const assigneeAvatar = typeof task.assignee === 'object' ? task.assignee?.avatar : undefined;
     const isDueSoon = task.dueDate && (
       task.dueDate.toLowerCase().includes('today') ||
       task.dueDate.toLowerCase().includes('thu') ||
       task.dueDate.toLowerCase().includes('wed')
     );
 
-    // Realistic default location fallback if not explicitly stored
     const taskLocation = task.location || (
       task.milestone?.toLowerCase().includes('framing') ? 'Level 12 Deck' :
-      task.milestone?.toLowerCase().includes('foundation') ? 'Grid Line B-4' :
-      task.milestone?.toLowerCase().includes('mep') ? 'Utility Core Shaft' :
-      task.milestone?.toLowerCase().includes('envelope') ? 'Exterior Facade' :
+      task.milestone?.toLowerCase().includes('foundation') ? 'Grid B-4' :
+      task.milestone?.toLowerCase().includes('mep') ? 'Utility Core' :
+      task.milestone?.toLowerCase().includes('envelope') ? 'Exterior' :
       'Site Office'
     );
 
     const currentStatusConfig = STATUS_OPTIONS.find(o => o.status === task.status) || STATUS_OPTIONS[0];
     const isStatusMenuOpen = openStatusDropdownTaskId === task.id;
     const isActionMenuOpen = openMenuTaskId === task.id;
+    const milestoneLabel = cleanMilestoneName(task.milestone);
 
     return (
       <div
         key={task.id}
-        className={`px-3.5 py-3 hover:bg-[#F8FAFC] flex items-center justify-between gap-3 transition-colors group relative first:rounded-t-2xl last:rounded-b-2xl ${
+        onClick={() => handleTaskClick(task)}
+        className={`px-3.5 py-2.5 hover:bg-[#F8FAFC] flex items-center justify-between gap-3 transition-colors group relative cursor-pointer first:rounded-t-2xl last:rounded-b-2xl ${
           isTaskDone ? 'bg-[#FAFCFF]/60' : 'bg-white'
         } ${isStatusMenuOpen || isActionMenuOpen ? 'z-30' : 'z-0'}`}
       >
-        {/* Left: Checkbox & Info */}
-        <div className="flex items-start gap-2.5 min-w-0 flex-1">
-          {/* Checkbox (20px touch target) */}
-          {onUpdateStatus ? (
-            <button
-              type="button"
-              onClick={() => handleToggleCheckbox(task.id, task.status)}
-              className="w-7 h-7 -ml-1 -mt-0.5 rounded-lg flex items-center justify-center shrink-0 cursor-pointer active:scale-90 transition-transform"
-              title={isTaskDone ? 'Mark as to do' : 'Mark as completed'}
-            >
-              <div
-                className={`w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all ${
-                  isTaskDone
-                    ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
-                    : isTaskInProgress
-                    ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
-                    : isTaskBlocked
-                    ? 'border-rose-500 bg-rose-50 text-rose-600'
-                    : 'border-[#CBD5E1] bg-white group-hover:border-[#1677FF]'
-                }`}
+        {/* Left: Checkbox + Readable 2-Line Task Info */}
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          {/* Checkbox (20px hit area) */}
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+            {onUpdateStatus ? (
+              <button
+                type="button"
+                onClick={() => handleToggleCheckbox(task.id, task.status)}
+                className="w-7 h-7 -ml-1 rounded-lg flex items-center justify-center shrink-0 cursor-pointer active:scale-90 transition-transform"
+                title={isTaskDone ? 'Mark as to do' : 'Mark as completed'}
               >
-                {isTaskDone ? (
-                  <Check className="w-3.5 h-3.5 stroke-[3]" />
-                ) : isTaskInProgress ? (
-                  <span className="w-2 h-2 rounded-full bg-[#1677FF] animate-pulse" />
-                ) : isTaskBlocked ? (
-                  <span className="w-2 h-2 rounded-full bg-rose-500" />
-                ) : null}
+                <div
+                  className={`w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all ${
+                    isTaskDone
+                      ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
+                      : isTaskInProgress
+                      ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
+                      : isTaskBlocked
+                      ? 'border-rose-500 bg-rose-50 text-rose-600'
+                      : 'border-[#CBD5E1] bg-white group-hover:border-[#1677FF]'
+                  }`}
+                >
+                  {isTaskDone ? (
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  ) : isTaskInProgress ? (
+                    <span className="w-2 h-2 rounded-full bg-[#1677FF] animate-pulse" />
+                  ) : isTaskBlocked ? (
+                    <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  ) : null}
+                </div>
+              </button>
+            ) : (
+              <div className="w-7 h-7 -ml-1 rounded-lg flex items-center justify-center shrink-0 select-none">
+                <div
+                  className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${
+                    isTaskDone
+                      ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
+                      : isTaskInProgress
+                      ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
+                      : isTaskBlocked
+                      ? 'border-rose-500 bg-rose-50 text-rose-600'
+                      : 'border-[#CBD5E1] bg-white'
+                  }`}
+                >
+                  {isTaskDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                </div>
               </div>
-            </button>
-          ) : (
-            <div className="w-7 h-7 -ml-1 -mt-0.5 rounded-lg flex items-center justify-center shrink-0 select-none">
-              <div
-                className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${
-                  isTaskDone
-                    ? 'bg-[#1677FF] border-[#1677FF] text-white shadow-xs'
-                    : isTaskInProgress
-                    ? 'border-[#1677FF] bg-[#EAF3FF] text-[#1677FF]'
-                    : isTaskBlocked
-                    ? 'border-rose-500 bg-rose-50 text-rose-600'
-                    : 'border-[#CBD5E1] bg-white'
-                }`}
-              >
-                {isTaskDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Task Details (Directly mapping New Task modal inputs) */}
-          <div className="min-w-0 flex-1 pt-0.5">
-            {/* 1. Task Title & Priority */}
-            <div className="flex items-center gap-2 flex-wrap">
+          {/* Text Block: Title + Single Clean Metadata Line */}
+          <div className="min-w-0 flex-1">
+            {/* Line 1: Title + Subtle Priority Indicator */}
+            <div className="flex items-center gap-1.5 min-w-0">
               <span
-                onClick={() => {
-                  if (onOpenTask) onOpenTask(task);
-                  else if (onUpdateStatus) handleToggleCheckbox(task.id, task.status);
-                }}
-                className={`text-xs md:text-sm font-semibold leading-snug break-words transition-colors ${
-                  onUpdateStatus || onOpenTask ? 'cursor-pointer' : ''
-                } ${
+                className={`text-xs sm:text-sm font-semibold truncate leading-tight transition-colors ${
                   isTaskDone
                     ? 'text-[#94A3B8] line-through font-normal select-none'
-                    : 'text-[#0F172A] hover:text-[#1677FF]'
+                    : 'text-[#0F172A] group-hover:text-[#1677FF]'
                 }`}
+                title={task.title}
               >
                 {task.title}
               </span>
 
-              {/* Priority Indicator */}
-              {task.priority === 'Critical' && (
-                <span className="inline-flex items-center gap-1 text-rose-600 font-bold text-[10px] bg-rose-50 border border-rose-100 px-1.5 py-0.2 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse" />
-                  Critical
-                </span>
+              {/* Minimal Priority Dot (quiet, only if Critical/High) */}
+              {!isTaskDone && task.priority === 'Critical' && (
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" title="Critical Priority" />
               )}
-              {task.priority === 'High' && (
-                <span className="inline-flex items-center gap-1 text-amber-700 font-bold text-[10px] bg-amber-50 border border-amber-200/60 px-1.5 py-0.2 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  High
-                </span>
+              {!isTaskDone && task.priority === 'High' && (
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" title="High Priority" />
               )}
             </div>
 
-            {/* 2. Scope & Instructions preview */}
-            {task.description && (
-              <p className={`text-[11px] line-clamp-1 mt-0.5 ${isTaskDone ? 'text-[#94A3B8]/80' : 'text-[#64748B]'}`}>
-                {task.description}
-              </p>
-            )}
-
-            {/* 3. Milestone, Site Location, Assignee & Due Date Row */}
-            <div className="flex items-center gap-2 mt-1 text-[11px] text-[#64748B] leading-none flex-wrap">
-              {/* Milestone & Schedule Phase */}
-              {task.milestone && (
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#EAF3FF] text-[#1677FF] border border-[#1677FF]/20">
-                  {cleanMilestoneName(task.milestone)}
+            {/* Line 2: Single Concise Metadata Strip (Never wraps into 5 lines!) */}
+            <div className="flex items-center gap-1.5 text-[11px] text-[#64748B] mt-0.5 truncate leading-none">
+              {milestoneLabel && (
+                <span className="font-medium text-[#475569] shrink-0">
+                  {milestoneLabel}
                 </span>
               )}
 
-              {/* Site Location */}
               {taskLocation && (
-                <span className="inline-flex items-center gap-1 text-[10px] text-[#475569] bg-[#F8FAFC] border border-[#E2E8F0] px-1.5 py-0.5 rounded-md font-medium">
-                  <MapPin className="w-2.5 h-2.5 text-[#94A3B8]" />
-                  <span>{taskLocation}</span>
-                </span>
+                <>
+                  <span className="text-[#CBD5E1]">·</span>
+                  <span className="truncate">{taskLocation}</span>
+                </>
               )}
 
-              {/* Assignee */}
               {assigneeName && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-[#64748B]">
-                  {assigneeAvatar ? (
-                    <img src={assigneeAvatar} alt="" className="w-3.5 h-3.5 rounded-full object-cover shrink-0" />
-                  ) : (
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#E2E8F0] text-[#475569] text-[9px] font-bold flex items-center justify-center shrink-0">
-                      {assigneeName.charAt(0)}
-                    </span>
-                  )}
-                  <span className="truncate max-w-[120px]">{assigneeName}</span>
-                </span>
+                <>
+                  <span className="text-[#CBD5E1]">·</span>
+                  <span className="truncate">{assigneeName}</span>
+                </>
               )}
 
-              {/* Due Date */}
               {task.dueDate && (
-                <span className={`inline-flex items-center gap-1 text-[11px] ${isDueSoon ? 'text-amber-700 font-medium' : 'text-[#94A3B8]'}`}>
-                  <Calendar className="w-3 h-3 opacity-70" />
-                  <span>{task.dueDate}</span>
-                </span>
+                <>
+                  <span className="text-[#CBD5E1]">·</span>
+                  <span className={`shrink-0 ${isDueSoon ? 'text-amber-700 font-semibold' : 'text-[#94A3B8]'}`}>
+                    {formatCleanDate(task.dueDate)}
+                  </span>
+                </>
               )}
             </div>
           </div>
         </div>
 
         {/* Right: Interactive Status Dropdown & 3-Dot Action Menu */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
           {/* Status Dropdown Pill */}
-          <div className="relative" onClick={e => e.stopPropagation()}>
+          <div className="relative">
             {onUpdateStatus ? (
               <button
                 type="button"
@@ -472,7 +477,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
 
           {/* 3-Dot Action Menu */}
           {canManageBoard && (
-            <div className="relative" onClick={e => e.stopPropagation()}>
+            <div className="relative">
               <button
                 type="button"
                 onClick={(e) => {
@@ -774,7 +779,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
               {filteredTasks.map(renderTaskRow)}
             </div>
           ) : (
-            /* GROUPED BY MILESTONE: Lightweight section dividers without heavy accordion boxes */
+            /* GROUPED BY MILESTONE: Lightweight section dividers */
             <div className="flex flex-col gap-3">
               {tasksByMilestone.map((grp) => (
                 <div key={grp.milestone} className="flex flex-col gap-1.5">
@@ -804,7 +809,27 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         </>
       )}
 
-      {/* ─── Modals ─── */}
+      {/* ─── Task Details Modal (for deep dive into scope, subtasks, instructions) ─── */}
+      <TaskDetailsModal
+        task={detailTask}
+        onClose={() => setDetailTask(null)}
+        onUpdateStatus={(taskId, status) => {
+          if (onUpdateStatus) onUpdateStatus(taskId, status);
+          if (detailTask && detailTask.id === taskId) {
+            setDetailTask(prev => prev ? { ...prev, status } : null);
+          }
+        }}
+        onDelete={(taskId) => {
+          if (onUpdateStatus) onUpdateStatus(taskId, 'Completed');
+          setDetailTask(null);
+        }}
+        onEdit={(updatedTask) => {
+          if (onUpdateStatus) onUpdateStatus(updatedTask.id, updatedTask.status);
+          setDetailTask(updatedTask);
+        }}
+      />
+
+      {/* ─── Create Task Modal ─── */}
       <CreateTaskModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -813,6 +838,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         onCreate={handleCreateNewTask}
       />
 
+      {/* ─── Import from Template Modal ─── */}
       <AddTasksTemplateModal
         isOpen={isTemplateModalOpen}
         onClose={() => setIsTemplateModalOpen(false)}
@@ -832,6 +858,7 @@ export const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         }}
       />
 
+      {/* ─── Edit Task Modal ─── */}
       <EditTaskModal
         isOpen={Boolean(editingTask)}
         onClose={() => setEditingTask(null)}
