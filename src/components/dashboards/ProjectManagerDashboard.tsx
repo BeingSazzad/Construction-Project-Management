@@ -648,15 +648,13 @@ export const ProjectManagerDashboard: React.FC<ProjectManagerDashboardProps> = (
                   </button>
                 )}
 
-                <button
-                  onClick={() => {
-                    alert('Calling John Smith (Field Superintendent) at +1 (555) 567-8901...');
-                  }}
-                  className="h-10 rounded-xl bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] text-[#0F172A] font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                <a
+                  href="tel:+15555678901"
+                  className="h-10 rounded-xl bg-white border border-[#E2E8F0] hover:bg-[#F8FAFC] text-[#0F172A] font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-[#1677FF]" />
                   <span>Call Field Superintendent John Smith</span>
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -786,15 +784,13 @@ export const ProjectManagerDashboard: React.FC<ProjectManagerDashboardProps> = (
                 <span>Sign & Stamp Daily Log (Sarah Johnson, Lead PM)</span>
               </button>
 
-              <button
-                onClick={() => {
-                  alert('Calling John Smith (Superintendent) at +1 (555) 567-8901...');
-                }}
-                className="h-10 rounded-xl bg-white border border-[#E2E8F0] text-[#0F172A] font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer hover:bg-[#F8FAFC]"
+              <a
+                href="tel:+15555678901"
+                className="h-10 rounded-xl bg-white border border-[#E2E8F0] text-[#0F172A] font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer hover:bg-[#F8FAFC] transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-[#1677FF]" />
                 <span>Call Superintendent John Smith</span>
-              </button>
+              </a>
             </div>
           </div>
         </div>

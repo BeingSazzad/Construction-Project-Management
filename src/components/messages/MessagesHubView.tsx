@@ -5,7 +5,7 @@ import {
   Calendar, CheckCheck, Paperclip, Check, UserPlus,
   Users, ChevronRight, Clock, ShieldCheck, AlertTriangle,
   MoreVertical, Bell, BellOff, Pin, Trash2, FileText,
-  UserMinus, MoreHorizontal, Shield, MessageSquare
+  UserMinus, MoreHorizontal, Shield, MessageSquare, Phone
 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
@@ -23,6 +23,7 @@ interface TeamMember {
   name: string;
   role: string;
   avatar: string;
+  phone?: string;
 }
 
 interface ProjectDiscussion {
@@ -38,16 +39,16 @@ interface ProjectDiscussion {
 }
 
 const ALL_COMPANY_MEMBERS: TeamMember[] = [
-  { id: 'm-1', name: 'John Smith', role: 'Lead Field Superintendent', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-2', name: 'Emily Brown', role: 'Site Safety Officer', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-3', name: 'Carlos Ortiz', role: 'Earthwork Site Foreman', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-4', name: 'Dave Miller', role: 'Structural Concrete Lead', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-5', name: 'Sarah Johnson', role: 'Lead Project Manager', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-6', name: 'Marcus Chen', role: 'Finance Controller', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-7', name: 'Apex Concrete LLC', role: 'Concrete Trade Partner', avatar: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-8', name: 'Avery Scott', role: 'Managing Principal & Founder', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-9', name: 'Michael Chang', role: 'Director of Finance', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
-  { id: 'm-10', name: 'Titan Steel Works', role: 'Structural Subcontractor', avatar: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=150&auto=format&fit=crop&q=80' },
+  { id: 'm-1', name: 'John Smith', role: 'Lead Field Superintendent', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 567-8901' },
+  { id: 'm-2', name: 'Emily Brown', role: 'Site Safety Officer', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 789-0123' },
+  { id: 'm-3', name: 'Carlos Ortiz', role: 'Earthwork Site Foreman', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 234-5678' },
+  { id: 'm-4', name: 'Dave Miller', role: 'Structural Concrete Lead', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 345-8901' },
+  { id: 'm-5', name: 'Sarah Johnson', role: 'Lead Project Manager', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 345-6789' },
+  { id: 'm-6', name: 'Marcus Chen', role: 'Finance Controller', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 456-7890' },
+  { id: 'm-7', name: 'Apex Concrete LLC', role: 'Concrete Trade Partner', avatar: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 678-9012' },
+  { id: 'm-8', name: 'Avery Scott', role: 'Managing Principal & Founder', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80', phone: '+1 (720) 555-0111' },
+  { id: 'm-9', name: 'Michael Chang', role: 'Director of Finance', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 890-1234' },
+  { id: 'm-10', name: 'Titan Steel Works', role: 'Structural Subcontractor', avatar: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=150&auto=format&fit=crop&q=80', phone: '+1 (555) 901-2345' },
 ];
 
 const INITIAL_DISCUSSIONS: ProjectDiscussion[] = [
@@ -632,16 +633,14 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
                               onClick={() => setMemberOptionMenuId(null)} 
                             />
                             <div className="absolute right-0 top-8 z-50 w-44 bg-white border border-[#DDE1E7] rounded-xl shadow-2xl p-1 flex flex-col gap-0.5 animate-fade-in text-xs">
-                              <button
-                                onClick={() => {
-                                  setMemberOptionMenuId(null);
-                                  alert(`Direct messaging ${member.name}...`);
-                                }}
+                              <a
+                                href={`tel:${(member.phone || '+15555678901').replace(/[^0-9+]/g, '')}`}
+                                onClick={() => setMemberOptionMenuId(null)}
                                 className="w-full px-2.5 py-1.5 rounded-lg text-[#171A1F] hover:bg-[#F7F8FA] flex items-center gap-2 text-left cursor-pointer font-medium"
                               >
-                                <MessageSquare className="w-3.5 h-3.5 text-[#1677FF]" />
-                                <span>Direct Message</span>
-                              </button>
+                                <Phone className="w-3.5 h-3.5 text-[#1677FF]" />
+                                <span>Direct Phone Call</span>
+                              </a>
                               <button
                                 onClick={() => handleRemoveMemberFromCurrent(member.id, member.name)}
                                 className="w-full px-2.5 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 flex items-center gap-2 text-left cursor-pointer font-bold"
@@ -995,9 +994,9 @@ export const MessagesHubView: React.FC<MessagesHubViewProps> = ({
             </button>
           )}
           <div>
-            <h1 className="text-xl font-bold text-[#0F172A] tracking-tight leading-tight">Messages</h1>
+            <h1 className="text-xl font-bold text-[#0F172A] tracking-tight leading-tight">Project Channels</h1>
             <p className="text-xs text-[#64748B] mt-0.5 font-medium">
-              {discussions.length} project discussions
+              {discussions.length} project group channels
             </p>
           </div>
         </div>

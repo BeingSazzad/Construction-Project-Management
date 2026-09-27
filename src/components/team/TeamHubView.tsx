@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Users, Plus, Search, Shield, ChevronRight, Mail,
-  Phone, Crown, X, CheckCircle2, MessageSquare, Building2,
+  Phone, Crown, X, CheckCircle2, Building2,
   UserMinus, ShieldCheck, AlertTriangle, ChevronLeft, ChevronDown,
   Briefcase, DollarSign, HardHat, MapPin, Calendar
 } from 'lucide-react';
@@ -321,16 +321,16 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
             </div>
           </div>
 
-          {/* Integrated Action Toolbar (Unified Single Strip, Zero Card Bloat) */}
-          <div className="border-t border-[#F1F5F9] bg-[#F8FAFC]/70 grid grid-cols-3 divide-x divide-[#F1F5F9]">
+          {/* Integrated Action Toolbar (Direct Phone Call & Email, Zero Individual Chat) */}
+          <div className="border-t border-[#F1F5F9] bg-[#F8FAFC]/70 grid grid-cols-2 divide-x divide-[#F1F5F9]">
             <a
-              href={`tel:${selectedMember.phone}`}
+              href={`tel:${selectedMember.phone.replace(/[^0-9+]/g, '')}`}
               className="py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-semibold text-[#0F172A] hover:text-[#1677FF] hover:bg-white transition-all group active:bg-[#F1F5F9]"
             >
               <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] flex items-center justify-center text-[#1677FF] group-hover:scale-105 transition-transform flex-shrink-0 shadow-2xs">
                 <Phone className="w-3.5 h-3.5" />
               </div>
-              <span className="font-bold">Call</span>
+              <span className="font-bold">Direct Call</span>
             </a>
 
             <a
@@ -342,16 +342,6 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
               </div>
               <span className="font-bold">Email</span>
             </a>
-
-            <button
-              onClick={() => alert(`Opening Lattice Direct Chat with ${selectedMember.name}...`)}
-              className="py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-semibold text-[#0F172A] hover:text-[#1677FF] hover:bg-white transition-all cursor-pointer group active:bg-[#F1F5F9]"
-            >
-              <div className="w-7 h-7 rounded-lg bg-[#EAF3FF] flex items-center justify-center text-[#1677FF] group-hover:scale-105 transition-transform flex-shrink-0 shadow-2xs">
-                <MessageSquare className="w-3.5 h-3.5" />
-              </div>
-              <span className="font-bold">Message</span>
-            </button>
           </div>
         </div>
 

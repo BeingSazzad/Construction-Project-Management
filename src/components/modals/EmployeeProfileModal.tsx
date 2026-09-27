@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   X, Phone, Mail, Building2, ShieldCheck, MapPin, CheckCircle2, 
-  Clock, HardHat, Calendar, MessageSquare, ExternalLink, Briefcase, UserMinus
+  Clock, HardHat, Calendar, ExternalLink, Briefcase, UserMinus
 } from 'lucide-react';
 
 export interface EmployeeProfileData {
