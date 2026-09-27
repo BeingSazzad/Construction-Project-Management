@@ -680,6 +680,10 @@ export const ProjectTeamTab: React.FC<ProjectTeamTabProps> = ({ project, current
         member={selectedProfileStaff}
         isOpen={!!selectedProfileStaff}
         onClose={() => setSelectedProfileStaff(null)}
+        canRemove={currentRole === 'admin'}
+        onRemove={(id) => {
+          setAssignedStaff(prev => prev.filter(s => s.id !== id));
+        }}
       />
 
     </div>

@@ -6,6 +6,7 @@ import {
   Briefcase, DollarSign, HardHat, MapPin, Calendar
 } from 'lucide-react';
 import { UserRole } from '../../types';
+import { getRoleAccess } from '../../utils/roleAccess';
 
 export interface TeamMember {
   id: string;
@@ -125,13 +126,17 @@ interface TeamHubViewProps {
 }
 
 export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin', onBack }) => {
+  const access = getRoleAccess(currentRole);
+  const canRemove = access.canRemoveCompanyMember;
   const isOwner = currentRole === 'admin';
   const [team, setTeam] = useState<TeamMember[]>(INITIAL_TEAM);
   const [filter, setFilter] = useState<FilterType>('All');
   const [search, setSearch] = useState('');
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('Action completed successfully!');
 
   // Invite Form State
   const [inviteName, setInviteName] = useState('');
@@ -185,17 +190,22 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
     setInviteName('');
     setInviteEmail('');
     setInvitePhone('');
+    setToastMessage('Invitation sent successfully!');
     setShowSuccessToast(true);
     setTimeout(() => setShowSuccessToast(false), 3000);
   };
 
-  const handleRemoveMember = (memberId: string) => {
-    if (window.confirm('Are you sure you want to remove this team member from Lattice? This action cannot be undone.')) {
-      setTeam(prev => prev.filter(m => m.id !== memberId));
+  const confirmRemoveMember = () => {
+    if (!memberToRemove) return;
+    const removedName = memberToRemove.name;
+    setTeam(prev => prev.filter(m => m.id !== memberToRemove.id));
+    if (selectedMember?.id === memberToRemove.id) {
       setSelectedMember(null);
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
     }
+    setMemberToRemove(null);
+    setToastMessage(`${removedName} has been removed from the directory.`);
+    setShowSuccessToast(true);
+    setTimeout(() => setShowSuccessToast(false), 3500);
   };
 
   const handleMakeAdmin = (memberId: string, memberName: string) => {
@@ -205,9 +215,69 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
         : m
       ));
       setSelectedMember(prev => prev ? { ...prev, roleGroup: 'Owner', role: 'Company Administrator' } : null);
+      setToastMessage(`${memberName} promoted to Admin.`);
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
     }
+  };
+
+  const renderRemoveModal = () => {
+    if (!memberToRemove) return null;
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-xs animate-fade-in font-sans">
+        <div className="w-full max-w-[390px] bg-white border border-[#E2E8F0] rounded-3xl p-5 shadow-2xl flex flex-col gap-4 text-[#0F172A]">
+          {/* Header */}
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
+              <AlertTriangle className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-base font-bold text-[#0F172A] tracking-tight">Remove Team Member?</h3>
+              <p className="text-xs text-[#64748B] mt-0.5 leading-relaxed">
+                Are you sure you want to remove this member from the company directory?
+              </p>
+            </div>
+          </div>
+
+          {/* Member Snapshot Card */}
+          <div className="p-3 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-3">
+            <img
+              src={memberToRemove.avatar}
+              alt={memberToRemove.name}
+              className="w-11 h-11 rounded-xl object-cover border border-[#E2E8F0] shrink-0"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold text-[#0F172A] truncate">{memberToRemove.name}</p>
+              <p className="text-[11px] text-[#1677FF] font-semibold truncate">{memberToRemove.designation || memberToRemove.role}</p>
+              <p className="text-[10px] text-[#64748B] truncate">{memberToRemove.department} · {memberToRemove.email}</p>
+            </div>
+          </div>
+
+          <div className="p-2.5 rounded-xl bg-rose-50/80 border border-rose-100 text-[11px] text-rose-700 leading-snug">
+            ⚠️ <strong>Revocation Notice:</strong> This member will lose immediate access to company projects, budgets, and operational logs.
+          </div>
+
+          {/* Actions */}
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => setMemberToRemove(null)}
+              className="h-10 rounded-xl bg-white border border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A] font-bold text-xs transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={confirmRemoveMember}
+              className="h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-98"
+            >
+              <UserMinus className="w-3.5 h-3.5" />
+              <span>Confirm Removal</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
   if (selectedMember) {
     return (
@@ -387,7 +457,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
         </div>
 
         {/* Owner-Only Admin Actions */}
-        {isOwner && selectedMember.id !== 't-1' && (
+        {canRemove && selectedMember.id !== 't-1' && (
           <div className="flex gap-2 pt-2">
             {selectedMember.roleGroup !== 'Owner' && (
               <button
@@ -399,14 +469,24 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
               </button>
             )}
             <button
-              onClick={() => handleRemoveMember(selectedMember.id)}
+              onClick={() => setMemberToRemove(selectedMember)}
               className="flex-1 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-rose-100 transition-colors cursor-pointer"
             >
               <UserMinus className="w-3.5 h-3.5" />
-              <span>Remove</span>
+              <span>Remove from Company</span>
             </button>
           </div>
         )}
+
+        {isOwner && selectedMember.id === 't-1' && (
+          <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 flex items-center gap-2.5 text-xs text-amber-800">
+            <Crown className="w-4 h-4 text-amber-600 shrink-0" />
+            <span className="font-medium">Primary Company Owner · Account protected from removal.</span>
+          </div>
+        )}
+
+        {/* In-App Removal Confirmation Modal */}
+        {renderRemoveModal()}
       </div>
     );
   }
@@ -443,7 +523,7 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
       {showSuccessToast && (
         <div className="p-3 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/30 text-[#1677FF] text-xs font-semibold flex items-center gap-2 animate-fade-in shadow-xs">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-          <span>Action completed successfully!</span>
+          <span>{toastMessage}</span>
         </div>
       )}
 
@@ -564,39 +644,64 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
 
       {/* ── Team Member List Group (No Card Bloat) ── */}
       <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-xs overflow-hidden divide-y divide-[#F1F5F9]">
-        {filtered.map(member => (
-          <div
-            key={member.id}
-            onClick={() => setSelectedMember(member)}
-            className="p-3.5 hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F1F5F9] flex items-center justify-between gap-3"
-          >
-            {/* Left: Avatar + Name & Role */}
-            <div className="flex items-center gap-3 min-w-0 flex-1">
-              <img
-                src={member.avatar}
-                alt={member.name}
-                className="w-10 h-10 rounded-full object-cover border border-[#E2E8F0] flex-shrink-0"
-              />
+        {filtered.map(member => {
+          const isRemovable = canRemove && member.id !== 't-1';
+          return (
+            <div
+              key={member.id}
+              onClick={() => setSelectedMember(member)}
+              className="p-3.5 hover:bg-[#F8FAFC] transition-colors cursor-pointer group active:bg-[#F1F5F9] flex items-center justify-between gap-3"
+            >
+              {/* Left: Avatar + Name & Role */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <img
+                  src={member.avatar}
+                  alt={member.name}
+                  className="w-10 h-10 rounded-full object-cover border border-[#E2E8F0] flex-shrink-0"
+                />
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="text-xs sm:text-sm font-bold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">
-                    {member.name}
-                  </span>
-                  {member.roleGroup === 'Owner' && (
-                    <Crown className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                  )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span className="text-xs sm:text-sm font-bold text-[#0F172A] truncate group-hover:text-[#1677FF] transition-colors">
+                      {member.name}
+                    </span>
+                    {member.roleGroup === 'Owner' && (
+                      <Crown className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                    )}
+                  </div>
+
+                  <p className="text-xs text-[#64748B] font-medium truncate leading-tight">
+                    {member.role}
+                  </p>
                 </div>
+              </div>
 
-                <p className="text-xs text-[#64748B] font-medium truncate leading-tight">
-                  {member.role}
-                </p>
+              {/* Right: Quick Remove Action for Owner + Details Chevron */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {canRemove && member.id === 't-1' && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200/70">
+                    Owner
+                  </span>
+                )}
+                {isRemovable && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMemberToRemove(member);
+                    }}
+                    className="h-7 px-2.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95 shadow-2xs hover:shadow-xs"
+                    title={`Remove ${member.name} from directory`}
+                  >
+                    <UserMinus className="w-3 h-3 stroke-[2.2]" />
+                    <span>Remove</span>
+                  </button>
+                )}
+                <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-all" />
               </div>
             </div>
-
-            <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] transition-all flex-shrink-0" />
-          </div>
-        ))}
+          );
+        })}
 
         {filtered.length === 0 && (
           <div className="py-12 flex flex-col items-center gap-2 text-[#64748B] p-8">
@@ -728,6 +833,9 @@ export const TeamHubView: React.FC<TeamHubViewProps> = ({ currentRole = 'admin',
           </div>
         </div>
       )}
+
+      {/* ─── REMOVE CONFIRMATION MODAL ─── */}
+      {renderRemoveModal()}
 
     </div>
   );

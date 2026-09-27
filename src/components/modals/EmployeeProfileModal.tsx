@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   X, Phone, Mail, Building2, ShieldCheck, MapPin, CheckCircle2, 
-  Clock, HardHat, Calendar, MessageSquare, ExternalLink, Briefcase
+  Clock, HardHat, Calendar, MessageSquare, ExternalLink, Briefcase, UserMinus
 } from 'lucide-react';
 
 export interface EmployeeProfileData {
@@ -25,13 +25,17 @@ interface EmployeeProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigateToTeam?: () => void;
+  canRemove?: boolean;
+  onRemove?: (memberId: string) => void;
 }
 
 export const EmployeeProfileModal: React.FC<EmployeeProfileModalProps> = ({
   member,
   isOpen,
   onClose,
-  onNavigateToTeam
+  onNavigateToTeam,
+  canRemove,
+  onRemove
 }) => {
   if (!isOpen || !member) return null;
 
@@ -196,6 +200,23 @@ export const EmployeeProfileModal: React.FC<EmployeeProfileModalProps> = ({
           >
             <span>View in Project Team Directory</span>
             <ExternalLink className="w-3.5 h-3.5" />
+          </button>
+        )}
+
+        {/* Remove Member Action (Owner Only) */}
+        {canRemove && member.id !== 't-1' && member.name !== 'Avery Scott' && onRemove && (
+          <button
+            type="button"
+            onClick={() => {
+              if (window.confirm(`Are you sure you want to remove ${member.name} from the company directory?`)) {
+                onRemove(member.id);
+                onClose();
+              }
+            }}
+            className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+          >
+            <UserMinus className="w-3.5 h-3.5" />
+            <span>Remove from Directory</span>
           </button>
         )}
       </div>
