@@ -431,39 +431,39 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
         </div>
       )}
 
-      {/* ── 6. Punch Item Details Modal (Full info, progress changer, delete) ── */}
+      {/* ── 6. Punch Item Details Modal (Clean 390px width, uncluttered, normal info) ── */}
       {selectedPunchItem && (
         <div 
           onClick={() => {
             setSelectedPunchItem(null);
             setIsConfirmingDelete(false);
           }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fade-in"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 animate-fade-in"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up border border-[#E2E8F0]"
+            className="bg-white rounded-3xl w-full max-w-[390px] max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up border border-[#E2E8F0]"
           >
-            {/* Modal Sticky Header */}
-            <div className="p-4 sm:p-5 border-b border-[#F1F5F9] flex items-start justify-between gap-3 bg-white sticky top-0 z-10">
+            {/* Modal Header */}
+            <div className="px-4 py-3.5 border-b border-[#F1F5F9] flex items-start justify-between gap-2.5 bg-white sticky top-0 z-10">
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}>
+                <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}>
                     {selectedPunchItem.status}
                   </span>
                   {selectedPunchItem.priority && (
-                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                       selectedPunchItem.priority === 'High' || selectedPunchItem.priority === 'Critical'
                         ? 'bg-rose-50 text-rose-600 border border-rose-200'
                         : selectedPunchItem.priority === 'Medium'
                         ? 'bg-amber-50 text-amber-600 border border-amber-200'
                         : 'bg-slate-100 text-slate-600 border border-slate-200'
                     }`}>
-                      {selectedPunchItem.priority} Priority
+                      {selectedPunchItem.priority}
                     </span>
                   )}
                 </div>
-                <h2 className="text-base sm:text-lg font-bold text-[#0F172A] leading-snug">
+                <h2 className="text-sm sm:text-base font-bold text-[#0F172A] leading-snug">
                   {selectedPunchItem.title}
                 </h2>
               </div>
@@ -472,97 +472,81 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                   setSelectedPunchItem(null);
                   setIsConfirmingDelete(false);
                 }}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer transition-colors shrink-0 mt-0.5"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
             {/* Modal Scrollable Body */}
-            <div className="p-4 sm:p-5 overflow-y-auto flex flex-col gap-4 text-xs sm:text-sm">
+            <div className="px-4 py-3.5 overflow-y-auto flex flex-col gap-3.5 text-xs">
               
-              {/* Evidence Photos Section */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] flex items-center gap-1.5">
-                    <Camera className="w-3.5 h-3.5 text-[#1677FF]" />
-                    <span>Photo Evidence ({selectedPunchItem.photos?.length || 0})</span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Upload Photo</span>
-                  </button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleAttachPhoto}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                </div>
+              {/* Photo Evidence (if any, clean and compact) */}
+              {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 ? (
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-[#64748B] font-semibold flex items-center gap-1">
+                      <Camera className="w-3 h-3 text-[#1677FF]" />
+                      Evidence ({selectedPunchItem.photos.length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-[#1677FF] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" />
+                      Add Photo
+                    </button>
+                  </div>
 
-                {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-2 gap-2">
                     {selectedPunchItem.photos.map((url, idx) => (
-                      <div key={idx} className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] group h-36 bg-slate-900 shadow-2xs">
+                      <div key={idx} className="relative rounded-xl overflow-hidden border border-[#E2E8F0] group h-28 bg-slate-900 shadow-2xs">
                         <img
                           src={url}
                           alt={`Evidence ${idx + 1}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
                           onClick={() => setPreviewPhoto({ url, title: selectedPunchItem.title, location: selectedPunchItem.location || '' })}
                         />
-                        <div className="absolute top-2 right-2 flex items-center gap-1">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemovePhoto(idx);
-                            }}
-                            className="w-7 h-7 rounded-lg bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer"
-                            title="Remove photo"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                        <div 
-                          onClick={() => setPreviewPhoto({ url, title: selectedPunchItem.title, location: selectedPunchItem.location || '' })}
-                          className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer pointer-events-none"
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemovePhoto(idx);
+                          }}
+                          className="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer"
+                          title="Remove photo"
                         >
-                          <span className="px-2.5 py-1 rounded-lg bg-black/70 text-white text-[11px] font-semibold flex items-center gap-1 backdrop-blur-xs">
-                            <Eye className="w-3 h-3" /> View Photo
-                          </span>
-                        </div>
+                          <Trash2 className="w-3 h-3" />
+                        </button>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="p-5 rounded-2xl border-2 border-dashed border-[#CBD5E1] bg-slate-50/60 hover:bg-blue-50/40 hover:border-[#1677FF]/50 transition-colors flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-white shadow-2xs border border-[#E2E8F0] flex items-center justify-center text-[#1677FF]">
-                      <Camera className="w-5 h-5" />
-                    </div>
-                    <span className="text-xs font-bold text-[#0F172A]">No photo attached</span>
-                    <span className="text-[11px] text-[#64748B]">Click here to upload defect photo or site proof</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Progress & Status Switcher Section */}
-              <div className="p-3.5 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] flex flex-col gap-2.5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-xs font-bold text-[#0F172A] block">Change Progress / Status</span>
-                    <span className="text-[11px] text-[#64748B]">Tap any stage to update this item's workflow</span>
-                  </div>
-                  <span className={`w-2.5 h-2.5 rounded-full ${STATUS_CONFIG[selectedPunchItem.status]?.dot}`} />
                 </div>
+              ) : (
+                <button 
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full py-2.5 px-3 rounded-xl border border-dashed border-[#CBD5E1] bg-slate-50/70 hover:bg-blue-50/50 hover:border-[#1677FF]/40 transition-colors flex items-center justify-center gap-2 cursor-pointer text-[#64748B]"
+                >
+                  <Camera className="w-4 h-4 text-[#1677FF]" />
+                  <span className="text-xs font-semibold text-[#0F172A]">Attach Photo Evidence</span>
+                </button>
+              )}
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleAttachPhoto}
+                accept="image/*"
+                className="hidden"
+              />
+
+              {/* Progress / Status Switcher (Minimal clean horizontal pill selector, no huge outer box!) */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                  Workflow Progress
+                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {(['Open', 'In Progress', 'Resolved', 'Verified', 'Closed'] as PunchStatus[]).map((st) => {
                     const isSelected = selectedPunchItem.status === st;
                     const stConfig = STATUS_CONFIG[st];
@@ -571,118 +555,103 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                       <button
                         key={st}
                         onClick={() => handleStatusChange(selectedPunchItem.id, st)}
-                        className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
+                        className={`px-2.5 py-1.5 rounded-lg border text-xs transition-all cursor-pointer flex items-center gap-1.5 ${
                           isSelected
-                            ? `${stConfig.pillBg} ${stConfig.pillText} ${stConfig.pillBorder} shadow-2xs ring-2 ring-[#1677FF]/20 font-bold`
-                            : 'bg-white border-[#E2E8F0] text-[#475569] hover:bg-slate-50'
+                            ? `${stConfig.pillBg} ${stConfig.pillText} ${stConfig.pillBorder} font-bold shadow-2xs ring-1 ring-[#1677FF]/30`
+                            : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-slate-50 font-medium'
                         }`}
                       >
-                        <div className="flex items-center gap-1.5 truncate">
-                          <span className={`w-2 h-2 rounded-full shrink-0 ${stConfig.dot}`} />
-                          <span className="truncate">{st}</span>
-                        </div>
-                        {isSelected && <Check className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />}
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${stConfig.dot}`} />
+                        <span>{st}</span>
+                        {isSelected && <Check className="w-3 h-3 stroke-[2.5]" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Full Description Box */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">Description & Notes</label>
-                <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] text-[#334155] leading-relaxed text-xs sm:text-sm">
-                  {selectedPunchItem.description || 'No detailed description provided for this punch item.'}
-                </div>
+              {/* Description & Notes (Clean typography, no bulky box!) */}
+              <div className="flex flex-col gap-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                  Description & Notes
+                </span>
+                <p className="text-xs text-[#334155] leading-relaxed">
+                  {selectedPunchItem.description || 'No detailed description provided.'}
+                </p>
+                {selectedPunchItem.resolutionNote && (
+                  <p className="text-xs text-emerald-800 bg-emerald-50/70 p-2 rounded-lg border border-emerald-200 mt-1">
+                    <span className="font-bold">Resolution: </span>{selectedPunchItem.resolutionNote}
+                  </p>
+                )}
               </div>
 
-              {/* Resolution Note if present */}
-              {selectedPunchItem.resolutionNote && (
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Resolution Notes</label>
-                  <div className="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200 text-emerald-900 leading-relaxed text-xs sm:text-sm">
-                    {selectedPunchItem.resolutionNote}
-                  </div>
+              {/* Item Information: Clean Key-Value List with Subtle Dividers (NO CLUNKY BOXES!) */}
+              <div className="pt-2 border-t border-[#F1F5F9] flex flex-col gap-2 text-xs">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                  Details
+                </span>
+
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
+                    <MapPin className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Location</span>
+                  </span>
+                  <span className="font-semibold text-[#0F172A] truncate text-right">
+                    {selectedPunchItem.location || 'Site Wide'}
+                  </span>
                 </div>
-              )}
 
-              {/* Item Information Grid */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">Item Information</label>
-                <div className="grid grid-cols-2 gap-2.5">
-                  
-                  {/* Location */}
-                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
-                    <MapPin className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-semibold text-[#64748B] block">Location</span>
-                      <span className="text-xs font-bold text-[#0F172A] truncate block">
-                        {selectedPunchItem.location || 'Site Wide'}
-                      </span>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
+                    <Building2 className="w-3.5 h-3.5 text-[#1677FF]" />
+                    <span>Subcontractor</span>
+                  </span>
+                  <span className="font-semibold text-[#0F172A] truncate text-right">
+                    {selectedPunchItem.assignedTo?.trade || 'General Contractor'}
+                  </span>
+                </div>
 
-                  {/* Subcontractor / Trade */}
-                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
-                    <Building2 className="w-4 h-4 text-[#1677FF] shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-semibold text-[#64748B] block">Subcontractor</span>
-                      <span className="text-xs font-bold text-[#0F172A] truncate block">
-                        {selectedPunchItem.assignedTo?.trade || 'General Contractor'}
-                      </span>
-                      {selectedPunchItem.assignedTo?.name && (
-                        <span className="text-[10px] text-[#64748B] truncate block">
-                          {selectedPunchItem.assignedTo.name}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Reported Date</span>
+                  </span>
+                  <span className="font-semibold text-[#0F172A] text-right">
+                    {selectedPunchItem.createdDate || 'Apr 28, 2025'}
+                  </span>
+                </div>
 
-                  {/* Date Reported */}
-                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
-                    <Calendar className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-semibold text-[#64748B] block">Reported Date</span>
-                      <span className="text-xs font-bold text-[#0F172A] truncate block">
-                        {selectedPunchItem.createdDate || 'Apr 28, 2025'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Due Date */}
-                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
-                    <Clock className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-semibold text-[#64748B] block">Due Date</span>
-                      <span className="text-xs font-bold text-[#0F172A] truncate block">
-                        {selectedPunchItem.dueDate || 'Prior to Inspection'}
-                      </span>
-                    </div>
-                  </div>
-
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
+                    <Clock className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Due Date</span>
+                  </span>
+                  <span className="font-semibold text-[#0F172A] text-right">
+                    {selectedPunchItem.dueDate || 'Prior to Inspection'}
+                  </span>
                 </div>
               </div>
 
             </div>
 
-            {/* Modal Footer Actions: Delete & Close */}
-            <div className="p-4 sm:p-5 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-between gap-3">
+            {/* Modal Footer Actions: Delete & Done */}
+            <div className="p-3.5 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-between gap-2.5">
               {isConfirmingDelete ? (
                 <div className="flex items-center gap-2 w-full justify-between animate-fade-in">
-                  <span className="text-xs font-semibold text-rose-600">Delete this item permanently?</span>
+                  <span className="text-xs font-semibold text-rose-600">Delete this item?</span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setIsConfirmingDelete(false)}
-                      className="px-3 py-1.5 rounded-xl border border-[#E2E8F0] bg-white text-xs font-semibold text-[#475569] hover:bg-slate-50 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-white text-xs font-medium text-[#475569] hover:bg-slate-50 cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={() => handleDeletePunch(selectedPunchItem.id)}
-                      className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold flex items-center gap-1 shadow-2xs cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Confirm Delete</span>
+                      <span>Confirm</span>
                     </button>
                   </div>
                 </div>
@@ -690,10 +659,10 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 <>
                   <button
                     onClick={() => setIsConfirmingDelete(true)}
-                    className="px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <Trash2 className="w-4 h-4" />
-                    <span>Delete Item</span>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete</span>
                   </button>
 
                   <button
@@ -701,7 +670,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                       setSelectedPunchItem(null);
                       setIsConfirmingDelete(false);
                     }}
-                    className="px-5 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+                    className="px-5 py-1.5 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold transition-all cursor-pointer shadow-2xs"
                   >
                     Done
                   </button>
