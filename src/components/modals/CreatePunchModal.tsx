@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Project, PunchItem, Priority, Subcontractor } from '../../types';
-import { X, Camera, CheckCircle2, Plus, LocateFixed, UploadCloud, ChevronDown } from 'lucide-react';
+import { X, Camera, CheckCircle2, Plus, LocateFixed, ChevronDown } from 'lucide-react';
 
 interface CreatePunchModalProps {
   isOpen: boolean;
@@ -30,6 +30,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   const [dueDate, setDueDate] = useState('');
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
   const [isTracking, setIsTracking] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Synchronize project selection
@@ -89,10 +90,9 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const processFiles = (files: FileList | File[]) => {
     Array.from(files).forEach((file) => {
+      if (!file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = (ev) => {
         const dataUrl = ev.target?.result as string;
@@ -105,15 +105,28 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const handleAddSamplePhoto = () => {
-    const samplePhotos = [
-      'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80'
-    ];
-    const nextPhoto = samplePhotos[uploadedPhotos.length % samplePhotos.length];
-    setUploadedPhotos((prev) => [...prev, nextPhoto]);
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processFiles(e.target.files);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
   };
 
   const handleRemovePhoto = (idx: number) => {
@@ -156,9 +169,17 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     onClose();
   };
 
+  const activeProjectName = projects.find(p => p.id === selectedProjectId)?.name || project?.name || 'Project';
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 font-sans animate-fade-in">
-      <div className="w-full max-w-[390px] mx-auto bg-white border border-[#DDE1E7] rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+    <div 
+      onClick={onClose}
+      className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 font-sans animate-fade-in"
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-[480px] mx-auto bg-white border border-[#E2E8F0] rounded-2xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up"
+      >
         
         {/* Hidden File Input for Multiple Photo Upload */}
         <input
@@ -171,17 +192,17 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
         />
 
         {/* Fixed Header */}
-        <div className="px-4 py-3 border-b border-[#EAEDF1] flex items-center justify-between shrink-0 bg-white">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center shrink-0">
+        <div className="px-5 py-3.5 border-b border-[#EAEDF1] flex items-center justify-between shrink-0 bg-white">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] border border-[#1677FF]/20 text-[#1677FF] flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-4 h-4" />
             </div>
             <div className="min-w-0">
               <h3 className="text-sm font-bold text-[#0F172A] leading-tight truncate">
                 New Punch Item
               </h3>
-              <p className="text-[11px] text-[#64748B] font-medium truncate">
-                {projects.find(p => p.id === selectedProjectId)?.name || project?.name || 'Log quality defect'}
+              <p className="text-xs text-[#64748B] font-medium truncate mt-0.5">
+                {activeProjectName} · Quality Defect Notice
               </p>
             </div>
           </div>
@@ -189,7 +210,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-[#F2F2F7] hover:bg-[#EAEDF1] text-[#64748B] hover:text-[#0F172A] flex items-center justify-center transition-colors cursor-pointer shrink-0"
+            className="w-7 h-7 rounded-full bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] flex items-center justify-center transition-colors cursor-pointer shrink-0"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -197,42 +218,48 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
 
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
-          <div className="p-4 overflow-y-auto flex-1 flex flex-col gap-2.5 text-xs">
+          <div className="p-5 overflow-y-auto flex-1 flex flex-col gap-3.5 text-xs">
             
             {/* 1. Title * */}
-            <div className="flex flex-col gap-1">
-              <label className="font-semibold text-[#334155] text-[11px]">Title *</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-[#334155]">
+                Title <span className="text-rose-500 font-bold">*</span>
+              </label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Crack in concrete column"
-                className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#94A3B8]"
+                className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all placeholder:text-[#94A3B8]"
               />
             </div>
 
             {/* 2. Project * */}
-            <div className="flex flex-col gap-1">
-              <label className="font-semibold text-[#334155] text-[11px]">Project *</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-[#334155]">
+                Project <span className="text-rose-500 font-bold">*</span>
+              </label>
               <div className="relative">
                 <select
                   value={selectedProjectId}
                   onChange={(e) => setSelectedProjectId(e.target.value)}
-                  className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 pr-8 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors appearance-none cursor-pointer"
+                  className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 pr-8 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all appearance-none cursor-pointer"
                 >
                   {projects.map((p) => (
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />
+                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-3 pointer-events-none" />
               </div>
             </div>
 
             {/* 3. Subcontractor / Trade * & Priority (2 columns) */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#334155] text-[11px]">Subcontractor / Trade *</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <label className="text-xs font-semibold text-[#334155] truncate">
+                  Subcontractor / Trade <span className="text-rose-500 font-bold">*</span>
+                </label>
                 <div className="relative">
                   <select
                     value={isCustomTrade ? '__custom__' : trade}
@@ -244,164 +271,192 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
                         setTrade(e.target.value);
                       }
                     }}
-                    className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 pr-7 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors appearance-none cursor-pointer truncate"
+                    className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 pr-8 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all appearance-none cursor-pointer truncate"
                   >
                     {tradeOptions.map((t) => (
                       <option key={t} value={t}>{t}</option>
                     ))}
                     <option value="__custom__">+ Other (Type custom)...</option>
                   </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2.5 pointer-events-none" />
+                  <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-3 pointer-events-none" />
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#334155] text-[11px]">Priority</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-[#334155]">Priority</label>
                 <div className="relative">
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as Priority)}
-                    className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 pr-7 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors appearance-none cursor-pointer"
+                    className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 pr-8 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all appearance-none cursor-pointer"
                   >
                     {(['Low', 'Medium', 'High', 'Critical'] as Priority[]).map((p) => (
                       <option key={p} value={p}>{p}</option>
                     ))}
                   </select>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2.5 pointer-events-none" />
+                  <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-3 pointer-events-none" />
                 </div>
               </div>
             </div>
 
             {/* Custom Subcontractor / Trade Input (if selected) */}
             {isCustomTrade && (
-              <div className="flex flex-col gap-1 animate-fade-in">
-                <label className="font-semibold text-[#1677FF] text-[11px]">Type Subcontractor / Trade Name</label>
+              <div className="flex flex-col gap-1.5 animate-fade-in">
+                <label className="text-xs font-semibold text-[#1677FF]">
+                  Custom Subcontractor / Trade Name <span className="text-rose-500 font-bold">*</span>
+                </label>
                 <input
                   type="text"
                   required
                   value={customTrade}
                   onChange={(e) => setCustomTrade(e.target.value)}
                   placeholder="e.g. Acme Tile & Masonry"
-                  className="w-full h-8.5 bg-white border border-[#1677FF] rounded-lg px-2.5 text-xs font-medium text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#1677FF] transition-colors"
+                  className="w-full h-10 bg-white border border-[#1677FF] rounded-xl px-3 text-xs font-medium text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#1677FF]/20 transition-all"
                 />
               </div>
             )}
 
             {/* 4. Location & Due Date (2 columns) */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#334155] text-[11px]">Location</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-[#334155]">Location</label>
                 <div className="relative flex items-center">
                   <input
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     placeholder="e.g. Level 3 – Grid A-4"
-                    className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg pl-2 pr-6 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors placeholder:text-[#94A3B8]"
+                    className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl pl-3 pr-9 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all placeholder:text-[#94A3B8]"
                   />
                   <button
                     type="button"
                     onClick={handleTrackLocation}
-                    className={`absolute right-1.5 text-[#1677FF] hover:text-[#0958D9] cursor-pointer ${
+                    className={`absolute right-2.5 p-1 text-[#1677FF] hover:text-[#0958D9] cursor-pointer rounded-md hover:bg-[#F0F7FF] transition-colors ${
                       isTracking ? 'animate-spin' : ''
                     }`}
-                    title="Detect location"
+                    title="Detect GPS location"
                   >
-                    <LocateFixed className="w-3 h-3" />
+                    <LocateFixed className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#334155] text-[11px]">Due Date</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-[#334155]">Due Date</label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors"
+                  className="w-full h-10 bg-white border border-[#E2E8F0] rounded-xl px-3 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all"
                 />
               </div>
             </div>
 
             {/* 5. Description */}
-            <div className="flex flex-col gap-1">
-              <label className="font-semibold text-[#334155] text-[11px]">Description</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-[#334155]">Description / Rectification Notes</label>
               <textarea
                 rows={2}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe issue, location details, repair requirements..."
-                className="w-full p-2 bg-white border border-[#DDE1E7] rounded-lg text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors resize-none placeholder:text-[#94A3B8]"
+                className="w-full p-3 bg-white border border-[#E2E8F0] rounded-xl text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/15 transition-all resize-none placeholder:text-[#94A3B8]"
               />
             </div>
 
-            {/* 6. Photos (Multiple) */}
-            <div className="flex flex-col gap-1.5">
+            {/* 6. Photos (Unified Multi-Photo Upload) */}
+            <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <label className="font-semibold text-[#334155] text-[11px]">
-                  Evidence Photos {uploadedPhotos.length > 0 ? `(${uploadedPhotos.length})` : '(Multiple)'}
+                <label className="text-xs font-semibold text-[#334155]">
+                  Evidence Photos {uploadedPhotos.length > 0 && <span className="text-[#1677FF] font-bold">({uploadedPhotos.length})</span>}
                 </label>
-                <span className="text-[10px] text-[#64748B]">Attach one or more photos</span>
+                <span className="text-[11px] text-[#64748B]">
+                  {uploadedPhotos.length > 0 ? 'Multiple photos attached' : 'Optional · Attach defect images'}
+                </span>
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
+              {/* If no photos uploaded yet: Single clean dashed upload box */}
+              {uploadedPhotos.length === 0 ? (
+                <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="h-8.5 rounded-lg bg-[#F8FAFC] border border-dashed border-[#CBD5E1] hover:border-[#1677FF] flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs font-semibold text-[#475569] hover:text-[#1677FF]"
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-xl py-3.5 px-4 flex items-center justify-center gap-3 cursor-pointer transition-all ${
+                    isDragging
+                      ? 'border-[#1677FF] bg-[#F0F7FF]'
+                      : 'border-[#CBD5E1] hover:border-[#1677FF] bg-[#F8FAFC] hover:bg-[#F0F7FF]/60'
+                  }`}
                 >
-                  <UploadCloud className="w-3.5 h-3.5 text-[#1677FF]" />
-                  <span>Choose Files</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleAddSamplePhoto}
-                  className="h-8.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-slate-100 flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-xs font-medium text-[#64748B]"
+                  <div className="w-8 h-8 rounded-lg bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center shrink-0">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                  <div className="text-left">
+                    <span className="text-xs font-semibold text-[#1E293B] block">
+                      Click to upload or drag photos here
+                    </span>
+                    <span className="text-[11px] text-[#64748B] block mt-0.5">
+                      Select one or multiple photos (JPG, PNG, WEBP)
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                /* When photos are uploaded: Clean thumbnail gallery with inline Add tile */
+                <div 
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className="flex items-center gap-2.5 flex-wrap p-2.5 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]"
                 >
-                  <Camera className="w-3 h-3 text-[#64748B]" />
-                  <span>+ Sample Pic</span>
-                </button>
-              </div>
-
-              {/* Uploaded Thumbnails */}
-              {uploadedPhotos.length > 0 && (
-                <div className="flex items-center gap-2 flex-wrap pt-1">
                   {uploadedPhotos.map((url, idx) => (
-                    <div key={idx} className="relative group w-12 h-12 rounded-lg overflow-hidden border border-[#E2E8F0] bg-slate-900">
+                    <div key={idx} className="relative group w-14 h-14 rounded-lg overflow-hidden border border-[#CBD5E1] bg-slate-900 shrink-0 shadow-xs">
                       <img
                         src={url}
                         alt={`evidence-${idx}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform group-hover:scale-105"
                       />
                       <button
                         type="button"
-                        onClick={() => handleRemovePhoto(idx)}
-                        className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-xs hover:bg-rose-700 transition-colors cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemovePhoto(idx);
+                        }}
+                        className="absolute top-1 right-1 w-4 h-4 rounded-full bg-black/70 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer shadow-xs"
                         title="Remove photo"
                       >
-                        <X className="w-2.5 h-2.5 stroke-[3]" />
+                        <X className="w-2.5 h-2.5 stroke-[2.5]" />
                       </button>
                     </div>
                   ))}
+
+                  {/* Clean Inline + Add More Tile */}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-14 h-14 rounded-lg border-2 border-dashed border-[#CBD5E1] hover:border-[#1677FF] bg-white hover:bg-[#F0F7FF] flex flex-col items-center justify-center gap-0.5 text-[#64748B] hover:text-[#1677FF] transition-all cursor-pointer shrink-0"
+                    title="Add more photos"
+                  >
+                    <Plus className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-[9px] font-bold">Add</span>
+                  </button>
                 </div>
               )}
             </div>
 
           </div>
 
-          {/* Fixed Footer: Always pinned and 100% visible, never cut off */}
-          <div className="px-4 py-3 border-t border-[#EAEDF1] bg-[#F8FAFC] shrink-0 grid grid-cols-2 gap-2">
+          {/* Fixed Footer: Pinned at bottom with clear visual hierarchy */}
+          <div className="px-5 py-3.5 border-t border-[#EAEDF1] bg-[#F8FAFC] shrink-0 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={onClose}
-              className="w-full h-8.5 rounded-lg bg-white border border-[#DDE1E7] hover:bg-slate-50 text-[#475569] text-xs font-semibold transition-all cursor-pointer"
+              className="h-9 px-4 rounded-xl text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#E2E8F0]/60 transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="w-full h-8.5 rounded-lg bg-[#1677FF] hover:bg-[#0958D9] text-white text-xs font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="h-9 px-5 rounded-xl bg-[#1677FF] hover:bg-[#0F5FD7] text-white text-xs font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Create Item</span>
@@ -413,3 +468,4 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     </div>
   );
 };
+
