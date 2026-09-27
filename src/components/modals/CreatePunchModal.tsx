@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Project, PunchItem, Priority } from '../../types';
+import { Project, PunchItem, Priority, Subcontractor } from '../../types';
 import { X, Camera, CheckCircle2, Plus, LocateFixed, UploadCloud, ChevronDown } from 'lucide-react';
 
 interface CreatePunchModalProps {
   isOpen: boolean;
   projects?: Project[];
   project?: Project | null;
+  subcontractors?: Subcontractor[];
   onClose: () => void;
   onCreate: (item: Partial<PunchItem>) => void;
 }
@@ -14,6 +15,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   isOpen,
   projects = [],
   project,
+  subcontractors = [],
   onClose,
   onCreate
 }) => {
@@ -21,6 +23,8 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   const [selectedProjectId, setSelectedProjectId] = useState(project?.id || projects[0]?.id || 'proj-1');
   const [description, setDescription] = useState('');
   const [trade, setTrade] = useState('Concrete Solutions Inc.');
+  const [customTrade, setCustomTrade] = useState('');
+  const [isCustomTrade, setIsCustomTrade] = useState(false);
   const [priority, setPriority] = useState<Priority>('Medium');
   const [location, setLocation] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -28,6 +32,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
   const [isTracking, setIsTracking] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Synchronize project selection
   useEffect(() => {
     if (project?.id) {
       setSelectedProjectId(project.id);
@@ -35,6 +40,30 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
       setSelectedProjectId(projects[0].id);
     }
   }, [project, projects, isOpen]);
+
+  // Dynamically compute trade options from selected project and subcontractors directory
+  const projectSubcontractors = subcontractors
+    .filter(s => s.activeProjects?.includes(selectedProjectId))
+    .map(s => s.companyName);
+
+  const allSubcontractorNames = subcontractors.map(s => s.companyName);
+
+  const defaultTrades = [
+    'Concrete Solutions Inc.',
+    'Craft Drywall LLC',
+    'Prime Finishes Co.',
+    'FlowTech Plumbing',
+    'Climate HVAC Mechanical',
+    'Apex Glazing & Waterproofing',
+    'ProShield Firestopping',
+    'Steel Masters LLC'
+  ];
+
+  const tradeOptions = Array.from(new Set([
+    ...projectSubcontractors,
+    ...allSubcontractorNames,
+    ...defaultTrades
+  ]));
 
   if (!isOpen) return null;
 
@@ -96,6 +125,7 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     if (!title.trim()) return;
 
     const matchedProject = projects.find((p) => p.id === selectedProjectId) || project;
+    const finalTrade = isCustomTrade && customTrade.trim() ? customTrade.trim() : trade;
 
     onCreate({
       title: title.trim(),
@@ -109,9 +139,9 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
       projectName: matchedProject?.name || 'Snell Isle Residence',
       assignedTo: {
         id: `sub-${Date.now()}`,
-        name: trade,
+        name: finalTrade,
         avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        trade
+        trade: finalTrade
       },
       photos: uploadedPhotos
     });
@@ -120,6 +150,8 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
     setDescription('');
     setLocation('');
     setDueDate('');
+    setCustomTrade('');
+    setIsCustomTrade(false);
     setUploadedPhotos([]);
     onClose();
   };
@@ -203,22 +235,21 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
                 <label className="font-semibold text-[#334155] text-[11px]">Subcontractor / Trade *</label>
                 <div className="relative">
                   <select
-                    value={trade}
-                    onChange={(e) => setTrade(e.target.value)}
+                    value={isCustomTrade ? '__custom__' : trade}
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setIsCustomTrade(true);
+                      } else {
+                        setIsCustomTrade(false);
+                        setTrade(e.target.value);
+                      }
+                    }}
                     className="w-full h-8.5 bg-white border border-[#DDE1E7] rounded-lg px-2.5 pr-7 text-xs font-medium text-[#0F172A] focus:outline-none focus:border-[#1677FF] transition-colors appearance-none cursor-pointer truncate"
                   >
-                    {[
-                      'Concrete Solutions Inc.',
-                      'Craft Drywall LLC',
-                      'Prime Finishes Co.',
-                      'FlowTech Plumbing',
-                      'Climate HVAC Mechanical',
-                      'Apex Glazing & Waterproofing',
-                      'ProShield Firestopping',
-                      'Steel Masters LLC'
-                    ].map((t) => (
+                    {tradeOptions.map((t) => (
                       <option key={t} value={t}>{t}</option>
                     ))}
+                    <option value="__custom__">+ Other (Type custom)...</option>
                   </select>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2.5 pointer-events-none" />
                 </div>
@@ -240,6 +271,21 @@ export const CreatePunchModal: React.FC<CreatePunchModalProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Custom Subcontractor / Trade Input (if selected) */}
+            {isCustomTrade && (
+              <div className="flex flex-col gap-1 animate-fade-in">
+                <label className="font-semibold text-[#1677FF] text-[11px]">Type Subcontractor / Trade Name</label>
+                <input
+                  type="text"
+                  required
+                  value={customTrade}
+                  onChange={(e) => setCustomTrade(e.target.value)}
+                  placeholder="e.g. Acme Tile & Masonry"
+                  className="w-full h-8.5 bg-white border border-[#1677FF] rounded-lg px-2.5 text-xs font-medium text-[#0F172A] focus:outline-none focus:ring-1 focus:ring-[#1677FF] transition-colors"
+                />
+              </div>
+            )}
 
             {/* 4. Location & Due Date (2 columns) */}
             <div className="grid grid-cols-2 gap-2">

@@ -1540,6 +1540,7 @@ export function App() {
         isOpen={isCreatePunchOpen}
         projects={visibleProjects}
         project={activeProject}
+        subcontractors={subcontractors}
         onClose={() => setIsCreatePunchOpen(false)}
         onCreate={handleCreatePunch}
       />
