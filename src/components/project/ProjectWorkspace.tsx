@@ -46,6 +46,7 @@ interface ProjectWorkspaceProps {
   onOpenPunch: (item: PunchItem) => void;
   onCreatePunch?: () => void;
   onUpdatePunchStatus?: (punchId: string, status: PunchStatus) => void;
+  onDeletePunch?: (punchId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: TaskStatus) => void;
   onUploadPhoto?: () => void;
   onPreviewPhoto: (photo: SitePhoto) => void;
@@ -92,6 +93,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
   onOpenPunch,
   onCreatePunch,
   onUpdatePunchStatus,
+  onDeletePunch,
   onUpdateTaskStatus,
   onUploadPhoto,
   onPreviewPhoto,
@@ -300,7 +302,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             punchItems={punchItems}
             onCreatePunch={onCreatePunch}
             onUpdatePunchStatus={onUpdatePunchStatus}
-            onDeletePunch={onUpdatePunchStatus ? (punchId) => onUpdatePunchStatus(punchId, 'Closed') : undefined}
+            onDeletePunch={onDeletePunch || (onUpdatePunchStatus ? (punchId) => onUpdatePunchStatus(punchId, 'Closed') : undefined)}
             onBack={() => setActiveTab('tasks')}
           />
         )}

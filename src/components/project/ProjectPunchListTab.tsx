@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Project, PunchItem, PunchStatus, Priority } from '../../types';
+import { Project, PunchItem, PunchStatus } from '../../types';
 import { 
   Plus, MapPin, Trash2, Folder, ChevronLeft, 
   Search, SlidersHorizontal, ChevronDown, ChevronRight, 
-  MoreVertical, Building2, Calendar, Eye, X, Check
+  Building2, Calendar, Eye, X, Check, AlertCircle, Clock, Camera
 } from 'lucide-react';
 
 interface ProjectPunchListTabProps {
@@ -20,6 +20,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   project,
   punchItems,
   onCreatePunch,
+  onOpenPunchDetails,
   onUpdatePunchStatus,
   onDeletePunch,
   onBack
@@ -27,15 +28,14 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   const [activeFilter, setActiveFilter] = useState<PunchStatus | 'All'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isProjectExpanded, setIsProjectExpanded] = useState(true);
-  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
-  const [activeStatusDropdownId, setActiveStatusDropdownId] = useState<string | null>(null);
+  const [selectedPunchItem, setSelectedPunchItem] = useState<PunchItem | null>(null);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<string>('All');
   const [selectedTrade, setSelectedTrade] = useState<string>('All');
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string; location: string } | null>(null);
 
-  const menuRef = useRef<HTMLDivElement>(null);
-  const statusMenuRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [items, setItems] = useState<PunchItem[]>(() => {
     return punchItems.filter(p => !p.projectId || p.projectId === project.id);
@@ -46,39 +46,49 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
     setItems(punchItems.filter(p => !p.projectId || p.projectId === project.id));
   }, [punchItems, project.id]);
 
-  // Close menus when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        !target ||
-        target.tagName === 'HTML' ||
-        target.closest?.('[id*="figma"], [class*="figma"], [id*="html-to-design"], [class*="html-to-design"], [id*="h2d"], [class*="h2d"], [data-figma], [data-h2d], [data-extension], [id*="extension"], [class*="extension"]')
-      ) {
-        return;
-      }
-      if (menuRef.current && !menuRef.current.contains(target)) {
-        setActiveMenuId(null);
-      }
-      if (statusMenuRef.current && !statusMenuRef.current.contains(target)) {
-        setActiveStatusDropdownId(null);
-      }
+  const handleAttachPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedPunchItem) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      const updatedPhotos = [...(selectedPunchItem.photos || []), dataUrl];
+      const updated = { ...selectedPunchItem, photos: updatedPhotos };
+      setSelectedPunchItem(updated);
+      setItems(prev => prev.map(p => p.id === updated.id ? updated : p));
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    reader.readAsDataURL(file);
+    // Reset file input
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleRemovePhoto = (photoIdx: number) => {
+    if (!selectedPunchItem) return;
+    const updatedPhotos = (selectedPunchItem.photos || []).filter((_, i) => i !== photoIdx);
+    const updated = { ...selectedPunchItem, photos: updatedPhotos };
+    setSelectedPunchItem(updated);
+    setItems(prev => prev.map(p => p.id === updated.id ? updated : p));
+  };
 
   const handleStatusChange = (punchId: string, newStatus: PunchStatus) => {
-    if (!onUpdatePunchStatus) return;
     setItems(prev => prev.map(p => p.id === punchId ? { ...p, status: newStatus } : p));
-    onUpdatePunchStatus(punchId, newStatus);
-    setActiveStatusDropdownId(null);
+    if (selectedPunchItem && selectedPunchItem.id === punchId) {
+      setSelectedPunchItem(prev => prev ? { ...prev, status: newStatus } : null);
+    }
+    if (onUpdatePunchStatus) {
+      onUpdatePunchStatus(punchId, newStatus);
+    }
   };
 
   const handleDeletePunch = (punchId: string) => {
     setItems(prev => prev.filter(p => p.id !== punchId));
-    if (onDeletePunch) onDeletePunch(punchId);
-    setActiveMenuId(null);
+    if (selectedPunchItem && selectedPunchItem.id === punchId) {
+      setSelectedPunchItem(null);
+    }
+    setIsConfirmingDelete(false);
+    if (onDeletePunch) {
+      onDeletePunch(punchId);
+    }
   };
 
   // Distinct trade list for filter
@@ -342,186 +352,78 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           ) : (
             filteredItems.map((item) => {
               const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
-              const photoUrl = item.photos && item.photos.length > 0 ? item.photos[0] : null;
+              const photoCount = item.photos ? item.photos.length : 0;
 
               return (
                 <div
                   key={item.id}
-                  className="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 transition-all flex flex-col gap-3 shadow-2xs group relative"
+                  onClick={() => {
+                    setSelectedPunchItem(item);
+                    if (onOpenPunchDetails) onOpenPunchDetails(item);
+                  }}
+                  className="py-2.5 px-3.5 sm:py-3 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/50 hover:shadow-xs transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99]"
                 >
-                  {/* Top Block: Photo on Left + Content on Right */}
-                  <div className="flex items-start gap-3 min-w-0">
-                    
-                    {/* Left Evidence Photo Thumbnail */}
-                    <div 
-                      onClick={() => photoUrl && setPreviewPhoto({ url: photoUrl, title: item.title, location: item.location || '' })}
-                      className={`relative w-[68px] h-[68px] sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-[#F1F5F9] border border-[#E2E8F0] flex-shrink-0 ${photoUrl ? 'cursor-pointer hover:opacity-95' : ''}`}
-                    >
-                      {photoUrl ? (
-                        <img
-                          src={photoUrl}
-                          alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-[#94A3B8] bg-slate-50 text-[11px] font-medium p-1 text-center">
-                          <span>No photo</span>
-                        </div>
-                      )}
+                  {/* Left: Status Icon Dot + Content */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    {/* Status Indicator Icon Badge */}
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${config.pillBg} ${config.pillBorder}`}>
+                      <span className={`w-2.5 h-2.5 rounded-full ${config.dot}`} />
                     </div>
 
-                    {/* Right Info Column */}
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                    {/* Title & Metadata */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <h2 className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors">
+                          {item.title}
+                        </h2>
+                        {(item.priority === 'High' || item.priority === 'Critical') && (
+                          <span className="px-1.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[9px] font-bold border border-rose-200 uppercase shrink-0">
+                            High
+                          </span>
+                        )}
+                      </div>
                       
-                      {/* Row 1: Status Dot + Title + Status Dropdown + 3 Dots + Chevron */}
-                      <div className="flex items-start justify-between gap-1.5">
-                        
-                        {/* Title with Status Dot */}
-                        <div className="flex items-start gap-1.5 min-w-0 flex-1">
-                          <span className={`w-2 h-2 rounded-full flex-shrink-0 mt-1.5 ${config.dot}`} />
-                          <h2 className="text-xs sm:text-[13px] font-bold text-[#0F172A] leading-snug line-clamp-2 group-hover:text-[#1677FF] transition-colors tracking-tight">
-                            {item.title}
-                          </h2>
-                        </div>
-
-                        {/* Action Controls */}
-                        <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
-                          
-                          {/* Status Pill Dropdown */}
-                          <div className="relative">
-                            {onUpdatePunchStatus ? (
-                            <button
-                              onClick={() => {
-                                setActiveStatusDropdownId(activeStatusDropdownId === item.id ? null : item.id);
-                                setActiveMenuId(null);
-                              }}
-                              className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 border cursor-pointer transition-all active:scale-95 ${config.pillBg} ${config.pillText} ${config.pillBorder}`}
-                            >
-                              <span>{item.status}</span>
-                              <ChevronDown className="w-3 h-3 stroke-[2.5]" />
-                            </button>
-                            ) : (
-                            <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
-                              {item.status}
-                            </span>
-                            )}
-
-                            {/* Dropdown Menu */}
-                            {activeStatusDropdownId === item.id && (
-                              <div
-                                ref={statusMenuRef}
-                                className="absolute right-0 top-full mt-1 w-32 bg-white rounded-xl border border-[#E2E8F0] shadow-lg py-1 z-30 animate-fade-in"
-                              >
-                                {STATUS_OPTIONS.map((st) => (
-                                  <button
-                                    key={st}
-                                    onClick={() => handleStatusChange(item.id, st)}
-                                    className={`w-full px-3 py-1.5 text-left text-xs font-medium flex items-center justify-between hover:bg-slate-50 cursor-pointer ${
-                                      item.status === st ? 'text-[#1677FF] font-bold bg-[#EAF3FF]/40' : 'text-[#0F172A]'
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <span className={`w-2 h-2 rounded-full ${STATUS_CONFIG[st].dot}`} />
-                                      <span>{st}</span>
-                                    </div>
-                                    {item.status === st && <Check className="w-3 h-3 text-[#1677FF]" />}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* 3-Dots Action Menu */}
-                          {(photoUrl || onDeletePunch) && (
-                          <div className="relative">
-                            <button
-                              onClick={() => {
-                                setActiveMenuId(activeMenuId === item.id ? null : item.id);
-                                setActiveStatusDropdownId(null);
-                              }}
-                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg border border-[#E2E8F0] hover:bg-slate-50 text-[#64748B] hover:text-[#0F172A] flex items-center justify-center cursor-pointer transition-colors shadow-2xs"
-                              title="More options"
-                            >
-                              <MoreVertical className="w-3 h-3 stroke-[2]" />
-                            </button>
-
-                            {activeMenuId === item.id && (
-                              <div
-                                ref={menuRef}
-                                className="absolute right-0 top-full mt-1 w-36 bg-white rounded-xl border border-[#E2E8F0] shadow-lg py-1 z-30 animate-fade-in"
-                              >
-                                {photoUrl && (
-                                  <button
-                                    onClick={() => {
-                                      setPreviewPhoto({ url: photoUrl, title: item.title, location: item.location || '' });
-                                      setActiveMenuId(null);
-                                    }}
-                                    className="w-full px-3 py-1.5 text-left text-xs font-medium text-[#0F172A] hover:bg-slate-50 flex items-center gap-2 cursor-pointer"
-                                  >
-                                    <Eye className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>View Photo</span>
-                                  </button>
-                                )}
-                                {onDeletePunch && (
-                                <button
-                                  onClick={() => handleDeletePunch(item.id)}
-                                  className="w-full px-3 py-1.5 text-left text-xs font-medium text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5 text-rose-500" />
-                                  <span>Delete Item</span>
-                                </button>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          )}
-
-                          {/* Chevron Right */}
-                          <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all flex-shrink-0 cursor-pointer" />
-                        </div>
-                      </div>
-
-                      {/* Row 2: Description Text */}
-                      {item.description && (
-                        <p className="text-xs text-[#64748B] leading-relaxed line-clamp-2 font-normal">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Row 3: Footer Metadata (Trade, Location, Date) */}
-                  <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-[#F1F5F9] text-xs text-[#64748B]">
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      {/* Subcontractor Trade */}
-                      <div className="flex items-center gap-1.5 min-w-0 max-w-[140px] sm:max-w-[180px]">
-                        <Building2 className="w-3.5 h-3.5 text-[#94A3B8] flex-shrink-0" />
-                        <span className="text-[11px] sm:text-xs text-[#475569] font-medium truncate">
-                          {item.assignedTo?.trade || 'General Contractor'}
-                        </span>
-                      </div>
-
-                      {/* Location */}
-                      {item.location && (
-                        <div className="flex items-center gap-1.5 min-w-0 max-w-[140px] sm:max-w-[180px]">
-                          <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
-                          <span className="text-[11px] sm:text-xs text-[#475569] font-medium truncate">
+                      <div className="flex items-center gap-1.5 text-[11px] text-[#64748B] truncate">
+                        {item.assignedTo?.trade && (
+                          <span className="truncate font-medium text-[#475569]">
+                            {item.assignedTo.trade}
+                          </span>
+                        )}
+                        {item.assignedTo?.trade && item.location && (
+                          <span className="text-slate-300">•</span>
+                        )}
+                        {item.location && (
+                          <span className="truncate flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-rose-500 shrink-0 inline" />
                             {item.location}
                           </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Date */}
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                      <Calendar className="w-3.5 h-3.5 text-[#94A3B8] flex-shrink-0" />
-                      <span className="text-[11px] sm:text-xs text-[#64748B] font-medium">
-                        {item.createdDate || 'Apr 28, 2025'}
-                      </span>
+                        )}
+                        {photoCount > 0 && (
+                          <>
+                            <span className="text-slate-300">•</span>
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.2 rounded-md shrink-0">
+                              <Camera className="w-2.5 h-2.5" />
+                              <span>{photoCount}</span>
+                            </span>
+                          </>
+                        )}
+                        {item.createdDate && (
+                          <>
+                            <span className="text-slate-300">•</span>
+                            <span className="shrink-0">{item.createdDate}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
 
+                  {/* Right: Clean Status Pill + Chevron Arrow */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
+                      {item.status}
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </div>
               );
             })
@@ -529,11 +431,293 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
         </div>
       )}
 
-      {/* ── Evidence Photo Preview Modal ── */}
+      {/* ── 6. Punch Item Details Modal (Full info, progress changer, delete) ── */}
+      {selectedPunchItem && (
+        <div 
+          onClick={() => {
+            setSelectedPunchItem(null);
+            setIsConfirmingDelete(false);
+          }}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fade-in"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up border border-[#E2E8F0]"
+          >
+            {/* Modal Sticky Header */}
+            <div className="p-4 sm:p-5 border-b border-[#F1F5F9] flex items-start justify-between gap-3 bg-white sticky top-0 z-10">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}>
+                    {selectedPunchItem.status}
+                  </span>
+                  {selectedPunchItem.priority && (
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                      selectedPunchItem.priority === 'High' || selectedPunchItem.priority === 'Critical'
+                        ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                        : selectedPunchItem.priority === 'Medium'
+                        ? 'bg-amber-50 text-amber-600 border border-amber-200'
+                        : 'bg-slate-100 text-slate-600 border border-slate-200'
+                    }`}>
+                      {selectedPunchItem.priority} Priority
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-base sm:text-lg font-bold text-[#0F172A] leading-snug">
+                  {selectedPunchItem.title}
+                </h2>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedPunchItem(null);
+                  setIsConfirmingDelete(false);
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer transition-colors shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Scrollable Body */}
+            <div className="p-4 sm:p-5 overflow-y-auto flex flex-col gap-4 text-xs sm:text-sm">
+              
+              {/* Evidence Photos Section */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5 text-[#1677FF]" />
+                    <span>Photo Evidence ({selectedPunchItem.photos?.length || 0})</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Upload Photo</span>
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleAttachPhoto}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                </div>
+
+                {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {selectedPunchItem.photos.map((url, idx) => (
+                      <div key={idx} className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] group h-36 bg-slate-900 shadow-2xs">
+                        <img
+                          src={url}
+                          alt={`Evidence ${idx + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                          onClick={() => setPreviewPhoto({ url, title: selectedPunchItem.title, location: selectedPunchItem.location || '' })}
+                        />
+                        <div className="absolute top-2 right-2 flex items-center gap-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemovePhoto(idx);
+                            }}
+                            className="w-7 h-7 rounded-lg bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer"
+                            title="Remove photo"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <div 
+                          onClick={() => setPreviewPhoto({ url, title: selectedPunchItem.title, location: selectedPunchItem.location || '' })}
+                          className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer pointer-events-none"
+                        >
+                          <span className="px-2.5 py-1 rounded-lg bg-black/70 text-white text-[11px] font-semibold flex items-center gap-1 backdrop-blur-xs">
+                            <Eye className="w-3 h-3" /> View Photo
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-5 rounded-2xl border-2 border-dashed border-[#CBD5E1] bg-slate-50/60 hover:bg-blue-50/40 hover:border-[#1677FF]/50 transition-colors flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-white shadow-2xs border border-[#E2E8F0] flex items-center justify-center text-[#1677FF]">
+                      <Camera className="w-5 h-5" />
+                    </div>
+                    <span className="text-xs font-bold text-[#0F172A]">No photo attached</span>
+                    <span className="text-[11px] text-[#64748B]">Click here to upload defect photo or site proof</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Progress & Status Switcher Section */}
+              <div className="p-3.5 bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-[#0F172A] block">Change Progress / Status</span>
+                    <span className="text-[11px] text-[#64748B]">Tap any stage to update this item's workflow</span>
+                  </div>
+                  <span className={`w-2.5 h-2.5 rounded-full ${STATUS_CONFIG[selectedPunchItem.status]?.dot}`} />
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {(['Open', 'In Progress', 'Resolved', 'Verified', 'Closed'] as PunchStatus[]).map((st) => {
+                    const isSelected = selectedPunchItem.status === st;
+                    const stConfig = STATUS_CONFIG[st];
+
+                    return (
+                      <button
+                        key={st}
+                        onClick={() => handleStatusChange(selectedPunchItem.id, st)}
+                        className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
+                          isSelected
+                            ? `${stConfig.pillBg} ${stConfig.pillText} ${stConfig.pillBorder} shadow-2xs ring-2 ring-[#1677FF]/20 font-bold`
+                            : 'bg-white border-[#E2E8F0] text-[#475569] hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 truncate">
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${stConfig.dot}`} />
+                          <span className="truncate">{st}</span>
+                        </div>
+                        {isSelected && <Check className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Full Description Box */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">Description & Notes</label>
+                <div className="p-3.5 bg-white rounded-xl border border-[#E2E8F0] text-[#334155] leading-relaxed text-xs sm:text-sm">
+                  {selectedPunchItem.description || 'No detailed description provided for this punch item.'}
+                </div>
+              </div>
+
+              {/* Resolution Note if present */}
+              {selectedPunchItem.resolutionNote && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Resolution Notes</label>
+                  <div className="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200 text-emerald-900 leading-relaxed text-xs sm:text-sm">
+                    {selectedPunchItem.resolutionNote}
+                  </div>
+                </div>
+              )}
+
+              {/* Item Information Grid */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">Item Information</label>
+                <div className="grid grid-cols-2 gap-2.5">
+                  
+                  {/* Location */}
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
+                    <MapPin className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold text-[#64748B] block">Location</span>
+                      <span className="text-xs font-bold text-[#0F172A] truncate block">
+                        {selectedPunchItem.location || 'Site Wide'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Subcontractor / Trade */}
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
+                    <Building2 className="w-4 h-4 text-[#1677FF] shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold text-[#64748B] block">Subcontractor</span>
+                      <span className="text-xs font-bold text-[#0F172A] truncate block">
+                        {selectedPunchItem.assignedTo?.trade || 'General Contractor'}
+                      </span>
+                      {selectedPunchItem.assignedTo?.name && (
+                        <span className="text-[10px] text-[#64748B] truncate block">
+                          {selectedPunchItem.assignedTo.name}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Date Reported */}
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
+                    <Calendar className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold text-[#64748B] block">Reported Date</span>
+                      <span className="text-xs font-bold text-[#0F172A] truncate block">
+                        {selectedPunchItem.createdDate || 'Apr 28, 2025'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Due Date */}
+                  <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] flex items-start gap-2.5">
+                    <Clock className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold text-[#64748B] block">Due Date</span>
+                      <span className="text-xs font-bold text-[#0F172A] truncate block">
+                        {selectedPunchItem.dueDate || 'Prior to Inspection'}
+                      </span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer Actions: Delete & Close */}
+            <div className="p-4 sm:p-5 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-between gap-3">
+              {isConfirmingDelete ? (
+                <div className="flex items-center gap-2 w-full justify-between animate-fade-in">
+                  <span className="text-xs font-semibold text-rose-600">Delete this item permanently?</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setIsConfirmingDelete(false)}
+                      className="px-3 py-1.5 rounded-xl border border-[#E2E8F0] bg-white text-xs font-semibold text-[#475569] hover:bg-slate-50 cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleDeletePunch(selectedPunchItem.id)}
+                      className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Confirm Delete</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setIsConfirmingDelete(true)}
+                    className="px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Delete Item</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedPunchItem(null);
+                      setIsConfirmingDelete(false);
+                    }}
+                    className="px-5 py-2 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+                  >
+                    Done
+                  </button>
+                </>
+              )}
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ── 7. Evidence Photo Preview Fullscreen Modal ── */}
       {previewPhoto && (
         <div 
           onClick={() => setPreviewPhoto(null)}
-          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in"
         >
           <div 
             onClick={(e) => e.stopPropagation()}

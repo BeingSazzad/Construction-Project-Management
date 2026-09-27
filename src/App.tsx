@@ -1133,6 +1133,7 @@ export function App() {
                 onOpenPunch={(p) => setSelectedTask(null)}
                 onCreatePunch={access.canCreatePunch ? () => setIsCreatePunchOpen(true) : undefined}
                 onUpdatePunchStatus={access.canManagePunch ? handleUpdatePunchStatus : undefined}
+                onDeletePunch={access.canManagePunch ? handleDeletePunch : undefined}
                 onUpdateTaskStatus={access.canUpdateTaskStatus ? handleUpdateTaskStatus : undefined}
                 onUploadPhoto={access.canUploadMedia ? () => setIsPhotoUploadOpen(true) : undefined}
                 onPreviewPhoto={(p) => setSelectedPhoto(p)}
