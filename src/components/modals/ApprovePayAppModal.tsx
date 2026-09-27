@@ -156,23 +156,31 @@ export const ApprovePayAppModal: React.FC<ApprovePayAppModalProps> = ({
             </div>
           </div>
 
-          {/* 5. Lien Waiver Checkbox */}
-          <div className="p-3 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] flex items-center justify-between">
-            <span className="text-xs font-bold text-[#171A1F] flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              Lien Waiver Signed
-            </span>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={hasLienWaiver}
-                onChange={(e) => setHasLienWaiver(e.target.checked)}
-                className="w-4 h-4 rounded text-purple-600 focus:ring-0 bg-white border-[#DDE1E7]"
-              />
-              <span className={`text-xs font-bold ${hasLienWaiver ? 'text-emerald-700' : 'text-amber-700'}`}>
-                {hasLienWaiver ? 'Verified' : 'Pending'}
+          {/* 5. Lien Waiver Proof & Release Verification */}
+          <div className="p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#DDE1E7] flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-[#171A1F] flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>Lien Waiver Proof & Release</span>
               </span>
-            </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={hasLienWaiver}
+                  onChange={(e) => setHasLienWaiver(e.target.checked)}
+                  className="w-4 h-4 rounded text-purple-600 focus:ring-0 bg-white border-[#DDE1E7]"
+                />
+                <span className={`text-xs font-bold ${hasLienWaiver ? 'text-emerald-700' : 'text-amber-700'}`}>
+                  {hasLienWaiver ? '✓ Proof Verified' : '⚠ Missing Proof'}
+                </span>
+              </label>
+            </div>
+            {hasLienWaiver && (
+              <div className="text-[11px] text-[#64748B] flex items-center justify-between bg-white px-3 py-1.5 rounded-xl border border-[#EAEDF1]">
+                <span className="truncate font-medium">{selectedSub.replace(/\s+/g, '_')}_Signed_Lien_Proof.pdf</span>
+                <span className="text-emerald-600 font-bold shrink-0">On File (1.2 MB)</span>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}

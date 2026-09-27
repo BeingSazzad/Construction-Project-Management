@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project, Task, Priority } from '../../types';
-import { X, CheckSquare } from 'lucide-react';
+import { X, CheckSquare, Building2 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 import { DEFAULT_PROJECT_MILESTONES } from '../../data/projectMilestones';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
   project?: Project | null;
+  projects?: Project[];
   onClose: () => void;
   onCreate: (task: Partial<Task>) => void;
   stageOptions?: { id: string; name: string }[];
@@ -31,11 +32,23 @@ const getAutoCostCode = (ms: string) => {
 export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   isOpen,
   project,
+  projects = [],
   onClose,
   onCreate,
   stageOptions,
   initialStageId
 }) => {
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(() => {
+    return project?.id || (projects.length > 0 ? projects[0].id : 'proj-1');
+  });
+
+  useEffect(() => {
+    if (project?.id) {
+      setSelectedProjectId(project.id);
+    } else if (projects.length > 0 && !selectedProjectId) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [project, projects, isOpen]);
   const milestoneOptions = DEFAULT_PROJECT_MILESTONES.map(m => `${m.code} ${m.name}`);
   const initialMilestone = milestoneOptions[2] || 'MS-03 Structural Framing & Concrete Slabs';
 
@@ -68,6 +81,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     setCostCode(getAutoCostCode(newMilestone));
   };
 
+  const currentProject = projects.find(p => p.id === selectedProjectId) || project;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -84,8 +99,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       stageId: selectedStageId || undefined,
       costCode: costCode.split(' ')[0],
       location,
-      projectId: project?.id || 'proj-1',
-      projectName: project?.name || 'Snell Isle Residence',
+      projectId: currentProject?.id || selectedProjectId,
+      projectName: currentProject?.name || 'Snell Isle Residence',
       assignee: {
         id: 'usr_field',
         name: assigneeName,
@@ -127,7 +142,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             <div>
               <h3 className="text-sm font-bold text-[#0F172A] tracking-tight">New Task</h3>
               <p className="text-xs text-[#64748B] mt-0.5 font-normal">
-                {project?.name || 'Snell Isle Residence'} · Field Assignment
+                {currentProject?.name || 'Project Build'} · Field Assignment
               </p>
             </div>
           </div>
@@ -143,6 +158,32 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
         {/* Form Content */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-xs">
+          {/* Project Selection */}
+          <div>
+            <label className="text-xs font-semibold text-[#475569] mb-1 block">
+              Project <span className="text-[#E5484D]">*</span>
+            </label>
+            {project ? (
+              <div className="flex items-center gap-2 p-2.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-xs font-bold text-[#0F172A]">
+                <Building2 className="w-4 h-4 text-[#1677FF] shrink-0" />
+                <span className="truncate">{project.name}</span>
+              </div>
+            ) : projects && projects.length > 0 ? (
+              <select
+                value={selectedProjectId}
+                onChange={(e) => setSelectedProjectId(e.target.value)}
+                required
+                className="w-full h-11 bg-white border border-[#E2E8F0] focus:border-[#1677FF] rounded-xl px-3 text-xs font-semibold text-[#0F172A] outline-none transition-colors cursor-pointer"
+              >
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+          </div>
+
           {/* Title */}
           <div>
             <label className="text-xs font-semibold text-[#475569] mb-1 block">

@@ -70,13 +70,13 @@ import { TaskDetailsModal } from './components/modals/TaskDetailsModal';
 import { PhotoPreviewModal } from './components/modals/PhotoPreviewModal';
 import { DocumentPreviewModal } from './components/modals/DocumentPreviewModal';
 import { UploadDocumentModal } from './components/modals/UploadDocumentModal';
-import { CreateDrawModal } from './components/modals/CreateDrawModal';
 import { ProcessLienWaiverModal } from './components/modals/ProcessLienWaiverModal';
 import { ApprovePayAppModal } from './components/modals/ApprovePayAppModal';
 import { TaskCreationTypeModal } from './components/modals/TaskCreationTypeModal';
 import { ImportBudgetModal } from './components/modals/ImportBudgetModal';
 import { EditProjectModal } from './components/modals/EditProjectModal';
 import { CreateChangeOrderModal } from './components/modals/CreateChangeOrderModal';
+import { LogExpenseModal } from './components/modals/LogExpenseModal';
 import { NotificationsView } from './components/notifications/NotificationsView';
 import { FolderKanban, DollarSign, Sparkles, CheckSquare, X, TrendingUp, Layers, Landmark, FileCheck, FileSpreadsheet, ChevronRight } from 'lucide-react';
 
@@ -139,10 +139,10 @@ export function App() {
   const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
   const [isUploadDocumentOpen, setIsUploadDocumentOpen] = useState(false);
   const [isCreateDailyLogOpen, setIsCreateDailyLogOpen] = useState(false);
-  const [isCreateDrawOpen, setIsCreateDrawOpen] = useState(false);
   const [isRecordLienWaiverOpen, setIsRecordLienWaiverOpen] = useState(false);
   const [isApprovePayAppOpen, setIsApprovePayAppOpen] = useState(false);
   const [isCreateChangeOrderOpen, setIsCreateChangeOrderOpen] = useState(false);
+  const [isLogExpenseModalOpen, setIsLogExpenseModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<SitePhoto | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<DocumentItem | null>(null);
@@ -281,40 +281,6 @@ export function App() {
   };
 
   // Financial Handlers
-  const handleCreateDraw = (newDraw: Partial<FinancingDraw>) => {
-    const targetProjectId = newDraw.projectId || (activeProject ? activeProject.id : projects[0].id);
-    const projDraws = draws.filter(d => d.projectId === targetProjectId);
-    const fullDraw: FinancingDraw = {
-      id: generateUniqueId('draw'),
-      projectId: targetProjectId,
-      drawNumber: projDraws.length + 1,
-      milestoneTitle: newDraw.milestoneTitle || 'Structural Progress Draw',
-      requestedAmount: newDraw.requestedAmount || 350000,
-      approvedAmount: newDraw.approvedAmount || 350000,
-      fundedAmount: 0,
-      status: 'In Lender Review',
-      requestDate: newDraw.requestDate || new Date().toISOString().split('T')[0],
-      lenderName: newDraw.lenderName || 'Texas Capital Commercial',
-      inspectorName: newDraw.inspectorName || 'David Miller, PE',
-      inspectionPassed: newDraw.inspectionPassed ?? true
-    };
-    setDraws(prev => [fullDraw, ...prev]);
-
-    setNotifications(prev => [
-      {
-        id: generateUniqueId('notif'),
-        title: 'Bank Draw Submitted',
-        message: `Draw #${fullDraw.drawNumber} ($${fullDraw.requestedAmount.toLocaleString()}) submitted to ${fullDraw.lenderName}.`,
-        timeAgo: 'Just now',
-        read: false,
-        type: 'budget'
-      },
-      ...prev
-    ]);
-
-    setIsCreateDrawOpen(false);
-  };
-
   const handleRecordLienWaiver = (newWaiver: Partial<LienWaiver>) => {
     const targetProjectId = newWaiver.projectId || (activeProject ? activeProject.id : projects[0].id);
     const fullWaiver: LienWaiver = {
@@ -1248,7 +1214,6 @@ export function App() {
                     }}
                     onOpenApprovePayApp={access.canApprovePayApp ? () => setIsApprovePayAppOpen(true) : undefined}
                     onOpenLienWaiver={access.canRecordLienWaiver ? () => setIsRecordLienWaiverOpen(true) : undefined}
-                    onOpenCreateDraw={access.canCreateDraw ? () => setIsCreateDrawOpen(true) : undefined}
                     onCreateTask={access.canCreateTask ? () => setIsCreateTaskModalOpen(true) : undefined}
                     onCreatePunch={access.canCreatePunch ? () => setIsCreatePunchOpen(true) : undefined}
                     onCreateChangeOrder={access.canCreateChangeOrder ? () => setIsCreateChangeOrderOpen(true) : undefined}
@@ -1397,6 +1362,7 @@ export function App() {
                     photos={photos}
                     onUploadPhoto={access.canUploadMedia ? () => setIsPhotoUploadOpen(true) : undefined}
                     onPreviewPhoto={(p) => setSelectedPhoto(p)}
+                    onBack={() => setActiveTab('home')}
                   />
                 )}
 
@@ -1450,6 +1416,16 @@ export function App() {
               } else if (tab === 'settings' || tab === 'account') {
                 setSettingsSubView('main');
                 setActiveTab('account');
+              } else if (tab === 'budgets') {
+                const target = activeProject || scopedProject;
+                setActiveProject(target);
+                setActiveTab('projects');
+                setProjectSubTab('budget');
+              } else if (tab === 'reports') {
+                const target = activeProject || scopedProject;
+                setActiveProject(target);
+                setActiveTab('projects');
+                setProjectSubTab('reports');
               } else {
                 setActiveTab(tab);
               }
@@ -1471,39 +1447,25 @@ export function App() {
         onAddProject={access.canCreateProject ? () => {
           setIsCreateProjectOpen(true);
         } : undefined}
-        onAddTask={access.canCreateTask ? () => {
-          const target = activeProject || scopedProject;
-          setActiveProject(target);
-          setActiveTab('projects');
-          setProjectSubTab('tasks');
+        onAddTask={access.canCreateTask && currentRole !== 'finance' ? () => {
           setIsCreateTaskModalOpen(true);
         } : undefined}
-        onAddDailyLog={access.canCreateDailyLog ? () => {
-          const target = activeProject || scopedProject;
-          setActiveProject(target);
-          setActiveTab('projects');
-          setProjectSubTab('daily-logs');
+        onAddDailyLog={access.canCreateDailyLog && currentRole !== 'finance' ? () => {
           setIsCreateDailyLogOpen(true);
         } : undefined}
-        onAddExpense={access.canLogExpense ? () => {
-          const target = activeProject || scopedProject;
-          setActiveProject(target);
-          setActiveTab('projects');
-          setProjectSubTab('budget');
-          window.setTimeout(() => setOpenLogExpense(true), 50);
+        onAddPunch={access.canCreatePunch && currentRole !== 'finance' ? () => {
+          setIsCreatePunchOpen(true);
         } : undefined}
-        onAddPhoto={access.canUploadMedia ? () => {
-          const target = activeProject || scopedProject;
-          setActiveProject(target);
-          setActiveTab('projects');
-          setProjectSubTab('photos');
+        onAddExpense={access.canLogExpense && currentRole !== 'field' ? () => {
+          setIsLogExpenseModalOpen(true);
+        } : undefined}
+        onAddChangeOrder={access.canCreateChangeOrder && currentRole !== 'field' ? () => {
+          setIsCreateChangeOrderOpen(true);
+        } : undefined}
+        onAddPhoto={access.canUploadMedia && currentRole !== 'finance' ? () => {
           setIsPhotoUploadOpen(true);
         } : undefined}
-        onAddDocument={access.canUploadMedia ? () => {
-          const target = activeProject || scopedProject;
-          setActiveProject(target);
-          setActiveTab('projects');
-          setProjectSubTab('documents');
+        onAddDocument={access.canUploadMedia && currentRole !== 'field' ? () => {
           setIsUploadDocumentOpen(true);
         } : undefined}
       />
@@ -1513,7 +1475,9 @@ export function App() {
         isOpen={isCreateTaskModalOpen}
         onClose={() => setIsCreateTaskModalOpen(false)}
         project={activeProject}
+        projects={visibleProjects}
         onCreate={handleCreateTask}
+        stageOptions={activeProject?.stages?.map(s => ({ id: s.id, name: s.name }))}
       />
 
       {/* TASK CREATION TYPE SELECTION MODAL */}
@@ -1541,8 +1505,32 @@ export function App() {
       <CreateChangeOrderModal
         isOpen={isCreateChangeOrderOpen}
         onClose={() => setIsCreateChangeOrderOpen(false)}
-        projectId={activeProject ? activeProject.id : (projects[0]?.id || 'proj-1')}
+        project={activeProject}
+        projects={visibleProjects}
         onCreate={handleCreateChangeOrder}
+      />
+
+      {/* LOG EXPENSE MODAL */}
+      <LogExpenseModal
+        isOpen={isLogExpenseModalOpen}
+        onClose={() => setIsLogExpenseModalOpen(false)}
+        project={activeProject}
+        projects={visibleProjects}
+        onSaveExpense={(projectId, category, amount, vendor) => {
+          handleLogExpense(projectId, category, amount);
+          const targetProj = projects.find(p => p.id === projectId) || activeProject;
+          setNotifications(prev => [
+            {
+              id: generateUniqueId('notif'),
+              title: 'Job Expense Recorded',
+              message: `$${amount.toLocaleString()} logged under ${category} for ${targetProj?.name || 'Project'}.`,
+              timeAgo: 'Just now',
+              read: false,
+              type: 'budget'
+            },
+            ...prev
+          ]);
+        }}
       />
 
       {/* CREATE PUNCH ITEM MODAL */}
@@ -1666,14 +1654,6 @@ export function App() {
           handleRecordLienWaiver(waiver);
           setIsRecordLienWaiverOpen(false);
         }}
-      />
-
-      {/* REQUEST LENDER DRAW MODAL */}
-      <CreateDrawModal
-        isOpen={isCreateDrawOpen}
-        onClose={() => setIsCreateDrawOpen(false)}
-        projects={visibleProjects}
-        onCreateDraw={handleCreateDraw}
       />
 
     </DeviceFrame>

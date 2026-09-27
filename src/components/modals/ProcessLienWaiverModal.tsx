@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Subcontractor, LienWaiver } from '../../types';
-import { FileCheck, X, CheckCircle2 } from 'lucide-react';
+import { 
+  FileCheck, X, CheckCircle2, UploadCloud, 
+  FileText, Trash2, Paperclip, ShieldCheck 
+} from 'lucide-react';
 
 interface ProcessLienWaiverModalProps {
   isOpen: boolean;
@@ -21,6 +24,23 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
   const [type, setType] = useState<LienWaiver['type']>('Progress Unconditional');
   const [invoiceRef, setInvoiceRef] = useState('INV-2025-089');
   const [status, setStatus] = useState<LienWaiver['status']>('Signed & Active');
+  const [proofFile, setProofFile] = useState<{ name: string; size: string } | null>({
+    name: 'Apex_Concrete_Signed_Lien_Release.pdf',
+    size: '1.4 MB'
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      setProofFile({
+        name: file.name,
+        size: `${sizeMB === '0.0' ? '< 0.1' : sizeMB} MB`
+      });
+      setStatus('Signed & Active');
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -142,42 +162,128 @@ export const ProcessLienWaiverModal: React.FC<ProcessLienWaiverModalProps> = ({
             </select>
           </div>
 
-          {/* 5. Verification Status */}
+          {/* 5. Signed Proof Document (Attachment Option) */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#171A1F]">Verification Status</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-[#171A1F] flex items-center gap-1.5">
+                <Paperclip className="w-3.5 h-3.5 text-[#1677FF]" />
+                <span>Signed Waiver Proof / Document *</span>
+              </label>
+              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                Required Proof
+              </span>
+            </div>
+
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept=".pdf,.png,.jpg,.jpeg"
+              className="hidden"
+            />
+
+            {proofFile ? (
+              <div className="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-200/90 flex items-center justify-between gap-3 shadow-2xs">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-white border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
+                    <FileCheck className="w-4 h-4 stroke-[2.2]" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-[#0F172A] truncate leading-tight">
+                      {proofFile.name}
+                    </p>
+                    <p className="text-[10px] text-[#10A976] font-semibold mt-0.5 flex items-center gap-1">
+                      <span>✓ Signed & Notarized Proof ({proofFile.size})</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-bold text-[#1677FF] hover:bg-[#EAF3FF] transition-all cursor-pointer shadow-2xs active:scale-95"
+                  >
+                    Replace
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProofFile(null);
+                      setStatus('Action Required');
+                    }}
+                    className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-rose-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95"
+                    title="Remove proof"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed border-[#CBD5E1] hover:border-[#1677FF] bg-[#F8FAFC] hover:bg-[#EAF3FF]/40 rounded-2xl p-3.5 flex flex-col items-center justify-center text-center cursor-pointer transition-all group"
+              >
+                <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 text-[#1677FF] flex items-center justify-center mb-1 group-hover:scale-105 transition-transform shadow-2xs">
+                  <UploadCloud className="w-4 h-4" />
+                </div>
+                <p className="text-xs font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors">
+                  Upload Signed Proof (PDF, JPG, PNG)
+                </p>
+                <p className="text-[10px] text-[#64748B] mt-0.5">
+                  Click to browse notarized sub release document
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* 6. Proof & Approval Status */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-[#171A1F]">Proof & Approval Status</label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setStatus('Signed & Active')}
-                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   status === 'Signed & Active'
                     ? 'bg-emerald-50 border-emerald-300 text-emerald-700 shadow-xs'
                     : 'bg-[#F7F8FA] border-[#DDE1E7] text-[#68707C]'
                 }`}
               >
-                ✓ Signed & Active
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Proof Approved</span>
               </button>
               <button
                 type="button"
                 onClick={() => setStatus('Action Required')}
-                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   status === 'Action Required'
                     ? 'bg-amber-50 border-amber-300 text-amber-700 shadow-xs'
                     : 'bg-[#F7F8FA] border-[#DDE1E7] text-[#68707C]'
                 }`}
               >
-                ⚠ Action Required
+                <span>⚠ Proof Pending</span>
               </button>
             </div>
+          </div>
+
+          {/* Audited / Approved By Badge */}
+          <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-[11px] text-[#64748B]">
+            <span className="flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Audited & Approved By:</span>
+            </span>
+            <span className="font-bold text-[#0F172A]">Michael Chang (Finance)</span>
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-11 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-2"
+            className="w-full h-11 rounded-2xl bg-[#1677FF] hover:bg-[#0958D9] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98] mt-1"
           >
             <CheckCircle2 className="w-4 h-4" />
-            <span>Verify & Log Lien Waiver</span>
+            <span>Approve & Record Waiver Proof</span>
           </button>
         </form>
 

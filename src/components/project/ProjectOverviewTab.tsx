@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Project, Task, SitePhoto, DocumentItem, PunchItem, ChangeOrder } from '../../types';
+import { Project, Task, SitePhoto, DocumentItem, PunchItem, ChangeOrder, UserRole } from '../../types';
 import {
   Calendar, Check, ChevronRight, Users, FileText, CloudRain,
   Landmark, Camera, CheckSquare, MapPin, User, Building2
@@ -27,6 +27,7 @@ interface ProjectOverviewTabProps {
   canViewBudget?: boolean;
   canManageSchedule?: boolean;
   canManageStages?: boolean;
+  currentRole?: UserRole;
 }
 
 export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
@@ -45,6 +46,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
   canViewBudget = true,
   canManageSchedule = false,
   canManageStages = false,
+  currentRole = 'admin',
 }) => {
   const [isCreateDailyLogOpen, setIsCreateDailyLogOpen] = useState(false);
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
@@ -95,15 +97,26 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
             loading="lazy"
           />
 
-          {/* Floating "View Photos >" Button */}
-          <button
-            onClick={() => handleTabChange('photos')}
-            className="absolute top-3 right-3 h-7 px-3 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
-          >
-            <Camera className="w-3.5 h-3.5" />
-            <span>View Photos</span>
-            <ChevronRight className="w-3 h-3 text-white/80" />
-          </button>
+          {/* Floating Action Button */}
+          {currentRole !== 'finance' ? (
+            <button
+              onClick={() => handleTabChange('photos')}
+              className="absolute top-3 right-3 h-7 px-3 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>View Photos</span>
+              <ChevronRight className="w-3 h-3 text-white/80" />
+            </button>
+          ) : (
+            <button
+              onClick={() => handleTabChange('budget')}
+              className="absolute top-3 right-3 h-7 px-3 rounded-full bg-[#1677FF] hover:bg-[#0F5FD7] backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+            >
+              <Landmark className="w-3.5 h-3.5" />
+              <span>View Budget</span>
+              <ChevronRight className="w-3 h-3 text-white/80" />
+            </button>
+          )}
         </div>
 
         {/* Progress & Current Stage Info */}
@@ -322,21 +335,38 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
           </div>
           )}
 
-          {/* Metric 2: Active Tasks */}
-          <div
-            onClick={() => handleTabChange('tasks')}
-            className="flex flex-col items-start px-3 cursor-pointer group"
-          >
-            <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
-              <CheckSquare className="w-4 h-4 stroke-[2]" />
+          {/* Metric 2: Active Tasks (or Committed Cost for Finance) */}
+          {currentRole !== 'finance' ? (
+            <div
+              onClick={() => handleTabChange('tasks')}
+              className="flex flex-col items-start px-3 cursor-pointer group"
+            >
+              <div className="w-8 h-8 rounded-xl bg-[#EAF3FF] text-[#1677FF] flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
+                <CheckSquare className="w-4 h-4 stroke-[2]" />
+              </div>
+              <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
+                {tasks.filter(t => t.projectId === project.id && t.status !== 'Completed').length}
+              </span>
+              <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
+                Active Tasks
+              </span>
             </div>
-            <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
-              {tasks.filter(t => t.projectId === project.id && t.status !== 'Completed').length}
-            </span>
-            <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
-              Active Tasks
-            </span>
-          </div>
+          ) : (
+            <div
+              onClick={() => handleTabChange('budget')}
+              className="flex flex-col items-start px-3 cursor-pointer group"
+            >
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shrink-0">
+                <Landmark className="w-4 h-4 stroke-[2]" />
+              </div>
+              <span className="text-sm font-bold text-[#0F172A] group-hover:text-[#1677FF] transition-colors leading-tight truncate w-full">
+                {project.budget?.committed ? `$${Math.round(project.budget.committed / 1000)}K` : '$1.85M'}
+              </span>
+              <span className="text-[11px] text-[#64748B] font-medium leading-tight mt-0.5 truncate w-full">
+                Committed Cost
+              </span>
+            </div>
+          )}
 
           {/* Metric 3: Documents */}
           <div
@@ -356,23 +386,42 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
         </div>
       </div>
 
-      {/* ── 5. Weather Warning (Clean Neutral Lattice Strip - Zero Yellow Bloat) ── */}
-      <div
-        onClick={() => setIsWeatherModalOpen(true)}
-        className="bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all group shadow-card"
-      >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse shrink-0" />
-          <p className="text-xs text-[#0F172A] truncate">
-            <span className="font-bold">Weather Risk:</span>{' '}
-            <span className="text-[#64748B]">Rain expected Thursday (concrete pour)</span>
-          </p>
+      {/* ── 5. Operational / Financial Alert ── */}
+      {currentRole === 'finance' ? (
+        <div
+          onClick={() => handleTabChange('budget')}
+          className="bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all group shadow-card"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="w-2 h-2 rounded-full bg-[#1677FF] animate-pulse shrink-0" />
+            <p className="text-xs text-[#0F172A] truncate">
+              <span className="font-bold text-[#1677FF]">Pending AP:</span>{' '}
+              <span className="text-[#64748B]">3 Trade Invoices pending review · $133.1K total</span>
+            </p>
+          </div>
+          <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
+            <span>Budget</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </div>
         </div>
-        <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
-          <span>Details</span>
-          <ChevronRight className="w-3.5 h-3.5" />
+      ) : (
+        <div
+          onClick={() => setIsWeatherModalOpen(true)}
+          className="bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all group shadow-card"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse shrink-0" />
+            <p className="text-xs text-[#0F172A] truncate">
+              <span className="font-bold">Weather Risk:</span>{' '}
+              <span className="text-[#64748B]">Rain expected Thursday (concrete pour)</span>
+            </p>
+          </div>
+          <div className="flex items-center gap-0.5 text-xs font-semibold text-[#1677FF] shrink-0 group-hover:translate-x-0.5 transition-transform">
+            <span>Details</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </div>
         </div>
-      </div>
+      )}
       {/* ── 6. Dedicated Assigned Team (Horizontal Headshots Only) ── */}
       <div className="bg-white rounded-2xl border border-[#E2E8F0] p-3.5 shadow-card flex flex-col gap-2.5">
         <div className="flex items-center justify-between">
@@ -503,7 +552,7 @@ export const ProjectOverviewTab: React.FC<ProjectOverviewTabProps> = ({
                 Recent Activity
               </h3>
               <button
-                onClick={() => handleTabChange('daily-logs')}
+                onClick={() => handleTabChange(currentRole === 'finance' ? 'budget' : 'daily-logs')}
                 className="text-xs font-semibold text-[#1677FF] hover:underline flex items-center gap-0.5 cursor-pointer"
               >
                 <span>View All</span>

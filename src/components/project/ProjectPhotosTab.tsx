@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project, SitePhoto } from '../../types';
-import { Camera, Eye, Image as ImageIcon, Upload } from 'lucide-react';
+import { Camera, Eye, Image as ImageIcon, Upload, ChevronLeft } from 'lucide-react';
 import { FilterPills } from '../common/FilterPills';
 
 interface ProjectPhotosTabProps {
@@ -8,6 +8,7 @@ interface ProjectPhotosTabProps {
   photos: SitePhoto[];
   onUploadPhoto?: () => void;
   onPreviewPhoto: (photo: SitePhoto) => void;
+  onBack?: () => void;
 }
 
 const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80';
@@ -15,7 +16,8 @@ const FALLBACK_PHOTO = 'https://images.unsplash.com/photo-1504307651254-35680f35
 export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
   photos,
   onUploadPhoto,
-  onPreviewPhoto
+  onPreviewPhoto,
+  onBack
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
@@ -30,10 +32,21 @@ export const ProjectPhotosTab: React.FC<ProjectPhotosTabProps> = ({
     <div className="w-full flex-1 flex flex-col gap-3.5 px-5 py-4 pb-28 font-sans max-w-[430px] md:max-w-2xl mx-auto text-[#171A1F] bg-[#F2F2F7] animate-fade-in">
       
       {/* ─── 1. TOP HEADER & PRIMARY ACTION ─── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Site Photo Gallery</h2>
-          <p className="text-xs text-[#68707C] mt-0.5 font-medium">{filteredPhotos.length} {filteredPhotos.length === 1 ? 'Photo' : 'Photos'}</p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] text-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors shadow-2xs active:scale-95 flex-shrink-0"
+              title="Back"
+            >
+              <ChevronLeft className="w-5 h-5 text-slate-700" />
+            </button>
+          )}
+          <div>
+            <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Site Photo Gallery</h2>
+            <p className="text-xs text-[#68707C] mt-0.5 font-medium">{filteredPhotos.length} {filteredPhotos.length === 1 ? 'Photo' : 'Photos'}</p>
+          </div>
         </div>
 
         {onUploadPhoto && (

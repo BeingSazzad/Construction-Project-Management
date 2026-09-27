@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { Project, ReportItem } from '../../types';
+import { Project, ReportItem, User } from '../../types';
 import { FileText, Download, X, UploadCloud, Upload, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { CustomSelect } from '../common/CustomSelect';
 
 interface ProjectReportsTabProps {
   project: Project;
   reports: ReportItem[];
+  currentUser?: User;
   onExportReport?: (report: ReportItem) => void;
   onAddReport?: (newReport: Partial<ReportItem>) => void;
 }
@@ -13,6 +14,7 @@ interface ProjectReportsTabProps {
 export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
   project,
   reports,
+  currentUser,
   onExportReport,
   onAddReport
 }) => {
@@ -46,7 +48,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
         title: reportTitle.trim(),
         type: reportType,
         period: 'Current Period',
-        author: 'Avery Scott (Owner)',
+        author: currentUser ? `${currentUser.name} (${currentUser.role === 'finance' ? 'Finance Controller' : currentUser.role === 'admin' ? 'Owner' : 'Project Manager'})` : 'Avery Scott (Owner)',
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         summary: 'Uploaded report file document.',
         fileSize: selectedFile?.size || `${(1.0 + Math.random() * 4).toFixed(1)} MB`
@@ -76,7 +78,7 @@ export const ProjectReportsTab: React.FC<ProjectReportsTabProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[#EAEDF1] pb-3">
         <div>
-          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Executive & Field Reports</h2>
+          <h2 className="text-base font-bold text-[#171A1F] tracking-tight">Reports</h2>
           <p className="text-xs text-[#68707C] mt-0.5 font-medium">{reports.length} Uploaded Files</p>
         </div>
 

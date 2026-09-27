@@ -21,7 +21,7 @@ import {
   Layers, DollarSign, CheckSquare,
   Camera, FileText, Users2,
   Calendar, ArrowLeft, Activity,
-  FolderClosed, ClipboardList
+  FolderClosed, ClipboardList, BarChart3
 } from 'lucide-react';
 
 interface ProjectWorkspaceProps {
@@ -143,38 +143,34 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
     switch (role) {
       case 'finance':
         return [
-          { id: 'budget', label: 'Budget & Draws', icon: DollarSign },
+          { id: 'budget', label: 'Budget', icon: DollarSign },
+          { id: 'documents', label: 'Documents', icon: FileText },
           { id: 'overview', label: 'Overview', icon: Layers },
-          { id: 'documents', label: 'Docs', icon: FileText },
-          { id: 'schedule', label: 'Schedule', icon: Calendar },
-          { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-          { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
         ];
       case 'pm':
         return [
-          { id: 'tasks', label: 'Tasks & Stages', icon: CheckSquare },
+          { id: 'tasks', label: 'Tasks', icon: CheckSquare },
           { id: 'schedule', label: 'Schedule', icon: Calendar },
-          { id: 'overview', label: 'Overview', icon: Layers },
           { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-          { id: 'documents', label: 'Docs', icon: FileText },
-          { id: 'budget', label: 'Budget', icon: DollarSign },
+          { id: 'documents', label: 'Documents', icon: FileText },
+          { id: 'overview', label: 'Overview', icon: Layers },
         ];
       case 'field':
         return [
           { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-          { id: 'tasks', label: 'Tasks & Punch', icon: CheckSquare },
-          { id: 'documents', label: 'Docs', icon: FileText },
-          { id: 'overview', label: 'Site Info', icon: Layers },
-          { id: 'schedule', label: 'Schedule', icon: Calendar },
+          { id: 'tasks', label: 'Tasks', icon: CheckSquare },
+          { id: 'documents', label: 'Documents', icon: FileText },
+          { id: 'overview', label: 'Overview', icon: Layers },
         ];
       default: // admin / owner
         return [
           { id: 'overview', label: 'Overview', icon: Layers },
-          { id: 'schedule', label: 'Schedule', icon: Calendar },
           { id: 'budget', label: 'Budget', icon: DollarSign },
+          { id: 'schedule', label: 'Schedule', icon: Calendar },
           { id: 'tasks', label: 'Tasks', icon: CheckSquare },
           { id: 'daily-logs', label: 'Daily Logs', icon: ClipboardList },
-          { id: 'documents', label: 'Docs', icon: FileText },
+          { id: 'documents', label: 'Documents', icon: FileText },
+          { id: 'reports', label: 'Reports', icon: BarChart3 },
         ];
     }
   };
@@ -230,6 +226,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             canViewBudget={access.canViewBudget}
             canManageSchedule={access.canManageSchedule}
             canManageStages={access.canManageTaskBoard}
+            currentRole={currentRole}
           />
         )}
 
@@ -258,6 +255,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
             photos={photos}
             onUploadPhoto={onUploadPhoto}
             onPreviewPhoto={onPreviewPhoto}
+            onBack={() => onSubTabChange ? onSubTabChange('overview') : undefined}
           />
         )}
 
@@ -290,6 +288,7 @@ export const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({
           <ProjectReportsTab
             project={project}
             reports={reports}
+            currentUser={currentUser}
             onExportReport={onExportReport}
             onAddReport={access.canAddReport ? onAddReport : undefined}
           />

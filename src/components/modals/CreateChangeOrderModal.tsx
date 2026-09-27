@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { X, Check, FilePlus2 } from 'lucide-react';
-import { ChangeOrder } from '../../types';
+import React, { useState, useEffect } from 'react';
+import { X, Check, FilePlus2, Building2 } from 'lucide-react';
+import { ChangeOrder, Project } from '../../types';
 
 interface CreateChangeOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  projectId: string;
+  projectId?: string;
+  project?: Project | null;
+  projects?: Project[];
   onCreate: (newCO: Partial<ChangeOrder>) => void;
 }
 
@@ -13,8 +15,24 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
   isOpen,
   onClose,
   projectId,
+  project,
+  projects = [],
   onCreate
 }) => {
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(() => {
+    return projectId || project?.id || (projects.length > 0 ? projects[0].id : 'proj-1');
+  });
+
+  useEffect(() => {
+    if (projectId) {
+      setSelectedProjectId(projectId);
+    } else if (project?.id) {
+      setSelectedProjectId(project.id);
+    } else if (projects.length > 0 && !selectedProjectId) {
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [projectId, project, projects, isOpen]);
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('0');
@@ -25,13 +43,14 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
   if (!isOpen) return null;
 
   const isValid = title.trim().length > 0;
+  const currentProject = projects.find(p => p.id === selectedProjectId) || project;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValid) return;
 
     onCreate({
-      projectId,
+      projectId: selectedProjectId,
       title: title.trim(),
       description: description.trim(),
       amount: Number(amount) || 0,
@@ -81,7 +100,32 @@ export const CreateChangeOrderModal: React.FC<CreateChangeOrderModalProps> = ({
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">
-          
+          {/* Project Selection */}
+          <div>
+            <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">
+              Project <span className="text-red-500">*</span>
+            </label>
+            {project ? (
+              <div className="flex items-center gap-2 p-2.5 bg-[#F7F8FA] border border-[#DDE1E7] rounded-xl text-xs font-bold text-[#171A1F]">
+                <Building2 className="w-4 h-4 text-[#1677FF] shrink-0" />
+                <span className="truncate">{project.name}</span>
+              </div>
+            ) : projects && projects.length > 0 ? (
+              <select
+                value={selectedProjectId}
+                onChange={(e) => setSelectedProjectId(e.target.value)}
+                required
+                className={inputClass}
+              >
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+          </div>
+
           {/* Title */}
           <div>
             <label className="text-xs font-semibold text-[#171A1F] mb-1.5 block">

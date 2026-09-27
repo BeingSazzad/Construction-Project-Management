@@ -194,7 +194,7 @@ export const ProjectManagerDashboard: React.FC<ProjectManagerDashboardProps> = (
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#1677FF] bg-[#EAF3FF] px-2 py-0.5 rounded-full">
-                PM Focus
+                Today's Focus
               </span>
               <span 
                 onClick={(e) => {
@@ -362,7 +362,7 @@ export const ProjectManagerDashboard: React.FC<ProjectManagerDashboardProps> = (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-[#1677FF]" />
-            <span className="text-sm font-bold text-[#1677FF]">Latti PM Briefing</span>
+            <span className="text-sm font-bold text-[#1677FF]">Latti Briefing</span>
           </div>
           <button 
             onClick={() => onOpenLatti()} 

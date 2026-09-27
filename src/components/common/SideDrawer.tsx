@@ -2,7 +2,7 @@ import React from 'react';
 import { User, Project } from '../../types';
 import { 
   X, Users, LogOut, FileText, 
-  ChevronRight, Flag, CheckSquare
+  ChevronRight, Flag, CheckSquare, DollarSign, BarChart3
 } from 'lucide-react';
 
 interface SideDrawerProps {
@@ -39,32 +39,88 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
     return name.slice(0, 2).toUpperCase();
   };
 
-  const OPERATIONS_ITEMS = [
-    {
-      id: 'milestones',
-      label: 'Milestone Tracker',
-      icon: Flag,
-      iconColor: 'bg-blue-50 text-[#1677FF]',
-    },
-    {
-      id: 'punch',
-      label: 'Punch List',
-      icon: CheckSquare,
-      iconColor: 'bg-amber-50 text-amber-600',
-    },
-    {
-      id: 'daily-logs',
-      label: 'Daily Field Logs',
-      icon: FileText,
-      iconColor: 'bg-emerald-50 text-emerald-600',
-    },
-    {
-      id: 'team',
-      label: 'Team Directory',
-      icon: Users,
-      iconColor: 'bg-indigo-50 text-indigo-600',
-    },
-  ];
+  const getOperationsItems = () => {
+    if (currentUser.role === 'finance') {
+      return [
+        {
+          id: 'budgets',
+          label: 'Budgets & Draws',
+          icon: DollarSign,
+          iconColor: 'bg-emerald-50 text-emerald-600',
+        },
+        {
+          id: 'reports',
+          label: 'Financial Reports',
+          icon: BarChart3,
+          iconColor: 'bg-blue-50 text-[#1677FF]',
+        },
+        {
+          id: 'team',
+          label: 'Team Directory',
+          icon: Users,
+          iconColor: 'bg-indigo-50 text-indigo-600',
+        },
+      ];
+    }
+
+    if (currentUser.role === 'field') {
+      return [
+        {
+          id: 'daily-logs',
+          label: 'Daily Field Logs',
+          icon: FileText,
+          iconColor: 'bg-emerald-50 text-emerald-600',
+        },
+        {
+          id: 'punch',
+          label: 'Punch List',
+          icon: CheckSquare,
+          iconColor: 'bg-amber-50 text-amber-600',
+        },
+        {
+          id: 'team',
+          label: 'Team Directory',
+          icon: Users,
+          iconColor: 'bg-indigo-50 text-indigo-600',
+        },
+      ];
+    }
+
+    return [
+      {
+        id: 'milestones',
+        label: 'Milestone Tracker',
+        icon: Flag,
+        iconColor: 'bg-blue-50 text-[#1677FF]',
+      },
+      {
+        id: 'reports',
+        label: 'Financial Reports',
+        icon: BarChart3,
+        iconColor: 'bg-emerald-50 text-emerald-600',
+      },
+      {
+        id: 'punch',
+        label: 'Punch List',
+        icon: CheckSquare,
+        iconColor: 'bg-amber-50 text-amber-600',
+      },
+      {
+        id: 'daily-logs',
+        label: 'Daily Field Logs',
+        icon: FileText,
+        iconColor: 'bg-emerald-50 text-emerald-600',
+      },
+      {
+        id: 'team',
+        label: 'Team Directory',
+        icon: Users,
+        iconColor: 'bg-indigo-50 text-indigo-600',
+      },
+    ];
+  };
+
+  const OPERATIONS_ITEMS = getOperationsItems();
 
   return (
     <div className="fixed inset-0 z-50 flex font-sans overflow-hidden animate-fade-in">

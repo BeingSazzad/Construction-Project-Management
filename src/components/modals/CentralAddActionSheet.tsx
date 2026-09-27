@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-  X, CheckSquare, ClipboardList, DollarSign, Camera, FileText, ChevronRight, Building2
+  X, CheckSquare, ClipboardList, DollarSign, Camera, FileText, ChevronRight, Building2,
+  AlertCircle, Receipt
 } from 'lucide-react';
 
 interface CentralAddActionSheetProps {
@@ -8,9 +9,11 @@ interface CentralAddActionSheetProps {
   onClose: () => void;
   onAddProject?: () => void;
   onAddTask?: () => void;
+  onAddPunch?: () => void;
   onAddDailyLog?: () => void;
   onAddUpdate?: () => void;
   onAddExpense?: () => void;
+  onAddChangeOrder?: () => void;
   onAddPhoto?: () => void;
   onAddDocument?: () => void;
 }
@@ -20,9 +23,11 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
   onClose,
   onAddProject,
   onAddTask,
+  onAddPunch,
   onAddDailyLog,
   onAddUpdate,
   onAddExpense,
+  onAddChangeOrder,
   onAddPhoto,
   onAddDocument,
 }) => {
@@ -42,7 +47,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
     ...(onAddTask ? [{
       id: 'task',
       label: 'Task',
-      subtitle: 'Create a deadline, punch item, or trade task',
+      subtitle: 'Create a deadline or trade execution task',
       icon: CheckSquare,
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: onAddTask,
@@ -55,20 +60,36 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
       color: 'bg-[#1677FF]/10 text-[#1677FF]',
       action: handleDailyLogAction,
     }] : []),
+    ...(onAddPunch ? [{
+      id: 'punch',
+      label: 'Punch Item',
+      subtitle: 'Log a field defect or punch inspection issue',
+      icon: AlertCircle,
+      color: 'bg-amber-500/10 text-amber-600',
+      action: onAddPunch,
+    }] : []),
     ...(onAddExpense ? [{
       id: 'expense',
       label: 'Expense',
       subtitle: 'Log a bill against the project budget',
       icon: DollarSign,
-      color: 'bg-[#1677FF]/10 text-[#1677FF]',
+      color: 'bg-emerald-500/10 text-emerald-600',
       action: onAddExpense,
+    }] : []),
+    ...(onAddChangeOrder ? [{
+      id: 'change-order',
+      label: 'Change Order',
+      subtitle: 'Submit a budget modification or contract addition',
+      icon: Receipt,
+      color: 'bg-blue-500/10 text-[#1677FF]',
+      action: onAddChangeOrder,
     }] : []),
     ...(onAddPhoto ? [{
       id: 'photo',
       label: 'Photo',
       subtitle: 'Upload site progress or verification photos',
       icon: Camera,
-      color: 'bg-[#1677FF]/10 text-[#1677FF]',
+      color: 'bg-sky-500/10 text-sky-600',
       action: onAddPhoto,
     }] : []),
     ...(onAddDocument ? [{
@@ -76,7 +97,7 @@ export const CentralAddActionSheet: React.FC<CentralAddActionSheetProps> = ({
       label: 'Document',
       subtitle: 'Attach blueprints, specs, permits, or contracts',
       icon: FileText,
-      color: 'bg-[#1677FF]/10 text-[#1677FF]',
+      color: 'bg-purple-500/10 text-purple-600',
       action: onAddDocument,
     }] : []),
   ];
