@@ -3,7 +3,7 @@ import { Project, PunchItem, PunchStatus } from '../../types';
 import { 
   Plus, MapPin, Trash2, Folder, ChevronLeft, 
   Search, SlidersHorizontal, ChevronDown, ChevronRight, 
-  X, Check
+  X, Camera
 } from 'lucide-react';
 
 interface ProjectPunchListTabProps {
@@ -35,6 +35,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   const [selectedPriority, setSelectedPriority] = useState<string>('All');
   const [selectedTrade, setSelectedTrade] = useState<string>('All');
   const [previewPhoto, setPreviewPhoto] = useState<{ url: string; title: string; location: string } | null>(null);
+  const modalFileInputRef = useRef<HTMLInputElement>(null);
 
   // Determine active project list
   const projectList: Project[] = (projects && projects.length > 0)
@@ -44,7 +45,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
   // Accordion expansion state for each project
   const [expandedProjectIds, setExpandedProjectIds] = useState<Record<string, boolean>>(() => {
     const init: Record<string, boolean> = {};
-    projectList.forEach((p, idx) => {
+    projectList.forEach((p) => {
       // Expand all projects by default so items are visible immediately
       init[p.id] = true;
     });
@@ -94,6 +95,38 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
     if (onDeletePunch) {
       onDeletePunch(punchId);
     }
+  };
+
+  // Multiple photos upload handler inside modal
+  const handleAttachPhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !selectedPunchItem) return;
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        if (dataUrl) {
+          setSelectedPunchItem((prev) => {
+            if (!prev) return null;
+            const updatedPhotos = [...(prev.photos || []), dataUrl];
+            const updated = { ...prev, photos: updatedPhotos };
+            setItems((list) => list.map((p) => (p.id === updated.id ? updated : p)));
+            return updated;
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+    if (modalFileInputRef.current) modalFileInputRef.current.value = '';
+  };
+
+  // Remove photo from punch item
+  const handleRemovePhoto = (photoIdx: number) => {
+    if (!selectedPunchItem) return;
+    const updatedPhotos = (selectedPunchItem.photos || []).filter((_, i) => i !== photoIdx);
+    const updated = { ...selectedPunchItem, photos: updatedPhotos };
+    setSelectedPunchItem(updated);
+    setItems((list) => list.map((p) => (p.id === updated.id ? updated : p)));
   };
 
   // Distinct trade list for filter
@@ -354,6 +387,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                     ) : (
                       projectItems.map((item) => {
                         const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
+                        const hasPhotos = item.photos && item.photos.length > 0;
 
                         return (
                           <div
@@ -364,7 +398,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                             }}
                             className="py-3 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99] shadow-2xs"
                           >
-                            {/* Left: Dot, Title, Subcontractor & Location */}
+                            {/* Left: Dot, Title, Subcontractor, Location & Photo Indicator */}
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2 mb-1">
                                 <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
@@ -373,10 +407,16 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                                 </h2>
                               </div>
 
-                              <p className="text-[11px] text-[#64748B] truncate pl-4">
-                                {item.assignedTo?.trade || 'General Trade'}
-                                {item.location ? ` · ${item.location}` : ''}
-                              </p>
+                              <div className="flex items-center gap-2 text-[11px] text-[#64748B] truncate pl-4">
+                                <span className="truncate">{item.assignedTo?.trade || 'General Trade'}</span>
+                                {item.location && <span>· {item.location}</span>}
+                                {hasPhotos && item.photos.length > 1 && (
+                                  <span className="inline-flex items-center gap-1 text-[#1677FF] font-semibold shrink-0 bg-[#EAF3FF] px-1.5 py-0.2 rounded">
+                                    <Camera className="w-2.5 h-2.5" />
+                                    <span>{item.photos.length}</span>
+                                  </span>
+                                )}
+                              </div>
                             </div>
 
                             {/* Right: Only the Actual Status Pill + Chevron */}
@@ -398,7 +438,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
         )}
       </div>
 
-      {/* ── 5. Punch Item Details Modal (Minimal, 390px, Only Actual Status) ── */}
+      {/* ── 5. Punch Item Details Modal (Minimal, 390px, Exact Project & Multiple Photos) ── */}
       {selectedPunchItem && (
         <div 
           onClick={() => {
@@ -448,6 +488,18 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
 
               {/* Details List (Normal text, clean key-value) */}
               <div className="py-2 border-y border-[#F1F5F9] flex flex-col gap-2.5">
+                
+                {/* Project association - Explicitly tells which project this belongs to */}
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Project</span>
+                  <span className="font-semibold text-[#0F172A] truncate max-w-[200px]">
+                    {selectedPunchItem.projectName || 
+                      projectList.find(p => p.id === selectedPunchItem.projectId)?.name || 
+                      project?.name || 
+                      'Snell Isle Residence'}
+                  </span>
+                </div>
+
                 {/* Single Status Selector displaying only the chosen status */}
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-[#64748B]">Status</span>
@@ -485,20 +537,81 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 </div>
               </div>
 
-              {/* Photo Evidence (if any) */}
-              {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 && (
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">Photo Evidence</span>
-                  <div className="rounded-xl overflow-hidden border border-[#E2E8F0] h-32 bg-slate-900">
+              {/* Photo Evidence Section (Multiple Photos Support) */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                    Photo Evidence {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 ? `(${selectedPunchItem.photos.length})` : ''}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => modalFileInputRef.current?.click()}
+                    className="text-[11px] font-bold text-[#1677FF] hover:text-[#0958D9] flex items-center gap-1 cursor-pointer"
+                  >
+                    <Camera className="w-3 h-3" />
+                    <span>+ Add Photo</span>
+                  </button>
+                </div>
+
+                {/* Hidden input for adding multiple photos */}
+                <input
+                  ref={modalFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handleAttachPhotos}
+                />
+
+                {/* Photos Grid / Thumbnails */}
+                {(!selectedPunchItem.photos || selectedPunchItem.photos.length === 0) ? (
+                  <div 
+                    onClick={() => modalFileInputRef.current?.click()}
+                    className="py-4 rounded-xl border border-dashed border-[#CBD5E1] bg-[#F8FAFC] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#1677FF] transition-colors"
+                  >
+                    <Camera className="w-4 h-4 text-[#94A3B8]" />
+                    <span className="text-[11px] text-[#64748B] font-medium">No photos attached. Click to add.</span>
+                  </div>
+                ) : selectedPunchItem.photos.length === 1 ? (
+                  <div className="relative group rounded-xl overflow-hidden border border-[#E2E8F0] h-36 bg-slate-900">
                     <img
                       src={selectedPunchItem.photos[0]}
                       alt="Evidence"
                       className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform"
                       onClick={() => setPreviewPhoto({ url: selectedPunchItem.photos[0], title: selectedPunchItem.title, location: selectedPunchItem.location || '' })}
                     />
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePhoto(0)}
+                      className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer"
+                      title="Remove photo"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="grid grid-cols-3 gap-2">
+                    {selectedPunchItem.photos.map((photoUrl, idx) => (
+                      <div key={idx} className="relative group rounded-xl overflow-hidden border border-[#E2E8F0] aspect-square bg-slate-900">
+                        <img
+                          src={photoUrl}
+                          alt={`Evidence ${idx + 1}`}
+                          className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform"
+                          onClick={() => setPreviewPhoto({ url: photoUrl, title: `${selectedPunchItem.title} (${idx + 1}/${selectedPunchItem.photos.length})`, location: selectedPunchItem.location || '' })}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemovePhoto(idx)}
+                          className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/70 hover:bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                          title="Remove photo"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Footer: Delete & Done */}

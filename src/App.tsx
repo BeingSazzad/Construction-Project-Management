@@ -712,21 +712,21 @@ export function App() {
     const fullPunch: PunchItem = {
       id: newPunch.id || generateUniqueId('pch'),
       projectId: targetProjectId,
-      projectName: newPunch.projectName || targetProject.name,
+      projectName: targetProject?.name || newPunch.projectName || 'General Project',
       title: newPunch.title || 'Defect Notice',
       description: newPunch.description || 'Quality non-conformance item',
-      location: newPunch.location || 'Level 3 - Zone B',
+      location: newPunch.location || 'Jobsite Area',
       status: 'Open',
       priority: newPunch.priority || 'Medium',
       assignedTo: newPunch.assignedTo || {
-        id: 'sub-1',
-        name: 'Marco Rossi',
+        id: `sub-${Date.now()}`,
+        name: 'General Subcontractor',
         avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        trade: 'Concrete Works'
+        trade: 'General'
       },
-      dueDate: newPunch.dueDate || '2025-05-30',
-      createdDate: new Date().toISOString().split('T')[0],
-      photos: []
+      dueDate: newPunch.dueDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+      createdDate: newPunch.createdDate || new Date().toISOString().split('T')[0],
+      photos: (newPunch.photos && newPunch.photos.length > 0) ? newPunch.photos : []
     };
 
     setPunchItems(prev => {

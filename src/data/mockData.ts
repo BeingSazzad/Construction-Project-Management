@@ -1394,7 +1394,9 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     dueDate: '2025-05-26',
     status: 'Open',
     photos: [
-      'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80'
     ],
     createdDate: 'Apr 28, 2025'
   },
@@ -1414,7 +1416,8 @@ export const MOCK_PUNCH_ITEMS: PunchItem[] = [
     dueDate: '2025-05-21',
     status: 'In Progress',
     photos: [
-      'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80'
     ],
     createdDate: 'Apr 26, 2025'
   },
