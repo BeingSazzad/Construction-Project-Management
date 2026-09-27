@@ -352,7 +352,6 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
           ) : (
             filteredItems.map((item) => {
               const config = STATUS_CONFIG[item.status] || STATUS_CONFIG['Open'];
-              const photoCount = item.photos ? item.photos.length : 0;
 
               return (
                 <div
@@ -361,68 +360,29 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                     setSelectedPunchItem(item);
                     if (onOpenPunchDetails) onOpenPunchDetails(item);
                   }}
-                  className="py-2.5 px-3.5 sm:py-3 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/50 hover:shadow-xs transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99]"
+                  className="py-3 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#1677FF]/40 transition-all flex items-center justify-between gap-3 group cursor-pointer active:scale-[0.99] shadow-2xs"
                 >
-                  {/* Left: Status Icon Dot + Content */}
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    {/* Status Indicator Icon Badge */}
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${config.pillBg} ${config.pillBorder}`}>
-                      <span className={`w-2.5 h-2.5 rounded-full ${config.dot}`} />
+                  {/* Left: Dot, Title, and Clean Subtitle */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${config.dot}`} />
+                      <h2 className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors">
+                        {item.title}
+                      </h2>
                     </div>
 
-                    {/* Title & Metadata */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <h2 className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug truncate group-hover:text-[#1677FF] transition-colors">
-                          {item.title}
-                        </h2>
-                        {(item.priority === 'High' || item.priority === 'Critical') && (
-                          <span className="px-1.5 py-0.5 rounded-md bg-rose-50 text-rose-600 text-[9px] font-bold border border-rose-200 uppercase shrink-0">
-                            High
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-1.5 text-[11px] text-[#64748B] truncate">
-                        {item.assignedTo?.trade && (
-                          <span className="truncate font-medium text-[#475569]">
-                            {item.assignedTo.trade}
-                          </span>
-                        )}
-                        {item.assignedTo?.trade && item.location && (
-                          <span className="text-slate-300">•</span>
-                        )}
-                        {item.location && (
-                          <span className="truncate flex items-center gap-1">
-                            <MapPin className="w-3 h-3 text-rose-500 shrink-0 inline" />
-                            {item.location}
-                          </span>
-                        )}
-                        {photoCount > 0 && (
-                          <>
-                            <span className="text-slate-300">•</span>
-                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#1677FF] bg-[#EAF3FF] px-1.5 py-0.2 rounded-md shrink-0">
-                              <Camera className="w-2.5 h-2.5" />
-                              <span>{photoCount}</span>
-                            </span>
-                          </>
-                        )}
-                        {item.createdDate && (
-                          <>
-                            <span className="text-slate-300">•</span>
-                            <span className="shrink-0">{item.createdDate}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
+                    <p className="text-[11px] text-[#64748B] truncate pl-4">
+                      {item.assignedTo?.trade || 'General Trade'}
+                      {item.location ? ` · ${item.location}` : ''}
+                    </p>
                   </div>
 
                   {/* Right: Clean Status Pill + Chevron Arrow */}
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
+                    <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${config.pillBg} ${config.pillText} ${config.pillBorder}`}>
                       {item.status}
                     </span>
-                    <ChevronRight className="w-4 h-4 text-[#94A3B8] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-[#CBD5E1] group-hover:text-[#1677FF] group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </div>
               );
@@ -431,39 +391,29 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
         </div>
       )}
 
-      {/* ── 6. Punch Item Details Modal (Clean 390px width, uncluttered, normal info) ── */}
+      {/* ── 6. Punch Item Details Modal (Completely Minimal) ── */}
       {selectedPunchItem && (
         <div 
           onClick={() => {
             setSelectedPunchItem(null);
             setIsConfirmingDelete(false);
           }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 animate-fade-in"
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 animate-fade-in"
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-3xl w-full max-w-[390px] max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-scale-up border border-[#E2E8F0]"
+            className="bg-white rounded-2xl w-full max-w-[390px] max-h-[85vh] flex flex-col shadow-xl overflow-hidden animate-scale-up border border-[#E2E8F0]"
           >
-            {/* Modal Header */}
-            <div className="px-4 py-3.5 border-b border-[#F1F5F9] flex items-start justify-between gap-2.5 bg-white sticky top-0 z-10">
+            {/* Header: Title + Close */}
+            <div className="px-4 py-3 border-b border-[#F1F5F9] flex items-center justify-between gap-3 bg-white">
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${STATUS_CONFIG[selectedPunchItem.status]?.pillBg} ${STATUS_CONFIG[selectedPunchItem.status]?.pillText} ${STATUS_CONFIG[selectedPunchItem.status]?.pillBorder}`}>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className={`w-2 h-2 rounded-full ${STATUS_CONFIG[selectedPunchItem.status]?.dot}`} />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
                     {selectedPunchItem.status}
                   </span>
-                  {selectedPunchItem.priority && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                      selectedPunchItem.priority === 'High' || selectedPunchItem.priority === 'Critical'
-                        ? 'bg-rose-50 text-rose-600 border border-rose-200'
-                        : selectedPunchItem.priority === 'Medium'
-                        ? 'bg-amber-50 text-amber-600 border border-amber-200'
-                        : 'bg-slate-100 text-slate-600 border border-slate-200'
-                    }`}>
-                      {selectedPunchItem.priority}
-                    </span>
-                  )}
                 </div>
-                <h2 className="text-sm sm:text-base font-bold text-[#0F172A] leading-snug">
+                <h2 className="text-sm sm:text-base font-bold text-[#0F172A] truncate">
                   {selectedPunchItem.title}
                 </h2>
               </div>
@@ -472,82 +422,20 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                   setSelectedPunchItem(null);
                   setIsConfirmingDelete(false);
                 }}
-                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer transition-colors shrink-0 mt-0.5"
+                className="w-7 h-7 rounded-full hover:bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer transition-colors shrink-0"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Modal Scrollable Body */}
-            <div className="px-4 py-3.5 overflow-y-auto flex flex-col gap-3.5 text-xs">
-              
-              {/* Photo Evidence (if any, clean and compact) */}
-              {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 ? (
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-[#64748B] font-semibold flex items-center gap-1">
-                      <Camera className="w-3 h-3 text-[#1677FF]" />
-                      Evidence ({selectedPunchItem.photos.length})
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="text-[#1677FF] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
-                    >
-                      <Plus className="w-3 h-3" />
-                      Add Photo
-                    </button>
-                  </div>
+            {/* Scrollable Body: Pure minimal info */}
+            <div className="px-4 py-3 overflow-y-auto flex flex-col gap-3 text-xs">
 
-                  <div className="grid grid-cols-2 gap-2">
-                    {selectedPunchItem.photos.map((url, idx) => (
-                      <div key={idx} className="relative rounded-xl overflow-hidden border border-[#E2E8F0] group h-28 bg-slate-900 shadow-2xs">
-                        <img
-                          src={url}
-                          alt={`Evidence ${idx + 1}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
-                          onClick={() => setPreviewPhoto({ url, title: selectedPunchItem.title, location: selectedPunchItem.location || '' })}
-                        />
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemovePhoto(idx);
-                          }}
-                          className="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer"
-                          title="Remove photo"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <button 
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full py-2.5 px-3 rounded-xl border border-dashed border-[#CBD5E1] bg-slate-50/70 hover:bg-blue-50/50 hover:border-[#1677FF]/40 transition-colors flex items-center justify-center gap-2 cursor-pointer text-[#64748B]"
-                >
-                  <Camera className="w-4 h-4 text-[#1677FF]" />
-                  <span className="text-xs font-semibold text-[#0F172A]">Attach Photo Evidence</span>
-                </button>
-              )}
-
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleAttachPhoto}
-                accept="image/*"
-                className="hidden"
-              />
-
-              {/* Progress / Status Switcher (Minimal clean horizontal pill selector, no huge outer box!) */}
+              {/* Status / Workflow Selector */}
               <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">
-                  Workflow Progress
-                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">Status</span>
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  {(['Open', 'In Progress', 'Resolved', 'Verified', 'Closed'] as PunchStatus[]).map((st) => {
+                  {(['Open', 'In Progress', 'Resolved', 'Closed'] as PunchStatus[]).map((st) => {
                     const isSelected = selectedPunchItem.status === st;
                     const stConfig = STATUS_CONFIG[st];
 
@@ -555,10 +443,10 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                       <button
                         key={st}
                         onClick={() => handleStatusChange(selectedPunchItem.id, st)}
-                        className={`px-2.5 py-1.5 rounded-lg border text-xs transition-all cursor-pointer flex items-center gap-1.5 ${
+                        className={`px-2.5 py-1 rounded-lg border text-xs transition-all cursor-pointer flex items-center gap-1.5 ${
                           isSelected
-                            ? `${stConfig.pillBg} ${stConfig.pillText} ${stConfig.pillBorder} font-bold shadow-2xs ring-1 ring-[#1677FF]/30`
-                            : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-slate-50 font-medium'
+                            ? `${stConfig.pillBg} ${stConfig.pillText} ${stConfig.pillBorder} font-bold ring-1 ring-[#1677FF]/30`
+                            : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-slate-50 font-normal'
                         }`}
                       >
                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${stConfig.dot}`} />
@@ -570,88 +458,67 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 </div>
               </div>
 
-              {/* Description & Notes (Clean typography, no bulky box!) */}
+              {/* Description */}
               <div className="flex flex-col gap-1">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">
-                  Description & Notes
-                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">Description</span>
                 <p className="text-xs text-[#334155] leading-relaxed">
-                  {selectedPunchItem.description || 'No detailed description provided.'}
+                  {selectedPunchItem.description || 'No description provided.'}
                 </p>
-                {selectedPunchItem.resolutionNote && (
-                  <p className="text-xs text-emerald-800 bg-emerald-50/70 p-2 rounded-lg border border-emerald-200 mt-1">
-                    <span className="font-bold">Resolution: </span>{selectedPunchItem.resolutionNote}
-                  </p>
-                )}
               </div>
 
-              {/* Item Information: Clean Key-Value List with Subtle Dividers (NO CLUNKY BOXES!) */}
-              <div className="pt-2 border-t border-[#F1F5F9] flex flex-col gap-2 text-xs">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#94A3B8]">
-                  Details
-                </span>
-
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
-                    <MapPin className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Location</span>
-                  </span>
-                  <span className="font-semibold text-[#0F172A] truncate text-right">
-                    {selectedPunchItem.location || 'Site Wide'}
-                  </span>
+              {/* Details List (Normal text, no extra boxes) */}
+              <div className="py-2 border-y border-[#F1F5F9] flex flex-col gap-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Location</span>
+                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.location || 'Site'}</span>
                 </div>
-
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
-                    <Building2 className="w-3.5 h-3.5 text-[#1677FF]" />
-                    <span>Subcontractor</span>
-                  </span>
-                  <span className="font-semibold text-[#0F172A] truncate text-right">
-                    {selectedPunchItem.assignedTo?.trade || 'General Contractor'}
-                  </span>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Subcontractor</span>
+                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.assignedTo?.trade || 'General'}</span>
                 </div>
-
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Reported Date</span>
-                  </span>
-                  <span className="font-semibold text-[#0F172A] text-right">
-                    {selectedPunchItem.createdDate || 'Apr 28, 2025'}
-                  </span>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Priority</span>
+                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.priority || 'Normal'}</span>
                 </div>
-
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[#64748B] flex items-center gap-1.5 shrink-0">
-                    <Clock className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Due Date</span>
-                  </span>
-                  <span className="font-semibold text-[#0F172A] text-right">
-                    {selectedPunchItem.dueDate || 'Prior to Inspection'}
-                  </span>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#64748B]">Due Date</span>
+                  <span className="font-semibold text-[#0F172A]">{selectedPunchItem.dueDate || 'Pending'}</span>
                 </div>
               </div>
 
+              {/* Photo Evidence (if any) */}
+              {selectedPunchItem.photos && selectedPunchItem.photos.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">Photo Evidence</span>
+                  <div className="rounded-xl overflow-hidden border border-[#E2E8F0] h-32 bg-slate-900">
+                    <img
+                      src={selectedPunchItem.photos[0]}
+                      alt="Evidence"
+                      className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => setPreviewPhoto({ url: selectedPunchItem.photos[0], title: selectedPunchItem.title, location: selectedPunchItem.location || '' })}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Modal Footer Actions: Delete & Done */}
-            <div className="p-3.5 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-between gap-2.5">
+            {/* Footer: Delete & Done */}
+            <div className="px-4 py-3 border-t border-[#F1F5F9] bg-[#F8FAFC] flex items-center justify-between gap-2">
               {isConfirmingDelete ? (
-                <div className="flex items-center gap-2 w-full justify-between animate-fade-in">
-                  <span className="text-xs font-semibold text-rose-600">Delete this item?</span>
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs text-rose-600 font-medium">Delete item?</span>
+                  <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setIsConfirmingDelete(false)}
-                      className="px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-white text-xs font-medium text-[#475569] hover:bg-slate-50 cursor-pointer"
+                      className="px-2.5 py-1 text-xs text-[#64748B] hover:bg-slate-200 rounded-md"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={() => handleDeletePunch(selectedPunchItem.id)}
-                      className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold flex items-center gap-1 shadow-2xs cursor-pointer"
+                      className="px-2.5 py-1 text-xs text-white bg-rose-600 hover:bg-rose-700 rounded-md font-medium"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span>Confirm</span>
+                      Confirm
                     </button>
                   </div>
                 </div>
@@ -659,7 +526,7 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                 <>
                   <button
                     onClick={() => setIsConfirmingDelete(true)}
-                    className="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="text-xs text-rose-600 hover:text-rose-700 font-medium flex items-center gap-1 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Delete</span>
@@ -670,14 +537,13 @@ export const ProjectPunchListTab: React.FC<ProjectPunchListTabProps> = ({
                       setSelectedPunchItem(null);
                       setIsConfirmingDelete(false);
                     }}
-                    className="px-5 py-1.5 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+                    className="px-4 py-1.5 rounded-lg bg-[#0F172A] hover:bg-slate-800 text-white text-xs font-semibold cursor-pointer"
                   >
                     Done
                   </button>
                 </>
               )}
             </div>
-
           </div>
         </div>
       )}
